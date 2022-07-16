@@ -1,0 +1,14 @@
+{
+  "mode": "ADDITIVE",
+  "targets": {
+    "type": "aequivaleo:item",
+    "data": {
+      "count": 1.0,
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "compounds": {
+    "amount": 18.0,
+    "type": "replication:metallic"
+  }
+}
