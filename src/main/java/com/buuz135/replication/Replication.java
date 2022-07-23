@@ -10,7 +10,9 @@ import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
 import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -52,15 +54,19 @@ public class Replication extends ModuleController {
         EventManager.forge(RenderTooltipEvent.GatherComponents.class).process(pre -> {
             if (Minecraft.getInstance().level != null){
                 var instance = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(pre.getItemStack());
-                for (CompoundInstance compoundInstance : instance) {
-                    if (compoundInstance.getType() instanceof ReplicationCompoundType type){
-                        pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(compoundInstance)));
+                if (instance.size() > 0){
+                    if (Screen.hasShiftDown()){
+                        for (CompoundInstance compoundInstance : instance) {
+                            if (compoundInstance.getType() instanceof ReplicationCompoundType type){
+                                pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(compoundInstance)));
+                            }
+                        }
+                    } else {
+                        pre.getTooltipElements().add(Either.left(new TextComponent("Hold ").withStyle(ChatFormatting.GRAY).append(new TextComponent("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));
                     }
-
                 }
+
             }
-
-
         }).subscribe();
     }
 

@@ -17,7 +17,14 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
 
     @Override
     public void calculateDataToSave() {
-        saveData(Items.IRON_INGOT, metallic(18));
+        saveData(Items.IRON_INGOT, metallic(9));
+        saveData(Items.GOLD_INGOT, metallic(9), precious(9));
+
+        saveData(Items.OAK_LOG, earth(8), organic(8));
+        saveData(Items.NETHERRACK, earth(1), nether(1));
+        saveData(Items.END_STONE, earth(1), ender(1));
+
+        saveData(Items.NETHER_STAR, quantum(64), nether(16));
     }
 
     private void saveData(Item item, CompoundInstance... instances) {
@@ -31,4 +38,29 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
     private static CompoundInstance metallic(double d){
         return new CompoundInstance(ReplicationRegistry.METALLIC.get(), d);
     }
+
+    private static CompoundInstance earth(double d){
+        return new CompoundInstance(ReplicationRegistry.EARTH.get(), d);
+    }
+
+    private static CompoundInstance organic(double d){
+        return new CompoundInstance(ReplicationRegistry.ORGANIC.get(), d);
+    }
+
+    private static CompoundInstance quantum(double d){
+        return new CompoundInstance(ReplicationRegistry.QUANTUM.get(), d);
+    }
+
+    private static CompoundInstance nether(double d){
+        return new CompoundInstance(ReplicationRegistry.NETHER.get(), d);
+    }
+
+    private static CompoundInstance precious(double d){
+        return new CompoundInstance(ReplicationRegistry.PRECIOUS.get(), d);
+    }
+
+    private static CompoundInstance ender(double d){
+        return new CompoundInstance(ReplicationRegistry.ENDER.get(), d);
+    }
+
 }

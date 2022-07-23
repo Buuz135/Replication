@@ -1,0 +1,20 @@
+{
+  "mode": "ADDITIVE",
+  "targets": {
+    "type": "aequivaleo:item",
+    "data": {
+      "count": 1.0,
+      "item": "minecraft:end_stone"
+    }
+  },
+  "compounds": [
+    {
+      "amount": 1.0,
+      "type": "replication:earth"
+    },
+    {
+      "amount": 1.0,
+      "type": "replication:ender"
+    }
+  ]
+}
