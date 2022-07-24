@@ -2,13 +2,19 @@ package com.buuz135.replication;
 
 import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
 import com.buuz135.replication.block.MatterPipeBlock;
+import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.client.MatterTooltipClientComponent;
 import com.buuz135.replication.client.MatterTooltipComponent;
 import com.buuz135.replication.data.AequivaleoDataProvider;
 import com.buuz135.replication.data.RepBlockstateProvider;
+import com.buuz135.replication.network.NetworkRegistry;
+import com.buuz135.replication.network.element.NetworkElementRegistry;
+import com.buuz135.replication.network.element.type.DefaultMatterNetworkElement;
+import com.buuz135.replication.network.matter.MatterNetwork;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.ModuleController;
+import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
 import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -71,7 +77,11 @@ public class Replication extends ModuleController {
 
             }
         }).subscribe();
+        CommonEvents.init();
         ClientEvents.init();
+        NetworkRegistry.INSTANCE.addFactory(MatterNetwork.MATTER, new MatterNetwork.Factory());
+        NetworkElementRegistry.INSTANCE.addFactory(DefaultMatterNetworkElement.ID, new DefaultMatterNetworkElement.Factory());
+        NBTManager.getInstance().scanTileClassForAnnotations(MatterPipeBlockEntity.class);
     }
 
     @Override

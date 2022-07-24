@@ -1,7 +1,10 @@
 package com.buuz135.replication.block;
 
 import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.api.network.NetworkElement;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
+import com.buuz135.replication.network.NetworkManager;
+import com.buuz135.replication.network.matter.MatterNetwork;
 import com.google.common.collect.ImmutableMap;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.ibm.icu.impl.Pair;
@@ -100,7 +103,13 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> {
         var newState = this.createState(worldIn, pos, state);
         if (newState != state) {
             worldIn.setBlockAndUpdate(pos, newState);
-            //PipeBlock.onStateChanged(worldIn, pos, newState);
+        }
+        if (!worldIn.isClientSide) {
+            NetworkElement pipe = NetworkManager.get(worldIn).getElement(pos);
+
+            if (pipe != null && pipe.getNetwork() != null) {
+                pipe.getNetwork().scanGraph(worldIn, pos);
+            }
         }
     }
 
