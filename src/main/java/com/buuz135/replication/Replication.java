@@ -1,9 +1,12 @@
 package com.buuz135.replication;
 
 import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
+import com.buuz135.replication.block.MatterPipeBlock;
+import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.client.MatterTooltipClientComponent;
 import com.buuz135.replication.client.MatterTooltipComponent;
 import com.buuz135.replication.data.AequivaleoDataProvider;
+import com.buuz135.replication.data.RepBlockstateProvider;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
@@ -68,16 +71,18 @@ public class Replication extends ModuleController {
 
             }
         }).subscribe();
+        ClientEvents.init();
     }
 
     @Override
     protected void initModules() {
-
+        ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE = this.getRegistries().registerBlockWithTile("matter_network_pipe", MatterPipeBlock::new);
     }
 
     @Override
     public void addDataProvider(GatherDataEvent event) {
         super.addDataProvider(event);
         event.getGenerator().addProvider(new AequivaleoDataProvider(MOD_ID, event.getGenerator()));
+        event.getGenerator().addProvider(new RepBlockstateProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper()));
     }
 }
