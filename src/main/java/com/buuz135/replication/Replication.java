@@ -17,31 +17,17 @@ import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
 import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,7 +45,9 @@ public class Replication extends ModuleController {
 
     public Replication() {
         ReplicationRegistry.init();
-        MinecraftForgeClient.registerTooltipComponentFactory(MatterTooltipComponent.class, MatterTooltipClientComponent::new);
+        EventManager.mod(RegisterClientTooltipComponentFactoriesEvent.class).process(event -> {
+            event.register(MatterTooltipComponent.class, MatterTooltipClientComponent::new);
+        }).subscribe();
         EventManager.forge(RenderTooltipEvent.GatherComponents.class).process(pre -> {
             if (Minecraft.getInstance().level != null){
                 var instance = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(pre.getItemStack());
@@ -71,7 +59,7 @@ public class Replication extends ModuleController {
                             }
                         }
                     } else {
-                        pre.getTooltipElements().add(Either.left(new TextComponent("Hold ").withStyle(ChatFormatting.GRAY).append(new TextComponent("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));
+                        pre.getTooltipElements().add(Either.left(Component.literal("Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));
                     }
                 }
 
@@ -92,7 +80,7 @@ public class Replication extends ModuleController {
     @Override
     public void addDataProvider(GatherDataEvent event) {
         super.addDataProvider(event);
-        event.getGenerator().addProvider(new AequivaleoDataProvider(MOD_ID, event.getGenerator()));
-        event.getGenerator().addProvider(new RepBlockstateProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper()));
+        event.getGenerator().addProvider(true, new AequivaleoDataProvider(MOD_ID, event.getGenerator()));
+        event.getGenerator().addProvider(true, new RepBlockstateProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper()));
     }
 }

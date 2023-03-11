@@ -1,5 +1,6 @@
 package com.buuz135.replication.aequivaleo;
 
+import com.buuz135.replication.Replication;
 import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import com.ldtteam.aequivaleo.api.compound.container.ICompoundContainer;
 import com.ldtteam.aequivaleo.api.compound.type.ICompoundType;
@@ -8,13 +9,16 @@ import com.ldtteam.aequivaleo.api.mediation.IMediationCandidate;
 import com.ldtteam.aequivaleo.api.mediation.IMediationEngine;
 import com.ldtteam.aequivaleo.api.recipe.equivalency.IEquivalencyRecipe;
 import com.ldtteam.aequivaleo.vanilla.api.recipe.equivalency.ITagEquivalencyRecipe;
+import com.mojang.serialization.Codec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 
-public class ReplicationCompoundTypeGroup extends ForgeRegistryEntry<ICompoundTypeGroup> implements ICompoundTypeGroup {
+public class ReplicationCompoundTypeGroup implements ICompoundTypeGroup {
+
+    private final ResourceLocation RL = new ResourceLocation(Replication.MOD_ID, "matter_types");
     @Override
     public @NotNull IMediationEngine getMediationEngine()
     {
@@ -42,6 +46,11 @@ public class ReplicationCompoundTypeGroup extends ForgeRegistryEntry<ICompoundTy
         };
     }
 
+
+    @Override
+    public ResourceLocation getRegistryName() {
+        return RL;
+    }
 
     @Override
     public String getDirectoryName() {

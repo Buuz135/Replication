@@ -7,10 +7,10 @@ import net.minecraftforge.event.TickEvent;
 public class CommonEvents {
 
     public static void init() {
-        EventManager.forge(TickEvent.WorldTickEvent.class)
-                .filter(worldTickEvent -> !worldTickEvent.world.isClientSide && worldTickEvent.phase == TickEvent.Phase.END)
+        EventManager.forge(TickEvent.LevelTickEvent.class)
+                .filter(worldTickEvent -> !worldTickEvent.level.isClientSide && worldTickEvent.phase == TickEvent.Phase.END)
                 .process(worldTickEvent -> {
-                    NetworkManager.get(worldTickEvent.world).getNetworks().forEach(network -> network.update(worldTickEvent.world));
+                    NetworkManager.get(worldTickEvent.level).getNetworks().forEach(network -> network.update(worldTickEvent.level));
                 }).subscribe();
     }
 }

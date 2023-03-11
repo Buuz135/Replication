@@ -1,4 +1,14 @@
 {
+  "compounds": [
+    {
+      "type": "replication:nether",
+      "amount": 16.0
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 64.0
+    }
+  ],
   "mode": "ADDITIVE",
   "targets": {
     "type": "aequivaleo:item",
@@ -6,15 +16,5 @@
       "count": 1.0,
       "item": "minecraft:nether_star"
     }
-  },
-  "compounds": [
-    {
-      "amount": 16.0,
-      "type": "replication:nether"
-    },
-    {
-      "amount": 64.0,
-      "type": "replication:quantum"
-    }
-  ]
+  }
 }

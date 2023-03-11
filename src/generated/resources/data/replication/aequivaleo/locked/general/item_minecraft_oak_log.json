@@ -1,4 +1,14 @@
 {
+  "compounds": [
+    {
+      "type": "replication:earth",
+      "amount": 8.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 8.0
+    }
+  ],
   "mode": "ADDITIVE",
   "targets": {
     "type": "aequivaleo:item",
@@ -6,15 +16,5 @@
       "count": 1.0,
       "item": "minecraft:oak_log"
     }
-  },
-  "compounds": [
-    {
-      "amount": 8.0,
-      "type": "replication:earth"
-    },
-    {
-      "amount": 8.0,
-      "type": "replication:organic"
-    }
-  ]
+  }
 }
