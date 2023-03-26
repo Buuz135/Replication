@@ -1,0 +1,21 @@
+{
+  "compounds": [
+    {
+      "type": "replication:precious",
+      "amount": 3.3
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 1.0
+    }
+  ],
+  "mode": "ADDITIVE",
+  "targets": {
+    "type": "aequivaleo:tag",
+    "data": {
+      "count": 1.0,
+      "tagName": "minecraft:music_discs",
+      "tagType": "minecraft:item"
+    }
+  }
+}

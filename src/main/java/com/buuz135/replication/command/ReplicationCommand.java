@@ -34,7 +34,7 @@ public class ReplicationCommand {
     public static int dumpMissing(CommandContext<CommandSourceStack> context){
         var totalMissing = 0;
         for (CreativeModeTab tab : CreativeModeTab.TABS) {
-            if (tab == CreativeModeTab.TAB_HOTBAR) continue;
+            if (tab == CreativeModeTab.TAB_HOTBAR || tab == CreativeModeTab.TAB_SEARCH) continue;
             LOGGER.info("SCANNING TAB " + tab.getDisplayName().getString());
             NonNullList<ItemStack> list = NonNullList.create();
             tab.fillItemList(list);

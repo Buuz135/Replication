@@ -37,6 +37,7 @@ public class ReplicationCompoundTypeGroup implements ICompoundTypeGroup {
         add(ItemTags.TALL_FLOWERS);
         add(ItemTags.SAPLINGS);
         add(Tags.Items.MUSHROOMS);
+        add(ItemTags.MUSIC_DISCS);
     }
 
     private void add(TagKey<Item> tag){

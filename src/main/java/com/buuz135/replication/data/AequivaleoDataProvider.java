@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList;
 import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import com.ldtteam.aequivaleo.api.compound.information.datagen.ForcedInformationProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -31,11 +32,14 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveData(COPPER_INGOT, precious(2), metallic(2));
         saveData(ANCIENT_DEBRIS, precious(18), nether(18));
         saveData(AMETHYST_SHARD, precious(4), earth(1));
+        saveData(BUDDING_AMETHYST, precious(32), earth(8));
         saveData(COAL, earth(2), precious(0.25), organic(0.25));
+        saveData(EMERALD, precious(9*4));
         saveData(new Item[]{EXPOSED_COPPER, WEATHERED_COPPER, OXIDIZED_COPPER}, precious(8), metallic(8));
 
         saveTag(ItemTags.LOGS, earth(8), organic(8));
         saveTag(ItemTags.SAPLINGS, earth(16), organic(16));
+        saveData(MANGROVE_ROOTS, earth(16), organic(16));
         saveTag(ItemTags.LEAVES, organic(4));
         saveTag(ItemTags.SMALL_FLOWERS, earth(2), organic(2));
         saveTag(ItemTags.TALL_FLOWERS, earth(4), organic(4));
@@ -45,22 +49,32 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveData(COBWEB, organic(18), living(18));
         saveData(GRASS, organic(4));
         saveData(FERN, organic(4));
+        saveData(SPONGE, organic(12), living(4), precious(4));
+
         saveData(DEAD_BUSH, earth(1), organic(1));
         saveData(SEAGRASS, earth(2), organic(2));
         saveData(SEA_PICKLE, earth(2), organic(2));
         saveData(SUGAR_CANE, earth(2), organic(2));
         saveData(KELP, earth(2), organic(2));
+        saveData(PRISMARINE_SHARD, earth(4), organic(4));
+        saveData(PRISMARINE_CRYSTALS, earth(4), organic(4));
 
         saveData(new Item[]{CRIMSON_FUNGUS, CRIMSON_ROOTS, WEEPING_VINES,
                 WARPED_FUNGUS, WARPED_ROOTS, NETHER_SPROUTS, TWISTING_VINES}, organic(2), nether(2));
 
         saveTag(Tags.Items.STONE, earth(1));
         saveTag(Tags.Items.COBBLESTONE, earth(1));
+        saveData(BLACKSTONE, earth(1), nether(1));
+        saveData(OBSIDIAN, earth(4), nether(1));
         saveData(POINTED_DRIPSTONE, earth(1));
         saveData(CALCITE, earth(2));
         saveData(DIRT, earth(1));
+        saveData(ROOTED_DIRT, earth(1));
+        saveData(MYCELIUM, earth(1), organic(4));
         saveData(GRASS_BLOCK, earth(1), organic(1));
         saveData(PODZOL, earth(1), organic(1));
+        saveData(ICE, earth(4), organic(4));
+        saveData(SNOWBALL, earth(1));
         saveData(MUD, earth(1));
         saveData(FLINT, earth(1));
         saveData(CLAY_BALL, earth(2));
@@ -71,6 +85,9 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
             BROWN_CONCRETE, GREEN_CONCRETE, RED_CONCRETE, BLACK_CONCRETE}, earth(1.25), organic(0.25));
 
         saveData(NETHERRACK, nether(1));
+        saveData(SOUL_SAND, nether(2), earth(2));
+        saveData(SOUL_SOIL, nether(2), earth(2));
+        saveData(BASALT, nether(2), earth(2));
         saveData(END_STONE, ender(1));
 
         saveData(NETHER_STAR, quantum(64), nether(16));
@@ -80,6 +97,8 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveData(HONEY_BLOCK, living(18), earth(18));
         saveData(ECHO_SHARD, quantum(1), living(4));
         saveData(HONEYCOMB, living(2), earth(2));
+        saveData(CHORUS_FRUIT, living(4), ender(2));
+        saveData(CHORUS_FRUIT, living(2), ender(8));
 
         saveData(QUARTZ, precious(4), nether(2));
 
@@ -88,8 +107,22 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveData(WHEAT, organic(2), earth(2));
         saveData(GUNPOWDER, organic(2), earth(2));
         saveData(GLOWSTONE, nether(4), precious(4));
-        saveData(new Item[]{PORKCHOP, APPLE, COD, SALMON, TROPICAL_FISH, PUFFERFISH, MELON_SLICE, BEEF, CHICKEN, POTATO, POISONOUS_POTATO, CARROT, MUTTON, RABBIT, BEETROOT, GLOW_BERRIES, SWEET_BERRIES}, organic(4), living(4));
+        saveData(new Item[]{EGG, PUMPKIN, CARVED_PUMPKIN, PORKCHOP, APPLE, COD, SALMON, TROPICAL_FISH, PUFFERFISH, MELON_SLICE, BEEF, CHICKEN, POTATO, POISONOUS_POTATO, CARROT, MUTTON, RABBIT, BEETROOT, GLOW_BERRIES, SWEET_BERRIES,RABBIT_FOOT}, organic(4), living(4));
+        saveData(GHAST_TEAR, living(2), organic(2), nether(2));
+        saveData(BLAZE_ROD, living(2), organic(2), nether(2));
+        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE}, living(2), organic(2));
+        saveData(DRAGON_BREATH, living(2), organic(2), quantum(2));
+        saveData(PHANTOM_MEMBRANE, living(2), organic(2), nether(2));
+        saveData(SHULKER_SHELL, living(4), nether(8));
+        saveData(TOTEM_OF_UNDYING, precious(16), quantum(8));
+        saveData(COCOA_BEANS, organic(1), earth(1));
+        saveData(ENCHANTED_GOLDEN_APPLE, living(4), precious(9*8*9));
 
+        saveTag(ItemTags.MUSIC_DISCS, precious(3.3), quantum(1));
+        saveData(new Item[]{DEAD_TUBE_CORAL_BLOCK, DEAD_BRAIN_CORAL_BLOCK, DEAD_BUBBLE_CORAL_BLOCK, DEAD_FIRE_CORAL_BLOCK, DEAD_HORN_CORAL_BLOCK}, organic(6));
+        saveData(new Item[]{TUBE_CORAL_BLOCK, BRAIN_CORAL_BLOCK, BUBBLE_CORAL_BLOCK, FIRE_CORAL_BLOCK, HORN_CORAL_BLOCK}, organic(6), living(4));
+        saveData(new Item[]{TUBE_CORAL, BRAIN_CORAL, BUBBLE_CORAL, FIRE_CORAL, HORN_CORAL, TUBE_CORAL_FAN, BRAIN_CORAL_FAN, BUBBLE_CORAL_FAN, FIRE_CORAL_FAN, HORN_CORAL_FAN}, organic(2), living(1));
+        saveData(new Item[]{DEAD_BRAIN_CORAL, DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL, DEAD_TUBE_CORAL_FAN, DEAD_BRAIN_CORAL_FAN, DEAD_BUBBLE_CORAL_FAN, DEAD_FIRE_CORAL_FAN, DEAD_HORN_CORAL_FAN}, organic(2));
     }
 
     private void saveData(Item item, CompoundInstance... instances) {

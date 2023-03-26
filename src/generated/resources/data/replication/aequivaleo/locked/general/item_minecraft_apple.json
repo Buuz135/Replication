@@ -15,6 +15,27 @@
       "type": "aequivaleo:item",
       "data": {
         "count": 1.0,
+        "item": "minecraft:egg"
+      }
+    },
+    {
+      "type": "aequivaleo:item",
+      "data": {
+        "count": 1.0,
+        "item": "minecraft:pumpkin"
+      }
+    },
+    {
+      "type": "aequivaleo:item",
+      "data": {
+        "count": 1.0,
+        "item": "minecraft:carved_pumpkin"
+      }
+    },
+    {
+      "type": "aequivaleo:item",
+      "data": {
+        "count": 1.0,
         "item": "minecraft:porkchop"
       }
     },
@@ -128,6 +149,13 @@
       "data": {
         "count": 1.0,
         "item": "minecraft:sweet_berries"
+      }
+    },
+    {
+      "type": "aequivaleo:item",
+      "data": {
+        "count": 1.0,
+        "item": "minecraft:rabbit_foot"
       }
     }
   ]
