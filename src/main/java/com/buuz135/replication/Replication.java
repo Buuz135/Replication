@@ -41,7 +41,7 @@ public class Replication extends ModuleController {
     public static String MOD_ID =  "replication";
 
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public Replication() {
         ReplicationRegistry.init();

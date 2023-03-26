@@ -11,14 +11,39 @@ import com.ldtteam.aequivaleo.api.recipe.equivalency.IEquivalencyRecipe;
 import com.ldtteam.aequivaleo.vanilla.api.recipe.equivalency.ITagEquivalencyRecipe;
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReplicationCompoundTypeGroup implements ICompoundTypeGroup {
 
+    public static List<TagKey<Item>> ALLOWED_RECIPE_TAGS = new ArrayList<>();
+
     private final ResourceLocation RL = new ResourceLocation(Replication.MOD_ID, "matter_types");
+
+    public ReplicationCompoundTypeGroup(){
+        add(ItemTags.LOGS);
+        add(Tags.Items.STONE);
+        add(Tags.Items.COBBLESTONE);
+        add(ItemTags.LEAVES);
+        add(ItemTags.SMALL_FLOWERS);
+        add(ItemTags.TALL_FLOWERS);
+        add(ItemTags.SAPLINGS);
+        add(Tags.Items.MUSHROOMS);
+    }
+
+    private void add(TagKey<Item> tag){
+        ALLOWED_RECIPE_TAGS.add(tag);
+    }
+
+
     @Override
     public @NotNull IMediationEngine getMediationEngine()
     {
@@ -65,12 +90,18 @@ public class ReplicationCompoundTypeGroup implements ICompoundTypeGroup {
 
     @Override
     public boolean canContributeToRecipeAsInput(IEquivalencyRecipe iEquivalencyRecipe, CompoundInstance compoundInstance) {
-        return !(iEquivalencyRecipe instanceof ITagEquivalencyRecipe);
+        if (iEquivalencyRecipe instanceof ITagEquivalencyRecipe tagRecipe){
+            return ALLOWED_RECIPE_TAGS.contains(tagRecipe.getTag());
+        }
+        return true;
     }
 
     @Override
     public boolean canContributeToRecipeAsOutput(IEquivalencyRecipe iEquivalencyRecipe, CompoundInstance compoundInstance) {
-        return !(iEquivalencyRecipe instanceof ITagEquivalencyRecipe);
+        if (iEquivalencyRecipe instanceof ITagEquivalencyRecipe tagRecipe){
+            return ALLOWED_RECIPE_TAGS.contains(tagRecipe.getTag());
+        }
+        return true;
     }
 
     public boolean isValidFor(final ICompoundContainer<?> iCompoundContainer, final CompoundInstance compoundInstance)
@@ -79,7 +110,4 @@ public class ReplicationCompoundTypeGroup implements ICompoundTypeGroup {
         return contents instanceof ItemStack || contents instanceof Item || contents instanceof FluidStack;
     }
 
-    private boolean isValidForGooRecipe(ICompoundContainer<?> container) {
-        return container.getContents() instanceof ItemStack;
-    }
 }

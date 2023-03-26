@@ -12,6 +12,7 @@ public enum MatterType implements IMatterType{
     ORGANIC("organic", new float[]{207/256f, 103/256f, 0, 1f}, 16),
     ENDER("ender", new float[]{0, 130/256f, 87/256f,1f}, 32),
     PRECIOUS("precious", new float[]{237/256f, 222/256f, 121/256f,1f}, 128),
+    LIVING("living", new float[]{232/256f, 23/256f, 197/256f, 1f}, 32),
     QUANTUM("quantum", () -> {
         if (Minecraft.getInstance().level != null){
             return new float[]{181/256f, 132/256f, 227/256f, Minecraft.getInstance().level.random.nextDouble() < 0.95 ? (float) (Math.sin((Minecraft.getInstance().level.getGameTime() % 300) / 30f) + 1.25 )*0.5f : 1f};

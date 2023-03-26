@@ -1,12 +1,12 @@
 {
   "compounds": [
     {
-      "type": "replication:earth",
-      "amount": 8.0
+      "type": "replication:nether",
+      "amount": 18.0
     },
     {
-      "type": "replication:organic",
-      "amount": 8.0
+      "type": "replication:precious",
+      "amount": 18.0
     }
   ],
   "mode": "ADDITIVE",
@@ -14,7 +14,7 @@
     "type": "aequivaleo:item",
     "data": {
       "count": 1.0,
-      "item": "minecraft:oak_log"
+      "item": "minecraft:ancient_debris"
     }
   }
 }

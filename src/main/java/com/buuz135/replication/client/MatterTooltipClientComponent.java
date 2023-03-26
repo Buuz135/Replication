@@ -36,9 +36,9 @@ public class MatterTooltipClientComponent implements ClientTooltipComponent {
 
     @Override
     public void renderText(Font font, int x, int y, Matrix4f matrix4f, MultiBufferSource.BufferSource bufferSource) {
-        var text = String.valueOf(instance.getInstance().getAmount().intValue());
+        var text = String.valueOf(instance.getInstance().getAmount());
         var length = 12;
-        //font.drawInBatch(text, (float) ((float)x + 52 - font.width(text) / 2D + length), (float)y +2, -1, true, matrix4f, bufferSource, false, 0, 15728880);
+        font.drawInBatch(text, (float) ((float)x + 52 - font.width(text) / 2D + length), (float)y +2, -1, true, matrix4f, bufferSource, false, 0, 15728880);
     }
 
     @Override

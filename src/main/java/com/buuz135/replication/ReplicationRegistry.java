@@ -37,6 +37,9 @@ public class ReplicationRegistry {
     public static final RegistryObject<ICompoundType> PRECIOUS = TYPES.register("precious", () -> new ReplicationCompoundType(MatterType.PRECIOUS, MATTER_TYPES_GROUPS));
     public static final RegistryObject<ICompoundType> QUANTUM = TYPES.register("quantum", () -> new ReplicationCompoundType(MatterType.QUANTUM, MATTER_TYPES_GROUPS));
 
+    public static final RegistryObject<ICompoundType> LIVING = TYPES.register("living", () -> new ReplicationCompoundType(MatterType.LIVING, MATTER_TYPES_GROUPS));
+
+
     public static class Blocks{
 
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> MATTER_NETWORK_PIPE = null;

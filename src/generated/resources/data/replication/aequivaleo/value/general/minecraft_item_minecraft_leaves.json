@@ -1,0 +1,15 @@
+{
+  "compounds": {
+    "type": "replication:organic",
+    "amount": 4.0
+  },
+  "mode": "ADDITIVE",
+  "targets": {
+    "type": "aequivaleo:tag",
+    "data": {
+      "count": 1.0,
+      "tagName": "minecraft:leaves",
+      "tagType": "minecraft:item"
+    }
+  }
+}

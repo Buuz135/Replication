@@ -1,0 +1,20 @@
+{
+  "compounds": [
+    {
+      "type": "replication:earth",
+      "amount": 1.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 1.0
+    }
+  ],
+  "mode": "ADDITIVE",
+  "targets": {
+    "type": "aequivaleo:item",
+    "data": {
+      "count": 1.0,
+      "item": "minecraft:grass_block"
+    }
+  }
+}
