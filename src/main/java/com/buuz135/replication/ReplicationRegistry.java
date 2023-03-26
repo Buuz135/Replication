@@ -3,6 +3,7 @@ package com.buuz135.replication;
 import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
 import com.buuz135.replication.aequivaleo.ReplicationCompoundTypeGroup;
 import com.buuz135.replication.api.MatterType;
+import com.buuz135.replication.block.MatterPipeBlock;
 import com.ldtteam.aequivaleo.api.compound.type.ICompoundType;
 import com.ldtteam.aequivaleo.api.compound.type.group.ICompoundTypeGroup;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +42,9 @@ public class ReplicationRegistry {
 
 
     public static class Blocks{
+
+        public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> REPLICATOR = null;
+        public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> IDENTIFICATION_CHAMBER = null;
 
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> MATTER_NETWORK_PIPE = null;
 

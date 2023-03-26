@@ -1,0 +1,6 @@
+{
+  "block.replication.identification_chamber": "Identification Chamber",
+  "block.replication.matter_network_pipe": "Matter Network Pipe",
+  "block.replication.replicator": "Replicator",
+  "itemGroup.replication": "Replication"
+}

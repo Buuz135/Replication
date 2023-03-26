@@ -1,5 +1,6 @@
 package com.buuz135.replication.block;
 
+import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.network.NetworkElement;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
@@ -58,6 +59,7 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> {
 
     public MatterPipeBlock() {
         super("matter_network_pipe", Properties.copy(Blocks.IRON_BLOCK), MatterPipeBlockEntity.class);
+        setItemGroup(Replication.TAB);
     }
 
     @Override

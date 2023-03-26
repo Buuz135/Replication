@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "subfacing=east": {
+      "model": "replication:block/replicator",
+      "uvlock": true,
+      "y": 90
+    },
+    "subfacing=north": {
+      "model": "replication:block/replicator",
+      "uvlock": true
+    },
+    "subfacing=south": {
+      "model": "replication:block/replicator",
+      "uvlock": true,
+      "y": 180
+    },
+    "subfacing=west": {
+      "model": "replication:block/replicator",
+      "uvlock": true,
+      "y": 270
+    }
+  }
+}

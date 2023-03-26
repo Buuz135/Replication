@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "subfacing=east": {
+      "model": "replication:block/identification_chamber",
+      "uvlock": true,
+      "y": 90
+    },
+    "subfacing=north": {
+      "model": "replication:block/identification_chamber",
+      "uvlock": true
+    },
+    "subfacing=south": {
+      "model": "replication:block/identification_chamber",
+      "uvlock": true,
+      "y": 180
+    },
+    "subfacing=west": {
+      "model": "replication:block/identification_chamber",
+      "uvlock": true,
+      "y": 270
+    }
+  }
+}
