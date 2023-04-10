@@ -24,6 +24,13 @@
         "count": 1.0,
         "item": "minecraft:spider_eye"
       }
+    },
+    {
+      "type": "aequivaleo:item",
+      "data": {
+        "count": 1.0,
+        "item": "minecraft:bone_meal"
+      }
     }
   ]
 }

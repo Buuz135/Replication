@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableList;
 import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import com.ldtteam.aequivaleo.api.compound.information.datagen.ForcedInformationProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -49,7 +48,7 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveData(COBWEB, organic(18), living(18));
         saveData(GRASS, organic(4));
         saveData(FERN, organic(4));
-        saveData(SPONGE, organic(12), living(4), precious(4));
+        saveData(WET_SPONGE, organic(12), living(4), precious(4));
 
         saveData(DEAD_BUSH, earth(1), organic(1));
         saveData(SEAGRASS, earth(2), organic(2));
@@ -66,6 +65,7 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveTag(Tags.Items.COBBLESTONE, earth(1));
         saveData(BLACKSTONE, earth(1), nether(1));
         saveData(OBSIDIAN, earth(4), nether(1));
+        saveData(CRYING_OBSIDIAN, earth(4), nether(1), quantum(1));
         saveData(POINTED_DRIPSTONE, earth(1));
         saveData(CALCITE, earth(2));
         saveData(DIRT, earth(1));
@@ -97,7 +97,8 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveData(HONEY_BLOCK, living(18), earth(18));
         saveData(ECHO_SHARD, quantum(1), living(4));
         saveData(HONEYCOMB, living(2), earth(2));
-        saveData(CHORUS_FRUIT, living(4), ender(2));
+        saveData(NETHER_WART, living(2), nether(2));
+        saveData(WARPED_NYLIUM, living(2*9), nether(2*9));
         saveData(CHORUS_FRUIT, living(2), ender(8));
 
         saveData(QUARTZ, precious(4), nether(2));
@@ -110,7 +111,7 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveData(new Item[]{EGG, PUMPKIN, CARVED_PUMPKIN, PORKCHOP, APPLE, COD, SALMON, TROPICAL_FISH, PUFFERFISH, MELON_SLICE, BEEF, CHICKEN, POTATO, POISONOUS_POTATO, CARROT, MUTTON, RABBIT, BEETROOT, GLOW_BERRIES, SWEET_BERRIES,RABBIT_FOOT}, organic(4), living(4));
         saveData(GHAST_TEAR, living(2), organic(2), nether(2));
         saveData(BLAZE_ROD, living(2), organic(2), nether(2));
-        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE}, living(2), organic(2));
+        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE, BONE_MEAL}, living(2), organic(2));
         saveData(DRAGON_BREATH, living(2), organic(2), quantum(2));
         saveData(PHANTOM_MEMBRANE, living(2), organic(2), nether(2));
         saveData(SHULKER_SHELL, living(4), nether(8));

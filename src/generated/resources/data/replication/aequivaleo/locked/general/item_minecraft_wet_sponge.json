@@ -18,7 +18,7 @@
     "type": "aequivaleo:item",
     "data": {
       "count": 1.0,
-      "item": "minecraft:sponge"
+      "item": "minecraft:wet_sponge"
     }
   }
 }
