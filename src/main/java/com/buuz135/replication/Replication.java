@@ -58,26 +58,6 @@ public class Replication extends ModuleController {
 
     public Replication() {
         ReplicationRegistry.init();
-        EventManager.mod(RegisterClientTooltipComponentFactoriesEvent.class).process(event -> {
-            event.register(MatterTooltipComponent.class, MatterTooltipClientComponent::new);
-        }).subscribe();
-        EventManager.forge(RenderTooltipEvent.GatherComponents.class).process(pre -> {
-            if (Minecraft.getInstance().level != null){
-                var instance = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(pre.getItemStack());
-                if (instance.size() > 0){
-                    if (Screen.hasShiftDown()){
-                        for (CompoundInstance compoundInstance : instance) {
-                            if (compoundInstance.getType() instanceof ReplicationCompoundType type){
-                                pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(compoundInstance)));
-                            }
-                        }
-                    } else {
-                        pre.getTooltipElements().add(Either.left(Component.literal("Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));
-                    }
-                }
-
-            }
-        }).subscribe();
         CommonEvents.init();
         ClientEvents.init();
         NetworkRegistry.INSTANCE.addFactory(MatterNetwork.MATTER, new MatterNetwork.Factory());
@@ -90,7 +70,6 @@ public class Replication extends ModuleController {
         ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE = this.getRegistries().registerBlockWithTile("matter_network_pipe", MatterPipeBlock::new);
         ReplicationRegistry.Blocks.REPLICATOR = this.getRegistries().registerBlockWithTile("replicator", ReplicatorBlock::new);
         ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER = this.getRegistries().registerBlockWithTile("identification_chamber", IdentificationChamberBlock::new);
-
     }
 
     @Override
