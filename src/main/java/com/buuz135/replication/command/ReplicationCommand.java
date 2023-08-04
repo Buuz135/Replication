@@ -9,10 +9,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,11 +37,13 @@ public class ReplicationCommand {
 
     public static int dumpMissing(CommandContext<CommandSourceStack> context){
         var totalMissing = 0;
-        for (CreativeModeTab tab : CreativeModeTab.TABS) {
-            if (tab == CreativeModeTab.TAB_HOTBAR || tab == CreativeModeTab.TAB_SEARCH) continue;
+        var tabs = CreativeModeTabs.tabs();
+        var hotbar = BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.HOTBAR);
+        var search = BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.SEARCH);
+        for (CreativeModeTab tab : tabs) {
+            if (tab == hotbar || tab == search) continue;
             LOGGER.info("SCANNING TAB " + tab.getDisplayName().getString());
-            NonNullList<ItemStack> list = NonNullList.create();
-            tab.fillItemList(list);
+            var list = tab.getDisplayItems();
             var missing = list.stream().filter(item -> ForgeRegistries.ITEMS.getKey(item.getItem()).getNamespace().equals("minecraft"))
                     .filter(itemStack -> !itemStack.hasTag())
                     .filter(itemStack -> !(itemStack.getItem() instanceof SpawnEggItem))

@@ -14,7 +14,7 @@ public class RepLangItemProvider extends LanguageProvider {
 
     private final List<Block> blocks;
     public RepLangItemProvider(DataGenerator gen, String modid, String locale, List<Block> blocks) {
-        super(gen, modid, locale);
+        super(gen.getPackOutput(), modid, locale);
         this.blocks = blocks;
     }
 

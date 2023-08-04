@@ -16,7 +16,7 @@ public class RepItemModelProvider extends ItemModelProvider {
     private final List<Block> blocks;
 
     public RepItemModelProvider(DataGenerator generator, String modid, ExistingFileHelper existingFileHelper, List<Block> blocks) {
-        super(generator, modid, existingFileHelper);
+        super(generator.getPackOutput(), modid, existingFileHelper);
         this.blocks = blocks;
     }
 

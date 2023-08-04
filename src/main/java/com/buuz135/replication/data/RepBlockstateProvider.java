@@ -24,7 +24,7 @@ public class RepBlockstateProvider extends BlockStateProvider {
     private List<Block> blocks;
 
     public RepBlockstateProvider(DataGenerator gen, String modid, ExistingFileHelper exFileHelper, List<Block> blocks) {
-        super(gen, modid, exFileHelper);
+        super(gen.getPackOutput(), modid, exFileHelper);
         this.blocks = blocks;
     }
 
