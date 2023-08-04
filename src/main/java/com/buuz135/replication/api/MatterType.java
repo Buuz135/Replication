@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import java.util.function.Supplier;
 
 public enum MatterType implements IMatterType{
+
+    EMPTY("empty", new float[]{01f, 1f, 1f,1f}, 1),
     METALLIC("metallic", new float[]{0.75f, 0.75f,0.75f,1f}, 128),
 
     EARTH("earth", new float[]{58/256f, 148/256f, 6/256f,1f}, 16),
