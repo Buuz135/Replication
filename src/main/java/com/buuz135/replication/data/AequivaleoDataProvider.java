@@ -14,9 +14,16 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 
 
+import java.util.Arrays;
+
 import static net.minecraft.world.item.Items.*;
 
 public class AequivaleoDataProvider extends ForcedInformationProvider {
+
+    /*
+            MISSING RECIPE HANDLERS
+            COLORING SHULKER
+     */
 
     public AequivaleoDataProvider(String modId, DataGenerator dataGenerator) {
         super(modId, dataGenerator);
@@ -43,6 +50,8 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveTag(ItemTags.SMALL_FLOWERS, earth(2), organic(2));
         saveTag(ItemTags.TALL_FLOWERS, earth(4), organic(4));
         saveTag(Tags.Items.MUSHROOMS, earth(2), living(2));
+        saveData(BAMBOO, earth(0.5), organic(0.5));
+        saveData(MOSS_BLOCK, earth(2), organic(2));
 
         saveData(STRING, organic(2), living(2));
         saveData(COBWEB, organic(18), living(18));
@@ -102,16 +111,19 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveData(CHORUS_FRUIT, living(2), ender(8));
 
         saveData(QUARTZ, precious(4), nether(2));
+        saveData(GLOWSTONE_DUST, precious(1), nether(2));
 
         saveData(FEATHER, living(2), organic(2));
         saveData(LEATHER, living(2), organic(2));
         saveData(WHEAT, organic(2), earth(2));
         saveData(GUNPOWDER, organic(2), earth(2));
+        saveData(ENDER_PEARL, organic(4), quantum(1));
+        saveData(new Item[]{CHORUS_PLANT, CHORUS_FLOWER}, organic(1), quantum(1));
         saveData(GLOWSTONE, nether(4), precious(4));
         saveData(new Item[]{EGG, PUMPKIN, CARVED_PUMPKIN, PORKCHOP, APPLE, COD, SALMON, TROPICAL_FISH, PUFFERFISH, MELON_SLICE, BEEF, CHICKEN, POTATO, POISONOUS_POTATO, CARROT, MUTTON, RABBIT, BEETROOT, GLOW_BERRIES, SWEET_BERRIES,RABBIT_FOOT}, organic(4), living(4));
         saveData(GHAST_TEAR, living(2), organic(2), nether(2));
         saveData(BLAZE_ROD, living(2), organic(2), nether(2));
-        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE, BONE_MEAL}, living(2), organic(2));
+        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE, BONE, INK_SAC, RABBIT_HIDE, GLOW_INK_SAC, SCUTE, NAUTILUS_SHELL, HEART_OF_THE_SEA}, living(2), organic(2));
         saveData(DRAGON_BREATH, living(2), organic(2), quantum(2));
         saveData(PHANTOM_MEMBRANE, living(2), organic(2), nether(2));
         saveData(SHULKER_SHELL, living(4), nether(8));
@@ -120,7 +132,11 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveData(ENCHANTED_GOLDEN_APPLE, living(4), precious(9*8*9));
 
         saveTag(ItemTags.MUSIC_DISCS, precious(3.3), quantum(1));
+        saveData(new Item[]{SCULK, SCULK_VEIN}, organic(1), quantum(1));
+        saveData(new Item[]{SCULK_CATALYST, SCULK_SHRIEKER, SCULK_SENSOR}, organic(8), quantum(8));
+        saveData(new Item[]{WITHER_SKELETON_SKULL, PLAYER_HEAD, ZOMBIE_HEAD, CREEPER_HEAD, PIGLIN_HEAD, DRAGON_HEAD, SKELETON_SKULL}, organic(8));
         saveData(new Item[]{DEAD_TUBE_CORAL_BLOCK, DEAD_BRAIN_CORAL_BLOCK, DEAD_BUBBLE_CORAL_BLOCK, DEAD_FIRE_CORAL_BLOCK, DEAD_HORN_CORAL_BLOCK}, organic(6));
+        saveData(new Item[]{CACTUS, VINE, TALL_GRASS, LARGE_FERN, SUNFLOWER, LILAC, ROSE_BUSH, PEONY, PITCHER_PLANT, BIG_DRIPLEAF, TORCHFLOWER_SEEDS, PITCHER_POD, SMALL_DRIPLEAF, LILY_PAD, HANGING_ROOTS, GLOW_LICHEN}, earth(1), organic(1));
         saveData(new Item[]{TUBE_CORAL_BLOCK, BRAIN_CORAL_BLOCK, BUBBLE_CORAL_BLOCK, FIRE_CORAL_BLOCK, HORN_CORAL_BLOCK}, organic(6), living(4));
         saveData(new Item[]{TUBE_CORAL, BRAIN_CORAL, BUBBLE_CORAL, FIRE_CORAL, HORN_CORAL, TUBE_CORAL_FAN, BRAIN_CORAL_FAN, BUBBLE_CORAL_FAN, FIRE_CORAL_FAN, HORN_CORAL_FAN}, organic(2), living(1));
         saveData(new Item[]{DEAD_BRAIN_CORAL, DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL, DEAD_TUBE_CORAL_FAN, DEAD_BRAIN_CORAL_FAN, DEAD_BUBBLE_CORAL_FAN, DEAD_FIRE_CORAL_FAN, DEAD_HORN_CORAL_FAN}, organic(2));
@@ -131,8 +147,7 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
     }
 
     private void saveData(Item[] items, CompoundInstance... instances) {
-        var spec = specFor(items);
-        save(spec.withCompounds(instances));
+        Arrays.stream(items).forEach(item -> saveData(item, instances));
     }
 
     private void saveTag(TagKey<Item> tag, CompoundInstance... instances) {

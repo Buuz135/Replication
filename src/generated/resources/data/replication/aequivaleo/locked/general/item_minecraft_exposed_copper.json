@@ -10,27 +10,11 @@
     }
   ],
   "mode": "ADDITIVE",
-  "targets": [
-    {
-      "type": "aequivaleo:item",
-      "data": {
-        "count": 1.0,
-        "item": "minecraft:exposed_copper"
-      }
-    },
-    {
-      "type": "aequivaleo:item",
-      "data": {
-        "count": 1.0,
-        "item": "minecraft:weathered_copper"
-      }
-    },
-    {
-      "type": "aequivaleo:item",
-      "data": {
-        "count": 1.0,
-        "item": "minecraft:oxidized_copper"
-      }
+  "targets": {
+    "type": "aequivaleo:item",
+    "data": {
+      "count": 1.0,
+      "item": "minecraft:exposed_copper"
     }
-  ]
+  }
 }

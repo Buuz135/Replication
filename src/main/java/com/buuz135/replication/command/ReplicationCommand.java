@@ -20,6 +20,7 @@ import net.minecraftforge.registries.RegistryManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -36,10 +37,10 @@ public class ReplicationCommand {
     }
 
     public static int dumpMissing(CommandContext<CommandSourceStack> context){
-        var totalMissing = 0;
         var tabs = CreativeModeTabs.tabs();
         var hotbar = BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.HOTBAR);
         var search = BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.SEARCH);
+        var missingItems = new ArrayList<>();
         for (CreativeModeTab tab : tabs) {
             if (tab == hotbar || tab == search) continue;
             LOGGER.info("SCANNING TAB " + tab.getDisplayName().getString());
@@ -47,13 +48,25 @@ public class ReplicationCommand {
             var missing = list.stream().filter(item -> ForgeRegistries.ITEMS.getKey(item.getItem()).getNamespace().equals("minecraft"))
                     .filter(itemStack -> !itemStack.hasTag())
                     .filter(itemStack -> !(itemStack.getItem() instanceof SpawnEggItem))
+                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_ore"))
+                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_shulker"))
+                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("raw_"))
+                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_sherd"))
+                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_template"))
+                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_bucket"))
+                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("infested_"))
+                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_pattern"))
                     .filter(item -> IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(item).size() == 0).collect(Collectors.toList());
             missing.forEach(item -> LOGGER.info(ForgeRegistries.ITEMS.getKey(item.getItem())));
-            totalMissing += missing.size();
+            for (ItemStack itemStack : missing) {
+                if (!missingItems.contains(itemStack.getItem())){
+                    missingItems.add(itemStack.getItem());
+                }
+            }
             LOGGER.info("WE ARE MISSING " + missing.size() + " items");
             LOGGER.info("--------------------------------------------");
         }
-        LOGGER.info("WE ARE TOTAL MISSING " + totalMissing + " items");
+        LOGGER.info("WE ARE TOTAL MISSING " + missingItems.size() + " items");
 
         return 1;
     }

@@ -1,0 +1,20 @@
+{
+  "compounds": [
+    {
+      "type": "replication:organic",
+      "amount": 8.0
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 8.0
+    }
+  ],
+  "mode": "ADDITIVE",
+  "targets": {
+    "type": "aequivaleo:item",
+    "data": {
+      "count": 1.0,
+      "item": "minecraft:sculk_catalyst"
+    }
+  }
+}
