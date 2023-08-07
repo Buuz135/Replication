@@ -1,0 +1,20 @@
+{
+  "compounds": [
+    {
+      "type": "replication:organic",
+      "amount": 4.0
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 1.0
+    }
+  ],
+  "mode": "ADDITIVE",
+  "targets": {
+    "type": "aequivaleo:item",
+    "data": {
+      "count": 1.0,
+      "item": "minecraft:ender_pearl"
+    }
+  }
+}
