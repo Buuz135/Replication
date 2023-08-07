@@ -5,17 +5,17 @@ import com.buuz135.replication.network.NetworkManager;
 import com.buuz135.replication.network.element.type.DefaultMatterNetworkElement;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.BasicTile;
+import com.hrznstudio.titanium.block.tile.ITickableBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class NetworkBlockEntity<T extends BasicTile<T>> extends BasicTile<T> {
+public class NetworkBlockEntity<T extends BasicTile<T>> extends BasicTile<T> implements ITickableBlockEntity<NetworkBlockEntity> {
 
     public NetworkBlockEntity(BasicTileBlock<T> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
     }
-
 
     @Override
     public void clearRemoved() {

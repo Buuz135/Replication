@@ -47,7 +47,7 @@ public class RepBlockstateProvider extends BlockStateProvider {
                         for (DirectionProperty property : rotatableBlock.getRotationType().getProperties()) {
                             for (Direction allowedValue : property.getPossibleValues()) {
                                 builder.partialState().with(property, allowedValue)
-                                        .addModels(new ConfiguredModel(new ModelFile.UncheckedModelFile(getModel(rotatableBlock)), allowedValue.get2DDataValue() == -1 ? allowedValue.getOpposite().getAxisDirection().getStep() * 90 : 0, (int) allowedValue.getOpposite().toYRot(), true));
+                                        .addModels(new ConfiguredModel(new ModelFile.UncheckedModelFile(getModel(rotatableBlock)), allowedValue.get2DDataValue() == -1 ? allowedValue.getOpposite().getAxisDirection().getStep() * 90 : 0, (int) allowedValue.getOpposite().toYRot(), false));
                             }
                         }
                     } else {
