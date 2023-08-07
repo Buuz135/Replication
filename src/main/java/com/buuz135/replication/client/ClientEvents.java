@@ -30,13 +30,9 @@ public class ClientEvents {
                 var instance = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(pre.getItemStack());
                 if (instance.size() > 0){
                     if (Screen.hasShiftDown()){
-                        for (CompoundInstance compoundInstance : instance) {
-                            if (compoundInstance.getType() instanceof ReplicationCompoundType type){
-                                pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(compoundInstance)));
-                            }
-                        }
+                        pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(instance)));
                     } else {
-                        pre.getTooltipElements().add(Either.left(Component.literal("Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));
+                        pre.getTooltipElements().add(Either.left(Component.literal("ℹ Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));
                     }
                 }
 
