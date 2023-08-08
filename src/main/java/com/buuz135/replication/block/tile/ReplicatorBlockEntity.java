@@ -26,6 +26,16 @@ public class ReplicatorBlockEntity extends NetworkBlockEntity<ReplicatorBlockEnt
     @Override
     public void serverTick(Level level, BlockPos pos, BlockState state, NetworkBlockEntity blockEntity) {
         super.serverTick(level, pos, state, blockEntity);
+        tickProgress();
+    }
+
+    @Override
+    public void clientTick(Level level, BlockPos pos, BlockState state, NetworkBlockEntity blockEntity) {
+        super.clientTick(level, pos, state, blockEntity);
+        tickProgress();
+    }
+
+    private void tickProgress(){
         if (this.action == 0){
             ++this.progress;
             syncObject(this.progress);
@@ -41,7 +51,6 @@ public class ReplicatorBlockEntity extends NetworkBlockEntity<ReplicatorBlockEnt
                 syncObject(this.action);
             }
         }
-
     }
 
     public int getProgress() {
