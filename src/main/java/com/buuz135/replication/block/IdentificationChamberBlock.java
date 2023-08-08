@@ -2,9 +2,12 @@ package com.buuz135.replication.block;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.block.shapes.IdentificationChamberShapes;
+import com.buuz135.replication.block.shapes.ReplicatorShapes;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -30,11 +33,42 @@ public class IdentificationChamberBlock extends RotatableBlock<IdentificationCha
     public RotationType getRotationType() {
         return RotationType.FOUR_WAY;
     }
-
+    
     @NotNull
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext) {
+        var rotation = state.getValue(FACING_HORIZONTAL);
+        if (rotation == Direction.NORTH){
+            return IdentificationChamberShapes.NORTH;
+        }
+        if (rotation == Direction.SOUTH){
+            return IdentificationChamberShapes.SOUTH;
+        }
+        if (rotation == Direction.EAST){
+            return IdentificationChamberShapes.EAST;
+        }
+        if (rotation == Direction.WEST){
+            return IdentificationChamberShapes.WEST;
+        }
         return super.getCollisionShape(state, world, pos, selectionContext);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
+        var rotation = state.getValue(FACING_HORIZONTAL);
+        if (rotation == Direction.NORTH){
+            return IdentificationChamberShapes.NORTH;
+        }
+        if (rotation == Direction.SOUTH){
+            return IdentificationChamberShapes.SOUTH;
+        }
+        if (rotation == Direction.EAST){
+            return IdentificationChamberShapes.EAST;
+        }
+        if (rotation == Direction.WEST){
+            return IdentificationChamberShapes.WEST;
+        }
+        return super.getShape(state, p_60556_, p_60557_, p_60558_);
     }
 
 }
