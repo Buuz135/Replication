@@ -1,6 +1,7 @@
 package com.buuz135.replication.data;
 
 import com.buuz135.replication.Replication;
+import com.buuz135.replication.block.ReplicatorBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -22,6 +23,8 @@ public class RepItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        this.blocks.forEach(block -> getBuilder(ForgeRegistries.BLOCKS.getKey(block).getPath()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(Replication.MOD_ID, "block/" + ForgeRegistries.BLOCKS.getKey(block).getPath()))));
+        this.blocks.stream()
+                .filter(block -> !(block instanceof ReplicatorBlock))
+                .forEach(block -> getBuilder(ForgeRegistries.BLOCKS.getKey(block).getPath()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(Replication.MOD_ID, "block/" + ForgeRegistries.BLOCKS.getKey(block).getPath()))));
     }
 }
