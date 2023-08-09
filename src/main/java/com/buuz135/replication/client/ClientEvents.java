@@ -3,7 +3,9 @@ package com.buuz135.replication.client;
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.ReplicatorBlock;
+import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
+import com.buuz135.replication.client.render.IdentificationChamberRenderer;
 import com.buuz135.replication.client.render.ReplicatorRenderer;
 import com.hrznstudio.titanium.block.BasicBlock;
 import com.hrznstudio.titanium.event.handler.EventManager;
@@ -58,6 +60,7 @@ public class ClientEvents {
         }).subscribe();
         EventManager.mod(EntityRenderersEvent.RegisterRenderers.class).process(event -> {
             event.registerBlockEntityRenderer((BlockEntityType<? extends ReplicatorBlockEntity>)ReplicationRegistry.Blocks.REPLICATOR.getRight().get(), p_173571_ -> new ReplicatorRenderer());
+            event.registerBlockEntityRenderer((BlockEntityType<? extends IdentificationChamberBlockEntity>)ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.getRight().get(), p_173571_ -> new IdentificationChamberRenderer());
         }).subscribe();
         EventManager.mod(ModelEvent.BakingCompleted.class).process(event -> {
             ReplicatorRenderer.PLATE = bakeModel(new ResourceLocation(Replication.MOD_ID, "block/replicator_plate"), event.getModelBakery());
