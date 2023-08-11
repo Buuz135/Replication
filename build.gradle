@@ -139,6 +139,9 @@ repositories {
         url = "https://dvs1.progwml6.com/files/maven/"
     }
     maven { url = 'https://ldtteam.jfrog.io/ldtteam/modding' }
+    maven {
+        url = "https://www.cursemaven.com"
+    }
 }
 
 dependencies {
@@ -161,6 +164,8 @@ dependencies {
     runtimeOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:universal")
     compileOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:api")
     compileOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:vanillaapi")
+
+    runtimeOnly fg.deobf("curse.maven:industrial-foregoing-266515:4683880")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

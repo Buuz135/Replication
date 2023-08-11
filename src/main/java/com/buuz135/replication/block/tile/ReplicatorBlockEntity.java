@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class ReplicatorBlockEntity extends NetworkBlockEntity<ReplicatorBlockEntity>{
 
@@ -24,13 +25,19 @@ public class ReplicatorBlockEntity extends NetworkBlockEntity<ReplicatorBlockEnt
     }
 
     @Override
-    public void serverTick(Level level, BlockPos pos, BlockState state, NetworkBlockEntity blockEntity) {
+    public void serverTick(Level level, BlockPos pos, BlockState state, ReplicatorBlockEntity blockEntity) {
         super.serverTick(level, pos, state, blockEntity);
         tickProgress();
     }
 
+    @NotNull
     @Override
-    public void clientTick(Level level, BlockPos pos, BlockState state, NetworkBlockEntity blockEntity) {
+    public ReplicatorBlockEntity getSelf() {
+        return this;
+    }
+
+    @Override
+    public void clientTick(Level level, BlockPos pos, BlockState state, ReplicatorBlockEntity blockEntity) {
         super.clientTick(level, pos, state, blockEntity);
         tickProgress();
     }

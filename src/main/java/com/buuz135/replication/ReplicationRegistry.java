@@ -9,6 +9,8 @@ import com.ldtteam.aequivaleo.api.compound.type.group.ICompoundTypeGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -56,6 +58,12 @@ public class ReplicationRegistry {
 
     }
 
+    public static class Items{
+
+        public static RegistryObject<Item> MEMORY_CHIP;
+
+    }
+
     public static class Matter{
 
         public static final DeferredRegister<IMatterType> IMATTER_TYPES = DeferredRegister.create(MATTER_TYPES_KEY, Replication.MOD_ID);
@@ -68,6 +76,13 @@ public class ReplicationRegistry {
         public static final RegistryObject<IMatterType> PRECIOUS = IMATTER_TYPES.register("precious", () -> MatterType.PRECIOUS);
         public static final RegistryObject<IMatterType> QUANTUM = IMATTER_TYPES.register("quantum", () -> MatterType.QUANTUM);
         public static final RegistryObject<IMatterType> LIVING = IMATTER_TYPES.register("living", () -> MatterType.LIVING);
+
+    }
+
+    public static class Colors{
+
+        public static float[] BLUE_SPLIT = new float[]{151/255f,255/255f,255/255f};
+        public static int BLUE = Mth.color(BLUE_SPLIT[0], BLUE_SPLIT[1], BLUE_SPLIT[2]);
 
     }
 

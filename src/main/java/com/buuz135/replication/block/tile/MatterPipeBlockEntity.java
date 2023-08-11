@@ -6,6 +6,7 @@ import com.hrznstudio.titanium.block.tile.BasicTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEntity> {
 
@@ -14,6 +15,12 @@ public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEnt
 
     public MatterPipeBlockEntity(BasicTileBlock<MatterPipeBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
+    }
+
+    @NotNull
+    @Override
+    public MatterPipeBlockEntity getSelf() {
+        return this;
     }
 
 }

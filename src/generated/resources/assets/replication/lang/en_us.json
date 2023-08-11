@@ -2,5 +2,12 @@
   "block.replication.identification_chamber": "Identification Chamber",
   "block.replication.matter_network_pipe": "Matter Network Pipe",
   "block.replication.replicator": "Replicator",
-  "itemGroup.replication": "Replication"
+  "item.replication.memory_chip": "Memory Chip",
+  "itemGroup.replication": "Replication",
+  "tooltip.replication.identification_chamber.fast_mode": "Fast Mode",
+  "tooltip.replication.identification_chamber.fast_mode.desc": "Scanning is much faster but the",
+  "tooltip.replication.identification_chamber.fast_mode.desc_1": "item can be consumed on each action",
+  "tooltip.replication.identification_chamber.slow_mode": "Slow Mode",
+  "tooltip.replication.identification_chamber.slow_mode.desc": "Scanning is slower but the item will",
+  "tooltip.replication.identification_chamber.slow_mode.desc_1": "only be consumed when reaching 100%"
 }

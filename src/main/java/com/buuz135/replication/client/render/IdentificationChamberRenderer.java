@@ -1,5 +1,6 @@
 package com.buuz135.replication.client.render;
 
+import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
@@ -76,19 +77,21 @@ public class IdentificationChamberRenderer implements BlockEntityRenderer<Identi
 
         poseStack.translate(0.5f, 0.375f, 0.5f);
         var scale = 0.4f;
-        var stack = new ItemStack(Items.DIRT);
-        var model = Minecraft.getInstance().getItemRenderer().getModel(stack, Minecraft.getInstance().level, null, 0);
+        var stack = entity.getInput().getStackInSlot(0);
+        if (!stack.isEmpty()){
+            var model = Minecraft.getInstance().getItemRenderer().getModel(stack, Minecraft.getInstance().level, null, 0);
 
-        if (model.isGui3d()){
-            scale = 0.75f;
+            if (model.isGui3d()){
+                scale = 0.75f;
+            }
+
+            poseStack.pushPose();
+            poseStack.scale(scale, scale,scale);
+
+            Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, multiBufferSource, entity.getLevel(),0);
+
+            poseStack.popPose();
         }
-
-        poseStack.pushPose();
-        poseStack.scale(scale, scale,scale);
-
-        Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, multiBufferSource, entity.getLevel(),0);
-
-        poseStack.popPose();
         poseStack.translate(-0.5f, -0.375f, -0.5f);
         var progress = (entity.getProgress() + partialTicks /100f)/ (float) IdentificationChamberBlockEntity.MAX_PROGRESS;
         //progress = 1;
@@ -106,8 +109,8 @@ public class IdentificationChamberRenderer implements BlockEntityRenderer<Identi
         poseStack.scale(1-reduction,1,1-reduction);
         var alpha = (float) (0.8f+entity.getLevel().random.nextDouble()/30d);
         for (float i = 0; i <= 1.01f; i += 0.1f) {
-            drawLine(poseStack, builder, 0 +i,0,1,0 +i, 151/255f,255/255f,255/255f, alpha);
-            drawLine(poseStack, builder, 0 ,0+i,0+i,1, 151/255f,255/255f,255/255f, alpha);
+            drawLine(poseStack, builder, 0 +i,0,1,0 +i, ReplicationRegistry.Colors.BLUE_SPLIT[0],ReplicationRegistry.Colors.BLUE_SPLIT[1],ReplicationRegistry.Colors.BLUE_SPLIT[2], alpha);
+            drawLine(poseStack, builder, 0 ,0+i,0+i,1, ReplicationRegistry.Colors.BLUE_SPLIT[0],ReplicationRegistry.Colors.BLUE_SPLIT[1],ReplicationRegistry.Colors.BLUE_SPLIT[2], alpha);
         }
         poseStack.popPose();
 

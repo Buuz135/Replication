@@ -12,6 +12,7 @@ import com.buuz135.replication.data.AequivaleoDataProvider;
 import com.buuz135.replication.data.RepBlockstateProvider;
 import com.buuz135.replication.data.RepItemModelProvider;
 import com.buuz135.replication.data.RepLangItemProvider;
+import com.buuz135.replication.item.MemoryChipItem;
 import com.buuz135.replication.network.NetworkRegistry;
 import com.buuz135.replication.network.element.NetworkElementRegistry;
 import com.buuz135.replication.network.element.type.DefaultMatterNetworkElement;
@@ -39,6 +40,7 @@ import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,6 +75,8 @@ public class Replication extends ModuleController {
         ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE = this.getRegistries().registerBlockWithTile("matter_network_pipe", MatterPipeBlock::new, TAB);
         ReplicationRegistry.Blocks.REPLICATOR = this.getRegistries().registerBlockWithTile("replicator", ReplicatorBlock::new, TAB);
         ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER = this.getRegistries().registerBlockWithTile("identification_chamber", IdentificationChamberBlock::new, TAB);
+
+        ReplicationRegistry.Items.MEMORY_CHIP = this.getRegistries().registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), "memory_chip", MemoryChipItem::new);
     }
 
     @Override
