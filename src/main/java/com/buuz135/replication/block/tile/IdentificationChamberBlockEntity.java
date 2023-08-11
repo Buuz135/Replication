@@ -22,6 +22,7 @@ import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -117,6 +118,12 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
             this.fastMode = !this.fastMode;
             syncObject(this.fastMode);
         }));
+    }
+
+    @Override
+    public boolean canConnect(Direction direction) {
+        var sideness = FacingUtil.getFacingRelative(direction, this.getFacingDirection());
+        return sideness == FacingUtil.Sideness.BOTTOM || sideness == FacingUtil.Sideness.BACK;
     }
 
     private void onFinish(){

@@ -27,7 +27,6 @@ public abstract class NetworkElement {
 
     }
 
-
     public Level getLevel() {
         return level;
     }

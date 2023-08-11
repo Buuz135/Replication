@@ -166,6 +166,7 @@ dependencies {
     compileOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:vanillaapi")
 
     runtimeOnly fg.deobf("curse.maven:industrial-foregoing-266515:4683880")
+    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:4629624")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

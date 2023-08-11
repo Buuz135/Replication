@@ -4,6 +4,7 @@ import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.network.NetworkElement;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
+import com.buuz135.replication.block.tile.NetworkBlockEntity;
 import com.buuz135.replication.network.NetworkManager;
 import com.buuz135.replication.network.matter.MatterNetwork;
 import com.google.common.collect.ImmutableMap;
@@ -28,6 +29,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
@@ -88,8 +90,14 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> {
     }
 
     protected boolean getConnectionType(Level world, BlockPos pos, Direction direction, BlockState state) {
-        if (world.getBlockState(pos.relative(direction)).getBlock() instanceof MatterPipeBlock){
-            return true;
+        var tile = world.getBlockEntity(pos.relative(direction));
+        if (tile instanceof NetworkBlockEntity<?> networkBlockEntity){
+            return networkBlockEntity.canConnect(direction.getOpposite());
+        }
+        if (tile != null){
+            if (tile.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).isPresent()){
+                return true;
+            }
         }
         return false;
     }

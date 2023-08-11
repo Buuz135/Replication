@@ -33,8 +33,6 @@ public abstract class Network {
         return graph.scan(level, pos);
     }
 
-
-
     public CompoundTag writeToNbt(CompoundTag tag) {
         tag.putString("id", id);
         tag.putLong("origin", originPos.asLong());

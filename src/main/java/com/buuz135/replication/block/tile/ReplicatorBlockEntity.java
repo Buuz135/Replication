@@ -2,7 +2,9 @@ package com.buuz135.replication.block.tile;
 
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
+import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -58,6 +60,12 @@ public class ReplicatorBlockEntity extends NetworkBlockEntity<ReplicatorBlockEnt
                 syncObject(this.action);
             }
         }
+    }
+
+    @Override
+    public boolean canConnect(Direction direction) {
+        var sideness = FacingUtil.getFacingRelative(direction, this.getFacingDirection());
+        return sideness == FacingUtil.Sideness.BOTTOM || sideness == FacingUtil.Sideness.BACK;
     }
 
     public int getProgress() {
