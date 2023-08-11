@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -32,6 +33,11 @@ public abstract class ReplicationMachine<T extends NetworkBlockEntity<T>> extend
         super(base, blockEntityType, pos, state);
         this.energyStorage = this.createEnergyStorage();
         this.energyStorage.setComponentHarness(this.getSelf());
+    }
+
+    @Override
+    public void serverTick(Level level, BlockPos pos, BlockState state, T blockEntity) {
+        super.serverTick(level, pos, state, blockEntity);
     }
 
     @Override

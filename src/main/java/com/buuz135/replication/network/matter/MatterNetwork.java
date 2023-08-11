@@ -26,7 +26,7 @@ public class MatterNetwork extends Network {
 
     public MatterNetwork(BlockPos originPos, String id, int power) {
         super(originPos, id);
-        this.energyStorage = new EnergyStorage(100_000, 100_000, 0, power);
+        this.energyStorage = new EnergyStorage(100_000, 100_000, 100_000, power);
     }
 
     @Override

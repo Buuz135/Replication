@@ -135,8 +135,13 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                     var returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(stack, input, this.fastMode ? 0.25f : 0.1f);
                     if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1){
                         input.shrink(1);
-                    } else if (this.fastMode && this.level.random.nextDouble() <= 0.7d) {
+                        syncObject(this.input);
+                    } else if (this.fastMode && this.level.random.nextDouble() <= 0.6d) {
                         input.shrink(1);
+                        syncObject(this.input);
+                    }
+                    if (returnedValue.getPattern() != null){
+                        this.getEnergyStorage().extractEnergy((int) (25000*(this.fastMode ? 0.25f : 0.1f)), false);
                     }
                     if (returnedValue.getType() == IMatterPatternModifier.ModifierType.FULL && returnedValue.getPattern() != null){
                         var exportingItem = stack.copy();
@@ -147,7 +152,6 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                                 return;
                             }
                         }
-
                     }
                 }
             }
@@ -155,6 +159,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     }
 
     private boolean canIncrease(){
+        if (this.getEnergyStorage().getEnergyStored() <= 25000*(this.fastMode ? 0.25f : 0.1f)) return false;
         if (this.input.getStackInSlot(0).isEmpty()) return false;
         var hasOutputSlot = false;
         for (int i = 0; i < this.memoryChipOutput.getSlots(); i++) {

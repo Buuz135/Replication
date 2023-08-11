@@ -37,6 +37,18 @@ public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEnt
             this.energyStorageLazyOptional.invalidate();
             this.energyStorageLazyOptional = LazyOptional.of(() -> this.getNetwork().getEnergyStorage());
         }
+        if (level.getGameTime() % 2 == 0){
+            for (Direction value : Direction.values()) {
+                var tile = this.level.getBlockEntity(this.worldPosition.relative(value));
+                if (tile != null && !(tile instanceof MatterPipeBlockEntity)){
+                    tile.getCapability(ForgeCapabilities.ENERGY, value.getOpposite()).ifPresent(iEnergyStorage -> {
+                        var simulatedExtract = this.getNetwork().getEnergyStorage().extractEnergy(256, true);
+                        var realExtracted = iEnergyStorage.receiveEnergy(simulatedExtract, false);
+                        this.getNetwork().getEnergyStorage().extractEnergy(realExtracted, false);
+                    });
+                }
+            }
+        }
     }
 
     @Override
