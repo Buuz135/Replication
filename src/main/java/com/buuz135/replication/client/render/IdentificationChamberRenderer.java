@@ -103,16 +103,18 @@ public class IdentificationChamberRenderer implements BlockEntityRenderer<Identi
 
         VertexConsumer builder = multiBufferSource.getBuffer(LINES);
 
-        poseStack.pushPose();
-        var reduction = 0.31f;
-        poseStack.translate(reduction/2d, 0, reduction/2d);
-        poseStack.scale(1-reduction,1,1-reduction);
-        var alpha = (float) (0.8f+entity.getLevel().random.nextDouble()/30d);
-        for (float i = 0; i <= 1.01f; i += 0.1f) {
-            drawLine(poseStack, builder, 0 +i,0,1,0 +i, ReplicationRegistry.Colors.BLUE_SPLIT[0],ReplicationRegistry.Colors.BLUE_SPLIT[1],ReplicationRegistry.Colors.BLUE_SPLIT[2], alpha);
-            drawLine(poseStack, builder, 0 ,0+i,0+i,1, ReplicationRegistry.Colors.BLUE_SPLIT[0],ReplicationRegistry.Colors.BLUE_SPLIT[1],ReplicationRegistry.Colors.BLUE_SPLIT[2], alpha);
+        if (entity.getProgress() > 0){
+            poseStack.pushPose();
+            var reduction = 0.31f;
+            poseStack.translate(reduction/2d, 0, reduction/2d);
+            poseStack.scale(1-reduction,1,1-reduction);
+            var alpha = (float) (0.8f+entity.getLevel().random.nextDouble()/30d);
+            for (float i = 0; i <= 1.01f; i += 0.1f) {
+                drawLine(poseStack, builder, 0 +i,0,1,0 +i, ReplicationRegistry.Colors.BLUE_SPLIT[0],ReplicationRegistry.Colors.BLUE_SPLIT[1],ReplicationRegistry.Colors.BLUE_SPLIT[2], alpha);
+                drawLine(poseStack, builder, 0 ,0+i,0+i,1, ReplicationRegistry.Colors.BLUE_SPLIT[0],ReplicationRegistry.Colors.BLUE_SPLIT[1],ReplicationRegistry.Colors.BLUE_SPLIT[2], alpha);
+            }
+            poseStack.popPose();
         }
-        poseStack.popPose();
 
     }
 

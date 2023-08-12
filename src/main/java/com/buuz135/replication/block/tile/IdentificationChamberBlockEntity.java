@@ -206,7 +206,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
         if (this.progressBarComponent.getProgress() > MAX_PROGRESS){
             return MAX_PROGRESS * 2 - this.progressBarComponent.getProgress();
         }
-        return this.progressBarComponent.getProgress() ;
+        return this.progressBarComponent.getProgress();
     }
 
     public SidedInventoryComponent<?> getInput() {
