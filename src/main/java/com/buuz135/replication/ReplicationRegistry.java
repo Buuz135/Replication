@@ -4,6 +4,7 @@ import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
 import com.buuz135.replication.aequivaleo.ReplicationCompoundTypeGroup;
 import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.api.MatterType;
+import com.buuz135.replication.api.matter_fluid.IMatterHandler;
 import com.ldtteam.aequivaleo.api.compound.type.ICompoundType;
 import com.ldtteam.aequivaleo.api.compound.type.group.ICompoundTypeGroup;
 import net.minecraft.core.Registry;
@@ -15,6 +16,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -23,6 +27,8 @@ import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.function.Supplier;
+
+import static net.minecraftforge.common.capabilities.CapabilityManager.get;
 
 public class ReplicationRegistry {
 
@@ -33,6 +39,7 @@ public class ReplicationRegistry {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         TYPE_GROUPS.register(eventBus);
         TYPES.register(eventBus);
+        Matter.IMATTER_TYPES.register(eventBus);
     }
     public static final DeferredRegister<ICompoundType> TYPES = DeferredRegister.create(new ResourceLocation("aequivaleo", "compound_type"), Replication.MOD_ID);
     public static final DeferredRegister<ICompoundTypeGroup> TYPE_GROUPS = DeferredRegister.create(new ResourceLocation("aequivaleo", "compound_type_group"), Replication.MOD_ID);
@@ -76,6 +83,7 @@ public class ReplicationRegistry {
 
         public static final DeferredRegister<IMatterType> IMATTER_TYPES = DeferredRegister.create(MATTER_TYPES_KEY, Replication.MOD_ID);
 
+        public static final RegistryObject<IMatterType> EMPTY = IMATTER_TYPES.register("empty", () -> MatterType.EMPTY);
         public static final RegistryObject<IMatterType> METALLIC = IMATTER_TYPES.register("metallic", () -> MatterType.METALLIC);
         public static final RegistryObject<IMatterType> EARTH = IMATTER_TYPES.register("earth", () -> MatterType.EARTH);
         public static final RegistryObject<IMatterType> NETHER = IMATTER_TYPES.register("nether", () -> MatterType.NETHER);
@@ -91,6 +99,12 @@ public class ReplicationRegistry {
 
         public static float[] BLUE_SPLIT = new float[]{151/255f,255/255f,255/255f};
         public static int BLUE = Mth.color(BLUE_SPLIT[0], BLUE_SPLIT[1], BLUE_SPLIT[2]);
+
+    }
+
+    public static class Capabilities{
+
+        public static Capability<IMatterHandler> MATTER_HANDLER = get(new CapabilityToken<>(){});
 
     }
 

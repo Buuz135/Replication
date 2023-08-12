@@ -39,7 +39,7 @@ public class CommonEvents {
             ReplicationCommand.register(serverStartingEvent.getServer().getCommands().getDispatcher());
         }).subscribe();
 
-        EventManager.forge(NewRegistryEvent.class)
+        EventManager.mod(NewRegistryEvent.class)
                 .process(newRegistryEvent -> {
                     ReplicationRegistry.MATTER_TYPES_REGISTRY = newRegistryEvent.create(new RegistryBuilder<IMatterType>().setName(new ResourceLocation(Replication.MOD_ID, "matter_types")));
                 }).subscribe();
