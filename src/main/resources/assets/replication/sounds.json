@@ -1,0 +1,10 @@
+{
+  "identification_chamber": {
+    "category": "block",
+    "sounds": [
+      "replication:identification_chamber"
+    ],
+    "subtitle": "replication.subtitle.identification_chamber",
+    "stream": true
+  }
+}

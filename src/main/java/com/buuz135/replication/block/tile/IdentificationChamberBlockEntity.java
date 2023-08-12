@@ -1,6 +1,7 @@
 package com.buuz135.replication.block.tile;
 
 import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
 import com.buuz135.replication.util.InvUtil;
 import com.hrznstudio.titanium.annotation.Save;
@@ -23,6 +24,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -65,6 +69,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                 .setInputFilter((itemStack, integer) -> !IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(itemStack).isEmpty())
                 .setOutputFilter((itemStack, integer) -> false)
                 .setSlotLimit(1)
+                .setOnSlotChanged((stack, integer) -> syncObject(this.input))
         ;
         InvUtil.disableAllSidesAndEnable(this.input, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK);
         this.addInventory((InventoryComponent<IdentificationChamberBlockEntity>) input);
@@ -83,7 +88,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
         this.memoryChipInput = (SidedInventoryComponent<?>) new SidedInventoryComponent<>("memoryChipInput", 106, 48 - 18, 3, 0)
                 .setColor(DyeColor.MAGENTA)
                 .disableFacingAddon()
-                .setInputFilter((itemStack, integer) -> true)
+                .setInputFilter((itemStack, integer) -> itemStack.getItem() instanceof IMatterPatternHolder<?>)
                 .setOutputFilter((itemStack, integer) -> false)
                 .setSlotPosition(integer -> Pair.of(0, 18*integer))
         ;
@@ -92,8 +97,8 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
         this.memoryChipOutput = (SidedInventoryComponent<?>) new SidedInventoryComponent<>("memoryChipOutput", 142, 48 - 18, 3, 0)
                 .setColor(DyeColor.ORANGE)
                 .disableFacingAddon()
-                .setInputFilter((itemStack, integer) -> true)
-                .setOutputFilter((itemStack, integer) -> false)
+                .setInputFilter((itemStack, integer) -> false)
+                .setOutputFilter((itemStack, integer) -> true)
                 .setSlotPosition(integer -> Pair.of(0, 18*integer))
         ;
         InvUtil.disableAllSidesAndEnable(this.memoryChipOutput, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK);
@@ -153,6 +158,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                             }
                         }
                     }
+                    if (returnedValue.getPattern() != null) break;
                 }
             }
         }
@@ -191,6 +197,9 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     @Override
     public void clientTick(Level level, BlockPos pos, BlockState state, IdentificationChamberBlockEntity blockEntity) {
         super.clientTick(level, pos, state, blockEntity);
+        if (this.progressBarComponent.getProgress() == 1){
+            this.level.playLocalSound(this.getBlockPos(), ReplicationRegistry.Sounds.IDENTIFICATION_CHAMBER.get(), SoundSource.BLOCKS, 0.5f, 0.40f, false);
+        }
     }
 
     public int getProgress() {
