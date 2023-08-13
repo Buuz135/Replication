@@ -49,7 +49,9 @@ public class NetworkGraphScanner {
             if (!requiredNetworkType.equals(pipe.getNetworkType())) {
                 return;
             }
-
+            if (request.getDirection() != null && !pipe.canConnectFrom(request.getDirection().getOpposite())){
+                return;
+            }
             if (foundElements.add(pipe)) {
                 if (!currentElements.contains(pipe)) {
                     newElements.add(pipe);
@@ -60,6 +62,7 @@ public class NetworkGraphScanner {
                 request.setSuccessful(true);
 
                 for (Direction dir : Direction.values()) {
+                    if (!pipe.canConnectFrom(dir)) continue;
                     addRequest(new NetworkGraphScannerRequest(
                             request.getLevel(),
                             request.getPos().relative(dir),

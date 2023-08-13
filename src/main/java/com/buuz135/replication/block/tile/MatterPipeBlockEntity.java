@@ -51,11 +51,6 @@ public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEnt
         }
     }
 
-    @Override
-    public boolean canConnect(Direction direction) {
-        return true;
-    }
-
     @NotNull
     @Override
     public MatterPipeBlockEntity getSelf() {

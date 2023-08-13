@@ -2,9 +2,11 @@ package com.buuz135.replication.block;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.api.INetworkDirectionalConnection;
 import com.buuz135.replication.block.shapes.ReplicatorShapes;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
+import com.hrznstudio.titanium.util.FacingUtil;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> {
+public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> implements INetworkDirectionalConnection {
 
     public ReplicatorBlock() {
         super("replicator", Properties.copy(Blocks.IRON_BLOCK), ReplicatorBlockEntity.class);
@@ -94,4 +96,9 @@ public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> {
         return Pair.of(ReplicatorShapes.NORTH, ReplicatorShapes.NORTH_PLATE);
     }
 
+    @Override
+    public boolean canConnect(BlockState state, Direction direction) {
+        var sideness = FacingUtil.getFacingRelative(direction, state.getValue(FACING_HORIZONTAL));
+        return sideness == FacingUtil.Sideness.BOTTOM || sideness == FacingUtil.Sideness.BACK;
+    }
 }

@@ -2,6 +2,7 @@ package com.buuz135.replication.block;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.api.INetworkDirectionalConnection;
 import com.buuz135.replication.api.network.NetworkElement;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.block.tile.NetworkBlockEntity;
@@ -38,7 +39,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
-public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> {
+public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> implements INetworkDirectionalConnection {
 
     public static final Map<Direction, BooleanProperty> DIRECTIONS = new HashMap<>();
     private static final Map<BlockState, VoxelShape> SHAPE_CACHE = new HashMap<>();
@@ -90,10 +91,11 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> {
     }
 
     protected boolean getConnectionType(Level world, BlockPos pos, Direction direction, BlockState state) {
-        var tile = world.getBlockEntity(pos.relative(direction));
-        if (tile instanceof NetworkBlockEntity<?> networkBlockEntity){
-            return networkBlockEntity.canConnect(direction.getOpposite());
+        var relativeState = world.getBlockState(pos.relative(direction));
+        if (relativeState.getBlock() instanceof INetworkDirectionalConnection networkDirectionalConnection){
+            return networkDirectionalConnection.canConnect(relativeState, direction.getOpposite());
         }
+        var tile = world.getBlockEntity(pos.relative(direction));
         if (tile != null){
             if (tile.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).isPresent()){
                 return true;
@@ -154,4 +156,8 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> {
         return shape;
     }
 
+    @Override
+    public boolean canConnect(BlockState state, Direction direction) {
+        return true;
+    }
 }

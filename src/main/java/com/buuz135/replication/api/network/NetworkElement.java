@@ -2,6 +2,7 @@ package com.buuz135.replication.api.network;
 
 import com.buuz135.replication.network.Network;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -70,6 +71,7 @@ public abstract class NetworkElement {
 
     public abstract ResourceLocation getNetworkType();
 
+    public abstract boolean canConnectFrom(Direction direction);
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,4 +85,5 @@ public abstract class NetworkElement {
     public int hashCode() {
         return Objects.hash(level, pos);
     }
+
 }

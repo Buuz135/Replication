@@ -125,12 +125,6 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
         }));
     }
 
-    @Override
-    public boolean canConnect(Direction direction) {
-        var sideness = FacingUtil.getFacingRelative(direction, this.getFacingDirection());
-        return sideness == FacingUtil.Sideness.BOTTOM || sideness == FacingUtil.Sideness.BACK;
-    }
-
     private void onFinish(){
         var input = this.getInput().getStackInSlot(0);
         if (!input.isEmpty()){

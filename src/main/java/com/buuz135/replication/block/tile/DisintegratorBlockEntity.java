@@ -133,11 +133,6 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
         return new MatterTankComponent<DisintegratorBlockEntity>("tank"+index, 16000, 40 + index*19 , 28).setTankAction(FluidTankComponent.Action.DRAIN);
     }
 
-    @Override
-    public boolean canConnect(Direction direction) {
-        return true;
-    }
-
     @NotNull
     @Override
     public DisintegratorBlockEntity getSelf() {

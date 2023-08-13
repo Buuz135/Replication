@@ -62,12 +62,6 @@ public class ReplicatorBlockEntity extends NetworkBlockEntity<ReplicatorBlockEnt
         }
     }
 
-    @Override
-    public boolean canConnect(Direction direction) {
-        var sideness = FacingUtil.getFacingRelative(direction, this.getFacingDirection());
-        return sideness == FacingUtil.Sideness.BOTTOM || sideness == FacingUtil.Sideness.BACK;
-    }
-
     public int getProgress() {
         return progress;
     }

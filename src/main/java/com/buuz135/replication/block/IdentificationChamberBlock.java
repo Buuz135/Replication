@@ -2,10 +2,12 @@ package com.buuz135.replication.block;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.api.INetworkDirectionalConnection;
 import com.buuz135.replication.block.shapes.IdentificationChamberShapes;
 import com.buuz135.replication.block.shapes.ReplicatorShapes;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
+import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -16,7 +18,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public class IdentificationChamberBlock extends RotatableBlock<IdentificationChamberBlockEntity> {
+public class IdentificationChamberBlock extends RotatableBlock<IdentificationChamberBlockEntity> implements INetworkDirectionalConnection {
 
     public IdentificationChamberBlock() {
         super("identification_chamber", Properties.copy(Blocks.IRON_BLOCK), IdentificationChamberBlockEntity.class);
@@ -71,4 +73,9 @@ public class IdentificationChamberBlock extends RotatableBlock<IdentificationCha
         return super.getShape(state, p_60556_, p_60557_, p_60558_);
     }
 
+    @Override
+    public boolean canConnect(BlockState state, Direction direction) {
+        var sideness = FacingUtil.getFacingRelative(direction, state.getValue(FACING_HORIZONTAL));
+        return sideness == FacingUtil.Sideness.BOTTOM || sideness == FacingUtil.Sideness.BACK;
+    }
 }

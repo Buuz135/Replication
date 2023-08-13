@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 
 public class MatterNetwork extends Network {
@@ -26,23 +27,18 @@ public class MatterNetwork extends Network {
     private List<Long> matterStacksConsumers;
     private List<Long> matterStacksSuppliers;
     private List<Long> matterStacksHolders;
-
+    private List<NetworkElement> queueNetworkElements;
     public MatterNetwork(BlockPos originPos, String id, int power) {
         super(originPos, id);
         this.energyStorage = new EnergyStorage(100_000, 100_000, 100_000, power);
         this.matterStacksConsumers = new ArrayList<>();
         this.matterStacksSuppliers = new ArrayList<>();
+        this.matterStacksHolders = new ArrayList<>();
+        this.queueNetworkElements = new ArrayList<>();
     }
 
     public void addElement(NetworkElement element){
-        var tile = element.getLevel().getBlockEntity(element.getPos());
-        if (tile instanceof IMatterStacksSupplier && tile instanceof IMatterStacksConsumer){
-            this.matterStacksHolders.add(element.getPos().asLong());
-        }else if (tile instanceof IMatterStacksSupplier){
-            this.matterStacksSuppliers.add(element.getPos().asLong());
-        }else if (tile instanceof IMatterStacksConsumer){
-            this.matterStacksConsumers.add(element.getPos().asLong());
-        }
+        this.queueNetworkElements.add(element);
     }
 
     public void removeElement(NetworkElement element){
@@ -59,6 +55,17 @@ public class MatterNetwork extends Network {
     @Override
     public void update(Level level) {
         super.update(level);
+        for (NetworkElement element : this.queueNetworkElements) {
+            var tile = element.getLevel().getBlockEntity(element.getPos());
+            if (tile instanceof IMatterStacksSupplier && tile instanceof IMatterStacksConsumer){
+                this.matterStacksHolders.add(element.getPos().asLong());
+            }else if (tile instanceof IMatterStacksSupplier){
+                this.matterStacksSuppliers.add(element.getPos().asLong());
+            }else if (tile instanceof IMatterStacksConsumer){
+                this.matterStacksConsumers.add(element.getPos().asLong());
+            }
+        }
+        this.queueNetworkElements.clear();
     }
 
     @Override

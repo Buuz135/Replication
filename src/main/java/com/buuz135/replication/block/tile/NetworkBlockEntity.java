@@ -84,8 +84,6 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
         return new DefaultMatterNetworkElement(level, pos);
     }
 
-    public abstract boolean canConnect(Direction direction);
-
     public MatterNetwork getNetwork(){
         return (MatterNetwork) NetworkManager.get(this.level).getElement(worldPosition).getNetwork();
     }
@@ -93,4 +91,6 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
     public List<MatterTankComponent<T>> getMatterTankComponents() {
         return matterTankComponents;
     }
+
+
 }
