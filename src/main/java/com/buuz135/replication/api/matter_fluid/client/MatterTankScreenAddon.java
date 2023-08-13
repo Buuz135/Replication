@@ -65,7 +65,7 @@ public class MatterTankScreenAddon extends BasicScreenAddon {
             double capacity = tank.getCapacity();
             int topBottomPadding = asset.getFluidRenderPadding(Direction.UP) + asset.getFluidRenderPadding(Direction.DOWN);
             int offset = (int) ((stored / capacity) * (area.height - topBottomPadding));
-            ResourceLocation flowing = new ResourceLocation("minecraft:block/stone");
+            ResourceLocation flowing = new ResourceLocation("minecraft:block/white_wool");
             if (flowing != null) {
                 AbstractTexture texture = screen.getMinecraft().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS); //getAtlasSprite
                 if (texture instanceof TextureAtlas) {
@@ -99,9 +99,9 @@ public class MatterTankScreenAddon extends BasicScreenAddon {
 
     @Override
     public java.util.List<net.minecraft.network.chat.Component> getTooltipLines() {
-        List<net.minecraft.network.chat.Component> strings = new ArrayList<>();
-        strings.add(net.minecraft.network.chat.Component.literal(ChatFormatting.GOLD + net.minecraft.network.chat.Component.translatable("tooltip.titanium.tank.fluid").getString()).append(tank.getMatter().isEmpty() ? net.minecraft.network.chat.Component.translatable("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE) : net.minecraft.network.chat.Component.translatable(tank.getMatter().getTranslationKey())).withStyle(ChatFormatting.WHITE));
-        strings.add(net.minecraft.network.chat.Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(net.minecraft.network.chat.Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(tank.getMatterAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(tank.getCapacity()) + ChatFormatting.DARK_AQUA + "mb")));
+        List<Component> strings = new ArrayList<>();
+        strings.add(Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.replication.tank.matter").getString()).append(tank.getMatter().isEmpty() ? Component.translatable("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE) : Component.translatable(tank.getMatter().getTranslationKey())).withStyle(ChatFormatting.WHITE));
+        strings.add(net.minecraft.network.chat.Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(tank.getMatterAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(tank.getCapacity()) + ChatFormatting.DARK_AQUA + " matter")));
         /*if (!Minecraft.getInstance().player.containerMenu.getCarried().isEmpty() && Minecraft.getInstance().player.containerMenu.getCarried().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()) {
             Minecraft.getInstance().player.containerMenu.getCarried().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(iFluidHandlerItem -> {
                 boolean isBucket = Minecraft.getInstance().player.containerMenu.getCarried().getItem() instanceof BucketItem;

@@ -90,4 +90,7 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
         return (MatterNetwork) NetworkManager.get(this.level).getElement(worldPosition).getNetwork();
     }
 
+    public List<MatterTankComponent<T>> getMatterTankComponents() {
+        return matterTankComponents;
+    }
 }

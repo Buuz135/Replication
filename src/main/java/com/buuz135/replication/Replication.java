@@ -1,6 +1,7 @@
 package com.buuz135.replication;
 
 import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
+import com.buuz135.replication.block.DisintegratorBlock;
 import com.buuz135.replication.block.IdentificationChamberBlock;
 import com.buuz135.replication.block.MatterPipeBlock;
 import com.buuz135.replication.block.ReplicatorBlock;
@@ -78,6 +79,7 @@ public class Replication extends ModuleController {
         ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE = this.getRegistries().registerBlockWithTile("matter_network_pipe", MatterPipeBlock::new, TAB);
         ReplicationRegistry.Blocks.REPLICATOR = this.getRegistries().registerBlockWithTile("replicator", ReplicatorBlock::new, TAB);
         ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER = this.getRegistries().registerBlockWithTile("identification_chamber", IdentificationChamberBlock::new, TAB);
+        ReplicationRegistry.Blocks.DISINTEGRATOR = this.getRegistries().registerBlockWithTile("disintegrator", DisintegratorBlock::new, TAB);
 
         ReplicationRegistry.Items.MEMORY_CHIP = this.getRegistries().registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), "memory_chip", MemoryChipItem::new);
 
@@ -90,6 +92,7 @@ public class Replication extends ModuleController {
         List<Block> blocks = new ArrayList<>();
         blocks.add(ReplicationRegistry.Blocks.REPLICATOR.getLeft().get());
         blocks.add(ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.getLeft().get());
+        blocks.add(ReplicationRegistry.Blocks.DISINTEGRATOR.getLeft().get());
 
         event.getGenerator().addProvider(true, new AequivaleoDataProvider(MOD_ID, event.getGenerator()));
         event.getGenerator().addProvider(true, new RepBlockstateProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper(), blocks));

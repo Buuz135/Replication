@@ -1,6 +1,7 @@
 package com.buuz135.replication;
 
 import com.buuz135.replication.api.IMatterType;
+import com.buuz135.replication.block.tile.DisintegratorBlockEntity;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
@@ -27,6 +28,7 @@ public class CommonEvents {
         NBTManager.getInstance().scanTileClassForAnnotations(ReplicatorBlockEntity.class);
         NBTManager.getInstance().scanTileClassForAnnotations(MatterPipeBlockEntity.class);
         NBTManager.getInstance().scanTileClassForAnnotations(IdentificationChamberBlockEntity.class);
+        NBTManager.getInstance().scanTileClassForAnnotations(DisintegratorBlockEntity.class);
 
 
         EventManager.forge(TickEvent.LevelTickEvent.class)

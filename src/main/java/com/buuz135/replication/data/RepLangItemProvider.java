@@ -1,6 +1,7 @@
 package com.buuz135.replication.data;
 
 import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.block.ReplicatorBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.Item;
@@ -31,6 +32,10 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("tooltip.replication.identification_chamber.fast_mode", "Fast Mode");
         this.add("tooltip.replication.identification_chamber.fast_mode.desc", "Scanning is much faster but the");
         this.add("tooltip.replication.identification_chamber.fast_mode.desc_1", "item can be consumed on each action");
+        this.add("tooltip.replication.tank.matter", "Matter: ");
+        for (MatterType value : MatterType.values()) {
+            this.add("replication.matter_type." + value.getName(), WordUtils.capitalize(value.getName()));
+        }
     }
 
     private void formatItem(Item item){

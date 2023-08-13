@@ -62,7 +62,7 @@ public class ReplicationRegistry {
 
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> REPLICATOR = null;
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> IDENTIFICATION_CHAMBER = null;
-
+        public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> DISINTEGRATOR = null;
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> MATTER_NETWORK_PIPE = null;
 
     }

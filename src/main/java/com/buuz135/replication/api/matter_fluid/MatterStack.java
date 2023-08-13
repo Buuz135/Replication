@@ -111,11 +111,11 @@ public class MatterStack {
     }
 
     public Component getDisplayName() {
-        return Component.literal(this.getMatterType().getName());
+        return Component.translatable(this.getTranslationKey());
     }
 
     public String getTranslationKey() {
-        return this.getMatterType().getName();
+        return "replication.matter_type." + this.getMatterType().getName();
     }
 
     /**
