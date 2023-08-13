@@ -1,8 +1,10 @@
 package com.buuz135.replication.block.tile;
 
 import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
+import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
+import com.buuz135.replication.api.network.IMatterStacksSupplier;
 import com.buuz135.replication.util.InvUtil;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
@@ -30,7 +32,7 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
-public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBlockEntity>{
+public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBlockEntity> implements IMatterStacksSupplier {
 
     @Save
     private SidedInventoryComponent<?> input;
@@ -140,5 +142,10 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     @Override
     public DisintegratorBlockEntity getSelf() {
         return this;
+    }
+
+    @Override
+    public List<? extends IMatterTank> getTank() {
+        return this.getMatterTankComponents();
     }
 }

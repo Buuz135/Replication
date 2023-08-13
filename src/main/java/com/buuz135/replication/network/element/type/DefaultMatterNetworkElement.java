@@ -2,6 +2,7 @@ package com.buuz135.replication.network.element.type;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.api.network.NetworkElement;
+import com.buuz135.replication.network.Network;
 import com.buuz135.replication.network.element.NetworkElementFactory;
 import com.buuz135.replication.network.matter.MatterNetwork;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,22 @@ public class DefaultMatterNetworkElement extends NetworkElement {
 
     public DefaultMatterNetworkElement(Level level, BlockPos pos) {
         super(level, pos);
+    }
+
+    @Override
+    public void joinNetwork(Network network) {
+        super.joinNetwork(network);
+        if (this.network instanceof MatterNetwork matterNetwork){
+            matterNetwork.addElement(this);
+        }
+    }
+
+    @Override
+    public void leaveNetwork() {
+        if (this.network instanceof MatterNetwork matterNetwork){
+            matterNetwork.removeElement(this);
+        }
+        super.leaveNetwork();
     }
 
     @Override
