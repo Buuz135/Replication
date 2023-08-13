@@ -7,6 +7,7 @@ import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
 import com.buuz135.replication.client.render.MatterPipeRenderer;
 import com.buuz135.replication.client.render.ReplicatorRenderer;
+import com.buuz135.replication.client.render.shader.ReplicationRenderTypes;
 import com.hrznstudio.titanium.block.BasicBlock;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.util.RayTraceUtils;
@@ -33,8 +34,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.SimpleModelState;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.joml.Matrix4f;
+
+import java.io.IOException;
 
 public class ClientEvents {
 
@@ -67,6 +71,18 @@ public class ClientEvents {
             ReplicatorRenderer.PLATE = bakeModel(new ResourceLocation(Replication.MOD_ID, "block/replicator_plate"), event.getModelBakery());
         }).subscribe();
         EventManager.forge(RenderHighlightEvent.Block.class).process(ClientEvents::blockOverlayEvent).subscribe();
+
+        EventManager.mod(RegisterShadersEvent.class).process(ClientEvents::registerShaders).subscribe();
+    }
+    private static void registerShaders(RegisterShadersEvent event) {
+
+        try {
+            for(ReplicationRenderTypes.ShaderRenderType type : ReplicationRenderTypes.getRenderTypes().values()) {
+                type.register(event.getResourceProvider(), event::registerShader);
+            }
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static BakedModel bakeModel(ResourceLocation model, ModelBakery modelBakery){
