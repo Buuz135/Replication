@@ -164,7 +164,7 @@ public class NetworkManager extends SavedData {
             }
 
             if (adjacent.getNetwork() != originElement.getNetwork()) {
-                throw new RuntimeException("The origin element network is different than the adjacent element network");
+                //throw new RuntimeException("The origin element network is different than the adjacent element network");
             }
         }
 
@@ -227,7 +227,7 @@ public class NetworkManager extends SavedData {
         for (Direction dir : Direction.values()) {
             if (!current.canConnectFrom(dir)) continue;
             NetworkElement element = getElement(current.getPos().relative(dir));
-            if (element != null && element.getNetworkType().equals(networkType) && element.canConnectFrom(dir.getOpposite())) {
+            if (element != null && element.getNetworkType().equals(networkType) && element.canConnectFrom(dir.getOpposite()) && current.getNetwork() == element.getNetwork()) {
                 return element;
             }
         }

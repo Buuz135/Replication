@@ -1,10 +1,7 @@
 package com.buuz135.replication;
 
 import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
-import com.buuz135.replication.block.DisintegratorBlock;
-import com.buuz135.replication.block.IdentificationChamberBlock;
-import com.buuz135.replication.block.MatterPipeBlock;
-import com.buuz135.replication.block.ReplicatorBlock;
+import com.buuz135.replication.block.*;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.client.MatterTooltipClientComponent;
@@ -80,6 +77,7 @@ public class Replication extends ModuleController {
         ReplicationRegistry.Blocks.REPLICATOR = this.getRegistries().registerBlockWithTile("replicator", ReplicatorBlock::new, TAB);
         ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER = this.getRegistries().registerBlockWithTile("identification_chamber", IdentificationChamberBlock::new, TAB);
         ReplicationRegistry.Blocks.DISINTEGRATOR = this.getRegistries().registerBlockWithTile("disintegrator", DisintegratorBlock::new, TAB);
+        ReplicationRegistry.Blocks.MATTER_TANK = this.getRegistries().registerBlockWithTile("matter_tank", MatterTankBlock::new, TAB);
 
         ReplicationRegistry.Items.MEMORY_CHIP = this.getRegistries().registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), "memory_chip", MemoryChipItem::new);
 

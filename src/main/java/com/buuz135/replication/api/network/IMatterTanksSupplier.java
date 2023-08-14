@@ -4,8 +4,8 @@ import com.buuz135.replication.api.matter_fluid.IMatterTank;
 
 import java.util.List;
 
-public interface IMatterStacksSupplier {
+public interface IMatterTanksSupplier {
 
-    List<? extends IMatterTank> getTank();
+    List<? extends IMatterTank> getTanks();
 
 }

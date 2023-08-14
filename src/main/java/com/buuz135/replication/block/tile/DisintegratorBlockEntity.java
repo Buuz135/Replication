@@ -4,7 +4,7 @@ import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
 import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
-import com.buuz135.replication.api.network.IMatterStacksSupplier;
+import com.buuz135.replication.api.network.IMatterTanksSupplier;
 import com.buuz135.replication.util.InvUtil;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
@@ -18,7 +18,6 @@ import com.hrznstudio.titanium.util.FacingUtil;
 import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
 import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
@@ -32,7 +31,7 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
-public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBlockEntity> implements IMatterStacksSupplier {
+public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBlockEntity> implements IMatterTanksSupplier {
 
     @Save
     private SidedInventoryComponent<?> input;
@@ -140,7 +139,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     }
 
     @Override
-    public List<? extends IMatterTank> getTank() {
+    public List<? extends IMatterTank> getTanks() {
         return this.getMatterTankComponents();
     }
 }
