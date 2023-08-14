@@ -113,7 +113,7 @@ vec3(0.098955, 0.294821, 0.621491)
 void main() {
     vec2 st = texCoord0;
     vec3 color = vec3(0);
-    float time = sin(2 * PI * (((GameTime * 72000.) / 24000) -1));
+    float time = sin((2 * PI) * GameTime * 1.5);
     for (int i = 0; i < Layers; i++) {
         float index = i + 1.;
 
