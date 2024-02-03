@@ -96,12 +96,15 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     private void onFinish() {
         for (int i = 0; i < this.input.getSlots(); i++) {
             var stack = this.input.getStackInSlot(i);
-            var data = IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(stack);
-            for (CompoundInstance datum : data) {
-                if (datum.getType() instanceof ReplicationCompoundType replicationCompoundType){
-                    queuedMatterStacks.add(new MatterStack(replicationCompoundType.getMatterType(), Mth.floor(datum.getAmount())));
-                    stack.shrink(1);
+            if (!stack.isEmpty() && this.getEnergyStorage().getEnergyStored() >= 1500){
+                var data = IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(stack);
+                for (CompoundInstance datum : data) {
+                    if (datum.getType() instanceof ReplicationCompoundType replicationCompoundType){
+                        queuedMatterStacks.add(new MatterStack(replicationCompoundType.getMatterType(), Mth.floor(datum.getAmount())));
+                        stack.shrink(1);
+                    }
                 }
+                this.getEnergyStorage().extractEnergy(1500, false);
             }
         }
     }
