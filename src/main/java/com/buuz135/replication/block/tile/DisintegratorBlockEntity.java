@@ -115,17 +115,21 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
         if (!this.queuedMatterStacks.isEmpty()){
             var peekedElement = this.queuedMatterStacks.peek();
             for (MatterTankComponent<DisintegratorBlockEntity> matterTankComponent : this.getMatterTankComponents()) {
-                if (!matterTankComponent.isEmpty() && matterTankComponent.getMatter().isMatterEqual(peekedElement) && matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.SIMULATE) == peekedElement.getAmount()){
-                    matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.EXECUTE);
-                    this.queuedMatterStacks.poll();
-                    return;
+                if (!matterTankComponent.isEmpty() && matterTankComponent.getMatter().isMatterEqual(peekedElement) && matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.SIMULATE) <= peekedElement.getAmount()){
+                    peekedElement.setAmount(peekedElement.getAmount() - matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.EXECUTE));
+                    if (peekedElement.isEmpty()){
+                        this.queuedMatterStacks.poll();
+                        return;
+                    }
                 }
             }
             for (MatterTankComponent<DisintegratorBlockEntity> matterTankComponent : this.getMatterTankComponents()) {
                 if (matterTankComponent.isEmpty()){
-                    matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.EXECUTE);
-                    this.queuedMatterStacks.poll();
-                    return;
+                    peekedElement.setAmount(peekedElement.getAmount() - matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.EXECUTE));
+                    if (peekedElement.isEmpty()){
+                        this.queuedMatterStacks.poll();
+                        return;
+                    }
                 }
             }
         }
