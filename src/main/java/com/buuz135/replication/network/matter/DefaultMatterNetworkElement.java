@@ -1,12 +1,10 @@
-package com.buuz135.replication.network.element.type;
+package com.buuz135.replication.network.matter;
 
 import com.buuz135.replication.Replication;
-import com.buuz135.replication.api.INetworkDirectionalConnection;
-import com.buuz135.replication.api.network.NetworkElement;
-import com.buuz135.replication.block.tile.NetworkBlockEntity;
-import com.buuz135.replication.network.Network;
-import com.buuz135.replication.network.element.NetworkElementFactory;
-import com.buuz135.replication.network.matter.MatterNetwork;
+import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
+import com.hrznstudio.titanium.block_network.Network;
+import com.hrznstudio.titanium.block_network.element.NetworkElement;
+import com.hrznstudio.titanium.block_network.element.NetworkElementFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

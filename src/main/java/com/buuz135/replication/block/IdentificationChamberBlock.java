@@ -2,11 +2,11 @@ package com.buuz135.replication.block;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
-import com.buuz135.replication.api.INetworkDirectionalConnection;
 import com.buuz135.replication.block.shapes.IdentificationChamberShapes;
 import com.buuz135.replication.block.shapes.ReplicatorShapes;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
+import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

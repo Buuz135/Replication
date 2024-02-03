@@ -1,9 +1,9 @@
 package com.buuz135.replication.block;
 
 import com.buuz135.replication.ReplicationRegistry;
-import com.buuz135.replication.api.INetworkDirectionalConnection;
 import com.buuz135.replication.block.tile.DisintegratorBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
+import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Blocks;

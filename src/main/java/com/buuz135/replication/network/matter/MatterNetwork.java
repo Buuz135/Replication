@@ -5,9 +5,9 @@ import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.network.IMatterTanksConsumer;
 import com.buuz135.replication.api.network.IMatterTanksSupplier;
-import com.buuz135.replication.api.network.NetworkElement;
-import com.buuz135.replication.network.Network;
-import com.buuz135.replication.network.NetworkFactory;
+import com.hrznstudio.titanium.block_network.Network;
+import com.hrznstudio.titanium.block_network.NetworkFactory;
+import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 public class MatterNetwork extends Network {
 

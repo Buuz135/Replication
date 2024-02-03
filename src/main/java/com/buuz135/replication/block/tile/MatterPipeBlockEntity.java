@@ -1,9 +1,8 @@
 package com.buuz135.replication.block.tile;
 
-import com.buuz135.replication.api.network.NetworkElement;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
-import com.hrznstudio.titanium.block.tile.BasicTile;
+import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
