@@ -1,5 +1,7 @@
 package com.buuz135.replication.block.tile;
 
+import com.buuz135.replication.api.IMatterType;
+import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
 import com.buuz135.replication.api.network.IMatterTanksConsumer;
@@ -23,11 +25,20 @@ public class MatterTankBlockEntity extends NetworkBlockEntity<MatterTankBlockEnt
 
     @Save
     private MatterTankComponent<MatterTankBlockEntity> tank;
+    private IMatterType cachedType = MatterType.EMPTY;
 
     public MatterTankBlockEntity(BasicTileBlock<MatterTankBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
-        this.tank = new MatterTankComponent<MatterTankBlockEntity>("tank", 256000, 40 , 28).setTankAction(FluidTankComponent.Action.BOTH);
+        this.tank = new MatterTankComponent<MatterTankBlockEntity>("tank", 256000, 40 , 28).setTankAction(FluidTankComponent.Action.BOTH).setOnContentChange(this::onTankContentChange);
         this.addMatterTank(this.tank);
+    }
+
+    private void onTankContentChange(){
+        this.getNetwork().onTankValueChanged(cachedType);
+        if (!cachedType.equals(this.tank.getMatter().getMatterType())){
+            this.cachedType = this.tank.getMatter().getMatterType();
+            this.getNetwork().onTankValueChanged(cachedType);
+        }
     }
 
     @Override

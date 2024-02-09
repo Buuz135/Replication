@@ -30,12 +30,6 @@ public class ReplicationCompoundType implements ICompoundType {
     }
 
     @Override
-    public ICompoundType setRegistryName(ResourceLocation registryName) {
-        this.registryName = registryName;
-        return this;
-    }
-
-    @Override
     public ResourceLocation getRegistryName() {
         return this.registryName;
     }

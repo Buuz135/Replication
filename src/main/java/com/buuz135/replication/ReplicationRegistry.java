@@ -48,11 +48,11 @@ public class ReplicationRegistry {
     public static final RegistryObject<ICompoundTypeGroup> MATTER_TYPES_GROUPS = TYPE_GROUPS.register("matter_types", ReplicationCompoundTypeGroup::new);
 
     //MATTER TYPES
-    public static final RegistryObject<ICompoundType> METALLIC = TYPES.register("metallic", () -> new ReplicationCompoundType(MatterType.METALLIC, MATTER_TYPES_GROUPS));
     public static final RegistryObject<ICompoundType> EARTH = TYPES.register("earth", () -> new ReplicationCompoundType(MatterType.EARTH, MATTER_TYPES_GROUPS));
     public static final RegistryObject<ICompoundType> NETHER = TYPES.register("nether", () -> new ReplicationCompoundType(MatterType.NETHER, MATTER_TYPES_GROUPS));
     public static final RegistryObject<ICompoundType> ORGANIC = TYPES.register("organic", () -> new ReplicationCompoundType(MatterType.ORGANIC, MATTER_TYPES_GROUPS));
     public static final RegistryObject<ICompoundType> ENDER = TYPES.register("ender", () -> new ReplicationCompoundType(MatterType.ENDER, MATTER_TYPES_GROUPS));
+    public static final RegistryObject<ICompoundType> METALLIC = TYPES.register("metallic", () -> new ReplicationCompoundType(MatterType.METALLIC, MATTER_TYPES_GROUPS));
     public static final RegistryObject<ICompoundType> PRECIOUS = TYPES.register("precious", () -> new ReplicationCompoundType(MatterType.PRECIOUS, MATTER_TYPES_GROUPS));
     public static final RegistryObject<ICompoundType> QUANTUM = TYPES.register("quantum", () -> new ReplicationCompoundType(MatterType.QUANTUM, MATTER_TYPES_GROUPS));
     public static final RegistryObject<ICompoundType> LIVING = TYPES.register("living", () -> new ReplicationCompoundType(MatterType.LIVING, MATTER_TYPES_GROUPS));
@@ -65,6 +65,8 @@ public class ReplicationRegistry {
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> DISINTEGRATOR = null;
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> MATTER_NETWORK_PIPE = null;
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> MATTER_TANK = null;
+        public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> REPLICATION_TERMINAL = null;
+        public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> CHIP_STORAGE = null;
 
     }
 

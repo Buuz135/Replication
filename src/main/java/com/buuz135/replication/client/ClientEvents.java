@@ -6,11 +6,15 @@ import com.buuz135.replication.block.ReplicatorBlock;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
+import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
 import com.buuz135.replication.client.render.MatterPipeRenderer;
 import com.buuz135.replication.client.render.IdentificationChamberRenderer;
 import com.buuz135.replication.client.render.ReplicatorRenderer;
 import com.buuz135.replication.client.render.shader.ReplicationRenderTypes;
+import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.hrznstudio.titanium.block.BasicBlock;
+import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
+import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.util.RayTraceUtils;
 import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
@@ -22,6 +26,7 @@ import com.mojang.math.Transformation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -30,6 +35,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -47,6 +53,8 @@ public class ClientEvents {
     public static void init(){
         EventManager.mod(FMLClientSetupEvent.class).process(fmlClientSetupEvent -> {
             ItemBlockRenderTypes.setRenderLayer(ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getKey().get(), RenderType.translucent());
+
+            MenuScreens.register((MenuType<? extends ReplicationTerminalContainer>) ReplicationTerminalContainer.TYPE.get(), ReplicationTerminalScreen::new);
         }).subscribe();
         EventManager.mod(RegisterClientTooltipComponentFactoriesEvent.class).process(event -> {
             event.register(MatterTooltipComponent.class, MatterTooltipClientComponent::new);
@@ -55,7 +63,7 @@ public class ClientEvents {
             if (Minecraft.getInstance().level != null){
                 var instance = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(pre.getItemStack());
                 if (instance.size() > 0){
-                    if (Screen.hasShiftDown()){
+                    if (Screen.hasShiftDown() ||true){
                         pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(instance)));
                     } else {
                         pre.getTooltipElements().add(Either.left(Component.literal("ℹ Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));

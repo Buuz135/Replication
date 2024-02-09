@@ -50,8 +50,10 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
         this.matterTankComponents.add(matterTankComponent);
         matterTankComponent.setComponentHarness(this.getSelf());
         matterTankComponent.getContainerAddons().forEach(this::addContainerAddonFactory);
+        var change = matterTankComponent.getOnContentChange();
         matterTankComponent.setOnContentChange(() -> {
            syncObject(matterTankComponent);
+           change.run();
         });
     }
 

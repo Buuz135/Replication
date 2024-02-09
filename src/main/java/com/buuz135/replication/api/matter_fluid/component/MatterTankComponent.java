@@ -187,5 +187,8 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
         this.readFromNBT(nbt);
     }
 
+    public Runnable getOnContentChange() {
+        return onContentChange;
+    }
 }
 

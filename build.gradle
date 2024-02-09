@@ -38,7 +38,7 @@ minecraft {
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-            property 'forge.logging.console.level', 'debug'
+            property 'forge.logging.console.level', 'info'
 
             property 'forge.enabledGameTestNamespaces', 'Replication'
 
@@ -132,9 +132,11 @@ dependencies {
     // at runtime, use the full JEI jar for Forge
     runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:15.1.0.19")
 
-    runtimeOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:universal")
-    compileOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:api")
-    compileOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:vanillaapi")
+    //runtimeOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:universal")
+    //compileOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:api")
+    //compileOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:vanillaapi")
+    implementation fg.deobf("curse.maven:aequivaleo-404450:4860591")
+
 
     runtimeOnly fg.deobf("curse.maven:industrial-foregoing-266515:4683880")
     runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:4629624")
@@ -156,3 +158,8 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
+
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

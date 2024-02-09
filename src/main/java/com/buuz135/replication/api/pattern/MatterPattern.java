@@ -50,4 +50,11 @@ public class MatterPattern implements INBTSerializable<CompoundTag> {
         this.completion = nbt.getFloat("Completion");
     }
 
+    @Override
+    public String toString() {
+        return "MatterPattern{" +
+                "stack=" + stack +
+                ", completion=" + completion +
+                '}';
+    }
 }
