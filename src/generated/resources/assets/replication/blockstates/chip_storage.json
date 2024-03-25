@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "replication:block/chip_storage"
+    }
+  }
+}

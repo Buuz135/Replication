@@ -46,8 +46,8 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
         super(base, blockEntityType, pos, state);
         this.terminalPlayerTracker = new TerminalPlayerTracker();
         this.output = new InventoryComponent<ReplicationTerminalBlockEntity>("output", 9,134, 9*2)
-                .setRange(9,2)
-                .setInputFilter((stack, integer) -> true);
+                .setRange(9,2);
+        this.addInventory(this.output);
     }
 
     @NotNull

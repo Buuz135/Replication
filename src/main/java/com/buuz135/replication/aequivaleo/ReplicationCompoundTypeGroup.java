@@ -101,7 +101,6 @@ public class ReplicationCompoundTypeGroup implements ICompoundTypeGroup {
     @Override
     public boolean canContributeToRecipeAsInput(IEquivalencyRecipe iEquivalencyRecipe, CompoundInstance compoundInstance) {
         if (iEquivalencyRecipe instanceof ITagEquivalencyRecipe tagRecipe){
-            System.out.println(tagRecipe.getTag().location());
             return ALLOWED_RECIPE_TAGS.contains(tagRecipe.getTag());
         }
         return true;
@@ -110,7 +109,6 @@ public class ReplicationCompoundTypeGroup implements ICompoundTypeGroup {
     @Override
     public boolean canContributeToRecipeAsOutput(IEquivalencyRecipe iEquivalencyRecipe, CompoundInstance compoundInstance) {
         if (iEquivalencyRecipe instanceof ITagEquivalencyRecipe tagRecipe){
-            System.out.println(tagRecipe.getTag().location());
             return ALLOWED_RECIPE_TAGS.contains(tagRecipe.getTag());
         }
         return true;

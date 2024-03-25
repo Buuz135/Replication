@@ -1,4 +1,4 @@
-package com.buuz135.replication.network.matter;
+package com.buuz135.replication.network;
 
 import com.buuz135.replication.Replication;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;

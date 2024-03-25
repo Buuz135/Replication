@@ -1,4 +1,4 @@
-// 1.20.1	2024-02-09T17:05:27.6971784	Replication forced information data generator.
+// 1.20.1	2024-03-16T19:26:49.3350991	Replication forced information data generator.
 3dbefc0d11f6fde462732cf3e91753d19ef3fa75 data/replication/aequivaleo/locked/general/item_minecraft_amethyst_shard.json
 68148abdb9037201ad80ff637e15a2bed44b2b20 data/replication/aequivaleo/locked/general/item_minecraft_ancient_debris.json
 68177c8ee1d7e865a42cf46f47f2066549d96c1f data/replication/aequivaleo/locked/general/item_minecraft_apple.json
@@ -198,7 +198,6 @@ e45149c3f83994605869465ba863701da526f893 data/replication/aequivaleo/locked/gene
 01a333e061aa4e6625cfbad8f3101f8840e77936 data/replication/aequivaleo/locked/general/minecraft_item_minecraft_saplings.json
 8b019223b7f5930c32f40180d46fe49908bb459f data/replication/aequivaleo/locked/general/minecraft_item_minecraft_small_flowers.json
 e528d99169d8e5af0e5f76b5ffe2f0c9bb1344ee data/replication/aequivaleo/locked/general/minecraft_item_minecraft_tall_flowers.json
-4ef58253012b919db3238a12a3621abacc0c80b6 data/replication/aequivaleo/locked/general/minecraft_item_minecraft_wooden_fences.json
 3dbefc0d11f6fde462732cf3e91753d19ef3fa75 data/replication/aequivaleo/value/general/item_minecraft_amethyst_shard.json
 68148abdb9037201ad80ff637e15a2bed44b2b20 data/replication/aequivaleo/value/general/item_minecraft_ancient_debris.json
 68177c8ee1d7e865a42cf46f47f2066549d96c1f data/replication/aequivaleo/value/general/item_minecraft_apple.json
@@ -398,4 +397,3 @@ e45149c3f83994605869465ba863701da526f893 data/replication/aequivaleo/value/gener
 01a333e061aa4e6625cfbad8f3101f8840e77936 data/replication/aequivaleo/value/general/minecraft_item_minecraft_saplings.json
 8b019223b7f5930c32f40180d46fe49908bb459f data/replication/aequivaleo/value/general/minecraft_item_minecraft_small_flowers.json
 e528d99169d8e5af0e5f76b5ffe2f0c9bb1344ee data/replication/aequivaleo/value/general/minecraft_item_minecraft_tall_flowers.json
-4ef58253012b919db3238a12a3621abacc0c80b6 data/replication/aequivaleo/value/general/minecraft_item_minecraft_wooden_fences.json

@@ -9,7 +9,13 @@ buildscript {
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle'
+plugins {
+    // This should be below the net.minecraftforge.gradle plugin
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+}
+
+
 
 group = 'com.buuz135'
 version = '1.0.0'
@@ -20,7 +26,7 @@ java {
 }
 
 minecraft {
-    mappings channel: 'official', version: '1.20.1'
+    mappings channel: 'parchment', version: '2023.09.03-1.20.1'
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
