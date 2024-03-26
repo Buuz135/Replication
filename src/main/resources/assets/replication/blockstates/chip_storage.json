@@ -1,0 +1,19 @@
+{
+  "variants": {
+	"subfacing=east": {
+	  "model": "replication:block/chip_storage",
+	  "y": 90
+	},
+	"subfacing=north": {
+	  "model": "replication:block/chip_storage"
+	},
+	"subfacing=south": {
+	  "model": "replication:block/chip_storage",
+	  "y": 180
+	},
+	"subfacing=west": {
+	  "model": "replication:block/chip_storage",
+	  "y": 270
+	}
+  }
+}

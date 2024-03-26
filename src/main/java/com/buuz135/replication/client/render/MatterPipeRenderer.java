@@ -356,7 +356,7 @@ public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements Bloc
     protected RenderType renderType() {
         return ReplicationRenderTypes.getRenderType("matter_pipe")
                 .using(List.of(
-                        new ShaderTexture(new ResourceLocation("textures/block/crying_obsidian.png"))
+                        new ShaderTexture(new ResourceLocation("replication:textures/block/shader.png"))
 
                 ));
     }

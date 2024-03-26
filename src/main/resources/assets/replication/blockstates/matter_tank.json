@@ -1,0 +1,19 @@
+{
+  "variants": {
+	"subfacing=east": {
+	  "model": "replication:block/matter_tank",
+	  "y": 90
+	},
+	"subfacing=north": {
+	  "model": "replication:block/matter_tank"
+	},
+	"subfacing=south": {
+	  "model": "replication:block/matter_tank",
+	  "y": 180
+	},
+	"subfacing=west": {
+	  "model": "replication:block/matter_tank",
+	  "y": 270
+	}
+  }
+}
