@@ -88,7 +88,11 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
 
     protected boolean getConnectionType(Level world, BlockPos pos, Direction direction, BlockState state) {
         var relativeState = world.getBlockState(pos.relative(direction));
-        if (relativeState.getBlock() instanceof INetworkDirectionalConnection networkDirectionalConnection){
+        if (relativeState.getBlock() instanceof MatterPipeBlock){
+            return true;
+        }
+        if (relativeState.getBlock() instanceof ReplicatorBlock) {
+            INetworkDirectionalConnection networkDirectionalConnection = (INetworkDirectionalConnection) relativeState.getBlock();
             return networkDirectionalConnection.canConnect(relativeState, direction.getOpposite());
         }
         var tile = world.getBlockEntity(pos.relative(direction));
