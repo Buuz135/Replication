@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "replication:block/replication_terminal"
+    }
+  }
+}

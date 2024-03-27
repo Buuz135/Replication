@@ -1,17 +1,17 @@
-package com.buuz135.replication.network.matter;
+package com.buuz135.replication.network;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.IMatterType;
-import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.network.IMatterTanksConsumer;
 import com.buuz135.replication.api.network.IMatterTanksSupplier;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.MatterPattern;
-import com.buuz135.replication.block.tile.ChipStorageBlockEntity;
+import com.buuz135.replication.api.task.ReplicationTask;
 import com.buuz135.replication.block.tile.ReplicationTerminalBlockEntity;
+import com.buuz135.replication.network.task.ReplicationTaskManager;
 import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.packet.PatternSyncStoragePacket;
 import com.hrznstudio.titanium.block_network.Network;
@@ -45,6 +45,10 @@ public class MatterNetwork extends Network {
     private List<NetworkElement> chipSuppliers;
     private List<NetworkElement> terminals;
 
+    private ReplicationTaskManager taskManager;
+
+    //TODO Mark dirty
+
     public MatterNetwork(BlockPos originPos, String id, int power) {
         super(originPos, id);
         this.energyStorage = new EnergyStorage(100_000, 100_000, 100_000, power);
@@ -54,6 +58,7 @@ public class MatterNetwork extends Network {
         this.queueNetworkElements = new ArrayList<>();
         this.chipSuppliers = new ArrayList<>();
         this.terminals = new ArrayList<>();
+        this.taskManager = new ReplicationTaskManager();
     }
 
     public void addElement(NetworkElement element){
@@ -191,7 +196,7 @@ public class MatterNetwork extends Network {
     public void onMergedWith(Network mainNetwork) {
         if (mainNetwork instanceof MatterNetwork matterNetwork){
             matterNetwork.energyStorage.receiveEnergy(this.energyStorage.getEnergyStored(), false);
-            //TODO MERGE TANKS
+            matterNetwork.taskManager.getPendingTasks().putAll(this.getTaskManager().getPendingTasks());
         }
     }
 
@@ -209,6 +214,10 @@ public class MatterNetwork extends Network {
 
     public EnergyStorage getEnergyStorage() {
         return energyStorage;
+    }
+
+    public ReplicationTaskManager getTaskManager() {
+        return taskManager;
     }
 
     public static class Factory implements NetworkFactory {

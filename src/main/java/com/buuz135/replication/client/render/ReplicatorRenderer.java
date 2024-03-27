@@ -1,8 +1,11 @@
 package com.buuz135.replication.client.render;
 
+import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
 import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
+import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
+import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -60,8 +63,24 @@ public class ReplicatorRenderer implements BlockEntityRenderer<ReplicatorBlockEn
             poseStack.mulPose(Axis.YP.rotationDegrees(90));
         }
 
-        var color = MatterType.EARTH.getColor().get();
-        renderPlane(poseStack, multiBufferSource, Block.box( 2,0,2,14,1,12).bounds(), 0,0.15,0, color[0], color[1], color[2], 0.75f);
+        var color = new float[]{1f, 1f, 1f, 0f};
+        if (!entity.getCraftingStack().isEmpty() && entity.getAction() == 0){
+            var instance = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(entity.getCraftingStack());
+            var total = 0;
+            for (CompoundInstance compoundInstance : instance) {
+                total += compoundInstance.getAmount();
+            }
+            var currentProgress = entity.getProgress() / (float) ReplicatorBlockEntity.MAX_PROGRESS * 1.4;
+            var progressTotal = 0;
+            for (CompoundInstance compoundInstance : instance) {
+                if ((progressTotal + compoundInstance.getAmount())/ (double) total >= currentProgress && compoundInstance.getType() instanceof ReplicationCompoundType replicationCompoundType){
+                    color = replicationCompoundType.getMatterType().getColor().get();
+                    break;
+                }
+                progressTotal += compoundInstance.getAmount();
+            }
+        }
+        renderPlane(poseStack, multiBufferSource, Block.box( 2,0,2,14,1,12).bounds(), 0,0.15,0, color[0], color[1], color[2], color[3] == 0 ? 0 : 0.75f);
         renderFaces(poseStack, multiBufferSource, Block.box( 4,0,2,12,4,12).bounds(), 0,-0.2,0, 1,1,1, 0.005f);
 
 
@@ -75,14 +94,13 @@ public class ReplicatorRenderer implements BlockEntityRenderer<ReplicatorBlockEn
 
         poseStack.translate(0.5f, 0.56f, 0.45f);
         var scale = 0.4f;
-        var stack = new ItemStack(Items.DIRT);
-        var model = Minecraft.getInstance().getItemRenderer().getModel(stack, Minecraft.getInstance().level, null, 0);
+        var model = Minecraft.getInstance().getItemRenderer().getModel(entity.getCraftingStack(), Minecraft.getInstance().level, null, 0);
 
         if (model.isGui3d()){
             scale = 0.75f;
         }
         poseStack.scale(scale, scale,scale);
-        if (entity.getAction() == 0) Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, multiBufferSource, entity.getLevel(),0);
+        if (entity.getAction() == 0) Minecraft.getInstance().getItemRenderer().renderStatic(entity.getCraftingStack(), ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, multiBufferSource, entity.getLevel(),0);
 
 
     }

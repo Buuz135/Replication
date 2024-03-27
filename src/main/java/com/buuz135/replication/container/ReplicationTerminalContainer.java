@@ -4,8 +4,11 @@ import com.buuz135.replication.block.tile.ReplicationTerminalBlockEntity;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
+import com.hrznstudio.titanium.container.addon.SlotContainerAddon;
+import com.hrznstudio.titanium.container.addon.UpdatableSlotItemHandler;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,19 +30,31 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
     private Inventory inventory;
     private ReplicationTerminalBlockEntity blockEntity;
     private String network;
+    private BlockPos position;
+
+    private boolean isEnabled;
 
     public ReplicationTerminalContainer(int id, Inventory inventory, FriendlyByteBuf buffer) {
         super(TYPE.get(), id);
         this.inventory = inventory;
+        this.isEnabled = true;
         LocatorInstance instance = LocatorFactory.readPacketBuffer(buffer);
         if (instance != null) {
             Player playerEntity = inventory.player;
             var provider = instance.locale(playerEntity).orElse(null);
             if (provider instanceof ReplicationTerminalBlockEntity addonProvider){
+                this.position = addonProvider.getBlockPos();
                 addonProvider.getOutput().getContainerAddons().stream()
                         .map(IFactory::create)
                         .forEach(containAddon -> {
-                            containAddon.getSlots().forEach(this::addSlot);
+                            containAddon.getSlots().forEach(slot -> {
+                                addSlot(new UpdatableSlotItemHandler(addonProvider.getOutput(), slot.getContainerSlot(), slot.x, slot.y){
+                                    @Override
+                                    public boolean isActive() {
+                                        return isEnabled;
+                                    }
+                                });
+                            });
                             containAddon.getIntReferenceHolders().forEach(this::addDataSlot);
                             containAddon.getIntArrayReferenceHolders().forEach(this::addDataSlots);
                         });
@@ -55,6 +70,7 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
         this.blockEntity = blockEntity;
         if (inventory.player instanceof ServerPlayer serverPlayer)
             this.blockEntity.getTerminalPlayerTracker().addPlayer(serverPlayer);
+        this.position = this.blockEntity.getBlockPos();
         this.network = blockEntity.getNetwork().getId();
         this.addExtraSlots();
         this.initInventory();
@@ -71,7 +87,14 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
             this.blockEntity.getOutput().getContainerAddons().stream()
                     .map(IFactory::create)
                     .forEach(containAddon -> {
-                        containAddon.getSlots().forEach(this::addSlot);
+                        containAddon.getSlots().forEach(slot -> {
+                            addSlot(new UpdatableSlotItemHandler(this.blockEntity.getOutput(), slot.getContainerSlot(), slot.x, slot.y){
+                                @Override
+                                public boolean isActive() {
+                                    return isEnabled;
+                                }
+                            });
+                        });
                         containAddon.getIntReferenceHolders().forEach(this::addDataSlot);
                         containAddon.getIntArrayReferenceHolders().forEach(this::addDataSlots);
                     });
@@ -82,7 +105,12 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
         Point invPos = new Point(9,174);
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlot(new Slot(inventory, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18));
+                addSlot(new Slot(inventory, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18){
+                    @Override
+                    public boolean isActive() {
+                        return isEnabled;
+                    }
+                });
             }
         }
     }
@@ -90,7 +118,12 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
     public void addHotbarSlots() {
         Point hotbarPos = new Point(9,232);
         for (int k = 0; k < 9; k++) {
-            addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y));
+            addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y){
+                @Override
+                public boolean isActive() {
+                    return isEnabled;
+                }
+            });
         }
     }
 
@@ -139,5 +172,13 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
         if (player instanceof ServerPlayer && this.blockEntity != null){
             this.blockEntity.getTerminalPlayerTracker().removePlayer((ServerPlayer) player);
         }
+    }
+
+    public BlockPos getPosition() {
+        return position;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 }

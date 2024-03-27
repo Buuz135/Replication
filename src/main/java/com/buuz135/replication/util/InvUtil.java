@@ -4,9 +4,11 @@ import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class InvUtil {
-
 
     public static void disableAllSidesAndEnable(SidedInventoryComponent sidedInventoryComponent, Direction currentDirection, IFacingComponent.FaceMode newMode, FacingUtil.Sideness... enabledSides){
         for (FacingUtil.Sideness value : FacingUtil.Sideness.values()) {
@@ -16,6 +18,5 @@ public class InvUtil {
             sidedInventoryComponent.getFacingModes().put(enabledDirection, newMode);
         }
     }
-
 
 }

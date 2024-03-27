@@ -1,8 +1,8 @@
 package com.buuz135.replication.block.tile;
 
 import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
-import com.buuz135.replication.network.matter.DefaultMatterNetworkElement;
-import com.buuz135.replication.network.matter.MatterNetwork;
+import com.buuz135.replication.network.DefaultMatterNetworkElement;
+import com.buuz135.replication.network.MatterNetwork;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.tile.ActiveTile;
 import com.hrznstudio.titanium.block.tile.ITickableBlockEntity;
