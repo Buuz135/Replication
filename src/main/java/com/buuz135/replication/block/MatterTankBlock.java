@@ -49,5 +49,4 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
         var sideness = FacingUtil.getFacingRelative(direction, state.getValue(FACING_HORIZONTAL));
         return sideness == FacingUtil.Sideness.BOTTOM || sideness == FacingUtil.Sideness.BACK;
     }
-
 }

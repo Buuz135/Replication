@@ -6,7 +6,6 @@ import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.data.AequivaleoDataProvider;
 import com.buuz135.replication.data.RepBlockstateProvider;
-import com.buuz135.replication.data.RepItemModelProvider;
 import com.buuz135.replication.data.RepLangItemProvider;
 import com.buuz135.replication.item.MemoryChipItem;
 import com.buuz135.replication.network.DefaultMatterNetworkElement;
@@ -37,7 +36,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -89,7 +87,6 @@ public class Replication extends ModuleController {
 
         event.getGenerator().addProvider(true, new AequivaleoDataProvider(MOD_ID, event.getGenerator()));
         event.getGenerator().addProvider(true, new RepBlockstateProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper(), blocks));
-        event.getGenerator().addProvider(true, new RepItemModelProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper(), blocks));
         event.getGenerator().addProvider(true, new TitaniumLootTableProvider(event.getGenerator(), NonNullLazy.of(() -> blocks)));
         event.getGenerator().addProvider(true, new RepLangItemProvider(event.getGenerator(), MOD_ID, "en_us", blocks));
     }
