@@ -73,6 +73,7 @@ public class ReplicationRegistry {
     public static class Items{
 
         public static RegistryObject<Item> MEMORY_CHIP;
+        public static RegistryObject<Item> MATTER_BLUEPRINT;
 
     }
 

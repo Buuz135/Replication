@@ -113,6 +113,10 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
         };
     }
 
+    public SidedInventoryComponent<ChipStorageBlockEntity> getChips() {
+        return chips;
+    }
+
     @Override
     public int getPatternSlots(ChipStorageBlockEntity element) {
         return element.chips.getSlots();
