@@ -3,6 +3,7 @@ package com.buuz135.replication.block;
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
+import com.buuz135.replication.network.MatterNetwork;
 import com.google.common.collect.ImmutableMap;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
@@ -87,13 +88,18 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
     }
 
     protected boolean getConnectionType(Level world, BlockPos pos, Direction direction, BlockState state) {
+        if (world.isClientSide()) return false;
         var relativeState = world.getBlockState(pos.relative(direction));
         if (relativeState.getBlock() instanceof MatterPipeBlock){
             return true;
         }
-        if (relativeState.getBlock() instanceof ReplicatorBlock) {
-            INetworkDirectionalConnection networkDirectionalConnection = (INetworkDirectionalConnection) relativeState.getBlock();
-            return networkDirectionalConnection.canConnect(relativeState, direction.getOpposite());
+        var networkManager = NetworkManager.get(world);
+        if (networkManager != null){
+            var network = networkManager.getElement(pos.relative(direction));
+            if (network != null && network.getNetwork() instanceof MatterNetwork) {
+                INetworkDirectionalConnection networkDirectionalConnection = (INetworkDirectionalConnection) relativeState.getBlock();
+                return networkDirectionalConnection.canConnect(relativeState, direction.getOpposite());
+            }
         }
         var tile = world.getBlockEntity(pos.relative(direction));
         if (tile != null){
