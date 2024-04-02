@@ -94,7 +94,7 @@ public class MemoryChipItem extends ReplicationItem implements IMatterPatternHol
 
                 for (MatterPattern pattern : patterns) {
                     if (pattern.getStack().isEmpty()) continue;
-                    var component = Component.literal(" - ").setStyle(Style.EMPTY.withColor(ReplicationRegistry.Colors.BLUE))
+                    var component = Component.literal(" - ").setStyle(Style.EMPTY.withColor(ReplicationRegistry.Colors.GREEN))
                             .append(Component.translatable(pattern.getStack().getDescriptionId()).withStyle(pattern.getCompletion() >= 1 ? ChatFormatting.GOLD : ChatFormatting.WHITE));
                     if (pattern.getCompletion() < 1){
                         component.append(Component.literal(" " + new DecimalFormat("##.## %").format(pattern.getCompletion())).withStyle(Style.EMPTY.withColor(Mth.color(242/255f, 82/255f, 82/255f))));

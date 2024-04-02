@@ -1,9 +1,7 @@
 package com.buuz135.replication.client.render;
 
 import com.buuz135.replication.ReplicationRegistry;
-import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
-import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -15,15 +13,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.joml.Matrix4f;
 
 import java.util.OptionalDouble;
@@ -110,8 +101,8 @@ public class IdentificationChamberRenderer implements BlockEntityRenderer<Identi
             poseStack.scale(1-reduction,1,1-reduction);
             var alpha = (float) (0.8f+entity.getLevel().random.nextDouble()/30d);
             for (float i = 0; i <= 1.01f; i += 0.1f) {
-                drawLine(poseStack, builder, 0 +i,0,1,0 +i, ReplicationRegistry.Colors.BLUE_SPLIT[0],ReplicationRegistry.Colors.BLUE_SPLIT[1],ReplicationRegistry.Colors.BLUE_SPLIT[2], alpha);
-                drawLine(poseStack, builder, 0 ,0+i,0+i,1, ReplicationRegistry.Colors.BLUE_SPLIT[0],ReplicationRegistry.Colors.BLUE_SPLIT[1],ReplicationRegistry.Colors.BLUE_SPLIT[2], alpha);
+                drawLine(poseStack, builder, 0 +i,0,1,0 +i, ReplicationRegistry.Colors.GREEN_SPLIT[0],ReplicationRegistry.Colors.GREEN_SPLIT[1],ReplicationRegistry.Colors.GREEN_SPLIT[2], alpha);
+                drawLine(poseStack, builder, 0 ,0+i,0+i,1, ReplicationRegistry.Colors.GREEN_SPLIT[0],ReplicationRegistry.Colors.GREEN_SPLIT[1],ReplicationRegistry.Colors.GREEN_SPLIT[2], alpha);
             }
             poseStack.popPose();
         }
