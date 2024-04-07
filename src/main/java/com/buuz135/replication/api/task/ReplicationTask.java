@@ -10,6 +10,7 @@ import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
 import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -97,7 +98,7 @@ public class ReplicationTask implements IReplicationTask{
             for (CompoundInstance compoundInstance : data) {
                 var type = compoundInstance.getType();
                 if (type instanceof ReplicationCompoundType replicationCompoundType){
-                    var amount = (int) Math.ceil(compoundInstance.getAmount());
+                    var amount = Mth.ceil(compoundInstance.getAmount());
                     for (NetworkElement matterStacksSupplier : matterNetwork.getMatterStacksHolders()) {
                         var tile = matterStacksSupplier.getLevel().getBlockEntity(matterStacksSupplier.getPos());
                         if (tile instanceof IMatterTanksSupplier tanksSupplier){

@@ -108,7 +108,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                 var data = IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(stack);
                 for (CompoundInstance datum : data) {
                     if (datum.getType() instanceof ReplicationCompoundType replicationCompoundType){
-                        queuedMatterStacks.add(new MatterStack(replicationCompoundType.getMatterType(), Mth.floor(datum.getAmount())));
+                        queuedMatterStacks.add(new MatterStack(replicationCompoundType.getMatterType(), Mth.ceil(datum.getAmount())));
                     }
                 }
                 stack.shrink(1);
