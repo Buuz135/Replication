@@ -67,6 +67,10 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
                 scrollOffs = 0;
                 patternMenu.scrollTo(0);
             }
+            @Override
+            protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+                if (replicationRequestWidget != null) super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            }
         });
         this.addRenderableWidget(this.sortingDirection = new ReplicationTerminalConfigButton(this.leftPos - 18,this.topPos + 4 + 18, 16,16, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_DIRECTION, this.menu.getSortingValue()){
             @Override
@@ -74,6 +78,11 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
                 super.onPress();
                 scrollOffs = 0;
                 patternMenu.scrollTo(0);
+            }
+
+            @Override
+            protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+                if (replicationRequestWidget != null) super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
             }
         });
 

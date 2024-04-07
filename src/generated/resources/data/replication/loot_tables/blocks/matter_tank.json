@@ -1,21 +1,4 @@
 {
   "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "replication:matter_tank"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
   "random_sequence": "replication:blocks/matter_tank"
 }
