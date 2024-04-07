@@ -1,0 +1,11 @@
+{
+  "values": [
+    "replication:matter_network_pipe",
+    "replication:replicator",
+    "replication:identification_chamber",
+    "replication:disintegrator",
+    "replication:matter_tank",
+    "replication:replication_terminal",
+    "replication:chip_storage"
+  ]
+}

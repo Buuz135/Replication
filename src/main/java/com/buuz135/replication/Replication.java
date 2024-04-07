@@ -5,8 +5,8 @@ import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.data.AequivaleoDataProvider;
-import com.buuz135.replication.data.RepBlockstateProvider;
 import com.buuz135.replication.data.RepLangItemProvider;
+import com.buuz135.replication.data.ReplicationBlockTagsProvider;
 import com.buuz135.replication.item.MatterBluePrintItem;
 import com.buuz135.replication.item.MemoryChipItem;
 import com.buuz135.replication.network.DefaultMatterNetworkElement;
@@ -91,5 +91,7 @@ public class Replication extends ModuleController {
         //event.getGenerator().addProvider(true, new RepBlockstateProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper(), blocks));
         event.getGenerator().addProvider(true, new TitaniumLootTableProvider(event.getGenerator(), NonNullLazy.of(() -> blocks)));
         event.getGenerator().addProvider(true, new RepLangItemProvider(event.getGenerator(), MOD_ID, "en_us", blocks));
+        var blockTags = new ReplicationBlockTagsProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(), MOD_ID, event.getExistingFileHelper(), blocks);
+        event.getGenerator().addProvider(true, blockTags);
     }
 }
