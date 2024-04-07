@@ -97,7 +97,7 @@ public class ReplicationCommand {
 
     public static int createBlueprint(CommandContext<CommandSourceStack> context){
         try {
-            var mainStack = context.getSource().getPlayerOrException().getMainHandItem();
+            var mainStack = ItemHandlerHelper.copyStackWithSize(context.getSource().getPlayerOrException().getMainHandItem(), 1);
             if (!mainStack.isEmpty()){
                 var blueprint = new ItemStack(ReplicationRegistry.Items.MATTER_BLUEPRINT.get());
                 var tag = new CompoundTag();
