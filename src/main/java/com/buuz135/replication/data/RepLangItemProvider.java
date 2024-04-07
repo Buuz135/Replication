@@ -37,7 +37,7 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("relocation.blueprint.contains_information", "Contains information: ");
         this.add("relocation.blueprint.not_found", "Information not found");
         this.add("relocation.blueprint.use_on_chip_storage", "Scan it in the identification chamber to get the information");
-        this.add("replication.single_mode", "Single Mode");
+        this.add("replication.parallel_mode", "Parallel Mode");
         this.add("replication.replicate", "Replicate");
         for (MatterType value : MatterType.values()) {
             this.add("replication.matter_type." + value.getName(), WordUtils.capitalize(value.getName()));

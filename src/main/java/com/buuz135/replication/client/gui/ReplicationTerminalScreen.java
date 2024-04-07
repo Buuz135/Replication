@@ -306,8 +306,8 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         this.menu.setEnabled(true);
     }
 
-    public void createTask(MatterPattern pattern, int i, boolean singleMode) {
-        Replication.NETWORK.get().sendToServer(new TaskCreatePacket(this.menu.getNetwork(), i, pattern.getStack(), singleMode, this.menu.getPosition()));
+    public void createTask(MatterPattern pattern, int i, boolean parallelMode) {
+        Replication.NETWORK.get().sendToServer(new TaskCreatePacket(this.menu.getNetwork(), i, pattern.getStack(), parallelMode, this.menu.getPosition()));
         disableRequest();
     }
 

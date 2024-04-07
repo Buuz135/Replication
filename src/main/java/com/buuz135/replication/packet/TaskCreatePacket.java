@@ -15,14 +15,14 @@ public class TaskCreatePacket extends Message {
     private String networkId;
     private int amount;
     private ItemStack stack;
-    private boolean singleMode;
+    private boolean parallelMode;
     private BlockPos source;
 
-    public TaskCreatePacket(String network, int amount, ItemStack stack, boolean singleMode, BlockPos source) {
+    public TaskCreatePacket(String network, int amount, ItemStack stack, boolean parallelMode, BlockPos source) {
         this.networkId = network;
         this.amount = amount;
         this.stack = stack;
-        this.singleMode = singleMode;
+        this.parallelMode = parallelMode;
         this.source = source;
     }
 
@@ -34,7 +34,7 @@ public class TaskCreatePacket extends Message {
         context.enqueueWork(() -> {
             for (Network network : NetworkManager.get(context.getSender().level()).getNetworks()) {
                 if (network.getId().equals(networkId) && network instanceof MatterNetwork matterNetwork){
-                    var task = new ReplicationTask(stack, amount, singleMode ? IReplicationTask.Mode.SINGLE : IReplicationTask.Mode.MULTIPLE, source);
+                    var task = new ReplicationTask(stack, amount, parallelMode ? IReplicationTask.Mode.MULTIPLE : IReplicationTask.Mode.SINGLE, source);
                     matterNetwork.getTaskManager().getPendingTasks().put(task.getUuid().toString(), task);
                     break;
                 }
