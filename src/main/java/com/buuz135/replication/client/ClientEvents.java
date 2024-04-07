@@ -5,10 +5,12 @@ import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.ReplicatorBlock;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
+import com.buuz135.replication.block.tile.MatterTankBlockEntity;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
 import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
 import com.buuz135.replication.client.render.MatterPipeRenderer;
 import com.buuz135.replication.client.render.IdentificationChamberRenderer;
+import com.buuz135.replication.client.render.MatterTankRenderer;
 import com.buuz135.replication.client.render.ReplicatorRenderer;
 import com.buuz135.replication.client.render.shader.ReplicationRenderTypes;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
@@ -75,6 +77,7 @@ public class ClientEvents {
         EventManager.mod(EntityRenderersEvent.RegisterRenderers.class).process(event -> {
             event.registerBlockEntityRenderer((BlockEntityType<? extends ReplicatorBlockEntity>)ReplicationRegistry.Blocks.REPLICATOR.getRight().get(), p_173571_ -> new ReplicatorRenderer());
             event.registerBlockEntityRenderer((BlockEntityType<? extends MatterPipeBlockEntity>)ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getRight().get(), MatterPipeRenderer::new);
+            event.registerBlockEntityRenderer((BlockEntityType<? extends MatterTankBlockEntity>)ReplicationRegistry.Blocks.MATTER_TANK.getRight().get(), MatterTankRenderer::new);
             event.registerBlockEntityRenderer((BlockEntityType<? extends IdentificationChamberBlockEntity>)ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.getRight().get(), p_173571_ -> new IdentificationChamberRenderer());
         }).subscribe();
         EventManager.mod(ModelEvent.BakingCompleted.class).process(event -> {

@@ -29,7 +29,7 @@ public class MatterTankBlockEntity extends NetworkBlockEntity<MatterTankBlockEnt
 
     public MatterTankBlockEntity(BasicTileBlock<MatterTankBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
-        this.tank = new MatterTankComponent<MatterTankBlockEntity>("tank", 256000, 40 , 28).setTankAction(FluidTankComponent.Action.BOTH).setOnContentChange(this::onTankContentChange);
+        this.tank = new MatterTankComponent<MatterTankBlockEntity>("tank", 256000, 78, 28).setTankAction(FluidTankComponent.Action.BOTH).setOnContentChange(this::onTankContentChange);
         this.addMatterTank(this.tank);
     }
 
