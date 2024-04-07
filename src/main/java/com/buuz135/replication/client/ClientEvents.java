@@ -71,11 +71,15 @@ public class ClientEvents {
             event.registerBlockEntityRenderer((BlockEntityType<? extends MatterPipeBlockEntity>)ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getRight().get(), MatterPipeRenderer::new);
             event.registerBlockEntityRenderer((BlockEntityType<? extends MatterTankBlockEntity>)ReplicationRegistry.Blocks.MATTER_TANK.getRight().get(), MatterTankRenderer::new);
             event.registerBlockEntityRenderer((BlockEntityType<? extends DisintegratorBlockEntity>)ReplicationRegistry.Blocks.DISINTEGRATOR.getRight().get(), DisintegratorRenderer::new);
+            event.registerBlockEntityRenderer((BlockEntityType<? extends ChipStorageBlockEntity>)ReplicationRegistry.Blocks.CHIP_STORAGE.getRight().get(), ChipStorageRenderer::new);
             event.registerBlockEntityRenderer((BlockEntityType<? extends IdentificationChamberBlockEntity>)ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.getRight().get(), p_173571_ -> new IdentificationChamberRenderer());
         }).subscribe();
         EventManager.mod(ModelEvent.BakingCompleted.class).process(event -> {
             ReplicatorRenderer.PLATE = bakeModel(new ResourceLocation(Replication.MOD_ID, "block/replicator_plate"), event.getModelBakery());
             DisintegratorRenderer.BLADE = bakeModel(new ResourceLocation(Replication.MOD_ID, "block/disintegrator_blade"), event.getModelBakery());
+            for (int i = 0; i < 8; i++) {
+                ChipStorageRenderer.CHIP_MODELS.add(bakeModel(new ResourceLocation(Replication.MOD_ID, "block/chips/chip_storage_chips_" + i), event.getModelBakery()));
+            }
         }).subscribe();
         EventManager.forge(RenderHighlightEvent.Block.class).process(ClientEvents::blockOverlayEvent).subscribe();
 

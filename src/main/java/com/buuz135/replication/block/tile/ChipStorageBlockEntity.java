@@ -33,7 +33,7 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
         super(base, blockEntityType, pos, state);
         this.cachedPatters = new ArrayList<>();
         this.hasInvChanged = false;
-        this.chips = (SidedInventoryComponent<ChipStorageBlockEntity>) new SidedInventoryComponent<ChipStorageBlockEntity>("input", 58, 22, 8, 0).
+        this.chips = (SidedInventoryComponent<ChipStorageBlockEntity>) new SidedInventoryComponent<ChipStorageBlockEntity>("input", 68, 18, 8, 0).
                 setColor(DyeColor.LIGHT_BLUE).
                 setSlotPosition(integer -> getSlotPos(integer)).
                 setSlotLimit(1).
@@ -58,7 +58,6 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
         super.serverTick(level, pos, state, blockEntity);
         if (hasInvChanged){
             notifyNetworkOfSlotChange();
-
         }
     }
 
@@ -72,6 +71,7 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
 
     private void notifyNetworkOfSlotChange() {
         if (isServer()){
+            syncObject(this.chips);
             cachePatterns();
             this.getNetwork().onChipValuesChanged(this, this.worldPosition);
         }
@@ -99,16 +99,16 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
     }
 
     public static Pair<Integer, Integer> getSlotPos(int slot) {
-        int slotSpacing = 22;
+        int slotSpacing = 21;
         int offset = 2;
         return switch (slot) {
-            case 1 -> Pair.of(slotSpacing, -offset);
-            case 2 -> Pair.of(slotSpacing * 2, 0);
-            case 3 -> Pair.of(-offset, slotSpacing);
-            case 4 -> Pair.of(slotSpacing * 2 + offset, slotSpacing);
-            case 5 -> Pair.of(0, slotSpacing * 2);
-            case 6 -> Pair.of(slotSpacing, slotSpacing * 2 + offset);
-            case 7 -> Pair.of(slotSpacing * 2, slotSpacing * 2);
+            case 1 -> Pair.of(slotSpacing, 0);
+            case 2 -> Pair.of(slotSpacing * 2, slotSpacing);
+            case 3 -> Pair.of(slotSpacing * 2, slotSpacing * 2);
+            case 4 -> Pair.of(slotSpacing , slotSpacing * 3);
+            case 5 -> Pair.of(0, slotSpacing * 3);
+            case 6 -> Pair.of(-slotSpacing, slotSpacing * 2);
+            case 7 -> Pair.of(-slotSpacing, slotSpacing);
             default -> Pair.of(0, 0);
         };
     }
