@@ -57,8 +57,6 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     private SidedInventoryComponent<?> memoryChipInput;
     @Save
     private SidedInventoryComponent<?> memoryChipOutput;
-    private ButtonComponent buttonComponent;
-
 
     public IdentificationChamberBlockEntity(BasicTileBlock<IdentificationChamberBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);

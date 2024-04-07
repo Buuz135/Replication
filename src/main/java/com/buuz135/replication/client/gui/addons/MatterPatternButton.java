@@ -16,18 +16,21 @@ public final class MatterPatternButton {
     private final MatterPattern pattern;
     private int cachedAmount;
     private long createdWhen;
+    private boolean shouldDisplayAnimation;
 
-    public MatterPatternButton(MatterPattern pattern, int cachedAmount, long createdWhen) {
+    public MatterPatternButton(MatterPattern pattern, int cachedAmount, long createdWhen, String network) {
         this.pattern = pattern;
         this.cachedAmount = cachedAmount;
         this.createdWhen = createdWhen;
+        this.shouldDisplayAnimation = true;
+        recalculateAmount(network);
     }
 
     public void render(GuiGraphics guiGraphics, int x, int y, double mouseX, double mouseY) {
         guiGraphics.renderItem(this.pattern.getStack(), x, y);
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 200);
-        if (cachedAmount == -1) {
+        if (shouldDisplayAnimation) {
             var speed = 3;
             guiGraphics.drawString(Minecraft.getInstance().font, ((Minecraft.getInstance().level.getGameTime() / speed) % 3 == 0 ? "·" : ".")
                     + ((Minecraft.getInstance().level.getGameTime() / speed) % 3 == 1 ? "·" : ".")
@@ -56,6 +59,10 @@ public final class MatterPatternButton {
         }
     }
 
+    public void setShouldDisplayAnimation(boolean shouldDisplayAnimation) {
+        this.shouldDisplayAnimation = shouldDisplayAnimation;
+    }
+
     public MatterPattern pattern() {
         return pattern;
     }
@@ -76,4 +83,7 @@ public final class MatterPatternButton {
         this.createdWhen = createdWhen;
     }
 
+    public boolean isShouldDisplayAnimation() {
+        return shouldDisplayAnimation;
+    }
 }

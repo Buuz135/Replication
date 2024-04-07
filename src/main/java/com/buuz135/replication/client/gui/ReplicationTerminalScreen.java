@@ -10,6 +10,8 @@ import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.packet.PatternSyncStoragePacket;
 import com.buuz135.replication.packet.TaskCreatePacket;
+import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -21,11 +23,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ReplicationTerminalScreen extends AbstractContainerScreen<ReplicationTerminalContainer> {
 
-    private static ResourceLocation TEXTURE = new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal.png");
+    public static ResourceLocation TEXTURE = new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal.png");
 
     private EditBox searchBox;
     private PatternMenu patternMenu;
@@ -33,12 +38,15 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     private boolean scrolling;
     private List<MatterTankDisplay> matterTankDisplays;
     private ReplicationRequestWidget replicationRequestWidget;
+    private ReplicationTerminalConfigButton sortingType;
+    private ReplicationTerminalConfigButton sortingDirection;
 
     public ReplicationTerminalScreen(ReplicationTerminalContainer container, Inventory inventory, Component component) {
         super(container, inventory, component);
         this.imageWidth = 220;
         this.imageHeight = 256;
         this.inventoryLabelY = 124;
+        this.titleLabelY = -10;
     }
 
     @Override
@@ -50,6 +58,24 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         this.searchBox.setVisible(true);
         this.searchBox.setTextColor(16777215);
         this.addWidget(this.searchBox);
+
+
+        this.addRenderableWidget(this.sortingType = new ReplicationTerminalConfigButton(this.leftPos - 18,this.topPos + 4, 16,16, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_TYPE, this.menu.getSortingType()){
+            @Override
+            public void onPress() {
+                super.onPress();
+                scrollOffs = 0;
+                patternMenu.scrollTo(0);
+            }
+        });
+        this.addRenderableWidget(this.sortingDirection = new ReplicationTerminalConfigButton(this.leftPos - 18,this.topPos + 4 + 18, 16,16, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_DIRECTION, this.menu.getSortingValue()){
+            @Override
+            public void onPress() {
+                super.onPress();
+                scrollOffs = 0;
+                patternMenu.scrollTo(0);
+            }
+        });
 
         this.patternMenu = new PatternMenu();
         this.matterTankDisplays = new ArrayList<>();
@@ -100,16 +126,25 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     protected void containerTick() {
         super.containerTick();
         this.searchBox.tick();
+        var shouldSort = false;
         for (MatterPatternButton matterPatternButton : this.patternMenu.matterPatternButtonList) {
-            if (matterPatternButton.cachedAmount() == -1 && (matterPatternButton.createdWhen() + 1*20) < Minecraft.getInstance().level.getGameTime()){
-                matterPatternButton.recalculateAmount(this.menu.getNetwork());
+            if (matterPatternButton.isShouldDisplayAnimation() && (matterPatternButton.createdWhen() + 1*20) < Minecraft.getInstance().level.getGameTime()){
+                matterPatternButton.setShouldDisplayAnimation(false);
+                shouldSort = true;
             }
+        }
+        if (shouldSort) {
+            scrollOffs = 0;
+            patternMenu.scrollTo(0);
         }
     }
 
     @Override
     protected void renderLabels(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
-        if (this.replicationRequestWidget == null) super.renderLabels(pGuiGraphics, pMouseX, pMouseY);
+        if (this.replicationRequestWidget == null) {
+            pGuiGraphics.drawString(this.font, this.title.copy().withStyle(ChatFormatting.WHITE), this.titleLabelX + 40, this.titleLabelY, Color.WHITE.getRGB(), true);
+            pGuiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
+        }
     }
 
     protected boolean insideScrollbar(double p_98524_, double p_98525_) {
@@ -223,7 +258,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     public void refreshPatterns() {
         this.patternMenu.matterPatternButtonList = PatternSyncStoragePacket.CLIENT_PATTERN_STORAGE.getOrDefault(this.menu.getNetwork(), new HashMap<>())
-                .values().stream().flatMap(Collection::stream).map(stack -> new MatterPatternButton(new MatterPattern(stack, 1), -1, Minecraft.getInstance().level.getGameTime())).toList();
+                .values().stream().flatMap(Collection::stream).map(stack -> new MatterPatternButton(new MatterPattern(stack, 1), -1, Minecraft.getInstance().level.getGameTime(), this.menu.getNetwork())).collect(Collectors.toList());
         this.patternMenu.scrollTo(this.scrollOffs);
     }
 
@@ -288,6 +323,15 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             int i = this.getRowIndexForScroll(p_98643_);
             this.visibleButtons = new ArrayList<>();
             var filtered = getFilteredPatterns();
+            Comparator<MatterPatternButton> comparator = Comparator.comparingInt(MatterPatternButton::cachedAmount);
+            if (ReplicationTerminalScreen.this.sortingType.getState() == 1){
+                  comparator = Comparator.comparing(matterPatternButton -> matterPatternButton.pattern().getStack().getDisplayName().getString().toLowerCase());
+                  comparator = comparator.reversed();
+            }
+            if (ReplicationTerminalScreen.this.sortingDirection.getState() == 1){
+                comparator = comparator.reversed();
+            }
+            filtered.sort(comparator);
             for(int j = 0; j < 5; ++j) {
                 for(int k = 0; k < 9; ++k) {
                     int l = k + (j + i) * 9;
@@ -308,7 +352,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         private List<MatterPatternButton> getFilteredPatterns(){
             var textValue = ReplicationTerminalScreen.this.searchBox.getValue().toLowerCase();
             if (textValue.isBlank()) return this.matterPatternButtonList;
-            return this.matterPatternButtonList.stream().filter(matterPatternButton -> matterPatternButton.pattern().getStack().getDisplayName().getString().toLowerCase().contains(textValue)).toList();
+            return this.matterPatternButtonList.stream().filter(matterPatternButton -> matterPatternButton.pattern().getStack().getDisplayName().getString().toLowerCase().contains(textValue)).collect(Collectors.toList());
         }
 
         public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
