@@ -22,10 +22,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReplicationTerminalScreen extends AbstractContainerScreen<ReplicationTerminalContainer> {
@@ -60,19 +61,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         this.addWidget(this.searchBox);
 
 
-        this.addRenderableWidget(this.sortingType = new ReplicationTerminalConfigButton(this.leftPos - 18,this.topPos + 4, 16,16, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_TYPE, this.menu.getSortingType()){
-            @Override
-            public void onPress() {
-                super.onPress();
-                scrollOffs = 0;
-                patternMenu.scrollTo(0);
-            }
-            @Override
-            protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-                if (replicationRequestWidget != null) super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
-            }
-        });
-        this.addRenderableWidget(this.sortingDirection = new ReplicationTerminalConfigButton(this.leftPos - 18,this.topPos + 4 + 18, 16,16, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_DIRECTION, this.menu.getSortingValue()){
+        this.addRenderableWidget(this.sortingType = new ReplicationTerminalConfigButton(this.leftPos - 18, this.topPos + 4, 16, 16, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_TYPE, this.menu.getSortingType()) {
             @Override
             public void onPress() {
                 super.onPress();
@@ -82,7 +71,20 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
             @Override
             protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-                if (replicationRequestWidget != null) super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
+                if (replicationRequestWidget == null) super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            }
+        });
+        this.addRenderableWidget(this.sortingDirection = new ReplicationTerminalConfigButton(this.leftPos - 18, this.topPos + 4 + 18, 16, 16, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_DIRECTION, this.menu.getSortingValue()) {
+            @Override
+            public void onPress() {
+                super.onPress();
+                scrollOffs = 0;
+                patternMenu.scrollTo(0);
+            }
+
+            @Override
+            protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+                if (replicationRequestWidget == null) super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
             }
         });
 
@@ -108,7 +110,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         int y = this.topPos;
 
 
-        if (this.replicationRequestWidget != null){
+        if (this.replicationRequestWidget != null) {
             this.replicationRequestWidget.renderWidget(guiGraphics, mouseX, mouseY, v);
         } else {
             guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
@@ -118,15 +120,15 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             int k = this.topPos + 18;
             int i = k + 90;
 
-            guiGraphics.blit(TEXTURE, j, k + (int)((float)(i - k - 17) * this.scrollOffs), 232 + (this.patternMenu.canScroll() ? 0 : 12), 0, 12, 15);
+            guiGraphics.blit(TEXTURE, j, k + (int) ((float) (i - k - 17) * this.scrollOffs), 232 + (this.patternMenu.canScroll() ? 0 : 12), 0, 12, 15);
 
             for (int matterButtonIndex = 0; matterButtonIndex < this.patternMenu.visibleButtons.size(); matterButtonIndex++) {
                 var patternButton = this.patternMenu.visibleButtons.get(matterButtonIndex);
-                patternButton.render(guiGraphics, this.leftPos + (matterButtonIndex % 9)*18 + 9, this.topPos + (matterButtonIndex / 9)*18 + 18, mouseX, mouseY);
+                patternButton.render(guiGraphics, this.leftPos + (matterButtonIndex % 9) * 18 + 9, this.topPos + (matterButtonIndex / 9) * 18 + 18, mouseX, mouseY);
             }
             for (int displayIndex = 0; displayIndex < this.matterTankDisplays.size(); displayIndex++) {
                 var matterTankDisplay = this.matterTankDisplays.get(displayIndex);
-                matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize() -23, this.topPos + displayIndex*20 + 10, mouseX, mouseY);
+                matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize() - 23, this.topPos + displayIndex * 20 + 10, mouseX, mouseY);
             }
         }
     }
@@ -137,7 +139,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         this.searchBox.tick();
         var shouldSort = false;
         for (MatterPatternButton matterPatternButton : this.patternMenu.matterPatternButtonList) {
-            if (matterPatternButton.isShouldDisplayAnimation() && (matterPatternButton.createdWhen() + 1*20) < Minecraft.getInstance().level.getGameTime()){
+            if (matterPatternButton.isShouldDisplayAnimation() && (matterPatternButton.createdWhen() + 20) < Minecraft.getInstance().level.getGameTime()) {
                 matterPatternButton.setShouldDisplayAnimation(false);
                 shouldSort = true;
             }
@@ -194,7 +196,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if (pButton == 0) {
-            if (this.replicationRequestWidget == null){
+            if (this.replicationRequestWidget == null) {
                 if (this.insideScrollbar(pMouseX, pMouseY)) {
                     this.scrolling = this.patternMenu.canScroll();
                     int i = this.topPos + 18;
@@ -204,7 +206,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
                     this.patternMenu.scrollTo(this.scrollOffs);
                     return true;
                 }
-                if (this.patternMenu.mouseClicked(pMouseX, pMouseY, pButton)){
+                if (this.patternMenu.mouseClicked(pMouseX, pMouseY, pButton)) {
                     return true;
                 }
             }
@@ -220,10 +222,11 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         }
         return super.mouseReleased(p_98622_, p_98623_, p_98624_);
     }
+
     @Override
     public boolean charTyped(char pCodePoint, int pModifiers) {
         String s = this.searchBox.getValue();
-        if (this.replicationRequestWidget == null){
+        if (this.replicationRequestWidget == null) {
             if (this.searchBox.charTyped(pCodePoint, pModifiers)) {
                 if (!Objects.equals(s, this.searchBox.getValue())) {
                     this.patternMenu.scrollTo(0f);
@@ -246,28 +249,36 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     @Override
     public boolean keyPressed(int p_98547_, int p_98548_, int p_98549_) {
         String s = this.searchBox.getValue();
-        if (this.replicationRequestWidget == null){
+        if (this.replicationRequestWidget == null) {
             if (this.searchBox.keyPressed(p_98547_, p_98548_, p_98549_)) {
                 if (!Objects.equals(s, this.searchBox.getValue())) {
                     this.patternMenu.scrollTo(0f);
                 }
                 return true;
             } else {
-                return this.searchBox.isFocused() && this.searchBox.isVisible() && p_98547_ != 256 ? true : super.keyPressed(p_98547_, p_98548_, p_98549_);
+                return this.searchBox.isFocused() && this.searchBox.isVisible() && p_98547_ != 256 || super.keyPressed(p_98547_, p_98548_, p_98549_);
             }
         } else {
             if (this.replicationRequestWidget.getAmountBox().keyPressed(p_98547_, p_98548_, p_98549_)) {
                 return true;
             } else {
-                return this.replicationRequestWidget.getAmountBox().isFocused() && this.replicationRequestWidget.getAmountBox().isVisible() && p_98547_ != 256 ? true : super.keyPressed(p_98547_, p_98548_, p_98549_);
+                return this.replicationRequestWidget.getAmountBox().isFocused() && this.replicationRequestWidget.getAmountBox().isVisible() && p_98547_ != 256 || super.keyPressed(p_98547_, p_98548_, p_98549_);
             }
         }
 
     }
 
     public void refreshPatterns() {
-        this.patternMenu.matterPatternButtonList = PatternSyncStoragePacket.CLIENT_PATTERN_STORAGE.getOrDefault(this.menu.getNetwork(), new HashMap<>())
+        this.patternMenu.matterPatternButtonList = new ArrayList<>();
+        List<ItemStack> existing = new ArrayList<>();
+        var temp = PatternSyncStoragePacket.CLIENT_PATTERN_STORAGE.getOrDefault(this.menu.getNetwork(), new HashMap<>())
                 .values().stream().flatMap(Collection::stream).map(stack -> new MatterPatternButton(new MatterPattern(stack, 1), -1, Minecraft.getInstance().level.getGameTime(), this.menu.getNetwork())).collect(Collectors.toList());
+        for (MatterPatternButton matterPatternButton : temp) {
+            if (existing.stream().noneMatch(o -> ItemStack.isSameItemSameTags(o, matterPatternButton.pattern().getStack()))) {
+                this.patternMenu.matterPatternButtonList.add(matterPatternButton);
+                existing.add(matterPatternButton.pattern().getStack());
+            }
+        }
         this.patternMenu.scrollTo(this.scrollOffs);
     }
 
@@ -279,31 +290,29 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             this.matterTankDisplays.add(new MatterTankDisplay(value, entries.getOrDefault(value, 0L)));
         }
         for (MatterPatternButton matterPatternButton : this.patternMenu.matterPatternButtonList) {
-            if (matterPatternButton.cachedAmount() != -1){
-                matterPatternButton.recalculateAmount(this.menu.getNetwork());
-            }
+            matterPatternButton.recalculateAmount(this.menu.getNetwork());
         }
     }
 
-    public void enableRequest(ReplicationRequestWidget widget){
+    public void enableRequest(ReplicationRequestWidget widget) {
         this.replicationRequestWidget = widget;
         this.menu.setEnabled(false);
         this.replicationRequestWidget.getWidgets().forEach(this::addWidget);
     }
 
-    public void disableRequest(){
+    public void disableRequest() {
         this.replicationRequestWidget.getWidgets().forEach(abstractWidget -> this.children().remove(abstractWidget));
         this.replicationRequestWidget = null;
         this.menu.setEnabled(true);
     }
 
-    public void createTask(MatterPattern pattern, int i, boolean singleMode){
+    public void createTask(MatterPattern pattern, int i, boolean singleMode) {
         Replication.NETWORK.get().sendToServer(new TaskCreatePacket(this.menu.getNetwork(), i, pattern.getStack(), singleMode, this.menu.getPosition()));
         disableRequest();
     }
 
 
-    public class PatternMenu  {
+    public class PatternMenu {
         public List<MatterPatternButton> matterPatternButtonList = new ArrayList<>();
         public List<MatterPatternButton> visibleButtons = new ArrayList<>();
 
@@ -317,15 +326,15 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         }
 
         protected int getRowIndexForScroll(float p_259664_) {
-            return Math.max((int)((double)(p_259664_ * (float)this.calculateRowCount()) + 0.5), 0);
+            return Math.max((int) ((double) (p_259664_ * (float) this.calculateRowCount()) + 0.5), 0);
         }
 
         protected float getScrollForRowIndex(int p_259315_) {
-            return Mth.clamp((float)p_259315_ / (float)this.calculateRowCount(), 0.0F, 1.0F);
+            return Mth.clamp((float) p_259315_ / (float) this.calculateRowCount(), 0.0F, 1.0F);
         }
 
         protected float subtractInputFromScroll(float p_259841_, double p_260358_) {
-            return Mth.clamp(p_259841_ - (float)(p_260358_ / (double)this.calculateRowCount()), 0.0F, 1.0F);
+            return Mth.clamp(p_259841_ - (float) (p_260358_ / (double) this.calculateRowCount()), 0.0F, 1.0F);
         }
 
         public void scrollTo(float p_98643_) {
@@ -333,16 +342,16 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             this.visibleButtons = new ArrayList<>();
             var filtered = getFilteredPatterns();
             Comparator<MatterPatternButton> comparator = Comparator.comparingInt(MatterPatternButton::cachedAmount);
-            if (ReplicationTerminalScreen.this.sortingType.getState() == 1){
-                  comparator = Comparator.comparing(matterPatternButton -> matterPatternButton.pattern().getStack().getDisplayName().getString().toLowerCase());
-                  comparator = comparator.reversed();
+            if (ReplicationTerminalScreen.this.sortingType.getState() == 1) {
+                comparator = Comparator.comparing(matterPatternButton -> matterPatternButton.pattern().getStack().getDisplayName().getString().toLowerCase());
+                comparator = comparator.reversed();
             }
-            if (ReplicationTerminalScreen.this.sortingDirection.getState() == 1){
+            if (ReplicationTerminalScreen.this.sortingDirection.getState() == 1) {
                 comparator = comparator.reversed();
             }
             filtered.sort(comparator);
-            for(int j = 0; j < 5; ++j) {
-                for(int k = 0; k < 9; ++k) {
+            for (int j = 0; j < 5; ++j) {
+                for (int k = 0; k < 9; ++k) {
                     int l = k + (j + i) * 9;
                     if (l >= 0 && l < filtered.size()) {
                         this.visibleButtons.add(filtered.get(l));
@@ -358,7 +367,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             return getFilteredPatterns().size() > 45;
         }
 
-        private List<MatterPatternButton> getFilteredPatterns(){
+        private List<MatterPatternButton> getFilteredPatterns() {
             var textValue = ReplicationTerminalScreen.this.searchBox.getValue().toLowerCase();
             if (textValue.isBlank()) return this.matterPatternButtonList;
             return this.matterPatternButtonList.stream().filter(matterPatternButton -> matterPatternButton.pattern().getStack().getDisplayName().getString().toLowerCase().contains(textValue)).collect(Collectors.toList());
@@ -366,8 +375,8 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
         public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
             for (int matterButtonIndex = 0; matterButtonIndex < this.visibleButtons.size(); matterButtonIndex++) {
-                if (pMouseX > ReplicationTerminalScreen.this.leftPos + (matterButtonIndex % 9)*18 + 9 && pMouseX < ReplicationTerminalScreen.this.leftPos + (matterButtonIndex % 9)*18 + 9 + 18
-                        && pMouseY > ReplicationTerminalScreen.this.topPos + (matterButtonIndex / 9)*18 + 18 && pMouseY < ReplicationTerminalScreen.this.topPos + (matterButtonIndex / 9)*18 + 18 + 18){
+                if (pMouseX > ReplicationTerminalScreen.this.leftPos + (matterButtonIndex % 9) * 18 + 9 && pMouseX < ReplicationTerminalScreen.this.leftPos + (matterButtonIndex % 9) * 18 + 9 + 18
+                        && pMouseY > ReplicationTerminalScreen.this.topPos + (matterButtonIndex / 9) * 18 + 18 && pMouseY < ReplicationTerminalScreen.this.topPos + (matterButtonIndex / 9) * 18 + 18 + 18) {
                     var patternButton = this.visibleButtons.get(matterButtonIndex);
                     ReplicationTerminalScreen.this.enableRequest(new ReplicationRequestWidget((ReplicationTerminalScreen.this.width - 177) / 2,
                             (ReplicationTerminalScreen.this.height - 102) / 2, 177, 102, Component.translatable("replication.request_amount"), patternButton, ReplicationTerminalScreen.this));

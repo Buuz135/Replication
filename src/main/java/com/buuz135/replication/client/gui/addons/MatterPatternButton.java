@@ -52,10 +52,12 @@ public final class MatterPatternButton {
         var aqValues = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(pattern.getStack());
         this.cachedAmount = Integer.MAX_VALUE;
         var networkValues = MatterFluidSyncPacket.CLIENT_MATTER_STORAGE.get(network);
-        for (CompoundInstance aqValue : aqValues) {
-            var matterType = ((ReplicationCompoundType) aqValue.getType()).getMatterType();
-            var amount = aqValue.getAmount();
-            this.cachedAmount = (int) Math.min(this.cachedAmount, Math.min(Integer.MAX_VALUE, networkValues.getOrDefault(matterType, 0L) / amount));
+        if (networkValues != null){
+            for (CompoundInstance aqValue : aqValues) {
+                var matterType = ((ReplicationCompoundType) aqValue.getType()).getMatterType();
+                var amount = aqValue.getAmount();
+                this.cachedAmount = (int) Math.min(this.cachedAmount, Math.min(Integer.MAX_VALUE, networkValues.getOrDefault(matterType, 0L) / amount));
+            }
         }
     }
 
