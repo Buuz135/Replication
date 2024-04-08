@@ -5,7 +5,7 @@ import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.api.pattern.MatterPattern;
 import com.buuz135.replication.client.gui.addons.MatterPatternButton;
-import com.buuz135.replication.client.gui.addons.MatterTankDisplay;
+import com.buuz135.replication.client.gui.addons.TerminalMatterValueDisplay;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.packet.PatternSyncStoragePacket;
@@ -37,14 +37,14 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     private PatternMenu patternMenu;
     private float scrollOffs;
     private boolean scrolling;
-    private List<MatterTankDisplay> matterTankDisplays;
+    private List<TerminalMatterValueDisplay> terminalMatterValueDisplays;
     private ReplicationRequestWidget replicationRequestWidget;
     private ReplicationTerminalConfigButton sortingType;
     private ReplicationTerminalConfigButton sortingDirection;
 
     public ReplicationTerminalScreen(ReplicationTerminalContainer container, Inventory inventory, Component component) {
         super(container, inventory, component);
-        this.imageWidth = 220;
+        this.imageWidth = 195;
         this.imageHeight = 256;
         this.inventoryLabelY = 124;
         this.titleLabelY = -10;
@@ -89,7 +89,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         });
 
         this.patternMenu = new PatternMenu();
-        this.matterTankDisplays = new ArrayList<>();
+        this.terminalMatterValueDisplays = new ArrayList<>();
 
         this.refreshPatterns();
         this.refreshTanks();
@@ -114,6 +114,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             this.replicationRequestWidget.renderWidget(guiGraphics, mouseX, mouseY, v);
         } else {
             guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+            guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), x + this.imageWidth, y + 4, 0, 0, 59, 63);
             this.searchBox.render(guiGraphics, mouseX, mouseY, v);
 
             int j = this.leftPos + 175;
@@ -126,9 +127,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
                 var patternButton = this.patternMenu.visibleButtons.get(matterButtonIndex);
                 patternButton.render(guiGraphics, this.leftPos + (matterButtonIndex % 9) * 18 + 9, this.topPos + (matterButtonIndex / 9) * 18 + 18, mouseX, mouseY);
             }
-            for (int displayIndex = 0; displayIndex < this.matterTankDisplays.size(); displayIndex++) {
-                var matterTankDisplay = this.matterTankDisplays.get(displayIndex);
-                matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize() - 23, this.topPos + displayIndex * 20 + 10, mouseX, mouseY);
+            for (int displayIndex = 0; displayIndex < this.terminalMatterValueDisplays.size(); displayIndex++) {
+                var matterTankDisplay = this.terminalMatterValueDisplays.get(displayIndex);
+                matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize() + (displayIndex % 3) * 18 , this.topPos + (displayIndex / 3) * 18 + 7, mouseX, mouseY);
             }
         }
     }
@@ -283,11 +284,11 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     }
 
     public void refreshTanks() {
-        this.matterTankDisplays = new ArrayList<>();
+        this.terminalMatterValueDisplays = new ArrayList<>();
         var entries = MatterFluidSyncPacket.CLIENT_MATTER_STORAGE.get(this.menu.getNetwork());
         for (IMatterType value : MatterType.values()) {
             if (value.equals(MatterType.EMPTY)) continue;
-            this.matterTankDisplays.add(new MatterTankDisplay(value, entries.getOrDefault(value, 0L)));
+            this.terminalMatterValueDisplays.add(new TerminalMatterValueDisplay(value, entries.getOrDefault(value, 0L)));
         }
         for (MatterPatternButton matterPatternButton : this.patternMenu.matterPatternButtonList) {
             matterPatternButton.recalculateAmount(this.menu.getNetwork());
