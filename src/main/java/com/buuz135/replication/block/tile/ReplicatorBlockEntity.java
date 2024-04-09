@@ -2,7 +2,13 @@ package com.buuz135.replication.block.tile;
 
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.hrznstudio.titanium.annotation.Save;
+import com.hrznstudio.titanium.api.redstone.IRedstoneReader;
+import com.hrznstudio.titanium.api.redstone.IRedstoneState;
 import com.hrznstudio.titanium.block.BasicTileBlock;
+import com.hrznstudio.titanium.block.redstone.RedstoneAction;
+import com.hrznstudio.titanium.block.redstone.RedstoneManager;
+import com.hrznstudio.titanium.block.redstone.RedstoneState;
+import com.hrznstudio.titanium.component.button.RedstoneControlButtonComponent;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
@@ -14,6 +20,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -21,7 +28,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
-public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEntity>{
+public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEntity> implements IRedstoneReader {
 
     public static final int MAX_PROGRESS = 200;
     public static final int POWER_TICK = 80;
@@ -40,6 +47,9 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     @Save
     private ItemStack craftingStack;
     private IReplicationTask cachedReplicationTask;
+    @Save
+    private RedstoneManager<RedstoneAction> redstoneManager;
+    private RedstoneControlButtonComponent<RedstoneAction> redstoneButton;
 
 
     public ReplicatorBlockEntity(BasicTileBlock<ReplicatorBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
@@ -55,33 +65,37 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
                 .setColor(DyeColor.ORANGE)
                 .setInputFilter((stack, integer) -> false);
         addInventory(this.output);
+        this.redstoneManager = new RedstoneManager<>(RedstoneAction.IGNORE, false);
+        this.addButton(redstoneButton = new RedstoneControlButtonComponent<>(154, 84, 14, 14, () -> this.redstoneManager, () -> this));
     }
 
     @Override
     public void serverTick(Level level, BlockPos pos, BlockState state, ReplicatorBlockEntity blockEntity) {
         super.serverTick(level, pos, state, blockEntity);
-        tickProgress();
-        this.progressBarComponent.setProgress(this.action == 1 ? MAX_PROGRESS - progress : MAX_PROGRESS + progress);
-        syncObject(this.progressBarComponent);
-        if (this.level.getGameTime() % 20 == 0 && this.craftingTask == null){
-            var task = this.getNetwork().getTaskManager().findTaskForReplicator(this.getBlockPos());
-            if (task != null){
-                task.acceptReplicator(this.getBlockPos());
-                this.craftingTask = task.getUuid().toString();
-                this.cachedReplicationTask = task;
-                this.craftingStack = task.getReplicatingStack();
+        if (this.redstoneManager.getAction().canRun(this.getEnvironmentValue(false, null)) && this.redstoneManager.shouldWork()){
+            tickProgress();
+            this.progressBarComponent.setProgress(this.action == 1 ? MAX_PROGRESS - progress : MAX_PROGRESS + progress);
+            syncObject(this.progressBarComponent);
+            if (this.level.getGameTime() % 20 == 0 && this.craftingTask == null){
+                var task = this.getNetwork().getTaskManager().findTaskForReplicator(this.getBlockPos());
+                if (task != null){
+                    task.acceptReplicator(this.getBlockPos());
+                    this.craftingTask = task.getUuid().toString();
+                    this.cachedReplicationTask = task;
+                    this.craftingStack = task.getReplicatingStack();
+                    syncObject(this.craftingStack);
+                }
+            }
+            if (this.level.getGameTime() % 20 == 0 && this.craftingTask != null && this.cachedReplicationTask == null
+                    && this.getNetwork().getTaskManager().getPendingTasks().containsKey(this.craftingTask)){
+                this.cachedReplicationTask = this.getNetwork().getTaskManager().getPendingTasks().get(this.craftingTask);
+                this.craftingStack = this.cachedReplicationTask.getReplicatingStack();
                 syncObject(this.craftingStack);
             }
-        }
-        if (this.level.getGameTime() % 20 == 0 && this.craftingTask != null && this.cachedReplicationTask == null
-                && this.getNetwork().getTaskManager().getPendingTasks().containsKey(this.craftingTask)){
-            this.cachedReplicationTask = this.getNetwork().getTaskManager().getPendingTasks().get(this.craftingTask);
-            this.craftingStack = this.cachedReplicationTask.getReplicatingStack();
-            syncObject(this.craftingStack);
-        }
-        if (this.level.getGameTime() % 20 == 0 && this.craftingTask != null && this.cachedReplicationTask != null
-                && !this.cachedReplicationTask.getStoredMatterStack().containsKey(this.getBlockPos().asLong())){
-            this.cachedReplicationTask.storeMatterStacksFor(this.level, this.getBlockPos(), this.getNetwork());
+            if (this.level.getGameTime() % 20 == 0 && this.craftingTask != null && this.cachedReplicationTask != null
+                    && !this.cachedReplicationTask.getStoredMatterStack().containsKey(this.getBlockPos().asLong())){
+                this.cachedReplicationTask.storeMatterStacksFor(this.level, this.getBlockPos(), this.getNetwork());
+            }
         }
     }
 
@@ -144,6 +158,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         this.cachedReplicationTask = null;
         this.craftingStack = ItemStack.EMPTY;
         this.craftingTask = null;
+        this.redstoneManager.finish();
         syncObject(this.craftingStack);
     }
 
@@ -157,5 +172,23 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
 
     public ItemStack getCraftingStack() {
         return craftingStack;
+    }
+
+    @Override
+    public IRedstoneState getEnvironmentValue(boolean strongPower, Direction direction) {
+        if (strongPower) {
+            if (direction == null) {
+                return this.level.hasNeighborSignal(this.worldPosition) ? RedstoneState.ON : RedstoneState.OFF;
+            }
+            return this.level.hasSignal(this.worldPosition, direction) ? RedstoneState.ON : RedstoneState.OFF;
+        } else {
+            return this.level.getBestNeighborSignal(this.worldPosition) > 0 ? RedstoneState.ON : RedstoneState.OFF;
+        }
+    }
+
+    @Override
+    public void onNeighborChanged(Block blockIn, BlockPos fromPos) {
+        super.onNeighborChanged(blockIn, fromPos);
+        redstoneManager.setLastRedstoneState(this.getEnvironmentValue(false, null).isReceivingRedstone());
     }
 }

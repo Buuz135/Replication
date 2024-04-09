@@ -1,21 +1,17 @@
 package com.buuz135.replication.block.tile;
 
-import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
-import com.buuz135.replication.api.pattern.MatterPattern;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
-import com.buuz135.replication.packet.PatternSyncStoragePacket;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
-import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
-import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,13 +21,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,14 +33,26 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
 
     @Save
     private InventoryComponent<ReplicationTerminalBlockEntity> output;
+    @Save
+    private int sortingTypeValue;
+    @Save
+    private int sortingDirection;
     private TerminalPlayerTracker terminalPlayerTracker;
+
 
     public ReplicationTerminalBlockEntity(BasicTileBlock<ReplicationTerminalBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
         this.terminalPlayerTracker = new TerminalPlayerTracker();
+        this.sortingTypeValue = 0;
+        this.sortingDirection = 1;
         this.output = new InventoryComponent<ReplicationTerminalBlockEntity>("output", 9,134, 9*2)
                 .setRange(9,2);
         this.addInventory(this.output);
+    }
+
+    @Override
+    public void initClient() {
+        super.initClient();
     }
 
     @NotNull
@@ -71,11 +76,13 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
             NetworkHooks.openScreen(serverPlayer, this, buffer -> {
                 LocatorFactory.writePacketBuffer(buffer, new TileEntityLocatorInstance(this.worldPosition));
                 buffer.writeUtf(this.getNetwork().getId());
+                buffer.writeInt(this.sortingTypeValue);
+                buffer.writeInt(this.sortingDirection);
             });
             for (NetworkElement chipSupplier : this.getNetwork().getChipSuppliers()) {
                 var tile = chipSupplier.getLevel().getBlockEntity(chipSupplier.getPos());
                 if (tile instanceof IMatterPatternHolder holder){
-                    this.getNetwork().sendPatternSyncPacket(serverPlayer, holder, this.worldPosition);
+                    this.getNetwork().sendPatternSyncPacket(serverPlayer, holder, tile.getBlockPos());
                 }
             }
             ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getValues().forEach(iMatterType -> this.getNetwork().sendMatterSyncPacket(serverPlayer, this.getNetwork().calculateMatterAmount(iMatterType), iMatterType));
@@ -83,7 +90,21 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
         return InteractionResult.SUCCESS;
     }
 
-
+    @Override
+    public void handleButtonMessage(int id, Player playerEntity, CompoundTag compound) {
+        super.handleButtonMessage(id, playerEntity, compound);
+        if (id == 999){
+            var type = compound.getString("type");
+            var value = compound.getInt("state");
+            if (type.equals("SORTING_TYPE")){
+                sortingTypeValue = value;
+                syncObject(sortingTypeValue);
+            } else if (type.equals("SORTING_ACTION")){
+                sortingDirection = value;
+                syncObject(sortingDirection);
+            }
+        }
+    }
 
     public TerminalPlayerTracker getTerminalPlayerTracker() {
         return terminalPlayerTracker;

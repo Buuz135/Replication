@@ -99,6 +99,7 @@ public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> imple
     @Override
     public boolean canConnect(BlockState state, Direction direction) {
         var sideness = FacingUtil.getFacingRelative(direction, state.getValue(FACING_HORIZONTAL));
+        if (direction == Direction.UP) return false;
         return sideness == FacingUtil.Sideness.BOTTOM || sideness == FacingUtil.Sideness.BACK;
     }
 }

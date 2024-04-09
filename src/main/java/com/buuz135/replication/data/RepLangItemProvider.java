@@ -3,6 +3,7 @@ package com.buuz135.replication.data;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.block.ReplicatorBlock;
+import com.buuz135.replication.item.ReplicationItem;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -25,6 +26,7 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("itemGroup.replication", "Replication");
         this.blocks.forEach(block -> this.add(block, WordUtils.capitalize(ForgeRegistries.BLOCKS.getKey(block).getPath().replace("_", " "))));
         this.formatItem(ReplicationRegistry.Items.MEMORY_CHIP.get());
+        this.formatItem(ReplicationRegistry.Items.MATTER_BLUEPRINT.get());
         this.add("tooltip.replication.identification_chamber.slow_mode", "Slow Mode");
         this.add("tooltip.replication.identification_chamber.slow_mode.desc", "Scanning is slower but the item will");
         this.add("tooltip.replication.identification_chamber.slow_mode.desc_1", "only be consumed when reaching 100%");
@@ -32,7 +34,10 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("tooltip.replication.identification_chamber.fast_mode.desc", "Scanning is much faster but the");
         this.add("tooltip.replication.identification_chamber.fast_mode.desc_1", "item can be consumed on each action");
         this.add("tooltip.replication.tank.matter", "Matter: ");
-        this.add("replication.single_mode", "Single Mode");
+        this.add("relocation.blueprint.contains_information", "Contains information: ");
+        this.add("relocation.blueprint.not_found", "Information not found");
+        this.add("relocation.blueprint.use_on_chip_storage", "Scan it in the identification chamber to get the information");
+        this.add("replication.parallel_mode", "Parallel Mode");
         this.add("replication.replicate", "Replicate");
         for (MatterType value : MatterType.values()) {
             this.add("replication.matter_type." + value.getName(), WordUtils.capitalize(value.getName()));

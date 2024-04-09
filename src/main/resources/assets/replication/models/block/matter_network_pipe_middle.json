@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "minecraft:cutout",
 	"textures": {
 		"0": "replication:block/matter_network_pipe",
 		"particle": "replication:block/matter_network_pipe"

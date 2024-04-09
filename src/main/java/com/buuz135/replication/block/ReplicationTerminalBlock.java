@@ -7,6 +7,7 @@ import com.buuz135.replication.block.tile.ReplicationTerminalBlockEntity;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
+import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -71,6 +72,7 @@ public class ReplicationTerminalBlock extends RotatableBlock<ReplicationTerminal
     }
     @Override
     public boolean canConnect(BlockState state, Direction direction) {
-        return true;
+        var sideness = FacingUtil.getFacingRelative(direction, state.getValue(FACING_HORIZONTAL));
+        return sideness == FacingUtil.Sideness.BACK;
     }
 }

@@ -1,6 +1,10 @@
 {
   "compounds": [
     {
+      "type": "replication:ender",
+      "amount": 2.0
+    },
+    {
       "type": "replication:organic",
       "amount": 4.0
     },

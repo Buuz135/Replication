@@ -30,6 +30,8 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
     private Inventory inventory;
     private ReplicationTerminalBlockEntity blockEntity;
     private String network;
+    private int sortingType;
+    private int sortingValue;
     private BlockPos position;
 
     private boolean isEnabled;
@@ -61,6 +63,8 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
             }
         }
         this.network = buffer.readUtf();
+        this.sortingType = buffer.readInt();
+        this.sortingValue = buffer.readInt();
         this.initInventory();
     }
 
@@ -133,6 +137,14 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
 
     public String getNetwork() {
         return network;
+    }
+
+    public int getSortingType() {
+        return sortingType;
+    }
+
+    public int getSortingValue() {
+        return sortingValue;
     }
 
     @Override

@@ -117,7 +117,7 @@ public class AequivaleoDataProvider extends ForcedInformationProvider {
         saveData(LEATHER, living(2), organic(2));
         saveData(WHEAT, organic(2), earth(2));
         saveData(GUNPOWDER, organic(2), earth(2));
-        saveData(ENDER_PEARL, organic(4), quantum(1));
+        saveData(ENDER_PEARL, organic(4), quantum(1), ender(2));
         saveData(new Item[]{CHORUS_PLANT, CHORUS_FLOWER}, organic(1), quantum(1));
         saveData(GLOWSTONE, nether(4), precious(4));
         saveData(new Item[]{EGG, PUMPKIN, CARVED_PUMPKIN, PORKCHOP, APPLE, COD, SALMON, TROPICAL_FISH, PUFFERFISH, MELON_SLICE, BEEF, CHICKEN, POTATO, POISONOUS_POTATO, CARROT, MUTTON, RABBIT, BEETROOT, GLOW_BERRIES, SWEET_BERRIES,RABBIT_FOOT}, organic(4), living(4));

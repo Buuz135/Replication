@@ -3,7 +3,9 @@ package com.buuz135.replication.block.tile;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
+import com.buuz135.replication.item.ReplicationItem;
 import com.buuz135.replication.util.InvUtil;
+import com.buuz135.replication.util.ReplicationTags;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
@@ -55,10 +57,6 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     private SidedInventoryComponent<?> memoryChipInput;
     @Save
     private SidedInventoryComponent<?> memoryChipOutput;
-    @Save
-    private boolean fastMode;
-    private ButtonComponent buttonComponent;
-
 
     public IdentificationChamberBlockEntity(BasicTileBlock<IdentificationChamberBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
@@ -66,7 +64,8 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
         this.input = (SidedInventoryComponent<?>) new SidedInventoryComponent<>("input", 44, 48, 1, 0)
                 .setColor(DyeColor.BLUE)
                 .disableFacingAddon()
-                .setInputFilter((itemStack, integer) -> !IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(itemStack).isEmpty())
+                .setInputFilter((itemStack, integer) -> !IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(itemStack).isEmpty()
+                        || itemStack.is(ReplicationRegistry.Items.MATTER_BLUEPRINT.get()))
                 .setOutputFilter((itemStack, integer) -> false)
                 .setSlotLimit(1)
                 .setOnSlotChanged((stack, integer) -> syncObject(this.input))
@@ -103,26 +102,6 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
         ;
         InvUtil.disableAllSidesAndEnable(this.memoryChipOutput, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK);
         this.addInventory((InventoryComponent<IdentificationChamberBlockEntity>) this.memoryChipOutput);
-
-        this.fastMode = false;
-
-        this.addButton(this.buttonComponent = new ButtonComponent(45, 68, 14, 14) {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-                return Collections.singletonList(() -> new StateButtonAddon(this,
-                        new StateButtonInfo(0, AssetTypes.BUTTON_SIDENESS_DISABLED, ChatFormatting.GOLD + LangUtil.getString("tooltip.replication.identification_chamber.slow_mode"), ChatFormatting.GRAY + LangUtil.getString("tooltip.replication.identification_chamber.slow_mode.desc"), ChatFormatting.GRAY + LangUtil.getString("tooltip.replication.identification_chamber.slow_mode.desc_1")),
-                        new StateButtonInfo(1, AssetTypes.BUTTON_SIDENESS_ENABLED, ChatFormatting.GOLD + LangUtil.getString("tooltip.replication.identification_chamber.fast_mode"), ChatFormatting.GRAY + LangUtil.getString("tooltip.replication.identification_chamber.fast_mode.desc"), ChatFormatting.GRAY + LangUtil.getString("tooltip.replication.identification_chamber.fast_mode.desc_1"))) {
-                    @Override
-                    public int getState() {
-                        return fastMode ? 1 : 0;
-                    }
-                });
-            }
-        }.setPredicate((playerEntity, compoundNBT) -> {
-            this.fastMode = !this.fastMode;
-            syncObject(this.fastMode);
-        }));
     }
 
     private void onFinish(){
@@ -131,16 +110,22 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
             for (int i = 0; i < this.memoryChipInput.getSlots(); i++) {
                 var stack = this.memoryChipInput.getStackInSlot(i);
                 if (!stack.isEmpty() && stack.getItem() instanceof IMatterPatternModifier<?> patternModifier){
-                    var returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(stack, input, this.fastMode ? 0.25f : 0.1f);
-                    if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1){
+                    IMatterPatternModifier.ModifierAction returnedValue = null;
+                    if (input.is(ReplicationRegistry.Items.MATTER_BLUEPRINT.get()) && input.hasTag()){
+                        var item = ItemStack.of(input.getTag().getCompound("Item"));
+                        var progress = input.getTag().getDouble("Progress");
+                        returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(stack, item, (float) progress);
                         input.shrink(1);
                         syncObject(this.input);
-                    } else if (this.fastMode && this.level.random.nextDouble() <= 0.6d) {
+                    } else {
+                        returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(stack, input,  0.2f);
+                    }
+                    if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1){
                         input.shrink(1);
                         syncObject(this.input);
                     }
                     if (returnedValue.getPattern() != null){
-                        this.getEnergyStorage().extractEnergy((int) (25000*(this.fastMode ? 0.25f : 0.1f)), false);
+                        this.getEnergyStorage().extractEnergy((int) (25000*0.2f), false);
                     }
                     if (returnedValue.getType() == IMatterPatternModifier.ModifierType.FULL && returnedValue.getPattern() != null){
                         var exportingItem = stack.copy();
@@ -159,8 +144,9 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     }
 
     private boolean canIncrease(){
-        if (this.getEnergyStorage().getEnergyStored() <= 25000*(this.fastMode ? 0.25f : 0.1f)) return false;
+        if (this.getEnergyStorage().getEnergyStored() <= 25000*0.2f) return false;
         if (this.input.getStackInSlot(0).isEmpty()) return false;
+        if (this.input.getStackInSlot(0).is(ReplicationTags.CANT_BE_SCANNED)) return false;
         var hasOutputSlot = false;
         for (int i = 0; i < this.memoryChipOutput.getSlots(); i++) {
             if (this.memoryChipOutput.getStackInSlot(i).isEmpty()){

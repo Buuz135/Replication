@@ -56,7 +56,7 @@ public class ReplicationRequestWidget extends AbstractWidget implements Renderab
                     .build();
             this.widgets.add(decrementButton);
         }
-        this.checkbox = new Checkbox(this.getX() + 20 , this.getY() + 86, 20, 20, Component.translatable("replication.single_mode").withStyle(ChatFormatting.DARK_GRAY), false, false);
+        this.checkbox = new Checkbox(this.getX() + 20 , this.getY() + 86, 20, 20, Component.translatable("replication.single_mode").withStyle(ChatFormatting.DARK_GRAY), true, false);
         this.widgets.add(this.checkbox);
         this.widgets.add(new Button.Builder(Component.translatable("replication.replicate"), button -> {
             this.replicationTerminalScreen.createTask(matterPatternButton.pattern(), Integer.parseInt(this.amountBox.getValue()), checkbox.selected());
@@ -99,7 +99,7 @@ public class ReplicationRequestWidget extends AbstractWidget implements Renderab
                 widget.render(guiGraphics, mouseX, mouseY, v);
             }
         }
-        guiGraphics.drawString(Minecraft.getInstance().font,  Component.translatable("replication.single_mode").withStyle(ChatFormatting.DARK_GRAY), this.getX() + 32 , this.getY() + 87, 0xFFFFFF, false);
+        guiGraphics.drawString(Minecraft.getInstance().font,  Component.translatable("replication.parallel_mode").withStyle(ChatFormatting.DARK_GRAY), this.getX() + 32 , this.getY() + 87, 0xFFFFFF, false);
         //this.widgets.forEach(abstractWidget -> abstractWidget.render(guiGraphics, mouseX, mouseY, v));
     }
 

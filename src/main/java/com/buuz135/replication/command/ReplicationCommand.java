@@ -1,7 +1,11 @@
 package com.buuz135.replication.command;
 
+import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.item.ReplicationItem;
 import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -11,10 +15,12 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryManager;
 import org.apache.logging.log4j.LogManager;
@@ -32,8 +38,14 @@ public class ReplicationCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register((LiteralArgumentBuilder) Commands
                 .literal("replication")
-                        .then(Commands.literal("dump-inventory").executes(context -> dumpInventoryItems(context)))
-                .then(Commands.literal("dump-missing").executes(context -> dumpMissing(context))));
+                .then(Commands.literal("dump-inventory").executes(context -> dumpInventoryItems(context)).requires(commandSourceStack -> commandSourceStack.hasPermission(4)))
+                .then(Commands.literal("dump-missing").executes(context -> dumpMissing(context)).requires(commandSourceStack -> commandSourceStack.hasPermission(4)))
+                .then(
+                        Commands.literal("create-blueprint-using-hand")
+                                .requires(commandSourceStack -> commandSourceStack.hasPermission(4))
+                                .then(Commands.argument("progress", DoubleArgumentType.doubleArg(0D, 1D))
+                                        .executes(context -> createBlueprint(context))))
+        );
     }
 
     public static int dumpMissing(CommandContext<CommandSourceStack> context){
@@ -80,6 +92,23 @@ public class ReplicationCommand {
 
         }
 
+        return 1;
+    }
+
+    public static int createBlueprint(CommandContext<CommandSourceStack> context){
+        try {
+            var mainStack = ItemHandlerHelper.copyStackWithSize(context.getSource().getPlayerOrException().getMainHandItem(), 1);
+            if (!mainStack.isEmpty()){
+                var blueprint = new ItemStack(ReplicationRegistry.Items.MATTER_BLUEPRINT.get());
+                var tag = new CompoundTag();
+                tag.put("Item", mainStack.serializeNBT());
+                tag.putDouble("Progress", context.getArgument("progress", Double.class));
+                blueprint.setTag(tag);
+                ItemHandlerHelper.giveItemToPlayer(context.getSource().getPlayerOrException(), blueprint, 0);
+            }
+        } catch (CommandSyntaxException e) {
+            throw new RuntimeException(e);
+        }
         return 1;
     }
 }

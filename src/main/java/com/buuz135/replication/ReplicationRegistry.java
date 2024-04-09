@@ -11,14 +11,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -73,6 +71,7 @@ public class ReplicationRegistry {
     public static class Items{
 
         public static RegistryObject<Item> MEMORY_CHIP;
+        public static RegistryObject<Item> MATTER_BLUEPRINT;
 
     }
 
@@ -100,8 +99,8 @@ public class ReplicationRegistry {
 
     public static class Colors{
 
-        public static float[] BLUE_SPLIT = new float[]{151/255f,255/255f,255/255f};
-        public static int BLUE = Mth.color(BLUE_SPLIT[0], BLUE_SPLIT[1], BLUE_SPLIT[2]);
+        public static float[] GREEN_SPLIT = new float[]{23/255f,229/255f,23/255f};
+        public static int GREEN = Mth.color(GREEN_SPLIT[0], GREEN_SPLIT[1], GREEN_SPLIT[2]);
 
     }
 

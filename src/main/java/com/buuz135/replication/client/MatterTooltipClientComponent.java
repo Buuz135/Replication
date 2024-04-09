@@ -12,6 +12,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 
 import java.awt.*;
@@ -75,7 +76,7 @@ public class MatterTooltipClientComponent implements ClientTooltipComponent {
         guiGraphics.pose().pushPose();
         float scale = 0.5f;
         guiGraphics.pose().scale(scale, scale, scale);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(instance.getAmount()), (int) ((x + (glitch ? 1 : 0) +8 ) / scale), (int) ((y +(glitch ? 1 : 0) +16) / scale), new Color(color[0], color[1], color[2], color[3]).getRGB());
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(Mth.ceil(instance.getAmount())), (int) ((x + (glitch ? 1 : 0) +8 ) / scale), (int) ((y +(glitch ? 1 : 0) +16) / scale), new Color(color[0], color[1], color[2], color[3]).getRGB());
         guiGraphics.pose().popPose();
         /*OLD ENCODED NUMBERS guiGraphics.blit(BAR, x + (glitch ? 1 : 0), y +(glitch ? 1 : 0), 0,56, 3, 15, 128, 128);
         for (int i = 0; i < numberLength * 10 + 1; i++) {

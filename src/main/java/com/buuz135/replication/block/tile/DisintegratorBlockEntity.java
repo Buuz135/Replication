@@ -60,17 +60,25 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                 .disableFacingAddon()
                 .setInputFilter((itemStack, integer) -> !IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(itemStack).isEmpty())
                 .setOutputFilter((itemStack, integer) -> false)
-                .setSlotLimit(1)
+                .setSlotLimit(64)
                 .setSlotPosition(integer -> Pair.of(0, 18*integer))
                 .setOnSlotChanged((stack, integer) -> syncObject(this.input))
         ;
-        InvUtil.disableAllSidesAndEnable(this.input, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK);
+        InvUtil.disableAllSidesAndEnable(this.input, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK, FacingUtil.Sideness.TOP);
         this.addInventory((InventoryComponent<DisintegratorBlockEntity>) input);
 
         this.progressBarComponent = new ProgressBarComponent<>(47, 28, 20 * 2)
                 .setCanIncrease(iComponentHarness -> queuedMatterStacks.isEmpty())
                 .setOnTickWork(() -> {
                     syncObject(this.progressBarComponent);
+                })
+                .setCanIncrease(iComponentHarness -> {
+                    if (this.getEnergyStorage().getEnergyStored() < 1500) return false;
+                    for (int i = 0; i < this.input.getSlots(); i++) {
+                        var stack = this.input.getStackInSlot(i);
+                        if (!stack.isEmpty()) {return true;}
+                    }
+                    return false;
                 })
                 .setOnFinishWork(this::onFinish)
                 .setBarDirection(ProgressBarComponent.BarDirection.VERTICAL_UP)
@@ -100,13 +108,14 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                 var data = IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(stack);
                 for (CompoundInstance datum : data) {
                     if (datum.getType() instanceof ReplicationCompoundType replicationCompoundType){
-                        queuedMatterStacks.add(new MatterStack(replicationCompoundType.getMatterType(), Mth.floor(datum.getAmount())));
-                        stack.shrink(1);
+                        queuedMatterStacks.add(new MatterStack(replicationCompoundType.getMatterType(), Mth.ceil(datum.getAmount())));
                     }
                 }
+                stack.shrink(1);
                 this.getEnergyStorage().extractEnergy(1500, false);
             }
         }
+        syncObject(this.input);
     }
 
     @Override
@@ -148,5 +157,9 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     @Override
     public List<? extends IMatterTank> getTanks() {
         return this.getMatterTankComponents();
+    }
+
+    public SidedInventoryComponent<?> getInput() {
+        return input;
     }
 }
