@@ -14,6 +14,7 @@ import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstanc
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -23,6 +24,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+
 
 import java.awt.*;
 import java.util.List;
@@ -39,8 +41,10 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     private boolean scrolling;
     private List<TerminalMatterValueDisplay> terminalMatterValueDisplays;
     private ReplicationRequestWidget replicationRequestWidget;
+    private ReplicationTaskWidget replicationTaskWidget;
     private ReplicationTerminalConfigButton sortingType;
     private ReplicationTerminalConfigButton sortingDirection;
+    private Button craftingButton;
 
     public ReplicationTerminalScreen(ReplicationTerminalContainer container, Inventory inventory, Component component) {
         super(container, inventory, component);
@@ -59,7 +63,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         this.searchBox.setVisible(true);
         this.searchBox.setTextColor(16777215);
         this.addWidget(this.searchBox);
-
+        this.addWidget(this.craftingButton = new Button.Builder(Component.literal("x"), button -> enableTask(new ReplicationTaskWidget((this.width - 256) / 2,(this.height - 256) / 2, 256,256, Component.translatable("replication.crafting_tasks"), this)))
+                .bounds(0, 0, 18, 18)
+                .build());
 
         this.addRenderableWidget(this.sortingType = new ReplicationTerminalConfigButton(this.leftPos - 18, this.topPos + 4, 16, 16, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_TYPE, this.menu.getSortingType()) {
             @Override
@@ -71,7 +77,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
             @Override
             protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-                if (replicationRequestWidget == null) super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
+                if (shouldBaseGUIRender()) super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
             }
         });
         this.addRenderableWidget(this.sortingDirection = new ReplicationTerminalConfigButton(this.leftPos - 18, this.topPos + 4 + 18, 16, 16, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_DIRECTION, this.menu.getSortingValue()) {
@@ -84,7 +90,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
             @Override
             protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-                if (replicationRequestWidget == null) super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
+                if (shouldBaseGUIRender()) super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
             }
         });
 
@@ -112,10 +118,13 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
         if (this.replicationRequestWidget != null) {
             this.replicationRequestWidget.renderWidget(guiGraphics, mouseX, mouseY, v);
-        } else {
+        } else if (this.replicationTaskWidget != null){
+            this.replicationTaskWidget.renderWidget(guiGraphics, mouseX, mouseY, v);
+        }else {
             guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
             guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), x + this.imageWidth, y + 4, 0, 0, 59, 63);
             this.searchBox.render(guiGraphics, mouseX, mouseY, v);
+            this.craftingButton.render(guiGraphics, mouseX, mouseY, v);
 
             int j = this.leftPos + 175;
             int k = this.topPos + 18;
@@ -153,10 +162,14 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     protected void renderLabels(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
-        if (this.replicationRequestWidget == null) {
+        if (shouldBaseGUIRender()) {
             pGuiGraphics.drawString(this.font, this.title.copy().withStyle(ChatFormatting.WHITE), this.titleLabelX + 40, this.titleLabelY, Color.WHITE.getRGB(), true);
             pGuiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
         }
+    }
+
+    private boolean shouldBaseGUIRender(){
+        return this.replicationRequestWidget == null && replicationTaskWidget == null;
     }
 
     protected boolean insideScrollbar(double p_98524_, double p_98525_) {
@@ -197,7 +210,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if (pButton == 0) {
-            if (this.replicationRequestWidget == null) {
+            if (shouldBaseGUIRender()) {
                 if (this.insideScrollbar(pMouseX, pMouseY)) {
                     this.scrolling = this.patternMenu.canScroll();
                     int i = this.topPos + 18;
@@ -304,6 +317,18 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     public void disableRequest() {
         this.replicationRequestWidget.getWidgets().forEach(abstractWidget -> this.children().remove(abstractWidget));
         this.replicationRequestWidget = null;
+        this.menu.setEnabled(true);
+    }
+
+    public void enableTask(ReplicationTaskWidget widget) {
+        this.replicationTaskWidget = widget;
+        this.menu.setEnabled(false);
+        this.replicationTaskWidget.getWidgets().forEach(this::addWidget);
+    }
+
+    public void disableTask() {
+        this.replicationTaskWidget.getWidgets().forEach(abstractWidget -> this.children().remove(abstractWidget));
+        this.replicationTaskWidget = null;
         this.menu.setEnabled(true);
     }
 
