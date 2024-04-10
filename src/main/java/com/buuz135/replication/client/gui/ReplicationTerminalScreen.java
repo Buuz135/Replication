@@ -180,9 +180,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     protected boolean insideScrollbar(double p_98524_, double p_98525_) {
         int i = this.leftPos;
         int j = this.topPos;
-        int k = i + 175;
-        int l = j + 18;
-        int i1 = k + 14;
+        int k = i + 176;
+        int l = j + 27;
+        int i1 = k + 9;
         int j1 = l + 90;
         return p_98524_ >= (double) k && p_98525_ >= (double) l && p_98524_ < (double) i1 && p_98525_ < (double) j1;
     }
