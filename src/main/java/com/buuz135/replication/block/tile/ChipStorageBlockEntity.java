@@ -3,8 +3,10 @@ package com.buuz135.replication.block.tile;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.MatterPattern;
+import com.buuz135.replication.client.gui.ReplicationAddonProvider;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -125,5 +127,10 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
     @Override
     public List<MatterPattern> getPatterns(ChipStorageBlockEntity element) {
         return this.cachedPatters;
+    }
+
+    @Override
+    public IAssetProvider getAssetProvider() {
+        return ReplicationAddonProvider.INSTANCE;
     }
 }

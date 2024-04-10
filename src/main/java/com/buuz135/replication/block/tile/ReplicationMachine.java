@@ -1,9 +1,11 @@
 package com.buuz135.replication.block.tile;
 
+import com.buuz135.replication.client.gui.ReplicationAddonProvider;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.BasicTileBlock;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import net.minecraft.core.BlockPos;
@@ -88,5 +90,10 @@ public abstract class ReplicationMachine<T extends NetworkBlockEntity<T>> extend
     public void invalidateCaps() {
         super.invalidateCaps();
         lazyEnergyStorage.invalidate();
+    }
+
+    @Override
+    public IAssetProvider getAssetProvider() {
+        return ReplicationAddonProvider.INSTANCE;
     }
 }
