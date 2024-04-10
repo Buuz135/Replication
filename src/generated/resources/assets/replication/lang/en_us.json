@@ -29,5 +29,9 @@
   "tooltip.replication.identification_chamber.slow_mode": "Slow Mode",
   "tooltip.replication.identification_chamber.slow_mode.desc": "Scanning is slower but the item will",
   "tooltip.replication.identification_chamber.slow_mode.desc_1": "only be consumed when reaching 100%",
-  "tooltip.replication.tank.matter": "Matter: "
+  "tooltip.replication.tank.matter": "Matter: ",
+  "tooltip.replication.terminal.sorting_direction.state_0": "Sorting Direction: Ascending",
+  "tooltip.replication.terminal.sorting_direction.state_1": "Sorting Direction: Descending",
+  "tooltip.replication.terminal.sorting_type.state_0": "Sorting Type: Amount",
+  "tooltip.replication.terminal.sorting_type.state_1": "Sorting Type: Name"
 }

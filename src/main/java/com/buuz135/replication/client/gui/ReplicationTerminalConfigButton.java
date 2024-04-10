@@ -3,12 +3,18 @@ package com.buuz135.replication.client.gui;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
+import com.hrznstudio.titanium.util.AssetUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.function.Supplier;
 
 public class ReplicationTerminalConfigButton extends Button {
@@ -35,7 +41,17 @@ public class ReplicationTerminalConfigButton extends Button {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        this.isHovered = pMouseX >= this.getX() && pMouseY >= this.getY() && pMouseX < this.getX() + this.width && pMouseY < this.getY() + this.height;
         guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), 247, type.yPos + 9 * state, 9,9);
+        if (isHovered) {
+            guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("tooltip.replication.terminal." + type.name().toLowerCase() + ".state_" + getState()), (int) pMouseX, (int) pMouseY);
+            Rectangle area = new Rectangle(getX(), getY(), getWidth()-1, getHeight() -1);
+            var color = 0xffffffff;
+            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y, color);
+            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y + area.height, color);
+            AssetUtil.drawVerticalLine(guiGraphics, area.x, area.y, area.y + area.height, color);
+            AssetUtil.drawVerticalLine(guiGraphics, area.x + area.width, area.y, area.y + area.height, color);
+        }
     }
 
     public int getState() {
