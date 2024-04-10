@@ -42,7 +42,7 @@ public final class MatterPatternButton {
             guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 ) / scale - Minecraft.getInstance().font.width(display), (y + 12) / scale , 0xFFFFFF, true);
         }
         guiGraphics.pose().popPose();
-        if (mouseX > x && mouseX < x + 18 && mouseY > y && mouseY < y + 18) {
+        if (mouseX > x - 1 && mouseX < x + 17 && mouseY > y - 1 && mouseY < y + 17) {
             AbstractContainerScreen.renderSlotHighlight(guiGraphics, x, y, 1);
             guiGraphics.renderTooltip(Minecraft.getInstance().font, this.pattern.getStack(), (int) mouseX, (int) mouseY);
         }

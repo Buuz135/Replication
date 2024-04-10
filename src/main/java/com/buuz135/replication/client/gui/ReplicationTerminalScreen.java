@@ -104,10 +104,18 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     }
 
     @Override
-    public void render(GuiGraphics p_283479_, int p_283661_, int p_281248_, float p_281886_) {
-        super.render(p_283479_, p_283661_, p_281248_, p_281886_);
-
-        this.renderTooltip(p_283479_, p_283661_, p_281248_);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_281886_) {
+        super.render(guiGraphics, mouseX, mouseY, p_281886_);
+        for (int matterButtonIndex = 0; matterButtonIndex < this.patternMenu.visibleButtons.size(); matterButtonIndex++) {
+            var patternButton = this.patternMenu.visibleButtons.get(matterButtonIndex);
+            patternButton.render(guiGraphics, this.leftPos + (matterButtonIndex % 9) * 18 + 11, this.topPos + (matterButtonIndex / 9) * 18 + 28, mouseX, mouseY);
+        }
+        for (int displayIndex = 0; displayIndex < this.terminalMatterValueDisplays.size(); displayIndex++) {
+            var matterTankDisplay = this.terminalMatterValueDisplays.get(displayIndex);
+            // matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize() + (displayIndex % 3) * 18 , this.topPos + (displayIndex / 3) * 18 + 7, mouseX, mouseY);
+            matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize(), this.topPos + (displayIndex) * 20 + 26, mouseX, mouseY);
+        }
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -135,15 +143,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
             guiGraphics.blit(TEXTURE, j, k + (int) ((float) (i - k - 5) * this.scrollOffs), 245, 0, 11, 5);
 
-            for (int matterButtonIndex = 0; matterButtonIndex < this.patternMenu.visibleButtons.size(); matterButtonIndex++) {
-                var patternButton = this.patternMenu.visibleButtons.get(matterButtonIndex);
-                patternButton.render(guiGraphics, this.leftPos + (matterButtonIndex % 9) * 18 + 11, this.topPos + (matterButtonIndex / 9) * 18 + 28, mouseX, mouseY);
-            }
-            for (int displayIndex = 0; displayIndex < this.terminalMatterValueDisplays.size(); displayIndex++) {
-                var matterTankDisplay = this.terminalMatterValueDisplays.get(displayIndex);
-                // matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize() + (displayIndex % 3) * 18 , this.topPos + (displayIndex / 3) * 18 + 7, mouseX, mouseY);
-                matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize(), this.topPos + (displayIndex) * 20 + 26, mouseX, mouseY);
-            }
+
         }
     }
 
