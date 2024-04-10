@@ -35,7 +35,7 @@ public class ReplicationTerminalConfigButton extends Button {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), 240, type.yPos + 16*state, 16,16);
+        guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), 247, type.yPos + 9 * state, 9,9);
     }
 
     public int getState() {
@@ -43,7 +43,8 @@ public class ReplicationTerminalConfigButton extends Button {
     }
 
     public static enum Type{
-        SORTING_TYPE(15, 2), SORTING_DIRECTION(47, 2);
+        SORTING_TYPE(5, 2),
+        SORTING_DIRECTION(23, 2);
 
         private final int yPos;
         private final int states;

@@ -109,7 +109,7 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
         Point invPos = new Point(9,174);
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlot(new Slot(inventory, j + i * 9 + 9, invPos.x + j * 18, invPos.y + i * 18){
+                addSlot(new Slot(inventory, j + i * 9 + 9, invPos.x + j * 18 + 2, invPos.y + i * 18 - 3){
                     @Override
                     public boolean isActive() {
                         return isEnabled;
@@ -122,7 +122,7 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
     public void addHotbarSlots() {
         Point hotbarPos = new Point(9,232);
         for (int k = 0; k < 9; k++) {
-            addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18, hotbarPos.y){
+            addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18 + 2, hotbarPos.y - 3){
                 @Override
                 public boolean isActive() {
                     return isEnabled;
