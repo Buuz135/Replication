@@ -15,7 +15,6 @@ import com.buuz135.replication.packet.TaskCreatePacket;
 import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -340,6 +339,12 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     public void createTask(MatterPattern pattern, int i, boolean parallelMode) {
         Replication.NETWORK.get().sendToServer(new TaskCreatePacket(this.menu.getNetwork(), i, pattern.getStack(), parallelMode, this.menu.getPosition()));
         disableRequest();
+    }
+
+    public void refreshTasks() {
+        if (this.replicationTaskWidget != null){
+            this.replicationTaskWidget.refreshTasks();
+        }
     }
 
 

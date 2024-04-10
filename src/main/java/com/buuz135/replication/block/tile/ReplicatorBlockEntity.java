@@ -17,6 +17,7 @@ import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.InventoryUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -84,6 +85,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
                     this.cachedReplicationTask = task;
                     this.craftingStack = task.getReplicatingStack();
                     syncObject(this.craftingStack);
+                    this.getNetwork().onTaskValueChanged(task, (ServerLevel) this.level);
                 }
             }
             if (this.level.getGameTime() % 20 == 0 && this.craftingTask != null && this.cachedReplicationTask == null
@@ -143,6 +145,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
 
     private void replicateItem(){
         this.cachedReplicationTask.finalizeReplication(this.level, this.getBlockPos(), this.getNetwork());
+        this.getNetwork().onTaskValueChanged(this.cachedReplicationTask, (ServerLevel) this.level);
         var entity = this.level.getBlockEntity(this.cachedReplicationTask.getSource());
         if (entity != null){
             if (entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).isPresent()){

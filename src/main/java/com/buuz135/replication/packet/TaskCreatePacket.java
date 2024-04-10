@@ -7,6 +7,7 @@ import com.hrznstudio.titanium.block_network.Network;
 import com.hrznstudio.titanium.block_network.NetworkManager;
 import com.hrznstudio.titanium.network.Message;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -36,6 +37,7 @@ public class TaskCreatePacket extends Message {
                 if (network.getId().equals(networkId) && network instanceof MatterNetwork matterNetwork){
                     var task = new ReplicationTask(stack, amount, parallelMode ? IReplicationTask.Mode.MULTIPLE : IReplicationTask.Mode.SINGLE, source);
                     matterNetwork.getTaskManager().getPendingTasks().put(task.getUuid().toString(), task);
+                    ((MatterNetwork) network).onTaskValueChanged(task, (ServerLevel) context.getSender().level());
                     break;
                 }
             }

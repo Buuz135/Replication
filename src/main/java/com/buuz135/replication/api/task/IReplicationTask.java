@@ -38,6 +38,10 @@ public interface IReplicationTask extends INBTSerializable<CompoundTag> {
 
     void finalizeReplication(Level level, BlockPos pos, MatterNetwork matterNetwork);
 
+    void markDirty(boolean dirty);
+
+    boolean isDirty();
+
     public enum Mode{
         SINGLE,
         MULTIPLE;

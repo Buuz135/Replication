@@ -44,6 +44,12 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("tooltip.replication.terminal.sorting_type.state_1", "Sorting Type: Name");
         this.add("tooltip.replication.terminal.sorting_direction.state_0", "Sorting Direction: Ascending");
         this.add("tooltip.replication.terminal.sorting_direction.state_1", "Sorting Direction: Descending");
+        this.add("tooltip.replication.terminal.cancel_task", "Sneak + Click to Cancel Task");
+        this.add("tooltip.replication.terminal.amount", "Amount: ");
+        this.add("tooltip.replication.terminal.workers", "Workers: ");
+        this.add("tooltip.replication.terminal.mode", "Mode: ");
+        this.add("tooltip.replication.terminal.single", "Single");
+        this.add("tooltip.replication.terminal.multiple", "Parallel");
 
         for (MatterType value : MatterType.values()) {
             this.add("replication.matter_type." + value.getName(), WordUtils.capitalize(value.getName()));

@@ -9,17 +9,22 @@ import com.buuz135.replication.api.network.IMatterTanksConsumer;
 import com.buuz135.replication.api.network.IMatterTanksSupplier;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.MatterPattern;
+import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.api.task.ReplicationTask;
 import com.buuz135.replication.block.tile.ReplicationTerminalBlockEntity;
 import com.buuz135.replication.network.task.ReplicationTaskManager;
 import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.packet.PatternSyncStoragePacket;
+import com.buuz135.replication.packet.TaskSyncPacket;
 import com.hrznstudio.titanium.block_network.Network;
 import com.hrznstudio.titanium.block_network.NetworkFactory;
+import com.hrznstudio.titanium.block_network.NetworkManager;
+import com.hrznstudio.titanium.block_network.NetworkRegistry;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.EnergyStorage;
@@ -49,7 +54,7 @@ public class MatterNetwork extends Network {
 
     //TODO Mark dirty
 
-    public MatterNetwork(BlockPos originPos, String id, int power) {
+    public MatterNetwork(BlockPos originPos, String id, int power, ReplicationTaskManager taskManager) {
         super(originPos, id);
         this.energyStorage = new EnergyStorage(100_000, 100_000, 100_000, power);
         this.matterStacksConsumers = new ArrayList<>();
@@ -58,7 +63,7 @@ public class MatterNetwork extends Network {
         this.queueNetworkElements = new ArrayList<>();
         this.chipSuppliers = new ArrayList<>();
         this.terminals = new ArrayList<>();
-        this.taskManager = new ReplicationTaskManager();
+        this.taskManager = taskManager;
     }
 
     public void addElement(NetworkElement element){
@@ -110,6 +115,17 @@ public class MatterNetwork extends Network {
                 }
             }
         }
+        this.getTaskManager().getPendingTasks().values().forEach(task -> {
+            if (task.isDirty()){
+                for (NetworkElement terminal : this.terminals) {
+                    var tile = terminal.getLevel().getBlockEntity(terminal.getPos());
+                    if (tile instanceof ReplicationTerminalBlockEntity terminalBlockEntity){
+                        terminalBlockEntity.getTerminalPlayerTracker().getPlayers().forEach(serverPlayer -> this.sendTaskSyncPacket(serverPlayer, task));
+                    }
+                }
+                task.markDirty(false);
+            }
+        });
     }
 
     private void transfer(Level level, IMatterTanksSupplier supplier, List<NetworkElement> consumers, BiPredicate<MatterStack, MatterStack> stackPredicate){
@@ -147,6 +163,23 @@ public class MatterNetwork extends Network {
         }
     }
 
+    public void onTaskValueChanged(IReplicationTask task, ServerLevel serverLevel) {
+        task.markDirty(true);
+        if (task.getTotalAmount() == task.getCurrentAmount()){
+            for (NetworkElement terminal : this.terminals) {
+                var tile = terminal.getLevel().getBlockEntity(terminal.getPos());
+                if (tile instanceof ReplicationTerminalBlockEntity terminalBlockEntity){
+                    terminalBlockEntity.getTerminalPlayerTracker().getPlayers().forEach(serverPlayer -> this.sendTaskSyncPacket(serverPlayer, task));
+                }
+            }
+        }
+        markDirty(serverLevel);
+    }
+
+    public void sendTaskSyncPacket(ServerPlayer serverPlayer, IReplicationTask task){
+        Replication.NETWORK.get().sendTo(new TaskSyncPacket(this.getId(), task.getUuid().toString(), task.serializeNBT()), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    }
+
     public long calculateMatterAmount(IMatterType matterType){
         var amount = 0L;
         for (NetworkElement matterStacksSupplier : this.getMatterStacksHolders()) {
@@ -170,6 +203,10 @@ public class MatterNetwork extends Network {
 
     public void sendMatterSyncPacket(ServerPlayer serverPlayer, long amount, IMatterType type){
         Replication.NETWORK.get().sendTo(new MatterFluidSyncPacket(this.getId(), amount, ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getKey(type)), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    }
+
+    public void markDirty(ServerLevel serverLevel){
+        NetworkManager.get(serverLevel).setDirty(true);
     }
 
     public List<NetworkElement> getChipSuppliers() {
@@ -204,6 +241,7 @@ public class MatterNetwork extends Network {
     public CompoundTag writeToNbt(CompoundTag tag) {
         var nbt = super.writeToNbt(tag);
         nbt.putInt("Power", this.energyStorage.getEnergyStored());
+        nbt.put("TaskManager", this.taskManager.serializeNBT());
         return nbt;
     }
 
@@ -225,12 +263,14 @@ public class MatterNetwork extends Network {
         private static final Logger LOGGER = LogManager.getLogger(Factory.class);
         @Override
         public Network create(BlockPos pos) {
-            return new MatterNetwork(pos, NetworkFactory.randomString(new Random(), 8), 0);
+            return new MatterNetwork(pos, NetworkFactory.randomString(new Random(), 8), 0, new ReplicationTaskManager());
         }
 
         @Override
         public Network create(CompoundTag tag) {
-            MatterNetwork network = new MatterNetwork(BlockPos.of(tag.getLong("origin")), tag.getString("id"), tag.getInt("Power"));
+            var taskManager = new ReplicationTaskManager();
+            taskManager.deserializeNBT(tag.getCompound("TaskManager"));
+            MatterNetwork network = new MatterNetwork(BlockPos.of(tag.getLong("origin")), tag.getString("id"), tag.getInt("Power"), taskManager);
 
             LOGGER.debug("Deserialized matter network {} of type {}", network.getId(), network.getType().toString());
 

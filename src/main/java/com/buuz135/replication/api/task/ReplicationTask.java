@@ -27,6 +27,7 @@ public class ReplicationTask implements IReplicationTask{
     private Mode mode;
     private List<Long> replicatorsOnTask;
     private BlockPos source;
+    private boolean dirty;
 
     public ReplicationTask(ItemStack crafting, int totalAmount, Mode mode, BlockPos source) {
         this.crafting = crafting;
@@ -37,6 +38,7 @@ public class ReplicationTask implements IReplicationTask{
         this.matterStacks = new HashMap<>();
         this.replicatorsOnTask = new ArrayList<>();
         this.source = source;
+        this.dirty = false;
     }
 
     @Override
@@ -131,6 +133,16 @@ public class ReplicationTask implements IReplicationTask{
         if (this.currentAmount >= this.totalAmount){
             matterNetwork.getTaskManager().getPendingTasks().remove(this.getUuid().toString());
         }
+    }
+
+    @Override
+    public void markDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return this.dirty;
     }
 
     private boolean checkHasEnough(Set<CompoundInstance> data, Level level, BlockPos pos, MatterNetwork matterNetwork){
