@@ -14,6 +14,7 @@ import com.buuz135.replication.network.MatterNetwork;
 import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.packet.PatternSyncStoragePacket;
 import com.buuz135.replication.packet.TaskCreatePacket;
+import com.buuz135.replication.packet.TaskSyncPacket;
 import com.hrznstudio.titanium.block_network.NetworkRegistry;
 import com.hrznstudio.titanium.block_network.element.NetworkElementRegistry;
 import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
@@ -54,6 +55,7 @@ public class Replication extends ModuleController {
         NETWORK.registerMessage(PatternSyncStoragePacket.class);
         NETWORK.registerMessage(MatterFluidSyncPacket.class);
         NETWORK.registerMessage(TaskCreatePacket.class);
+        NETWORK.registerMessage(TaskSyncPacket.class);
         ReplicationRegistry.init();
         CommonEvents.init();
         DistExecutor.runWhenOn(Dist.CLIENT, () -> ClientEvents::init);

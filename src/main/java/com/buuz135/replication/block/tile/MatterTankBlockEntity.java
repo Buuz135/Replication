@@ -6,8 +6,10 @@ import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
 import com.buuz135.replication.api.network.IMatterTanksConsumer;
 import com.buuz135.replication.api.network.IMatterTanksSupplier;
+import com.buuz135.replication.client.gui.ReplicationAddonProvider;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -59,5 +61,10 @@ public class MatterTankBlockEntity extends NetworkBlockEntity<MatterTankBlockEnt
     @Override
     public MatterTankBlockEntity getSelf() {
         return this;
+    }
+
+    @Override
+    public IAssetProvider getAssetProvider() {
+        return ReplicationAddonProvider.INSTANCE;
     }
 }

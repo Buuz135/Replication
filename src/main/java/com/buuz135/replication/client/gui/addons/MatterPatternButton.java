@@ -42,7 +42,7 @@ public final class MatterPatternButton {
             guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 ) / scale - Minecraft.getInstance().font.width(display), (y + 12) / scale , 0xFFFFFF, true);
         }
         guiGraphics.pose().popPose();
-        if (mouseX > x && mouseX < x + 18 && mouseY > y && mouseY < y + 18) {
+        if (mouseX > x - 1 && mouseX < x + 17 && mouseY > y - 1 && mouseY < y + 17) {
             AbstractContainerScreen.renderSlotHighlight(guiGraphics, x, y, 1);
             guiGraphics.renderTooltip(Minecraft.getInstance().font, this.pattern.getStack(), (int) mouseX, (int) mouseY);
         }
@@ -50,13 +50,17 @@ public final class MatterPatternButton {
 
     public void recalculateAmount(String network) {
         var aqValues = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(pattern.getStack());
-        this.cachedAmount = Integer.MAX_VALUE;
-        var networkValues = MatterFluidSyncPacket.CLIENT_MATTER_STORAGE.get(network);
-        if (networkValues != null){
-            for (CompoundInstance aqValue : aqValues) {
-                var matterType = ((ReplicationCompoundType) aqValue.getType()).getMatterType();
-                var amount = aqValue.getAmount();
-                this.cachedAmount = (int) Math.min(this.cachedAmount, Math.min(Integer.MAX_VALUE, networkValues.getOrDefault(matterType, 0L) / amount));
+        if (aqValues.isEmpty()) {
+            this.cachedAmount = 0;
+        } else {
+            this.cachedAmount = Integer.MAX_VALUE;
+            var networkValues = MatterFluidSyncPacket.CLIENT_MATTER_STORAGE.get(network);
+            if (networkValues != null){
+                for (CompoundInstance aqValue : aqValues) {
+                    var matterType = ((ReplicationCompoundType) aqValue.getType()).getMatterType();
+                    var amount = aqValue.getAmount();
+                    this.cachedAmount = (int) Math.min(this.cachedAmount, Math.min(Integer.MAX_VALUE, networkValues.getOrDefault(matterType, 0L) / amount));
+                }
             }
         }
     }

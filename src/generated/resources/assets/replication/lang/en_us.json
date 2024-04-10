@@ -12,6 +12,7 @@
   "relocation.blueprint.contains_information": "Contains information: ",
   "relocation.blueprint.not_found": "Information not found",
   "relocation.blueprint.use_on_chip_storage": "Scan it in the identification chamber to get the information",
+  "replication.crafting_tasks": "Crafting Tasks",
   "replication.matter_type.earth": "Earth",
   "replication.matter_type.empty": "Empty",
   "replication.matter_type.ender": "Ender",
@@ -29,5 +30,15 @@
   "tooltip.replication.identification_chamber.slow_mode": "Slow Mode",
   "tooltip.replication.identification_chamber.slow_mode.desc": "Scanning is slower but the item will",
   "tooltip.replication.identification_chamber.slow_mode.desc_1": "only be consumed when reaching 100%",
-  "tooltip.replication.tank.matter": "Matter: "
+  "tooltip.replication.tank.matter": "Matter: ",
+  "tooltip.replication.terminal.amount": "Amount: ",
+  "tooltip.replication.terminal.cancel_task": "Sneak + Click to Cancel Task",
+  "tooltip.replication.terminal.mode": "Mode: ",
+  "tooltip.replication.terminal.multiple": "Parallel",
+  "tooltip.replication.terminal.single": "Single",
+  "tooltip.replication.terminal.sorting_direction.state_0": "Sorting Direction: Ascending",
+  "tooltip.replication.terminal.sorting_direction.state_1": "Sorting Direction: Descending",
+  "tooltip.replication.terminal.sorting_type.state_0": "Sorting Type: Amount",
+  "tooltip.replication.terminal.sorting_type.state_1": "Sorting Type: Name",
+  "tooltip.replication.terminal.workers": "Workers: "
 }

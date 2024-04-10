@@ -73,12 +73,6 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
             return InteractionResult.SUCCESS;
         }
         if (playerIn instanceof ServerPlayer serverPlayer) {
-            NetworkHooks.openScreen(serverPlayer, this, buffer -> {
-                LocatorFactory.writePacketBuffer(buffer, new TileEntityLocatorInstance(this.worldPosition));
-                buffer.writeUtf(this.getNetwork().getId());
-                buffer.writeInt(this.sortingTypeValue);
-                buffer.writeInt(this.sortingDirection);
-            });
             for (NetworkElement chipSupplier : this.getNetwork().getChipSuppliers()) {
                 var tile = chipSupplier.getLevel().getBlockEntity(chipSupplier.getPos());
                 if (tile instanceof IMatterPatternHolder holder){
@@ -86,6 +80,15 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
                 }
             }
             ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getValues().forEach(iMatterType -> this.getNetwork().sendMatterSyncPacket(serverPlayer, this.getNetwork().calculateMatterAmount(iMatterType), iMatterType));
+            this.getNetwork().getTaskManager().getPendingTasks().values().forEach(task -> {
+                this.getNetwork().sendTaskSyncPacket(serverPlayer, task);
+            });
+            NetworkHooks.openScreen(serverPlayer, this, buffer -> {
+                LocatorFactory.writePacketBuffer(buffer, new TileEntityLocatorInstance(this.worldPosition));
+                buffer.writeUtf(this.getNetwork().getId());
+                buffer.writeInt(this.sortingTypeValue);
+                buffer.writeInt(this.sortingDirection);
+            });
         }
         return InteractionResult.SUCCESS;
     }
