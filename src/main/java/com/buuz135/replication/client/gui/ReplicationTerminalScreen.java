@@ -6,12 +6,13 @@ import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.api.pattern.MatterPattern;
 import com.buuz135.replication.client.gui.addons.MatterPatternButton;
 import com.buuz135.replication.client.gui.addons.TerminalMatterValueDisplay;
+import com.buuz135.replication.client.gui.button.ReplicationTerminalConfigButton;
+import com.buuz135.replication.client.gui.button.ReplicationTerminalTexturedButton;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.packet.PatternSyncStoragePacket;
 import com.buuz135.replication.packet.TaskCreatePacket;
 import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -27,7 +28,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 
-import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,7 +45,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     private ReplicationTaskWidget replicationTaskWidget;
     private ReplicationTerminalConfigButton sortingType;
     private ReplicationTerminalConfigButton sortingDirection;
-    private Button craftingButton;
+    private ReplicationTerminalTexturedButton craftingButton;
 
     public ReplicationTerminalScreen(ReplicationTerminalContainer container, Inventory inventory, Component component) {
         super(container, inventory, component);
@@ -64,9 +64,8 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         this.searchBox.setVisible(true);
         this.searchBox.setTextColor(0x72e567);
         this.addWidget(this.searchBox);
-        this.addWidget(this.craftingButton = new Button.Builder(Component.empty(), button -> enableTask(new ReplicationTaskWidget((this.width - 256) / 2,(this.height - 256) / 2, 256,256, Component.translatable("replication.crafting_tasks"), this)))
-                .bounds(this.leftPos + 176, this.topPos + 14, 9, 9)
-                .build());
+        this.addWidget(this.craftingButton = new ReplicationTerminalTexturedButton(this.leftPos + 176, this.topPos + 14, 9, 9, Component.empty(),
+                Component.translatable("replication.crafting_tasks").getString(), 247, 41, button -> {enableTask(new ReplicationTaskWidget((this.width - 256) / 2,(this.height - 256) / 2, 256,256, Component.translatable("replication.crafting_tasks"), this));}));
 
         this.addRenderableWidget(this.sortingType = new ReplicationTerminalConfigButton(this.leftPos + 10, this.topPos + 10, 9, 9, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_TYPE, this.menu.getSortingType()) {
             @Override
@@ -106,14 +105,16 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_281886_) {
         super.render(guiGraphics, mouseX, mouseY, p_281886_);
-        for (int matterButtonIndex = 0; matterButtonIndex < this.patternMenu.visibleButtons.size(); matterButtonIndex++) {
-            var patternButton = this.patternMenu.visibleButtons.get(matterButtonIndex);
-            patternButton.render(guiGraphics, this.leftPos + (matterButtonIndex % 9) * 18 + 11, this.topPos + (matterButtonIndex / 9) * 18 + 28, mouseX, mouseY);
-        }
-        for (int displayIndex = 0; displayIndex < this.terminalMatterValueDisplays.size(); displayIndex++) {
-            var matterTankDisplay = this.terminalMatterValueDisplays.get(displayIndex);
-            // matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize() + (displayIndex % 3) * 18 , this.topPos + (displayIndex / 3) * 18 + 7, mouseX, mouseY);
-            matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize(), this.topPos + (displayIndex) * 20 + 26, mouseX, mouseY);
+        if (shouldBaseGUIRender()){
+            for (int matterButtonIndex = 0; matterButtonIndex < this.patternMenu.visibleButtons.size(); matterButtonIndex++) {
+                var patternButton = this.patternMenu.visibleButtons.get(matterButtonIndex);
+                patternButton.render(guiGraphics, this.leftPos + (matterButtonIndex % 9) * 18 + 11, this.topPos + (matterButtonIndex / 9) * 18 + 28, mouseX, mouseY);
+            }
+            for (int displayIndex = 0; displayIndex < this.terminalMatterValueDisplays.size(); displayIndex++) {
+                var matterTankDisplay = this.terminalMatterValueDisplays.get(displayIndex);
+                // matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize() + (displayIndex % 3) * 18 , this.topPos + (displayIndex / 3) * 18 + 7, mouseX, mouseY);
+                matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize(), this.topPos + (displayIndex) * 20 + 26, mouseX, mouseY);
+            }
         }
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
@@ -408,6 +409,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
                 if (pMouseX > ReplicationTerminalScreen.this.leftPos + (matterButtonIndex % 9) * 18 + 11 && pMouseX < ReplicationTerminalScreen.this.leftPos + (matterButtonIndex % 9) * 18 + 11 + 18
                         && pMouseY > ReplicationTerminalScreen.this.topPos + (matterButtonIndex / 9) * 18 + 28 && pMouseY < ReplicationTerminalScreen.this.topPos + (matterButtonIndex / 9) * 18 + 28 + 18) {
                     var patternButton = this.visibleButtons.get(matterButtonIndex);
+                    if (patternButton.cachedAmount() == 0) return false;
                     ReplicationTerminalScreen.this.enableRequest(new ReplicationRequestWidget((ReplicationTerminalScreen.this.width - 177) / 2,
                             (ReplicationTerminalScreen.this.height - 102) / 2, 177, 102, Component.translatable("replication.request_amount"), patternButton, ReplicationTerminalScreen.this));
                     Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));

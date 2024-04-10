@@ -1,5 +1,6 @@
-package com.buuz135.replication.client.gui;
+package com.buuz135.replication.client.gui.button;
 
+import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
@@ -7,15 +8,10 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.function.Supplier;
 
 public class ReplicationTerminalConfigButton extends Button {
 

@@ -12,6 +12,7 @@
   "relocation.blueprint.contains_information": "Contains information: ",
   "relocation.blueprint.not_found": "Information not found",
   "relocation.blueprint.use_on_chip_storage": "Scan it in the identification chamber to get the information",
+  "replication.crafting_tasks": "Crafting Tasks",
   "replication.matter_type.earth": "Earth",
   "replication.matter_type.empty": "Empty",
   "replication.matter_type.ender": "Ender",
