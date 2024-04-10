@@ -19,12 +19,16 @@ public class ReplicationTerminalTexturedButton extends Button {
     private final String tooltip;
     private final int textureX;
     private final int textureY;
+    private final int hoveredTextureX;
+    private final int hoveredTextureY;
 
-    public ReplicationTerminalTexturedButton(int pX, int pY, int pWidth, int pHeight, Component component, String tooltip, int textureX, int textureY, OnPress onPress) {
+    public ReplicationTerminalTexturedButton(int pX, int pY, int pWidth, int pHeight, Component component, String tooltip, int textureX, int textureY,int hoveredTextureX, int hoveredTextureY, OnPress onPress) {
         super(pX, pY, pWidth, pHeight, component, onPress, supplier -> Component.empty());
         this.tooltip = tooltip;
         this.textureX = textureX;
         this.textureY = textureY;
+        this.hoveredTextureX = hoveredTextureX;
+        this.hoveredTextureY = hoveredTextureY;
     }
 
 
@@ -33,13 +37,10 @@ public class ReplicationTerminalTexturedButton extends Button {
         this.isHovered = pMouseX >= this.getX() && pMouseY >= this.getY() && pMouseX < this.getX() + this.width && pMouseY < this.getY() + this.height;
         guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), this.textureX, this.textureY, this.width, this.height);
         if (isHovered) {
+            guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), this.hoveredTextureX, this.hoveredTextureY, this.width, this.height);
             guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable(tooltip), (int) pMouseX, (int) pMouseY);
-            Rectangle area = new Rectangle(getX(), getY(), getWidth()-1, getHeight() -1);
-            var color = 0xffffffff;
-            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y, color);
-            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y + area.height, color);
-            AssetUtil.drawVerticalLine(guiGraphics, area.x, area.y, area.y + area.height, color);
-            AssetUtil.drawVerticalLine(guiGraphics, area.x + area.width, area.y, area.y + area.height, color);
+        } else {
+            guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), this.textureX, this.textureY, this.width, this.height);
         }
         int i = this.getFGColor();
         this.renderString(guiGraphics, Minecraft.getInstance().font, i | Mth.ceil(this.alpha * 255.0F) << 24);

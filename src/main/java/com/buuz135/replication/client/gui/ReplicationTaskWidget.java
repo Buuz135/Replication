@@ -95,7 +95,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
             this.x = x;
             this.y = y;
             this.cancelButton = new ReplicationTerminalTexturedButton(x + 80 - 9 - 2, y + 2, 9, 9, Component.empty(),
-                    Component.translatable("tooltip.replication.terminal.cancel_task").getString(), 247, 41, button -> {});
+                    Component.translatable("tooltip.replication.terminal.cancel_task").getString(), 247, 41,247, 41, button -> {});
         }
 
         public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float v) {
