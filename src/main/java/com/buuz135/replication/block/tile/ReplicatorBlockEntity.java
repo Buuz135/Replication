@@ -135,6 +135,12 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
             }
             markComponentDirty();
         }
+        if (craftingTask == null && this.progress < MAX_PROGRESS){
+            this.action = 1;
+            ++this.progress;
+            syncObject(this.action);
+            syncObject(this.progress);
+        }
     }
 
     @NotNull
@@ -158,6 +164,14 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
                 ItemHandlerHelper.insertItem(this.output, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false) ;
             }
         }
+        this.cachedReplicationTask = null;
+        this.craftingStack = ItemStack.EMPTY;
+        this.craftingTask = null;
+        this.redstoneManager.finish();
+        syncObject(this.craftingStack);
+    }
+
+    public void cancelTask(){
         this.cachedReplicationTask = null;
         this.craftingStack = ItemStack.EMPTY;
         this.craftingTask = null;
