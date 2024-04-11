@@ -2,6 +2,7 @@ package com.buuz135.replication.client.gui;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.client.gui.addons.MatterPatternButton;
+import com.buuz135.replication.client.gui.button.ReplicationTerminalTexturedButton;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,9 +30,13 @@ public class ReplicationRequestWidget extends AbstractWidget implements Renderab
         this.matterPatternButton = matterPatternButton;
         this.replicationTerminalScreen = replicationTerminalContainer;
         this.widgets = new ArrayList<>();
-        this.closeButton = new Button.Builder(Component.literal("x"), button -> this.replicationTerminalScreen.disableRequest())
-                .bounds(this.getX() + 177 - 16, this.getY() + 4, 12, 12)
-                .build();
+        this.closeButton = new ReplicationTerminalTexturedButton(this.getX() + 239, this.getY() + 8, 9, 9, Component.empty(),
+                Component.translatable("replication.close").getString(), 247, 50,238, 50, button -> this.replicationTerminalScreen.disableRequest());
+
+//        this.closeButton = new Button.Builder(Component.literal("x"), button -> this.replicationTerminalScreen.disableRequest())
+//                .bounds(this.getX() + 177 - 16, this.getY() + 4, 12, 12)
+//                .build();
+
         this.widgets.add(this.closeButton);
         this.amountBox = new EditBox(Minecraft.getInstance().font, this.getX() + 38, this.getY() + 43, 80, 16, Component.literal("1"));
         this.amountBox.setMaxLength(50);

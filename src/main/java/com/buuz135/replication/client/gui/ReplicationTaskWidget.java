@@ -26,7 +26,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Replication.MOD_ID, "textures/gui/task_window.png");
 
     private final ReplicationTerminalScreen replicationTerminalScreen;
-    private final Button closeButton;
+    private final ReplicationTerminalTexturedButton closeButton;
     private final List<AbstractWidget> widgets;
     private List<TaskDisplay> taskDisplays;
 
@@ -34,9 +34,11 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
         super(pX, pY, pWidth, pHeight, pMessage);
         this.replicationTerminalScreen = replicationTerminalContainer;
         this.widgets = new ArrayList<>();
-        this.closeButton = new Button.Builder(Component.literal("x"), button -> this.replicationTerminalScreen.disableTask())
-                .bounds(this.getX() + 256 - 16, this.getY() + 4, 12, 12)
-                .build();
+        this.closeButton = new ReplicationTerminalTexturedButton(this.getX() + 239, this.getY() + 8, 9, 9, Component.empty(),
+                Component.translatable("replication.close").getString(), 247, 50,238, 50, button -> this.replicationTerminalScreen.disableTask());
+//                new Button.Builder(Component.literal("x"), button -> this.replicationTerminalScreen.disableTask())
+//                .bounds(this.getX() + 256 - 16, this.getY() + 4, 12, 12)
+//                .build();
         this.widgets.add(this.closeButton);
         this.taskDisplays = new ArrayList<>();
         refreshTasks();
@@ -49,7 +51,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float v) {
         guiGraphics.blit(TEXTURE, this.getX(), this.getY(), 0, 0, 256, 256);
-        guiGraphics.drawString(Minecraft.getInstance().font, this.getMessage(), this.getX() + 8, this.getY() + 6, 4210752, false);
+        guiGraphics.drawString(Minecraft.getInstance().font, this.getMessage(), this.getX() + 10, this.getY() + 10, 0x72e567, false);
 
         for (AbstractWidget widget : this.widgets) {
             if (widget instanceof Checkbox) {
@@ -79,7 +81,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
         var tasks = TaskSyncPacket.CLIENT_TASK_STORAGE.getOrDefault(this.replicationTerminalScreen.getMenu().getNetwork(), new HashMap<>());
         IReplicationTask[] tastValues = tasks.values().toArray(new IReplicationTask[0]);
         for (int i = 0; i < tastValues.length; i++) {
-            this.taskDisplays.add(new TaskDisplay(tastValues[i], this.getX() + 8 + (i % 3) * 80, this.getY() + 18 + (i / 3) * 23));
+            this.taskDisplays.add(new TaskDisplay(tastValues[i], this.getX() + 8 + (i % 3) * 81, this.getY() + 25 + (i / 3) * 25));
 
         }
     }
@@ -94,23 +96,23 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
             this.task = task;
             this.x = x;
             this.y = y;
-            this.cancelButton = new ReplicationTerminalTexturedButton(x + 80 - 9 - 2, y + 2, 9, 9, Component.empty(),
-                    Component.translatable("tooltip.replication.terminal.cancel_task").getString(), 247, 41,247, 41, button -> {});
+            this.cancelButton = new ReplicationTerminalTexturedButton(x + 72, y + 1, 5, 5, Component.empty(),
+                    Component.translatable("tooltip.replication.terminal.cancel_task").getString(), 251, 59,246, 59, button -> {});
         }
 
         public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float v) {
             guiGraphics.renderItem(task.getReplicatingStack(), x + 3, y + 3);
             this.cancelButton.render(guiGraphics, mouseX, mouseY, v);
             guiGraphics.pose().pushPose();
-            var scale = 0.5f;
+            var scale = 0.6f;
             guiGraphics.pose().scale(scale, scale, scale);
             var textY = 3;
             var display = LangUtil.getString("tooltip.replication.terminal.amount") + NumberUtils.getFormatedBigNumber(task.getCurrentAmount()) + "/" + NumberUtils.getFormatedBigNumber(task.getTotalAmount());
-            guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 5) / scale, (y + textY) / scale, 0, false);
+            guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 12) / scale, (y + textY) / scale, 0x72e567, false);
             display =  LangUtil.getString("tooltip.replication.terminal.workers") + NumberUtils.getFormatedBigNumber(task.getReplicatorsOnTask().size());
-            guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 5) / scale, (y + textY + 6) / scale, 0, false);
+            guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 12) / scale, (y + textY + 6) / scale, 0x72e567, false);
             display =  LangUtil.getString("tooltip.replication.terminal.mode") +  LangUtil.getString("tooltip.replication.terminal." + task.getMode().name().toLowerCase());
-            guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 5) / scale, (y + textY + 6 * 2) / scale, 0, false);
+            guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 12) / scale, (y + textY + 6 * 2) / scale, 0x72e567, false);
             guiGraphics.pose().popPose();
             if (mouseX > x + 2 && mouseX < x + 19 && mouseY > y + 2 && mouseY < y + 19) {
                 guiGraphics.renderTooltip(Minecraft.getInstance().font, task.getReplicatingStack(), (int) mouseX, (int) mouseY);
