@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 import java.awt.*;
 
@@ -18,12 +19,20 @@ public class ReplicationTerminalConfigButton extends Button {
     private final LocatorInstance locatable;
     private final Type type;
     private int state;
+    private final int textureX;
+    private final int textureY;
+    private final int hoveredTextureX;
+    private final int hoveredTextureY;
 
-    protected ReplicationTerminalConfigButton(int pX, int pY, int pWidth, int pHeight, LocatorInstance locatable,  Type type, int defaultState) {
+    protected ReplicationTerminalConfigButton(int pX, int pY, int pWidth, int pHeight, LocatorInstance locatable,  Type type, int defaultState, int textureX, int textureY,int hoveredTextureX, int hoveredTextureY) {
         super(pX, pY, pWidth, pHeight, Component.empty(), button -> {}, supplier -> Component.empty());
         this.locatable = locatable;
         this.type = type;
         this.state = defaultState;
+        this.textureX = textureX;
+        this.textureY = textureY;
+        this.hoveredTextureX = hoveredTextureX;
+        this.hoveredTextureY = hoveredTextureY;
     }
 
     @Override
@@ -38,16 +47,27 @@ public class ReplicationTerminalConfigButton extends Button {
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.isHovered = pMouseX >= this.getX() && pMouseY >= this.getY() && pMouseX < this.getX() + this.width && pMouseY < this.getY() + this.height;
-        guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), 247, type.yPos + 9 * state, 9,9);
+
+        guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), this.textureX, this.textureY + 9 * state, getWidth(), getHeight());
         if (isHovered) {
+            guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), this.hoveredTextureX, this.hoveredTextureY + 9 * state, getWidth(), getHeight());
             guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("tooltip.replication.terminal." + type.name().toLowerCase() + ".state_" + getState()), (int) pMouseX, (int) pMouseY);
-            Rectangle area = new Rectangle(getX(), getY(), getWidth()-1, getHeight() -1);
-            var color = 0xffffffff;
-            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y, color);
-            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y + area.height, color);
-            AssetUtil.drawVerticalLine(guiGraphics, area.x, area.y, area.y + area.height, color);
-            AssetUtil.drawVerticalLine(guiGraphics, area.x + area.width, area.y, area.y + area.height, color);
+        } else {
+            guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), this.textureX, this.textureY + 9 * state, getWidth(), getHeight());
         }
+        int i = this.getFGColor();
+        this.renderString(guiGraphics, Minecraft.getInstance().font, i | Mth.ceil(this.alpha * 255.0F) << 24);
+//
+//        guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), 247, type.yPos + 9 * state, 9,9);
+//        if (isHovered) {
+//            guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("tooltip.replication.terminal." + type.name().toLowerCase() + ".state_" + getState()), (int) pMouseX, (int) pMouseY);
+//            Rectangle area = new Rectangle(getX(), getY(), getWidth()-1, getHeight() -1);
+//            var color = 0xffffffff;
+//            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y, color);
+//            AssetUtil.drawHorizontalLine(guiGraphics, area.x, area.x + area.width, area.y + area.height, color);
+//            AssetUtil.drawVerticalLine(guiGraphics, area.x, area.y, area.y + area.height, color);
+//            AssetUtil.drawVerticalLine(guiGraphics, area.x + area.width, area.y, area.y + area.height, color);
+//        }
     }
 
     public int getState() {
@@ -55,19 +75,13 @@ public class ReplicationTerminalConfigButton extends Button {
     }
 
     public static enum Type{
-        SORTING_TYPE(5, 2),
-        SORTING_DIRECTION(23, 2);
+        SORTING_TYPE(2),
+        SORTING_DIRECTION(2);
 
-        private final int yPos;
         private final int states;
 
-        Type(int yPos, int states) {
-            this.yPos = yPos;
+        Type(int states) {
             this.states = states;
-        }
-
-        public int getyPos() {
-            return yPos;
         }
     }
 }

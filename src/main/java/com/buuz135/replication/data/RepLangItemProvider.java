@@ -50,6 +50,7 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("tooltip.replication.terminal.mode", "Mode: ");
         this.add("tooltip.replication.terminal.single", "Single");
         this.add("tooltip.replication.terminal.multiple", "Parallel");
+        this.add("tooltip.replication.close", "Close");
 
         for (MatterType value : MatterType.values()) {
             this.add("replication.matter_type." + value.getName(), WordUtils.capitalize(value.getName()));
