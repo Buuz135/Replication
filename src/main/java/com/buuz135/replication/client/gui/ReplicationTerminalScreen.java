@@ -189,20 +189,24 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     public boolean mouseDragged(double p_98535_, double p_98536_, int p_98537_, double p_98538_, double p_98539_) {
-        if (this.scrolling) {
+        if (this.replicationTaskWidget != null){
+            this.replicationTaskWidget.mouseDragged( p_98535_,  p_98536_,  p_98537_,  p_98538_,  p_98539_);
+        } else if (this.scrolling) {
             int i = this.topPos + 18;
             int j = i + 80;
             this.scrollOffs = ((float) p_98536_ - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
             this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
             this.patternMenu.scrollTo(this.scrollOffs);
             return true;
-        } else {
-            return super.mouseDragged(p_98535_, p_98536_, p_98537_, p_98538_, p_98539_);
         }
+        return super.mouseDragged(p_98535_, p_98536_, p_98537_, p_98538_, p_98539_);
     }
 
     @Override
     public boolean mouseScrolled(double p_98527_, double p_98528_, double p_98529_) {
+        if (this.replicationTaskWidget != null){
+            return this.replicationTaskWidget.mouseScrolled(p_98527_, p_98528_, p_98529_);
+        }
         if (!this.patternMenu.canScroll()) {
             return false;
         } else {
@@ -214,6 +218,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if (this.replicationTaskWidget != null){
+            return this.replicationTaskWidget.mouseClicked(pMouseX, pMouseY, pButton);
+        }
         if (pButton == 0) {
             if (shouldBaseGUIRender()) {
                 if (this.insideScrollbar(pMouseX, pMouseY)) {
@@ -236,6 +243,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     public boolean mouseReleased(double p_98622_, double p_98623_, int p_98624_) {
+        if (this.replicationTaskWidget != null){
+            this.replicationTaskWidget.mouseReleased(p_98622_, p_98623_, p_98624_);
+        }
         if (p_98624_ == 0) {
             this.scrolling = false;
         }
