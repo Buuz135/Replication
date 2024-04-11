@@ -3,15 +3,19 @@ package com.buuz135.replication.client.gui;
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.client.gui.button.ReplicationTerminalTexturedButton;
+import com.buuz135.replication.packet.TaskCancelPacket;
 import com.buuz135.replication.packet.TaskSyncPacket;
 import com.buuz135.replication.util.NumberUtils;
+import com.hrznstudio.titanium.block_network.NetworkManager;
 import com.hrznstudio.titanium.util.LangUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -153,7 +157,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
             }
 
         }
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return false;
     }
 
     @Override
@@ -174,7 +178,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
         }
     }
 
-    public static final class TaskDisplay {
+    public final class TaskDisplay {
         private final IReplicationTask task;
         private final ReplicationTerminalTexturedButton cancelButton;
 
@@ -184,6 +188,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
 
             this.cancelButton = new ReplicationTerminalTexturedButton(72, 1, 5, 5, Component.empty(),
                     Component.translatable("tooltip.replication.terminal.cancel_task").getString(), 251, 59, 246, 59, button -> {
+                Replication.NETWORK.get().sendToServer(new TaskCancelPacket(task.getUuid().toString(), ReplicationTaskWidget.this.replicationTerminalScreen.getMenu().getNetwork()));
             });
         }
 
@@ -265,11 +270,9 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
         }
 
         public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-            for (int matterButtonIndex = 0; matterButtonIndex < this.visibleButtons.size(); matterButtonIndex++) {
-                if (pMouseX > ReplicationTaskWidget.this.getX() + (matterButtonIndex % 3) * 18 + 11 && pMouseX < ReplicationTaskWidget.this.getX() + (matterButtonIndex % 3) * 18 + 11 + 18
-                        && pMouseY > ReplicationTaskWidget.this.getY() + (matterButtonIndex / 3) * 18 + 28 && pMouseY < ReplicationTaskWidget.this.getY() + (matterButtonIndex / 3) * 18 + 28 + 18) {
-                    var patternButton = this.visibleButtons.get(matterButtonIndex);
-
+            for (TaskDisplay patternButton : this.visibleButtons) {
+                if (patternButton.cancelButton.isHovered() && Screen.hasShiftDown()){
+                    patternButton.cancelButton.mouseClicked(pMouseX, pMouseY, pButton);
                     Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     return true;
                 }

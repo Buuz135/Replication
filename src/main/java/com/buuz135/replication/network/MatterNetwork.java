@@ -12,9 +12,11 @@ import com.buuz135.replication.api.pattern.MatterPattern;
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.api.task.ReplicationTask;
 import com.buuz135.replication.block.tile.ReplicationTerminalBlockEntity;
+import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
 import com.buuz135.replication.network.task.ReplicationTaskManager;
 import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.packet.PatternSyncStoragePacket;
+import com.buuz135.replication.packet.TaskCancelPacket;
 import com.buuz135.replication.packet.TaskSyncPacket;
 import com.hrznstudio.titanium.block_network.Network;
 import com.hrznstudio.titanium.block_network.NetworkFactory;
@@ -256,6 +258,60 @@ public class MatterNetwork extends Network {
 
     public ReplicationTaskManager getTaskManager() {
         return taskManager;
+    }
+
+    public void cancelTask(String task, Level level) {
+        var replicationTask = this.getTaskManager().getPendingTasks().remove(task);
+        if (replicationTask != null){
+            //WE CANCEL REPLICATOR TASKS
+            for (Long l : replicationTask.getReplicatorsOnTask()) {
+                var pos = BlockPos.of(l);
+                if (level.getBlockEntity(pos) instanceof ReplicatorBlockEntity replicatorBlockEntity){
+                    replicatorBlockEntity.cancelTask();
+                }
+            }
+            //WE RETURN THE MATTER STORED
+            for (List<MatterStack> valueList : replicationTask.getStoredMatterStack().values()) {
+                for (MatterStack matterStack : valueList) {
+                    for (NetworkElement matterStacksHolder : this.getMatterStacksHolders()) {
+                        if (matterStack.isEmpty()) continue;
+                        if (matterStacksHolder.getLevel() != level) continue;
+                        var destination = matterStacksHolder.getLevel().getBlockEntity(matterStacksHolder.getPos());
+                        if (destination instanceof IMatterTanksConsumer consumer){
+                            for (IMatterTank outputTank : consumer.getTanks()) {
+                                if (matterStack.isEmpty()) continue;
+                                if (outputTank.getMatter().getMatterType().equals(matterStack.getMatterType())){
+                                    matterStack.setAmount(matterStack.getAmount() - outputTank.fill(matterStack, IFluidHandler.FluidAction.EXECUTE));
+                                }
+                            }
+                        }
+                    }
+                    if (!matterStack.isEmpty()){
+                        for (NetworkElement matterStacksHolder : this.getMatterStacksHolders()) {
+                            if (matterStack.isEmpty()) continue;
+                            if (matterStacksHolder.getLevel() != level) continue;
+                            var destination = matterStacksHolder.getLevel().getBlockEntity(matterStacksHolder.getPos());
+                            if (destination instanceof IMatterTanksConsumer consumer){
+                                for (IMatterTank outputTank : consumer.getTanks()) {
+                                    if (matterStack.isEmpty()) continue;
+                                    if (outputTank.getMatter().isEmpty()){
+                                        matterStack.setAmount(matterStack.getAmount() - outputTank.fill(matterStack, IFluidHandler.FluidAction.EXECUTE));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (NetworkElement terminal : this.terminals) {
+            var tile = terminal.getLevel().getBlockEntity(terminal.getPos());
+            if (tile instanceof ReplicationTerminalBlockEntity terminalBlockEntity){
+                terminalBlockEntity.getTerminalPlayerTracker().getPlayers().forEach(serverPlayer -> {
+                    Replication.NETWORK.get().sendTo(new TaskCancelPacket.Response(task, this.getId()), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+                });
+            }
+        }
     }
 
     public static class Factory implements NetworkFactory {
