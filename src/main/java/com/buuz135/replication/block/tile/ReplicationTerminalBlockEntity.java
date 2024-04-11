@@ -80,8 +80,10 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
                 }
             }
             ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getValues().forEach(iMatterType -> this.getNetwork().sendMatterSyncPacket(serverPlayer, this.getNetwork().calculateMatterAmount(iMatterType), iMatterType));
-            this.getNetwork().getTaskManager().getPendingTasks().values().forEach(task -> {
-                this.getNetwork().sendTaskSyncPacket(serverPlayer, task);
+            this.getLevel().getServer().submitAsync(() -> {
+                this.getNetwork().getTaskManager().getPendingTasks().values().forEach(task -> {
+                    this.getNetwork().sendTaskSyncPacket(serverPlayer, task);
+                });
             });
             NetworkHooks.openScreen(serverPlayer, this, buffer -> {
                 LocatorFactory.writePacketBuffer(buffer, new TileEntityLocatorInstance(this.worldPosition));

@@ -12,6 +12,7 @@ import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.packet.PatternSyncStoragePacket;
 import com.buuz135.replication.packet.TaskCreatePacket;
+import com.buuz135.replication.packet.TaskSyncPacket;
 import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -48,6 +49,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     public ReplicationTerminalScreen(ReplicationTerminalContainer container, Inventory inventory, Component component) {
         super(container, inventory, component);
+        if (TaskSyncPacket.CLIENT_TASK_STORAGE.containsKey(container.getNetwork())) TaskSyncPacket.CLIENT_TASK_STORAGE.remove(container.getNetwork());
         this.imageWidth = 195;
         this.imageHeight = 256;
         this.inventoryLabelY = 120;

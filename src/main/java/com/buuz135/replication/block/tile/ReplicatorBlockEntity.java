@@ -1,7 +1,10 @@
 package com.buuz135.replication.block.tile;
 
 import com.buuz135.replication.api.task.IReplicationTask;
+import com.buuz135.replication.api.task.ReplicationTask;
+import com.buuz135.replication.client.gui.addons.ReplicatorCraftingAddon;
 import com.hrznstudio.titanium.annotation.Save;
+import com.hrznstudio.titanium.api.filter.FilterSlot;
 import com.hrznstudio.titanium.api.redstone.IRedstoneReader;
 import com.hrznstudio.titanium.api.redstone.IRedstoneState;
 import com.hrznstudio.titanium.block.BasicTileBlock;
@@ -13,6 +16,7 @@ import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
+import com.hrznstudio.titanium.filter.ItemStackFilter;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.InventoryUtil;
 import net.minecraft.core.BlockPos;
@@ -51,6 +55,8 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     @Save
     private RedstoneManager<RedstoneAction> redstoneManager;
     private RedstoneControlButtonComponent<RedstoneAction> redstoneButton;
+    @Save
+    private ItemStackFilter infiniteCrafting;
 
 
     public ReplicatorBlockEntity(BasicTileBlock<ReplicatorBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
@@ -68,6 +74,15 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         addInventory(this.output);
         this.redstoneManager = new RedstoneManager<>(RedstoneAction.IGNORE, false);
         this.addButton(redstoneButton = new RedstoneControlButtonComponent<>(154, 84, 14, 14, () -> this.redstoneManager, () -> this));
+        this.infiniteCrafting = new ItemStackFilter("infiniteCrafting", 1);
+        this.infiniteCrafting.getFilterSlots()[0] = new FilterSlot<>(  121, 30 + 7, 0, ItemStack.EMPTY);
+        addFilter(infiniteCrafting);
+    }
+
+    @Override
+    public void initClient() {
+        super.initClient();
+        addGuiAddonFactory(() -> new ReplicatorCraftingAddon(50, 30, this));
     }
 
     @Override
@@ -77,6 +92,16 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
             tickProgress();
             this.progressBarComponent.setProgress(this.action == 1 ? MAX_PROGRESS - progress : MAX_PROGRESS + progress);
             syncObject(this.progressBarComponent);
+            if (this.level.getGameTime() % 20 == 0 && this.craftingTask == null && this.cachedReplicationTask == null && !this.infiniteCrafting.getFilterSlots()[0].getFilter().isEmpty()){
+                var task = new ReplicationTask(this.infiniteCrafting.getFilterSlots()[0].getFilter().copy(), 1, IReplicationTask.Mode.SINGLE, this.getBlockPos());
+                task.acceptReplicator(this.getBlockPos());
+                this.craftingTask = task.getUuid().toString();
+                this.cachedReplicationTask = task;
+                this.craftingStack = task.getReplicatingStack();
+                syncObject(this.craftingStack);
+                this.getNetwork().getTaskManager().getPendingTasks().put(task.getUuid().toString(), task);
+                this.getNetwork().onTaskValueChanged(task, (ServerLevel) this.level);
+            }
             if (this.level.getGameTime() % 20 == 0 && this.craftingTask == null){
                 var task = this.getNetwork().getTaskManager().findTaskForReplicator(this.getBlockPos());
                 if (task != null){
@@ -152,17 +177,21 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     private void replicateItem(){
         this.cachedReplicationTask.finalizeReplication(this.level, this.getBlockPos(), this.getNetwork());
         this.getNetwork().onTaskValueChanged(this.cachedReplicationTask, (ServerLevel) this.level);
-        var entity = this.level.getBlockEntity(this.cachedReplicationTask.getSource());
-        if (entity != null){
-            if (entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).isPresent()){
-                entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).ifPresent(iItemHandler -> {
-                    if (!ItemHandlerHelper.insertItem(iItemHandler, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false).isEmpty()){
-                        ItemHandlerHelper.insertItem(this.output, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false) ;
-                    }
-                });
-            } else {
-                ItemHandlerHelper.insertItem(this.output, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false) ;
+        if (!this.getBlockPos().equals(this.cachedReplicationTask.getSource())){
+            var entity = this.level.getBlockEntity(this.cachedReplicationTask.getSource());
+            if (entity != null){
+                if (entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).isPresent()){
+                    entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).ifPresent(iItemHandler -> {
+                        if (!ItemHandlerHelper.insertItem(iItemHandler, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false).isEmpty()){
+                            ItemHandlerHelper.insertItem(this.output, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false) ;
+                        }
+                    });
+                } else {
+                    ItemHandlerHelper.insertItem(this.output, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false);
+                }
             }
+        }else {
+            ItemHandlerHelper.insertItem(this.output, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false);
         }
         this.cachedReplicationTask = null;
         this.craftingStack = ItemStack.EMPTY;

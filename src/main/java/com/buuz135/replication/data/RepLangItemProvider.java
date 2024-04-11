@@ -40,6 +40,8 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("replication.parallel_mode", "Parallel Mode");
         this.add("replication.replicate", "Replicate");
         this.add("replication.crafting_tasks", "Crafting Tasks");
+        this.add("replication.current_crafting", "Currently Crafting");
+        this.add("replication.infinite_mode", "Infinite Mode");
         this.add("tooltip.replication.terminal.sorting_type.state_0", "Sorting Type: Amount");
         this.add("tooltip.replication.terminal.sorting_type.state_1", "Sorting Type: Name");
         this.add("tooltip.replication.terminal.sorting_direction.state_0", "Sorting Direction: Ascending");
