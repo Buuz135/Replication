@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class ReplicationTerminalScreen extends AbstractContainerScreen<ReplicationTerminalContainer> {
 
     public static ResourceLocation TEXTURE = new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal.png");
-
+    public static ResourceLocation BUTTONS = new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
     private EditBox searchBox;
     private PatternMenu patternMenu;
     private float scrollOffs;
@@ -63,10 +63,10 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         this.searchBox.setVisible(true);
         this.searchBox.setTextColor(0x72e567);
         this.addWidget(this.searchBox);
-        this.addWidget(this.craftingButton = new ReplicationTerminalTexturedButton(this.leftPos + 176, this.topPos + 10, 9, 9, Component.empty(),
+        this.addWidget(this.craftingButton = new ReplicationTerminalTexturedButton(this.leftPos + 176, this.topPos + 10, 9, 9, Component.empty(), BUTTONS,
                 Component.translatable("replication.crafting_tasks").getString(), 247, 41,238, 41, button -> {enableTask(new ReplicationTaskWidget((this.width - 256) / 2,(this.height - 256) / 2, 256,256, Component.translatable("replication.crafting_tasks"), this));}));
 
-        this.addRenderableWidget(this.sortingType = new ReplicationTerminalConfigButton(this.leftPos + 10, this.topPos + 10, 9, 9, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_TYPE, this.menu.getSortingType(),
+        this.addRenderableWidget(this.sortingType = new ReplicationTerminalConfigButton(this.leftPos + 10, this.topPos + 10, 9, 9, BUTTONS, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_TYPE, this.menu.getSortingType(),
                 247, 5, 238, 5) {
             @Override
             public void onPress() {
@@ -81,7 +81,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             }
         });
 
-        this.addRenderableWidget(this.sortingDirection = new ReplicationTerminalConfigButton(this.leftPos + 20, this.topPos + 10, 9, 9, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_DIRECTION, this.menu.getSortingValue(),
+        this.addRenderableWidget(this.sortingDirection = new ReplicationTerminalConfigButton(this.leftPos + 20, this.topPos + 10, 9, 9, BUTTONS, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_DIRECTION, this.menu.getSortingValue(),
                 247, 23, 238, 23) {
             @Override
             public void onPress() {
@@ -142,7 +142,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             int k = this.topPos + 28;
             int i = k + 88;
 
-            guiGraphics.blit(TEXTURE, j, k + (int) ((float) (i - k - 5) * this.scrollOffs), 245, 0, 11, 5);
+            guiGraphics.blit(BUTTONS, j, k + (int) ((float) (i - k - 5) * this.scrollOffs), 245, 0, 11, 5);
 
 
         }

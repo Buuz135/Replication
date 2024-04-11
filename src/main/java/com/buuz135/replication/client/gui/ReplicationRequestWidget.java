@@ -19,8 +19,8 @@ import java.util.List;
 
 public class ReplicationRequestWidget extends AbstractWidget implements Renderable {
 
-    private static ResourceLocation TEXTURE = new ResourceLocation(Replication.MOD_ID, "textures/gui/request_window.png");
-
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Replication.MOD_ID, "textures/gui/request_window.png");
+    private static final ResourceLocation BUTTONS = new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
     private final MatterPatternButton matterPatternButton;
     private final ReplicationTerminalScreen replicationTerminalScreen;
     private final Button closeButton;
@@ -33,15 +33,10 @@ public class ReplicationRequestWidget extends AbstractWidget implements Renderab
         this.matterPatternButton = matterPatternButton;
         this.replicationTerminalScreen = replicationTerminalContainer;
         this.widgets = new ArrayList<>();
-        this.closeButton = new ReplicationTerminalTexturedButton(this.getX() + 159, this.getY() + 8, 9, 9, Component.empty(),
+        this.closeButton = new ReplicationTerminalTexturedButton(this.getX() + 159, this.getY() + 8, 9, 9, Component.empty(), BUTTONS,
                 Component.translatable("replication.close").getString(), 247, 50,238, 50, button -> this.replicationTerminalScreen.disableRequest());
-
-//        this.closeButton = new Button.Builder(Component.literal("x"), button -> this.replicationTerminalScreen.disableRequest())
-//                .bounds(this.getX() + 177 - 16, this.getY() + 4, 12, 12)
-//                .build();
-
         this.widgets.add(this.closeButton);
-        this.amountBox = new EditBox(Minecraft.getInstance().font, this.getX() + 45, this.getY() + 47, 58, 16, Component.literal("1"));
+        this.amountBox = new EditBox(Minecraft.getInstance().font, this.getX() + 45, this.getY() + 47, 94, 16, Component.literal("1"));
         this.amountBox.setMaxLength(50);
         this.amountBox.setBordered(false);
         this.amountBox.setVisible(true);
@@ -51,41 +46,23 @@ public class ReplicationRequestWidget extends AbstractWidget implements Renderab
         var amount = new int[]{1, 8 , 16 , 64};
         for (int i = 0; i < amount.length; i++) {
             var am = amount[i];
-            var incrementButton = new ReplicationTerminalTexturedButton(this.getX() + 19 + 36 * i, this.getY() + 20, 30, 18, Component.literal("+" + am).setStyle(Style.EMPTY.withColor(Mth.color(114/255f, 229/255f, 103/255f))),
-                    Component.literal("+" + am).getString(), 226, 64,226, 82, button -> {addNumber(am);});
-
-//            var incrementButton = new Button.Builder(Component.literal("+" + am), button -> {
-//                addNumber(am);
-//            })
-//                    .bounds(this.getX() + 20 + 34*i, this.getY() + 18, 32, 18)
-//                    .build();
-
+            var incrementButton = new ReplicationTerminalTexturedButton(this.getX() + 19 + 36 * i, this.getY() + 21, 30, 16,
+                    Component.literal("+" + am).setStyle(Style.EMPTY.withColor(Mth.color(114/255f, 229/255f, 103/255f))), BUTTONS,
+                    Component.literal("+" + am).getString(), 226, 64,226, 80, button -> {addNumber(am);});
             this.widgets.add(incrementButton);
-            var decrementButton = new ReplicationTerminalTexturedButton(this.getX() + 19 + 36 * i, this.getY() + 64, 30, 18, Component.literal("-" + am).setStyle(Style.EMPTY.withColor(Mth.color(114/255f, 229/255f, 103/255f))),
-                    Component.literal("-" + am).getString(), 226, 64,226, 82, button -> {addNumber(-am);});
-
-//            var decrementButton = new Button.Builder(Component.literal("-" + am), button -> {
-//                addNumber(-am);
-//            })
-//                    .bounds(this.getX() + 20 + 34*i, this.getY() + 66, 32, 18)
-//                    .build();
+            var decrementButton = new ReplicationTerminalTexturedButton(this.getX() + 19 + 36 * i, this.getY() + 65, 30, 16,
+                    Component.literal("-" + am).setStyle(Style.EMPTY.withColor(Mth.color(114/255f, 229/255f, 103/255f))), BUTTONS,
+                    Component.literal("-" + am).getString(), 226, 64,226, 80, button -> {addNumber(-am);});
             this.widgets.add(decrementButton);
         }
-        this.checkbox = new ReplicationTerminalTexturedCheckbox(this.getX() + 19, this.getY() + 85, 9, 9,
-                Component.translatable("replication.single_mode"), 238, 140, true, false);
-//        this.checkbox = new Checkbox(this.getX() + 6, this.getY() + 82, 20, 20, Component.translatable("replication.single_mode").withStyle(ChatFormatting.RED), true, false);
-
+        this.checkbox = new ReplicationTerminalTexturedCheckbox(this.getX() + 19, this.getY() + 84, 9, 9,
+                Component.translatable("replication.single_mode"), BUTTONS,  238, 116, true, false);
         this.widgets.add(this.checkbox);
-
-        this.widgets.add(new ReplicationTerminalTexturedButton(this.getX() + 107, this.getY() + 41, 50, 20, Component.translatable("replication.replicate").setStyle(Style.EMPTY.withColor(Mth.color(114/255f, 229/255f, 103/255f))),
-                Component.translatable("replication.replicate").getString(), 206, 100,206, 120,
+        this.widgets.add(new ReplicationTerminalTexturedButton(this.getX() + 137, this.getY() + 41, 20, 20,
+                Component.empty(), BUTTONS,
+                Component.translatable("replication.replicate").getString(), 236, 96,216, 96,
                         button -> {this.replicationTerminalScreen.createTask(matterPatternButton.pattern(), Integer.parseInt(this.amountBox.getValue()), checkbox.selected());}
                 ));
-//        this.widgets.add(new Button.Builder(Component.translatable("replication.replicate"), button -> {
-//            this.replicationTerminalScreen.createTask(matterPatternButton.pattern(), Integer.parseInt(this.amountBox.getValue()), checkbox.selected());
-//        })
-//                .bounds(this.getX() + 38 + 82, this.getY() + 42, 50, 18)
-//                .build());
     }
 
     public void addNumber(int number){
@@ -123,7 +100,7 @@ public class ReplicationRequestWidget extends AbstractWidget implements Renderab
 //            }
             widget.render(guiGraphics, mouseX, mouseY, v);
         }
-        guiGraphics.drawString(Minecraft.getInstance().font,  Component.translatable("replication.parallel_mode").setStyle(Style.EMPTY.withColor(Mth.color(114/255f, 229/255f, 103/255f))), this.getX() + 32 , this.getY() + 86, 0xFFFFFF, false);
+        guiGraphics.drawString(Minecraft.getInstance().font,  Component.translatable("replication.parallel_mode").setStyle(Style.EMPTY.withColor(Mth.color(114/255f, 229/255f, 103/255f))), this.getX() + 32 , this.getY() + 85, 0xFFFFFF, false);
         //this.widgets.forEach(abstractWidget -> abstractWidget.render(guiGraphics, mouseX, mouseY, v));
     }
 

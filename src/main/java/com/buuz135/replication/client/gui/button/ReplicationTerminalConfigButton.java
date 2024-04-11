@@ -10,12 +10,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.awt.*;
 
 public class ReplicationTerminalConfigButton extends Button {
-
+    private final ResourceLocation textureRL;
     private final LocatorInstance locatable;
     private final Type type;
     private int state;
@@ -24,8 +25,9 @@ public class ReplicationTerminalConfigButton extends Button {
     private final int hoveredTextureX;
     private final int hoveredTextureY;
 
-    protected ReplicationTerminalConfigButton(int pX, int pY, int pWidth, int pHeight, LocatorInstance locatable,  Type type, int defaultState, int textureX, int textureY,int hoveredTextureX, int hoveredTextureY) {
+    protected ReplicationTerminalConfigButton(int pX, int pY, int pWidth, int pHeight, ResourceLocation textureRL, LocatorInstance locatable,  Type type, int defaultState, int textureX, int textureY,int hoveredTextureX, int hoveredTextureY) {
         super(pX, pY, pWidth, pHeight, Component.empty(), button -> {}, supplier -> Component.empty());
+        this.textureRL = textureRL;
         this.locatable = locatable;
         this.type = type;
         this.state = defaultState;
@@ -48,12 +50,13 @@ public class ReplicationTerminalConfigButton extends Button {
     protected void renderWidget(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.isHovered = pMouseX >= this.getX() && pMouseY >= this.getY() && pMouseX < this.getX() + this.width && pMouseY < this.getY() + this.height;
 
-        guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), this.textureX, this.textureY + 9 * state, getWidth(), getHeight());
+        // TODO (RID): Make the +9 part of the Constructor
+        guiGraphics.blit(textureRL, this.getX(), this.getY(), this.textureX, this.textureY + 9 * state, getWidth(), getHeight());
         if (isHovered) {
-            guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), this.hoveredTextureX, this.hoveredTextureY + 9 * state, getWidth(), getHeight());
+            guiGraphics.blit(textureRL, this.getX(), this.getY(), this.hoveredTextureX, this.hoveredTextureY + 9 * state, getWidth(), getHeight());
             guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("tooltip.replication.terminal." + type.name().toLowerCase() + ".state_" + getState()), (int) pMouseX, (int) pMouseY);
         } else {
-            guiGraphics.blit(ReplicationTerminalScreen.TEXTURE, this.getX(), this.getY(), this.textureX, this.textureY + 9 * state, getWidth(), getHeight());
+            guiGraphics.blit(textureRL, this.getX(), this.getY(), this.textureX, this.textureY + 9 * state, getWidth(), getHeight());
         }
         int i = this.getFGColor();
         this.renderString(guiGraphics, Minecraft.getInstance().font, i | Mth.ceil(this.alpha * 255.0F) << 24);
