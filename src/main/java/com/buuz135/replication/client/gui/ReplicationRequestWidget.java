@@ -34,7 +34,7 @@ public class ReplicationRequestWidget extends AbstractWidget implements Renderab
         this.replicationTerminalScreen = replicationTerminalContainer;
         this.widgets = new ArrayList<>();
         this.closeButton = new ReplicationTerminalTexturedButton(this.getX() + 159, this.getY() + 8, 9, 9, Component.empty(), BUTTONS,
-                Component.translatable("replication.close").getString(), 247, 50,238, 50, button -> this.replicationTerminalScreen.disableRequest());
+                Component.translatable("tooltip.replication.close").getString(), 247, 50,238, 50, button -> this.replicationTerminalScreen.disableRequest());
         this.widgets.add(this.closeButton);
         this.amountBox = new EditBox(Minecraft.getInstance().font, this.getX() + 45, this.getY() + 47, 94, 16, Component.literal("1"));
         this.amountBox.setMaxLength(50);

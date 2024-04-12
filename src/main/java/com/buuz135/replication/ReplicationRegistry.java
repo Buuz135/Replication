@@ -77,7 +77,7 @@ public class ReplicationRegistry {
 
     public static class Sounds{
 
-        public static RegistryObject<SoundEvent> IDENTIFICATION_CHAMBER = null;
+        //public static RegistryObject<SoundEvent> IDENTIFICATION_CHAMBER = null;
 
     }
 

@@ -41,7 +41,7 @@ public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEnt
                 var tile = this.level.getBlockEntity(this.worldPosition.relative(value));
                 if (tile != null && !(tile instanceof MatterPipeBlockEntity) && this.getNetwork() != null){
                     tile.getCapability(ForgeCapabilities.ENERGY, value.getOpposite()).ifPresent(iEnergyStorage -> {
-                        var simulatedExtract = this.getNetwork().getEnergyStorage().extractEnergy(256, true);
+                        var simulatedExtract = this.getNetwork().getEnergyStorage().extractEnergy(2560, true);
                         var realExtracted = iEnergyStorage.receiveEnergy(simulatedExtract, false);
                         this.getNetwork().getEnergyStorage().extractEnergy(realExtracted, false);
                     });

@@ -73,18 +73,11 @@ public class MatterNetwork extends Network {
     }
 
     public void removeElement(NetworkElement element){
-        var tile = element.getLevel().getBlockEntity(element.getPos());
-        if (tile instanceof IMatterTanksSupplier && tile instanceof IMatterTanksConsumer){
-            this.matterStacksHolders.remove(element);
-        }else if (tile instanceof IMatterTanksSupplier){
-            this.matterStacksSuppliers.remove(element);
-        }else if (tile instanceof IMatterTanksConsumer){
-            this.matterStacksConsumers.remove(element);
-        } else if (tile instanceof IMatterPatternHolder<?>) {
-            this.chipSuppliers.remove(element);
-        } else if (tile instanceof ReplicationTerminalBlockEntity){
-            this.terminals.remove(element);
-        }
+        this.matterStacksHolders.remove(element);
+        this.matterStacksSuppliers.remove(element);
+        this.matterStacksConsumers.remove(element);
+        this.chipSuppliers.remove(element);
+        this.terminals.remove(element);
     }
 
     @Override
@@ -110,10 +103,39 @@ public class MatterNetwork extends Network {
                 if (matterStacksSupplier.getLevel() != level) continue;
                 var origin = matterStacksSupplier.getLevel().getBlockEntity(matterStacksSupplier.getPos());
                 if (origin instanceof IMatterTanksSupplier supplier){
-                    // WE SEARCH FOR HOLDER TANKS THAT HAVE SOMETHING FIRST
-                    transfer(level, supplier, this.matterStacksHolders, (input, output) -> output.isMatterEqual(input));
-                    // WE SEARCH FOR HOLDER TANKS THAT ARE EMPTY
-                    transfer(level, supplier, this.matterStacksHolders, (input, output) -> output.isEmpty());
+                    for (IMatterTank inputTank : supplier.getTanks()) {
+                        if (inputTank.getMatter().isEmpty()) continue;
+                        boolean didWork = false;
+                        // WE SEARCH FOR HOLDER TANKS THAT HAVE SOMETHING FIRST
+                        for (NetworkElement destinationElement : this.matterStacksHolders) {
+                            var destination = destinationElement.getLevel().getBlockEntity(destinationElement.getPos());
+                            if (destination instanceof IMatterTanksConsumer consumerDestination){
+                                for (IMatterTank outputTank : consumerDestination.getTanks()) {
+                                    if (outputTank.getMatter().isMatterEqual(inputTank.getMatter()) && outputTank.getMatterAmount() < outputTank.getCapacity()) {
+                                        inputTank.drain(outputTank.fill(inputTank.drain(1024*4, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                                        didWork = true;
+                                        break;
+                                    }
+                                }
+                                if (didWork) break;
+                            }
+                        }
+                        if (!didWork && !inputTank.getMatter().isEmpty()){
+                            for (NetworkElement destinationElement : this.matterStacksHolders) {
+                                var destination = destinationElement.getLevel().getBlockEntity(destinationElement.getPos());
+                                if (destination instanceof IMatterTanksConsumer consumerDestination){
+                                    for (IMatterTank outputTank : consumerDestination.getTanks()) {
+                                        if (outputTank.getMatter().isEmpty()) {
+                                            inputTank.drain(outputTank.fill(inputTank.drain(1024*4, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                                            didWork = true;
+                                            break;
+                                        }
+                                    }
+                                    if (didWork) break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -130,7 +152,7 @@ public class MatterNetwork extends Network {
         });
     }
 
-    private void transfer(Level level, IMatterTanksSupplier supplier, List<NetworkElement> consumers, BiPredicate<MatterStack, MatterStack> stackPredicate){
+    private void transfer(Level level, IMatterTanksSupplier supplier, List<NetworkElement> consumers, BiPredicate<MatterStack, MatterStack> stackPredicate, boolean shouldBreakWhenFound){
         for (NetworkElement matterStacksHolder : consumers) {
             if (matterStacksHolder.getLevel() != level) continue;
             var destination = matterStacksHolder.getLevel().getBlockEntity(matterStacksHolder.getPos());
@@ -139,7 +161,8 @@ public class MatterNetwork extends Network {
                     if (inputTank.getMatter().isEmpty()) continue;
                     for (IMatterTank outputTank : consumer.getTanks()) {
                         if (stackPredicate.test(inputTank.getMatter(), outputTank.getMatter())){
-                            inputTank.drain(outputTank.fill(inputTank.drain(1024, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                            inputTank.drain(outputTank.fill(inputTank.drain(1024*4, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                            if (shouldBreakWhenFound) return;
                         }
                     }
                 }

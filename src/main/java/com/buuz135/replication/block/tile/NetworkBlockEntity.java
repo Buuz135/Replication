@@ -78,6 +78,9 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
             }
 
             networkManager.removeElement(worldPosition);
+            if (pipe.getNetwork() instanceof MatterNetwork matterNetwork){
+                matterNetwork.removeElement(pipe);
+            }
         }
     }
 
