@@ -139,7 +139,7 @@ public class MatterNetwork extends Network {
                     if (inputTank.getMatter().isEmpty()) continue;
                     for (IMatterTank outputTank : consumer.getTanks()) {
                         if (stackPredicate.test(inputTank.getMatter(), outputTank.getMatter())){
-                            inputTank.drain(outputTank.fill(inputTank.drain(1024, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                            inputTank.drain(outputTank.fill(inputTank.drain(inputTank.getMatter().getAmount(), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
                         }
                     }
                 }
