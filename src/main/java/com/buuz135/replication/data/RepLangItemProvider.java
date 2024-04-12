@@ -39,8 +39,8 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("relocation.blueprint.use_on_chip_storage", "Scan it in the identification chamber to get the information");
         this.add("replication.parallel_mode", "Parallel Mode");
         this.add("replication.replicate", "Replicate");
-        this.add("replication.crafting_tasks", "Crafting Tasks");
-        this.add("replication.current_crafting", "Currently Crafting");
+        this.add("replication.crafting_tasks", "Replication Tasks");
+        this.add("replication.current_crafting", "Replicating");
         this.add("replication.infinite_mode", "Infinite Mode");
         this.add("tooltip.replication.terminal.sorting_type.state_0", "Sorting Type: Amount");
         this.add("tooltip.replication.terminal.sorting_type.state_1", "Sorting Type: Name");
