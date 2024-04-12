@@ -32,8 +32,8 @@ public class ReplicatorCraftingAddon extends BasicScreenAddon {
 
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider iAssetProvider,  int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal.png"), guiX + this.getPosX(), guiY + this.getPosY(), 206,149,50,27);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal.png"), guiX + this.getPosX() + 50 + 6, guiY + this.getPosY(), 206,149,50,27);
+        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + this.getPosX(), guiY + this.getPosY(), 206,125,50,27);
+        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + this.getPosX() + 50 + 6, guiY + this.getPosY(), 206,125,50,27);
         if (!blockEntity.getCraftingStack().isEmpty()){
             guiGraphics.renderItem(blockEntity.getCraftingStack(), guiX + this.getPosX() + 25 - 8, guiY + this.getPosY() + 8);
         }
