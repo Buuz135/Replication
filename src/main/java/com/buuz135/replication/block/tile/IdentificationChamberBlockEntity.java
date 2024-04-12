@@ -177,9 +177,6 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     @Override
     public void clientTick(Level level, BlockPos pos, BlockState state, IdentificationChamberBlockEntity blockEntity) {
         super.clientTick(level, pos, state, blockEntity);
-        if (this.progressBarComponent.getProgress() == 1){
-            this.level.playLocalSound(this.getBlockPos(), ReplicationRegistry.Sounds.IDENTIFICATION_CHAMBER.get(), SoundSource.BLOCKS, 0.5f, 0.40f, false);
-        }
     }
 
     public int getProgress() {
