@@ -73,18 +73,11 @@ public class MatterNetwork extends Network {
     }
 
     public void removeElement(NetworkElement element){
-        var tile = element.getLevel().getBlockEntity(element.getPos());
-        if (tile instanceof IMatterTanksSupplier && tile instanceof IMatterTanksConsumer){
-            this.matterStacksHolders.remove(element);
-        }else if (tile instanceof IMatterTanksSupplier){
-            this.matterStacksSuppliers.remove(element);
-        }else if (tile instanceof IMatterTanksConsumer){
-            this.matterStacksConsumers.remove(element);
-        } else if (tile instanceof IMatterPatternHolder<?>) {
-            this.chipSuppliers.remove(element);
-        } else if (tile instanceof ReplicationTerminalBlockEntity){
-            this.terminals.remove(element);
-        }
+        this.matterStacksHolders.remove(element);
+        this.matterStacksSuppliers.remove(element);
+        this.matterStacksConsumers.remove(element);
+        this.chipSuppliers.remove(element);
+        this.terminals.remove(element);
     }
 
     @Override
@@ -118,7 +111,7 @@ public class MatterNetwork extends Network {
                             var destination = destinationElement.getLevel().getBlockEntity(destinationElement.getPos());
                             if (destination instanceof IMatterTanksConsumer consumerDestination){
                                 for (IMatterTank outputTank : consumerDestination.getTanks()) {
-                                    if (outputTank.getMatter().isMatterEqual(inputTank.getMatter())) {
+                                    if (outputTank.getMatter().isMatterEqual(inputTank.getMatter()) && outputTank.getMatterAmount() < outputTank.getCapacity()) {
                                         inputTank.drain(outputTank.fill(inputTank.drain(1024*4, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
                                         didWork = true;
                                         break;
