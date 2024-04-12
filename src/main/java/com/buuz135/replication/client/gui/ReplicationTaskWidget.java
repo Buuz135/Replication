@@ -44,7 +44,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
         this.replicationTerminalScreen = replicationTerminalContainer;
         this.widgets = new ArrayList<>();
         this.closeButton = new ReplicationTerminalTexturedButton(this.getX() + 239, this.getY() + 8, 9, 9, Component.empty(), EXTRAS,
-                Component.translatable("replication.close").getString(), 247, 50, 238, 50, button -> this.replicationTerminalScreen.disableTask());
+                Component.translatable("tooltip.replication.close").getString(), 247, 50, 238, 50, button -> this.replicationTerminalScreen.disableTask());
         this.widgets.add(this.closeButton);
         this.scrollOffs = 0;
         this.scrolling = false;
