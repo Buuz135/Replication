@@ -261,6 +261,10 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         return craftingStack;
     }
 
+    public boolean isInfinite() {
+        return !infiniteCrafting.getFilterSlots()[0].getFilter().isEmpty();
+    }
+
     @Override
     public IRedstoneState getEnvironmentValue(boolean strongPower, Direction direction) {
         if (strongPower) {

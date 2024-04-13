@@ -42,8 +42,11 @@ public class ReplicatorCraftingAddon extends BasicScreenAddon {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(scale, scale, scale);
 //        guiGraphics.drawString(Minecraft.getInstance().font, LangUtil.getString("replication.current_crafting"), (guiX + this.getPosX() +2) * 1/scale, (guiY + this.getPosY() + 2) * 1/scale, 0x72e567, false);
-        guiGraphics.drawString(Minecraft.getInstance().font, LangUtil.getString("replication.infinite_mode") + ":", (guiX + 41) * 1/scale, (guiY + 20) * 1/scale, 0x72e567, false);
-
+        guiGraphics.drawString(Minecraft.getInstance().font, LangUtil.getString("replication.infinite_mode") + ": " + (blockEntity.isInfinite() ? "True" : "False"), (guiX + 41) * 1/scale, (guiY + 20) * 1/scale, 0x72e567, false);
+        guiGraphics.pose().popPose();
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0,0,100);
+        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 46, guiY + 32, 232,164,12,9);
         guiGraphics.pose().popPose();
 
         if (!blockEntity.getCraftingStack().isEmpty() && mouseX > (guiX + 67) && mouseX < (guiX + 67 + 16) && mouseY > (guiY + 29) && mouseY < (guiY + 29 + 16)) {
