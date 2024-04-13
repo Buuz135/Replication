@@ -6,6 +6,7 @@
     "replication:disintegrator",
     "replication:matter_tank",
     "replication:replication_terminal",
-    "replication:chip_storage"
+    "replication:chip_storage",
+    "replication:deepslate_replica_ore"
   ]
 }

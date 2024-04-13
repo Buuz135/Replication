@@ -10,7 +10,6 @@ import com.ldtteam.aequivaleo.api.compound.type.group.ICompoundTypeGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -65,6 +64,7 @@ public class ReplicationRegistry {
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> MATTER_TANK = null;
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> REPLICATION_TERMINAL = null;
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> CHIP_STORAGE = null;
+        public static RegistryObject<Block> DEEPSLATE_REPLICA_ORE = null;
 
     }
 
@@ -72,6 +72,9 @@ public class ReplicationRegistry {
 
         public static RegistryObject<Item> MEMORY_CHIP;
         public static RegistryObject<Item> MATTER_BLUEPRINT;
+        public static RegistryObject<Item> RAW_REPLICA;
+        public static RegistryObject<Item> REPLICA_INGOT;
+
 
     }
 

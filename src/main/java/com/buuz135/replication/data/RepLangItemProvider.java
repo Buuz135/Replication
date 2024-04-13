@@ -27,6 +27,8 @@ public class RepLangItemProvider extends LanguageProvider {
         this.blocks.forEach(block -> this.add(block, WordUtils.capitalize(ForgeRegistries.BLOCKS.getKey(block).getPath().replace("_", " "))));
         this.formatItem(ReplicationRegistry.Items.MEMORY_CHIP.get());
         this.formatItem(ReplicationRegistry.Items.MATTER_BLUEPRINT.get());
+        this.formatItem(ReplicationRegistry.Items.RAW_REPLICA.get());
+        this.formatItem(ReplicationRegistry.Items.REPLICA_INGOT.get());
         this.add("tooltip.replication.identification_chamber.slow_mode", "Slow Mode");
         this.add("tooltip.replication.identification_chamber.slow_mode.desc", "Scanning is slower but the item will");
         this.add("tooltip.replication.identification_chamber.slow_mode.desc_1", "only be consumed when reaching 100%");
@@ -36,7 +38,7 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("tooltip.replication.tank.matter", "Matter: ");
         this.add("relocation.blueprint.contains_information", "Contains information: ");
         this.add("relocation.blueprint.not_found", "Information not found");
-        this.add("relocation.blueprint.use_on_chip_storage", "Scan it in the identification chamber to get the information");
+        this.add("relocation.blueprint.use_on_chip_storage", "Scan it in the identification chamber to get the information or right click the Chip Storage to transfer directly");
         this.add("replication.parallel_mode", "Parallel Mode");
         this.add("replication.replicate", "Replicate");
         this.add("replication.crafting_tasks", "Replication Tasks");
