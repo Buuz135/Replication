@@ -5,6 +5,8 @@ import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
 import com.buuz135.replication.api.network.IMatterTanksSupplier;
+import com.buuz135.replication.client.gui.addons.DisintegratorAddon;
+import com.buuz135.replication.client.gui.addons.IdentificationChamberAddon;
 import com.buuz135.replication.util.InvUtil;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
@@ -55,19 +57,19 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     public DisintegratorBlockEntity(BasicTileBlock<DisintegratorBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
         this.queuedMatterStacks = new ArrayDeque<>();
-        this.input = (SidedInventoryComponent<?>) new SidedInventoryComponent<>("input", 28, 30, 3, 0)
-                .setColor(DyeColor.BLUE)
+        this.input = (SidedInventoryComponent<?>) new SidedInventoryComponent<>("input", 29, 30, 3, 0)
                 .disableFacingAddon()
                 .setInputFilter((itemStack, integer) -> !IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(itemStack).isEmpty())
                 .setOutputFilter((itemStack, integer) -> false)
                 .setSlotLimit(64)
                 .setSlotPosition(integer -> Pair.of(0, 18*integer))
                 .setOnSlotChanged((stack, integer) -> syncObject(this.input))
+                .setColorGuiEnabled(false)
         ;
         InvUtil.disableAllSidesAndEnable(this.input, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK, FacingUtil.Sideness.TOP);
         this.addInventory((InventoryComponent<DisintegratorBlockEntity>) input);
 
-        this.progressBarComponent = new ProgressBarComponent<>(47, 28, 20 * 2)
+        this.progressBarComponent = new ProgressBarComponent<>(48, 28, 20 * 2)
                 .setCanIncrease(iComponentHarness -> queuedMatterStacks.isEmpty())
                 .setOnTickWork(() -> {
                     syncObject(this.progressBarComponent);
@@ -81,8 +83,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                     return false;
                 })
                 .setOnFinishWork(this::onFinish)
-                .setBarDirection(ProgressBarComponent.BarDirection.VERTICAL_UP)
-                .setColor(DyeColor.CYAN);
+                .setBarDirection(ProgressBarComponent.BarDirection.VERTICAL_UP);
 
         this.addProgressBar((ProgressBarComponent<DisintegratorBlockEntity>) this.progressBarComponent);
 
@@ -99,6 +100,12 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
         this.addMatterTank(this.tank4);
         this.addMatterTank(this.tank5);
         this.addMatterTank(this.tank6);
+    }
+
+    @Override
+    public void initClient() {
+        super.initClient();
+        addGuiAddonFactory(() -> new DisintegratorAddon(50, 30, this));
     }
 
     private void onFinish() {
@@ -145,7 +152,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     }
 
     private MatterTankComponent<DisintegratorBlockEntity> createMatterTank(int index){
-        return new MatterTankComponent<DisintegratorBlockEntity>("tank"+index, 16000, 40 + index*19 , 28).setTankAction(FluidTankComponent.Action.DRAIN);
+        return new MatterTankComponent<DisintegratorBlockEntity>("tank"+index, 16000, 42 + index * 18 , 28).setTankAction(FluidTankComponent.Action.DRAIN);
     }
 
     @NotNull
@@ -161,5 +168,15 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
 
     public SidedInventoryComponent<?> getInput() {
         return input;
+    }
+
+    @Override
+    public int getTitleColor() {
+        return 0x72e567;
+    }
+
+    @Override
+    public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        return super.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) - 16;
     }
 }

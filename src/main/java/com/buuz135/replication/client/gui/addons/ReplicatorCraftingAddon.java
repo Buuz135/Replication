@@ -32,20 +32,21 @@ public class ReplicatorCraftingAddon extends BasicScreenAddon {
 
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider iAssetProvider,  int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + this.getPosX(), guiY + this.getPosY(), 206,125,50,27);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + this.getPosX() + 50 + 6, guiY + this.getPosY(), 206,125,50,27);
+        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 41, guiY + 26, 211,125,45,36);
+//        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + this.getPosX() + 50 + 6, guiY + this.getPosY(), 206,125,50,27);
+        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 100, guiY + 58, 250,161,6,3);
         if (!blockEntity.getCraftingStack().isEmpty()){
-            guiGraphics.renderItem(blockEntity.getCraftingStack(), guiX + this.getPosX() + 25 - 8, guiY + this.getPosY() + 8);
+            guiGraphics.renderItem(blockEntity.getCraftingStack(), guiX + 67, guiY + 29);
         }
-        var scale = 0.5f;
+        var scale = 0.6f;
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(scale, scale, scale);
-        guiGraphics.drawString(Minecraft.getInstance().font, LangUtil.getString("replication.current_crafting"), (guiX + this.getPosX() +2) * 1/scale, (guiY + this.getPosY() + 2) * 1/scale, 0x72e567, false);
-        guiGraphics.drawString(Minecraft.getInstance().font, LangUtil.getString("replication.infinite_mode"), (guiX + this.getPosX() + 2 + 50 + 6) * 1/scale, (guiY + this.getPosY() + 2) * 1/scale, 0x72e567, false);
+//        guiGraphics.drawString(Minecraft.getInstance().font, LangUtil.getString("replication.current_crafting"), (guiX + this.getPosX() +2) * 1/scale, (guiY + this.getPosY() + 2) * 1/scale, 0x72e567, false);
+        guiGraphics.drawString(Minecraft.getInstance().font, LangUtil.getString("replication.infinite_mode") + ":", (guiX + 41) * 1/scale, (guiY + 20) * 1/scale, 0x72e567, false);
 
         guiGraphics.pose().popPose();
 
-        if (!blockEntity.getCraftingStack().isEmpty() && mouseX > (this.getPosX() + 25 - 10 + guiX) && mouseX < (this.getPosX() + 25 - 10 + 18 + guiX) && mouseY > (this.getPosY()  + 8 - 2 + guiY) && mouseY < (this.getPosY() + 18 + 8 -2 + guiY)) {
+        if (!blockEntity.getCraftingStack().isEmpty() && mouseX > (guiX + 67) && mouseX < (guiX + 67 + 16) && mouseY > (guiY + 29) && mouseY < (guiY + 29 + 16)) {
             guiGraphics.renderTooltip(Minecraft.getInstance().font, this.blockEntity.getCraftingStack(), (int) mouseX, (int) mouseY);
         }
     }

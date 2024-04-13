@@ -67,4 +67,14 @@ public class MatterTankBlockEntity extends NetworkBlockEntity<MatterTankBlockEnt
     public IAssetProvider getAssetProvider() {
         return ReplicationAddonProvider.INSTANCE;
     }
+
+    @Override
+    public int getTitleColor() {
+        return 0x72e567;
+    }
+
+    @Override
+    public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        return super.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) - 16;
+    }
 }

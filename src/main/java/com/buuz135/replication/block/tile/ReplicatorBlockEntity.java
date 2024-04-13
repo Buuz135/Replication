@@ -4,6 +4,9 @@ import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.api.task.ReplicationTask;
 import com.buuz135.replication.client.gui.addons.ReplicatorCraftingAddon;
 import com.hrznstudio.titanium.annotation.Save;
+import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.AssetTypes;
+import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.filter.FilterSlot;
 import com.hrznstudio.titanium.api.redstone.IRedstoneReader;
 import com.hrznstudio.titanium.api.redstone.IRedstoneState;
@@ -11,14 +14,21 @@ import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.redstone.RedstoneAction;
 import com.hrznstudio.titanium.block.redstone.RedstoneManager;
 import com.hrznstudio.titanium.block.redstone.RedstoneState;
+import com.hrznstudio.titanium.client.screen.addon.ItemstackFilterScreenAddon;
+import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.button.RedstoneControlButtonComponent;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.filter.ItemStackFilter;
+import com.hrznstudio.titanium.util.AssetUtil;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.InventoryUtil;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -28,10 +38,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEntity> implements IRedstoneReader {
 
@@ -65,17 +81,42 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         this.action = 1;
         this.craftingStack = ItemStack.EMPTY;
         this.progressBarComponent = new ProgressBarComponent<ReplicatorBlockEntity>(26, 25, 0, MAX_PROGRESS * 2)
-                .setBarDirection(ProgressBarComponent.BarDirection.VERTICAL_UP)
-                .setColor(DyeColor.CYAN);
+                .setBarDirection(ProgressBarComponent.BarDirection.VERTICAL_UP);
         addProgressBar(this.progressBarComponent);
-        this.output = (SidedInventoryComponent<ReplicatorBlockEntity>) new SidedInventoryComponent<ReplicatorBlockEntity>("output", 42, 62, 7, 0)
-                .setColor(DyeColor.ORANGE)
-                .setInputFilter((stack, integer) -> false);
+        this.output = (SidedInventoryComponent<ReplicatorBlockEntity>) new SidedInventoryComponent<ReplicatorBlockEntity>("output", 42, 63, 7, 0)
+                .setColor(0xdea83c)
+                .setInputFilter((stack, integer) -> false)
+                .setColorGuiEnabled(false);
         addInventory(this.output);
         this.redstoneManager = new RedstoneManager<>(RedstoneAction.IGNORE, false);
         this.addButton(redstoneButton = new RedstoneControlButtonComponent<>(154, 84, 14, 14, () -> this.redstoneManager, () -> this));
-        this.infiniteCrafting = new ItemStackFilter("infiniteCrafting", 1);
-        this.infiniteCrafting.getFilterSlots()[0] = new FilterSlot<>(  121, 30 + 7, 0, ItemStack.EMPTY);
+//        this.infiniteCrafting = new ItemStackFilter("infiniteCrafting", 1);
+        this.infiniteCrafting = new ItemStackFilter("infiniteCrafting", 1){
+            @OnlyIn(Dist.CLIENT)
+            @Override
+            public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+                List<IFactory<? extends IScreenAddon>> list = new ArrayList();
+                list.add(() -> {
+                    return new ItemstackFilterScreenAddon(this){
+                        @Override
+                        public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+                            for (FilterSlot<ItemStack> filterSlot : infiniteCrafting.getFilterSlots()) {
+                                if (filterSlot != null) {
+                                    AssetUtil.drawAsset(guiGraphics, screen, Objects.requireNonNull(provider.getAsset(AssetTypes.SLOT)), guiX + filterSlot.getX(), guiY + filterSlot.getY());
+                                    RenderSystem.setShaderColor(1, 1, 1, 1);
+                                    if (!filterSlot.getFilter().isEmpty()) {
+                                        Lighting.setupFor3DItems(); //enableGUIStandarItemLightning
+                                        guiGraphics.renderItem(filterSlot.getFilter(), filterSlot.getX() + guiX + 1, filterSlot.getY() + guiY + 1);
+                                    }
+                                }
+                            }
+                        }
+                    };
+                });
+                return list;
+            }
+        };
+        this.infiniteCrafting.getFilterSlots()[0] = new FilterSlot<>(43, 28, 0, ItemStack.EMPTY);
         addFilter(infiniteCrafting);
     }
 
@@ -236,5 +277,15 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     public void onNeighborChanged(Block blockIn, BlockPos fromPos) {
         super.onNeighborChanged(blockIn, fromPos);
         redstoneManager.setLastRedstoneState(this.getEnvironmentValue(false, null).isReceivingRedstone());
+    }
+
+    @Override
+    public int getTitleColor() {
+        return 0x72e567;
+    }
+
+    @Override
+    public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        return super.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) - 16;
     }
 }
