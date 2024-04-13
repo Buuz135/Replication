@@ -2,6 +2,7 @@ package com.buuz135.replication.client;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.block.ReplicatorBlock;
 import com.buuz135.replication.block.tile.*;
 import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
@@ -28,21 +29,26 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.SimpleModelState;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.joml.Matrix4f;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 public class ClientEvents {
 
@@ -63,7 +69,14 @@ public class ClientEvents {
                         pre.getTooltipElements().add(Either.left(Component.literal("ℹ Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));
                     }
                 }
-
+            }
+        }).subscribe();
+        EventManager.forge(ItemTooltipEvent.class).process(pre -> {
+            if (ItemStack.isSameItem(pre.getItemStack(), new ItemStack(ReplicationRegistry.Blocks.MATTER_TANK.getLeft().get())) && pre.getItemStack().hasTag()){
+                var tag = pre.getItemStack().getTag().getCompound("Tile").getCompound("tank");
+                var matterStack = MatterStack.loadFluidStackFromNBT(tag);
+                pre.getToolTip().add(1, Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(matterStack.getAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(256000) + ChatFormatting.DARK_AQUA + " matter")));
+                pre.getToolTip().add(1, Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.replication.tank.matter").getString()).append(matterStack.isEmpty() ? Component.translatable("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE) : Component.translatable(matterStack.getTranslationKey())).withStyle(ChatFormatting.WHITE));
             }
         }).subscribe();
         EventManager.mod(EntityRenderersEvent.RegisterRenderers.class).process(event -> {

@@ -1,5 +1,8 @@
 package com.buuz135.replication;
 
+import com.buuz135.replication.api.IMatterType;
+import com.buuz135.replication.api.MatterType;
+import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.block.*;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.client.ClientEvents;
@@ -16,12 +19,14 @@ import com.buuz135.replication.packet.*;
 import com.hrznstudio.titanium.block_network.NetworkRegistry;
 import com.hrznstudio.titanium.block_network.element.NetworkElementRegistry;
 import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
+import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.tab.TitaniumTab;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -37,6 +42,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -106,6 +112,22 @@ public class Replication extends ModuleController {
             TAB.getTabList().add(item);
             return item;
         });
+        EventManager.mod(BuildCreativeModeTabContentsEvent.class).process(buildCreativeModeTabContentsEvent -> {
+            if (buildCreativeModeTabContentsEvent.getTabKey().location().equals(TAB.getResourceLocation())){
+                for (IMatterType value : ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getValues()) {
+                    if (value.equals(MatterType.EMPTY)) continue;
+                    var matterStack = new MatterStack(value, 256000);
+                    var compound = new CompoundTag();
+                    var tile = new CompoundTag();
+                    var tank = matterStack.writeToNBT(new CompoundTag());
+                    tile.put("tank", tank);
+                    compound.put("Tile", tile);
+                    var item = new ItemStack(ReplicationRegistry.Blocks.MATTER_TANK.getLeft().get());
+                    item.setTag(compound);
+                    buildCreativeModeTabContentsEvent.accept(item);
+                }
+            }
+        }).subscribe();
     }
 
     @Override
