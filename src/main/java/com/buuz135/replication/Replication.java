@@ -96,6 +96,29 @@ public class Replication extends ModuleController {
             TAB.getTabList().add(item);
             return item;
         });
+        ReplicationRegistry.Blocks.REPLICA_BLOCK = getRegistries().registerGeneric(Registries.BLOCK, "replica_block", () -> new Block(BlockBehaviour.
+                Properties.copy(Blocks.IRON_BLOCK)
+                .mapColor(MapColor.COLOR_BLACK)
+                .requiresCorrectToolForDrops()
+                .strength(4.5F, 3.0F)
+                .sound(SoundType.METAL))
+        );
+        getRegistries().registerGeneric(Registries.ITEM, "replica_block", () -> {
+            var item = new BlockItem(ReplicationRegistry.Blocks.REPLICA_BLOCK.get(), new Item.Properties());
+            TAB.getTabList().add(item);
+            return item;
+        });
+        ReplicationRegistry.Blocks.RAW_REPLICA_BLOCK = getRegistries().registerGeneric(Registries.BLOCK, "raw_replica_block", () -> new Block(BlockBehaviour.
+                Properties.copy(Blocks.RAW_IRON_BLOCK)
+                .mapColor(MapColor.COLOR_BLACK)
+                .requiresCorrectToolForDrops()
+                .strength(5.0F, 6.0F))
+        );
+        getRegistries().registerGeneric(Registries.ITEM, "raw_replica_block", () -> {
+            var item = new BlockItem(ReplicationRegistry.Blocks.RAW_REPLICA_BLOCK.get(), new Item.Properties());
+            TAB.getTabList().add(item);
+            return item;
+        });
         ReplicationRegistry.Items.RAW_REPLICA = getRegistries().registerGeneric(Registries.ITEM, "raw_replica", () -> {
             var item = new Item(new Item.Properties());
             TAB.getTabList().add(item);

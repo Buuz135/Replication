@@ -65,6 +65,8 @@ public class ReplicationRegistry {
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> REPLICATION_TERMINAL = null;
         public static Pair<RegistryObject<Block>, RegistryObject<BlockEntityType<?>>> CHIP_STORAGE = null;
         public static RegistryObject<Block> DEEPSLATE_REPLICA_ORE = null;
+        public static RegistryObject<Block> REPLICA_BLOCK = null;
+        public static RegistryObject<Block> RAW_REPLICA_BLOCK = null;
 
     }
 

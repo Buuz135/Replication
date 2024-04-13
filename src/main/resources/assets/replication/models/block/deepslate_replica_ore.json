@@ -1,6 +1,35 @@
 {
   "parent": "minecraft:block/cube_all",
+  "render_type": "minecraft:cutout",
   "textures": {
-    "all": "replication:block/deepslate_replica_ore"
-  }
+    "overlay": "replication:block/replica_ore",
+    "base": "minecraft:block/deepslate",
+    "particle": "minecraft:block/deepslate"
+  },
+  "elements": [
+    {
+      "from": [ 0, 0, 0 ],
+      "to": [ 16, 16, 16 ],
+      "faces": {
+        "down":  { "texture": "#base" },
+        "up":    { "texture": "#base" },
+        "north": { "texture": "#base" },
+        "south": { "texture": "#base" },
+        "west":  { "texture": "#base" },
+        "east":  { "texture": "#base" }
+      }
+    },
+    {
+      "from": [ 0, 0, 0 ],
+      "to": [ 16, 16, 16 ],
+      "faces": {
+        "down":  { "texture": "#overlay"},
+        "up":    { "texture": "#overlay"},
+        "north": { "texture": "#overlay"},
+        "south": { "texture": "#overlay"},
+        "west":  { "texture": "#overlay"},
+        "east":  { "texture": "#overlay"}
+      }
+    }
+  ]
 }
