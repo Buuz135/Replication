@@ -5,6 +5,8 @@
   "block.replication.identification_chamber": "Identification Chamber",
   "block.replication.matter_network_pipe": "Matter Network Pipe",
   "block.replication.matter_tank": "Matter Tank",
+  "block.replication.raw_replica_block": "Raw Replica Block",
+  "block.replication.replica_block": "Replica Block",
   "block.replication.replication_terminal": "Replication Terminal",
   "block.replication.replicator": "Replicator",
   "config.jade.plugin_replication.matter_tank": "Matter Tank",

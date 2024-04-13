@@ -1,0 +1,42 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:and",
+          "values": [
+            {
+              "type": "forge:item_exists",
+              "item": "replication:replication_terminal"
+            }
+          ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "D": {
+            "item": "minecraft:diamond"
+          },
+          "I": {
+            "item": "replication:replica_ingot"
+          },
+          "P": {
+            "tag": "forge:glass_panes"
+          }
+        },
+        "pattern": [
+          "III",
+          "IDP",
+          "IDI"
+        ],
+        "result": {
+          "item": "replication:replication_terminal"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

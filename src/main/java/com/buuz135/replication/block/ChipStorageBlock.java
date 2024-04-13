@@ -7,16 +7,24 @@ import com.buuz135.replication.block.tile.ChipStorageBlockEntity;
 import com.buuz135.replication.block.tile.DisintegratorBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
+import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Consumer;
 
 public class ChipStorageBlock extends RotatableBlock<ChipStorageBlockEntity> implements INetworkDirectionalConnection {
 
@@ -76,5 +84,18 @@ public class ChipStorageBlock extends RotatableBlock<ChipStorageBlockEntity> imp
     public boolean canConnect(BlockState state, Direction direction) {
         var sideness = FacingUtil.getFacingRelative(direction, state.getValue(FACING_HORIZONTAL));
         return sideness == FacingUtil.Sideness.BACK || direction == Direction.DOWN;
+    }
+
+    @Override
+    public void registerRecipe(Consumer<FinishedRecipe> consumer) {
+        TitaniumShapedRecipeBuilder.shapedRecipe(this)
+                .pattern("MM ")
+                .pattern("ICG")
+                .pattern("III")
+                .define('C', Tags.Items.CHESTS_WOODEN)
+                .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
+                .define('G', Items.IRON_TRAPDOOR)
+                .define('M', Tags.Items.INGOTS_IRON)
+                .save(consumer);
     }
 }

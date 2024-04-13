@@ -1,0 +1,45 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:and",
+          "values": [
+            {
+              "type": "forge:item_exists",
+              "item": "replication:chip_storage"
+            }
+          ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "C": {
+            "tag": "forge:chests/wooden"
+          },
+          "G": {
+            "item": "minecraft:iron_trapdoor"
+          },
+          "I": {
+            "item": "replication:replica_ingot"
+          },
+          "M": {
+            "tag": "forge:ingots/iron"
+          }
+        },
+        "pattern": [
+          "MM ",
+          "ICG",
+          "III"
+        ],
+        "result": {
+          "item": "replication:chip_storage"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}
