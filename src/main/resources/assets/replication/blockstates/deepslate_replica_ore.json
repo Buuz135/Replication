@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "replication:block/deepslate_replica_ore"
+    }
+  }
+}

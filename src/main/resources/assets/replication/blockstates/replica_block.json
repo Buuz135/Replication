@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "replication:block/replica_block"
+    }
+  }
+}
