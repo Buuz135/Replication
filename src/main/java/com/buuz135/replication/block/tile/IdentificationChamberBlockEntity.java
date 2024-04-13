@@ -3,6 +3,8 @@ package com.buuz135.replication.block.tile;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
+import com.buuz135.replication.client.gui.addons.IdentificationChamberAddon;
+import com.buuz135.replication.client.gui.addons.ReplicatorCraftingAddon;
 import com.buuz135.replication.item.ReplicationItem;
 import com.buuz135.replication.util.InvUtil;
 import com.buuz135.replication.util.ReplicationTags;
@@ -60,15 +62,14 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
 
     public IdentificationChamberBlockEntity(BasicTileBlock<IdentificationChamberBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
-
         this.input = (SidedInventoryComponent<?>) new SidedInventoryComponent<>("input", 44, 48, 1, 0)
-                .setColor(DyeColor.BLUE)
                 .disableFacingAddon()
                 .setInputFilter((itemStack, integer) -> !IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(itemStack).isEmpty()
                         || itemStack.is(ReplicationRegistry.Items.MATTER_BLUEPRINT.get()))
                 .setOutputFilter((itemStack, integer) -> false)
                 .setSlotLimit(1)
                 .setOnSlotChanged((stack, integer) -> syncObject(this.input))
+                .setColorGuiEnabled(false)
         ;
         InvUtil.disableAllSidesAndEnable(this.input, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK);
         this.addInventory((InventoryComponent<IdentificationChamberBlockEntity>) input);
@@ -79,29 +80,34 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                     syncObject(this.progressBarComponent);
                 })
                 .setOnFinishWork(this::onFinish)
-                .setBarDirection(ProgressBarComponent.BarDirection.ARROW_RIGHT)
-                .setColor(DyeColor.CYAN);
+                .setBarDirection(ProgressBarComponent.BarDirection.ARROW_RIGHT);
 
         this.addProgressBar((ProgressBarComponent<IdentificationChamberBlockEntity>) this.progressBarComponent);
 
         this.memoryChipInput = (SidedInventoryComponent<?>) new SidedInventoryComponent<>("memoryChipInput", 106, 48 - 18, 3, 0)
-                .setColor(DyeColor.MAGENTA)
                 .disableFacingAddon()
                 .setInputFilter((itemStack, integer) -> itemStack.getItem() instanceof IMatterPatternHolder<?>)
                 .setOutputFilter((itemStack, integer) -> false)
                 .setSlotPosition(integer -> Pair.of(0, 18*integer))
+                .setColorGuiEnabled(false)
         ;
         InvUtil.disableAllSidesAndEnable(this.memoryChipInput, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK);
         this.addInventory((InventoryComponent<IdentificationChamberBlockEntity>) this.memoryChipInput);
         this.memoryChipOutput = (SidedInventoryComponent<?>) new SidedInventoryComponent<>("memoryChipOutput", 142, 48 - 18, 3, 0)
-                .setColor(DyeColor.ORANGE)
                 .disableFacingAddon()
                 .setInputFilter((itemStack, integer) -> false)
                 .setOutputFilter((itemStack, integer) -> true)
                 .setSlotPosition(integer -> Pair.of(0, 18*integer))
+                .setColorGuiEnabled(false)
         ;
         InvUtil.disableAllSidesAndEnable(this.memoryChipOutput, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK);
         this.addInventory((InventoryComponent<IdentificationChamberBlockEntity>) this.memoryChipOutput);
+    }
+
+    @Override
+    public void initClient() {
+        super.initClient();
+        addGuiAddonFactory(() -> new IdentificationChamberAddon(50, 30, this));
     }
 
     private void onFinish(){
@@ -188,5 +194,15 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
 
     public SidedInventoryComponent<?> getInput() {
         return input;
+    }
+
+    @Override
+    public int getTitleColor() {
+        return 0x72e567;
+    }
+
+    @Override
+    public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        return super.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) - 16;
     }
 }

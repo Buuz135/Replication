@@ -4,6 +4,8 @@ import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.MatterPattern;
 import com.buuz135.replication.client.gui.ReplicationAddonProvider;
+import com.buuz135.replication.client.gui.addons.ChipStorageAddon;
+import com.buuz135.replication.client.gui.addons.DisintegratorAddon;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
@@ -35,15 +37,22 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
         super(base, blockEntityType, pos, state);
         this.cachedPatters = new ArrayList<>();
         this.hasInvChanged = false;
-        this.chips = (SidedInventoryComponent<ChipStorageBlockEntity>) new SidedInventoryComponent<ChipStorageBlockEntity>("input", 68, 18, 8, 0).
-                setColor(DyeColor.LIGHT_BLUE).
-                setSlotPosition(integer -> getSlotPos(integer)).
-                setSlotLimit(1).
-                setOutputFilter((stack, integer) -> false).
-                setComponentHarness(this).
-                setInputFilter(((stack, integer) -> stack.is(ReplicationRegistry.Items.MEMORY_CHIP.get()))).
-                setOnSlotChanged((stack, integer) -> notifyNetworkOfSlotChange());
+        this.chips = (SidedInventoryComponent<ChipStorageBlockEntity>) new SidedInventoryComponent<ChipStorageBlockEntity>("input", 68, 18, 8, 0)
+                .disableFacingAddon()
+                .setSlotPosition(integer -> getSlotPos(integer))
+                .setSlotLimit(1)
+                .setOutputFilter((stack, integer) -> false)
+                .setComponentHarness(this)
+                .setInputFilter(((stack, integer) -> stack.is(ReplicationRegistry.Items.MEMORY_CHIP.get())))
+                .setOnSlotChanged((stack, integer) -> notifyNetworkOfSlotChange())
+                .setColorGuiEnabled(false);
         addInventory(this.chips);
+    }
+
+    @Override
+    public void initClient() {
+        super.initClient();
+        addGuiAddonFactory(() -> new ChipStorageAddon(50, 30, this));
     }
 
     @Override
@@ -132,5 +141,15 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
     @Override
     public IAssetProvider getAssetProvider() {
         return ReplicationAddonProvider.INSTANCE;
+    }
+
+    @Override
+    public int getTitleColor() {
+        return 0x72e567;
+    }
+
+    @Override
+    public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
+        return super.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) - 16;
     }
 }
