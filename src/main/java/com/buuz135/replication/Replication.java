@@ -7,6 +7,7 @@ import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.data.AequivaleoDataProvider;
 import com.buuz135.replication.data.RepLangItemProvider;
 import com.buuz135.replication.data.ReplicationBlockTagsProvider;
+import com.buuz135.replication.data.ReplicationLootTableDataProvider;
 import com.buuz135.replication.item.MatterBluePrintItem;
 import com.buuz135.replication.item.MemoryChipItem;
 import com.buuz135.replication.network.DefaultMatterNetworkElement;
@@ -20,11 +21,18 @@ import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.tab.TitaniumTab;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DropExperienceBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.common.util.NonNullLazy;
@@ -81,6 +89,23 @@ public class Replication extends ModuleController {
         //ReplicationRegistry.Sounds.IDENTIFICATION_CHAMBER = this.getRegistries().registerGeneric(ForgeRegistries.SOUND_EVENTS.getRegistryKey(), "identification_chamber", () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(Replication.MOD_ID, "identification_chamber"), 8));
 
         ReplicationTerminalContainer.TYPE = getRegistries().registerGeneric(ForgeRegistries.MENU_TYPES.getRegistryKey(), "replication_terminal_container", () -> (MenuType) IForgeMenuType.create(ReplicationTerminalContainer::new));
+
+        ReplicationRegistry.Blocks.DEEPSLATE_REPLICA_ORE = getRegistries().registerGeneric(Registries.BLOCK, "deepslate_replica_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE_IRON_ORE).mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).sound(SoundType.DEEPSLATE)));
+        getRegistries().registerGeneric(Registries.ITEM, "deepslate_replica_ore", () -> {
+            var item = new BlockItem(ReplicationRegistry.Blocks.DEEPSLATE_REPLICA_ORE.get(), new Item.Properties());
+            TAB.getTabList().add(item);
+            return item;
+        });
+        ReplicationRegistry.Items.RAW_REPLICA = getRegistries().registerGeneric(Registries.ITEM, "raw_replica", () -> {
+            var item = new Item(new Item.Properties());
+            TAB.getTabList().add(item);
+            return item;
+        });
+        ReplicationRegistry.Items.REPLICA_INGOT = getRegistries().registerGeneric(Registries.ITEM, "replica_ingot", () -> {
+            var item = new Item(new Item.Properties());
+            TAB.getTabList().add(item);
+            return item;
+        });
     }
 
     @Override
@@ -90,7 +115,7 @@ public class Replication extends ModuleController {
 
         event.getGenerator().addProvider(true, new AequivaleoDataProvider(MOD_ID, event.getGenerator()));
         //event.getGenerator().addProvider(true, new RepBlockstateProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper(), blocks));
-        event.getGenerator().addProvider(true, new TitaniumLootTableProvider(event.getGenerator(), NonNullLazy.of(() -> blocks)));
+        event.getGenerator().addProvider(true, new ReplicationLootTableDataProvider(event.getGenerator(), NonNullLazy.of(() -> blocks)));
         event.getGenerator().addProvider(true, new RepLangItemProvider(event.getGenerator(), MOD_ID, "en_us", blocks));
         var blockTags = new ReplicationBlockTagsProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(), MOD_ID, event.getExistingFileHelper(), blocks);
         event.getGenerator().addProvider(true, blockTags);

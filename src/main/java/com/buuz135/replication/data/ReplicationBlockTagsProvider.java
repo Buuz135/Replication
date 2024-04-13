@@ -1,5 +1,7 @@
 package com.buuz135.replication.data;
 
+import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.util.ReplicationTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -23,5 +25,6 @@ public class ReplicationBlockTagsProvider extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(blocks.toArray(Block[]::new));
+        this.tag(BlockTags.NEEDS_IRON_TOOL).add(ReplicationRegistry.Blocks.DEEPSLATE_REPLICA_ORE.get());
     }
 }

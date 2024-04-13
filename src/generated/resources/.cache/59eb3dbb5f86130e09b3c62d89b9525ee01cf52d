@@ -1,5 +1,6 @@
-// 1.20.1	2024-04-07T19:57:01.9972281	Loot Tables
+// 1.20.1	2024-04-13T18:27:01.7459826	Loot Tables
 88db502b3d4eeb4d254e8d92641a19193b5ffc12 data/replication/loot_tables/blocks/chip_storage.json
+0b39aeadb5e99ad2fbe13ca1755b47f3a41b995c data/replication/loot_tables/blocks/deepslate_replica_ore.json
 bcc24710db02037a7e30a93f6105c75212bffb1c data/replication/loot_tables/blocks/disintegrator.json
 5ab9725da7a347490db936ab44c1fba2a7461907 data/replication/loot_tables/blocks/identification_chamber.json
 613ffd3475c69efe90f313bec32b82bf2db19d09 data/replication/loot_tables/blocks/matter_network_pipe.json
