@@ -1,6 +1,7 @@
 package com.buuz135.replication.client.gui;
 
 import com.buuz135.replication.Replication;
+import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.api.pattern.MatterPattern;
@@ -430,7 +431,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
                     if (patternButton.cachedAmount() == 0) return false;
                     ReplicationTerminalScreen.this.enableRequest(new ReplicationRequestWidget((ReplicationTerminalScreen.this.width - 177) / 2,
                             (ReplicationTerminalScreen.this.height - 102) / 2, 177, 102, Component.translatable("replication.request_amount"), patternButton, ReplicationTerminalScreen.this));
-                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(ReplicationRegistry.Sounds.TERMINAL_BUTTON.get(), 1.0F));
                     return true;
                 }
             }

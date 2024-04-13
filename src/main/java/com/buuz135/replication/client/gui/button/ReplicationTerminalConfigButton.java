@@ -1,5 +1,6 @@
 package com.buuz135.replication.client.gui.button;
 
+import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
@@ -8,6 +9,8 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -75,6 +78,11 @@ public class ReplicationTerminalConfigButton extends Button {
 
     public int getState() {
         return state;
+    }
+
+    @Override
+    public void playDownSound(SoundManager pHandler) {
+        pHandler.play(SimpleSoundInstance.forUI(ReplicationRegistry.Sounds.TERMINAL_BUTTON.get(), 1.0F));
     }
 
     public static enum Type{

@@ -1,6 +1,7 @@
 package com.buuz135.replication.client.gui;
 
 import com.buuz135.replication.Replication;
+import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.client.gui.addons.MatterPatternButton;
 import com.buuz135.replication.client.gui.button.ReplicationTerminalTexturedButton;
 import com.buuz135.replication.client.gui.button.ReplicationTerminalTexturedCheckbox;
@@ -9,6 +10,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -111,5 +114,10 @@ public class ReplicationRequestWidget extends AbstractWidget implements Renderab
 
     public EditBox getAmountBox() {
         return amountBox;
+    }
+
+    @Override
+    public void playDownSound(SoundManager pHandler) {
+        pHandler.play(SimpleSoundInstance.forUI(ReplicationRegistry.Sounds.TERMINAL_BUTTON.get(), 1.0F));
     }
 }

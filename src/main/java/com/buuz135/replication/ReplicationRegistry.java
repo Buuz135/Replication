@@ -10,6 +10,7 @@ import com.ldtteam.aequivaleo.api.compound.type.group.ICompoundTypeGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -80,7 +81,7 @@ public class ReplicationRegistry {
 
     public static class Sounds{
 
-        //public static RegistryObject<SoundEvent> IDENTIFICATION_CHAMBER = null;
+        public static RegistryObject<SoundEvent> TERMINAL_BUTTON = null;
 
     }
 

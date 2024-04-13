@@ -1,10 +1,10 @@
 {
-  "identification_chamber": {
-    "category": "block",
+  "terminal_button": {
+    "category": "master",
     "sounds": [
-      "replication:identification_chamber"
+      "replication:terminal_button"
     ],
-    "subtitle": "replication.subtitle.identification_chamber",
-    "stream": true
+    "subtitle": "replication.subtitle.terminal_button",
+    "stream": false
   }
 }

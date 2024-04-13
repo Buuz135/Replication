@@ -28,6 +28,7 @@ import com.hrznstudio.titanium.tab.TitaniumTab;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -92,7 +93,7 @@ public class Replication extends ModuleController {
         ReplicationRegistry.Items.MEMORY_CHIP = this.getRegistries().registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), "memory_chip", MemoryChipItem::new);
         ReplicationRegistry.Items.MATTER_BLUEPRINT = this.getRegistries().registerGeneric(ForgeRegistries.ITEMS.getRegistryKey(), "matter_blueprint", MatterBluePrintItem::new);
 
-        //ReplicationRegistry.Sounds.IDENTIFICATION_CHAMBER = this.getRegistries().registerGeneric(ForgeRegistries.SOUND_EVENTS.getRegistryKey(), "identification_chamber", () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(Replication.MOD_ID, "identification_chamber"), 8));
+        ReplicationRegistry.Sounds.TERMINAL_BUTTON = this.getRegistries().registerGeneric(ForgeRegistries.SOUND_EVENTS.getRegistryKey(), "terminal_button", () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(Replication.MOD_ID, "terminal_button"), 8));
 
         ReplicationTerminalContainer.TYPE = getRegistries().registerGeneric(ForgeRegistries.MENU_TYPES.getRegistryKey(), "replication_terminal_container", () -> (MenuType) IForgeMenuType.create(ReplicationTerminalContainer::new));
 
