@@ -45,13 +45,13 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
     public void render(T tile, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn) {
         var padding = 0.2;
         var matterStack = tile.getTanks().get(0).getMatter();
-        if (!matterStack.isEmpty())renderFaces(poseStack, multiBufferSource, new AABB(padding,0.255,padding,1-padding,0.255 + (matterStack.getAmount()/ (double) tile.getTanks().get(0).getCapacity()) * 0.4,1-padding), combinedLightIn, combinedOverlayIn, matterStack.getMatterType());
+        if (!matterStack.isEmpty())renderFaces(poseStack, multiBufferSource, new AABB(padding,0.255,padding,1-padding,0.255 + (matterStack.getAmount()/ (double) tile.getTanks().get(0).getCapacity()) * 0.5,1-padding), combinedLightIn, combinedOverlayIn, matterStack.getMatterType());
     }
 
     private void renderFaces(PoseStack matrixStack, MultiBufferSource bufferIn, AABB bounds, int combinedLight, int combinedOverlay, IMatterType matterType) {
 
         matrixStack.pushPose();
-
+        //matrixStack.translate(0,1,0);
         ResourceLocation texture = new ResourceLocation("minecraft:block/white_wool");
         TextureAtlasSprite still = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
         VertexConsumer builder = bufferIn.getBuffer(RenderType.translucent());
@@ -79,23 +79,24 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
         Matrix4f posMat = matrixStack.last().pose();
 
         //TOP
-
+        float u1 = still.getU(0);
+        float u2 = still.getU(16);
+        float v1 = still.getV(0);
+        float v2 = still.getV(16);
         if (true) {
-            float u1 = still.getU(bx1);
-            float u2 = still.getU(bx2);
-            float v1 = still.getV(bz1);
-            float v2 = still.getV(bz2);
+
             builder.vertex(posMat, x1, y2, z2).color(red, green, blue, alpha).uv(u1, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 1f, 0f).endVertex();
             builder.vertex(posMat, x2, y2, z2).color(red, green, blue, alpha).uv(u2, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 1f, 0f).endVertex();
             builder.vertex(posMat, x2, y2, z1).color(red, green, blue, alpha).uv(u2, v1).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 1f, 0f).endVertex();
             builder.vertex(posMat, x1, y2, z1).color(red, green, blue, alpha).uv(u1, v1).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 1f, 0f).endVertex();
         }
+        u1 = still.getU(0);
+        u2 = still.getU(16);
+        v1 = still.getV(by1);
+        v2 = still.getV(by2);
         //FRONT
         if (true) {
-            float u1 = still.getU(bx1);
-            float u2 = still.getU(bx2);
-            float v1 = still.getV(by1);
-            float v2 = still.getV(by2);
+
             builder.vertex(posMat, x2, y1, z2).color(red, green, blue, alpha).uv(u2, v1).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
             builder.vertex(posMat, x2, y2, z2).color(red, green, blue, alpha).uv(u2, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
             builder.vertex(posMat, x1, y2, z2).color(red, green, blue, alpha).uv(u1, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
@@ -105,10 +106,6 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
         if (true) {
             matrixStack.translate(0,0,1);
             matrixStack.mulPose(Axis.YP.rotationDegrees(90));
-            float u1 = still.getU(bx1);
-            float u2 = still.getU(bx2);
-            float v1 = still.getV(by1);
-            float v2 = still.getV(by2);
             builder.vertex(posMat, x2, y1, z2).color(red, green, blue, alpha).uv(u2, v1).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
             builder.vertex(posMat, x2, y2, z2).color(red, green, blue, alpha).uv(u2, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
             builder.vertex(posMat, x1, y2, z2).color(red, green, blue, alpha).uv(u1, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
@@ -118,10 +115,6 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
         if (true) {
             matrixStack.translate(0,0,1);
             matrixStack.mulPose(Axis.YP.rotationDegrees(90));
-            float u1 = still.getU(bx1);
-            float u2 = still.getU(bx2);
-            float v1 = still.getV(by1);
-            float v2 = still.getV(by2);
             builder.vertex(posMat, x2, y1, z2).color(red, green, blue, alpha).uv(u2, v1).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
             builder.vertex(posMat, x2, y2, z2).color(red, green, blue, alpha).uv(u2, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
             builder.vertex(posMat, x1, y2, z2).color(red, green, blue, alpha).uv(u1, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
@@ -131,10 +124,6 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
         if (true) {
             matrixStack.translate(0,0,1);
             matrixStack.mulPose(Axis.YP.rotationDegrees(90));
-            float u1 = still.getU(bx1);
-            float u2 = still.getU(bx2);
-            float v1 = still.getV(by1);
-            float v2 = still.getV(by2);
             builder.vertex(posMat, x2, y1, z2).color(red, green, blue, alpha).uv(u2, v1).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
             builder.vertex(posMat, x2, y2, z2).color(red, green, blue, alpha).uv(u2, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
             builder.vertex(posMat, x1, y2, z2).color(red, green, blue, alpha).uv(u1, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 0f, 1f).endVertex();
