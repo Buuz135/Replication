@@ -1,5 +1,6 @@
 package com.buuz135.replication.block.tile;
 
+import com.buuz135.replication.ReplicationConfig;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
@@ -41,7 +42,7 @@ public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEnt
                 var tile = this.level.getBlockEntity(this.worldPosition.relative(value));
                 if (tile != null && !(tile instanceof MatterPipeBlockEntity) && this.getNetwork() != null){
                     tile.getCapability(ForgeCapabilities.ENERGY, value.getOpposite()).ifPresent(iEnergyStorage -> {
-                        var simulatedExtract = this.getNetwork().getEnergyStorage().extractEnergy(2560, true);
+                        var simulatedExtract = this.getNetwork().getEnergyStorage().extractEnergy(ReplicationConfig.MatterPipe.POWER_TRANSFER, true);
                         var realExtracted = iEnergyStorage.receiveEnergy(simulatedExtract, false);
                         this.getNetwork().getEnergyStorage().extractEnergy(realExtracted, false);
                     });

@@ -1,5 +1,6 @@
 package com.buuz135.replication.block.tile;
 
+import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
 import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
@@ -69,13 +70,13 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
         InvUtil.disableAllSidesAndEnable(this.input, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK, FacingUtil.Sideness.TOP);
         this.addInventory((InventoryComponent<DisintegratorBlockEntity>) input);
 
-        this.progressBarComponent = new ProgressBarComponent<>(48, 28, 20 * 2)
+        this.progressBarComponent = new ProgressBarComponent<>(48, 28, ReplicationConfig.Disintegrator.MAX_PROGRESS)
                 .setCanIncrease(iComponentHarness -> queuedMatterStacks.isEmpty())
                 .setOnTickWork(() -> {
                     syncObject(this.progressBarComponent);
                 })
                 .setCanIncrease(iComponentHarness -> {
-                    if (this.getEnergyStorage().getEnergyStored() < 1500) return false;
+                    if (this.getEnergyStorage().getEnergyStored() < ReplicationConfig.Disintegrator.POWER_USAGE) return false;
                     for (int i = 0; i < this.input.getSlots(); i++) {
                         var stack = this.input.getStackInSlot(i);
                         if (!stack.isEmpty()) {return true;}
@@ -111,7 +112,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     private void onFinish() {
         for (int i = 0; i < this.input.getSlots(); i++) {
             var stack = this.input.getStackInSlot(i);
-            if (!stack.isEmpty() && this.getEnergyStorage().getEnergyStored() >= 1500){
+            if (!stack.isEmpty() && this.getEnergyStorage().getEnergyStored() >= ReplicationConfig.Disintegrator.POWER_USAGE){
                 var data = IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(stack);
                 for (CompoundInstance datum : data) {
                     if (datum.getType() instanceof ReplicationCompoundType replicationCompoundType){
@@ -119,7 +120,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                     }
                 }
                 stack.shrink(1);
-                this.getEnergyStorage().extractEnergy(1500, false);
+                this.getEnergyStorage().extractEnergy(ReplicationConfig.Disintegrator.POWER_USAGE, false);
             }
         }
         syncObject(this.input);

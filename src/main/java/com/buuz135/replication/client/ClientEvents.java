@@ -1,6 +1,7 @@
 package com.buuz135.replication.client;
 
 import com.buuz135.replication.Replication;
+import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.block.ReplicatorBlock;
@@ -137,7 +138,7 @@ public class ClientEvents {
                     drawShape(stack, builder, body, blockpos.getX() - d0, blockpos.getY() - d1, blockpos.getZ() - d2, 0, 0, 0, 0.4F);
                     stack.translate(0 , -ReplicatorBlockEntity.LOWER_PROGRESS,0);
 
-                    var progress = (replicatorBlockEntity.getProgress() + event.getPartialTick() /100f)/ (float) ReplicatorBlockEntity.MAX_PROGRESS;
+                    var progress = (replicatorBlockEntity.getProgress() + event.getPartialTick() /100f)/ (float) ReplicationConfig.Replicator.MAX_PROGRESS;
                     //progress = 0;
 
                     stack.translate(0, ReplicatorBlockEntity.LOWER_PROGRESS * progress, 0);

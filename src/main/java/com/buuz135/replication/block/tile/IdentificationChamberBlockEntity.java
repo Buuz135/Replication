@@ -1,5 +1,6 @@
 package com.buuz135.replication.block.tile;
 
+import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
@@ -47,7 +48,6 @@ import java.util.List;
 public class IdentificationChamberBlockEntity extends ReplicationMachine<IdentificationChamberBlockEntity>{
 
 
-    public static final int MAX_PROGRESS = 100;
     public static final float LOWER_PROGRESS = 0.78f-0.2f;
 
     @Save
@@ -74,7 +74,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
         InvUtil.disableAllSidesAndEnable(this.input, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK);
         this.addInventory((InventoryComponent<IdentificationChamberBlockEntity>) input);
 
-        this.progressBarComponent = new ProgressBarComponent<>(72, 48, MAX_PROGRESS * 2)
+        this.progressBarComponent = new ProgressBarComponent<>(72, 48, ReplicationConfig.IdentificationChamber.MAX_PROGRESS)
                 .setCanIncrease(iComponentHarness -> canIncrease())
                 .setOnTickWork(() -> {
                     syncObject(this.progressBarComponent);
@@ -131,7 +131,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                         syncObject(this.input);
                     }
                     if (returnedValue.getPattern() != null){
-                        this.getEnergyStorage().extractEnergy((int) (25000*0.2f), false);
+                        this.getEnergyStorage().extractEnergy(ReplicationConfig.IdentificationChamber.POWER_USAGE, false);
                     }
                     if (returnedValue.getType() == IMatterPatternModifier.ModifierType.FULL && returnedValue.getPattern() != null){
                         var exportingItem = stack.copy();
@@ -150,7 +150,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     }
 
     private boolean canIncrease(){
-        if (this.getEnergyStorage().getEnergyStored() <= 25000*0.2f) return false;
+        if (this.getEnergyStorage().getEnergyStored() <= ReplicationConfig.IdentificationChamber.POWER_USAGE) return false;
         if (this.input.getStackInSlot(0).isEmpty()) return false;
         if (this.input.getStackInSlot(0).is(ReplicationTags.CANT_BE_SCANNED)) return false;
         var hasOutputSlot = false;
@@ -186,8 +186,8 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     }
 
     public int getProgress() {
-        if (this.progressBarComponent.getProgress() > MAX_PROGRESS){
-            return MAX_PROGRESS * 2 - this.progressBarComponent.getProgress();
+        if (this.progressBarComponent.getProgress() > ReplicationConfig.IdentificationChamber.MAX_PROGRESS){
+            return ReplicationConfig.IdentificationChamber.MAX_PROGRESS * 2 - this.progressBarComponent.getProgress();
         }
         return this.progressBarComponent.getProgress();
     }
