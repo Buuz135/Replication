@@ -83,7 +83,7 @@ public class MatterTankScreenAddon extends BasicScreenAddon {
                                 this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + area.height - topBottomPadding - offset,
                                 offset,
                                 (int) (area.getWidth() - asset.getFluidRenderPadding(Direction.EAST) - asset.getFluidRenderPadding(Direction.WEST)),
-                                offset, sprite, sprite.contents().width(), sprite.contents().height(), 0, false);
+                                offset, sprite, sprite.contents().width(), sprite.contents().height(), 0, false, true, false);
                         RenderSystem.disableBlend();
                         guiGraphics.setColor(1, 1, 1, 1);
                     }
@@ -123,7 +123,7 @@ public class MatterTankScreenAddon extends BasicScreenAddon {
     }
 
     public static void drawTiledSprite(GuiGraphics guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
-                                       int textureWidth, int textureHeight, int zLevel,  boolean blend) {
+                                       int textureWidth, int textureHeight, int zLevel,  boolean blend, boolean right, boolean down) {
         if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
             return;
         }
@@ -158,13 +158,13 @@ public class MatterTankScreenAddon extends BasicScreenAddon {
             float uLocalDif = uDif * maskRight / textureWidth;
             float uLocalMin;
             float uLocalMax;
-            //if (tilingDirection.right) {
+            if (right) {
                 uLocalMin = uMin;
                 uLocalMax = uMax - uLocalDif;
-            //} else {
-            //    uLocalMin = uMin + uLocalDif;
-            //    uLocalMax = uMax;
-            //}
+            } else {
+                uLocalMin = uMin + uLocalDif;
+                uLocalMax = uMax;
+            }
             for (int yTile = 0; yTile <= yTileCount; yTile++) {
                 int height = (yTile == yTileCount) ? yRemainder : textureHeight;
                 if (height == 0) {
@@ -177,13 +177,13 @@ public class MatterTankScreenAddon extends BasicScreenAddon {
                 float vLocalDif = vDif * maskTop / textureHeight;
                 float vLocalMin;
                 float vLocalMax;
-                //if (tilingDirection.down) {
+                if (down) {
                     vLocalMin = vMin;
                     vLocalMax = vMax - vLocalDif;
-                //} else {
-                //    vLocalMin = vMin + vLocalDif;
-                //    vLocalMax = vMax;
-                //}
+                } else {
+                    vLocalMin = vMin + vLocalDif;
+                    vLocalMax = vMax;
+                }
                 vertexBuffer.vertex(matrix4f, x, y + textureHeight, zLevel).uv(uLocalMin, vLocalMax).endVertex();
                 vertexBuffer.vertex(matrix4f, shiftedX, y + textureHeight, zLevel).uv(uLocalMax, vLocalMax).endVertex();
                 vertexBuffer.vertex(matrix4f, shiftedX, y + maskTop, zLevel).uv(uLocalMax, vLocalMin).endVertex();

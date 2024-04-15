@@ -79,21 +79,20 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
         Matrix4f posMat = matrixStack.last().pose();
 
         //TOP
-        float u1 = still.getU(0);
-        float u2 = still.getU(16);
-        float v1 = still.getV(0);
-        float v2 = still.getV(16);
         if (true) {
-
+            float u1 = still.getU(bx1);
+            float u2 = still.getU(bx2);
+            float v1 = still.getV(bz1);
+            float v2 = still.getV(bz2);
             builder.vertex(posMat, x1, y2, z2).color(red, green, blue, alpha).uv(u1, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 1f, 0f).endVertex();
             builder.vertex(posMat, x2, y2, z2).color(red, green, blue, alpha).uv(u2, v2).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 1f, 0f).endVertex();
             builder.vertex(posMat, x2, y2, z1).color(red, green, blue, alpha).uv(u2, v1).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 1f, 0f).endVertex();
             builder.vertex(posMat, x1, y2, z1).color(red, green, blue, alpha).uv(u1, v1).overlayCoords(combinedOverlay).uv2(combinedLight).normal(0f, 1f, 0f).endVertex();
         }
-        u1 = still.getU(0);
-        u2 = still.getU(16);
-        v1 = still.getV(by1);
-        v2 = still.getV(by2);
+        float u1 = still.getU(bx1);
+        float u2 = still.getU(bx2);
+        float v1 = still.getV(by1);
+        float v2 = still.getV(by2);
         //FRONT
         if (true) {
 
