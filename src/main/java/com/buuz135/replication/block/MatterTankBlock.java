@@ -7,12 +7,17 @@ import com.buuz135.replication.block.tile.MatterTankBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
+import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -24,11 +29,13 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> implements INetworkDirectionalConnection {
 
@@ -100,5 +107,15 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
         }
     }
 
+    @Override
+    public void registerRecipe(Consumer<FinishedRecipe> consumer) {
+        TitaniumShapedRecipeBuilder.shapedRecipe(this)
+                .pattern("IGI")
+                .pattern("G G")
+                .pattern("IGI")
+                .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
+                .define('G', Tags.Items.GLASS)
+                .save(consumer);
+    }
 
 }

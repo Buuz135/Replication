@@ -6,16 +6,24 @@ import com.buuz135.replication.block.shapes.IdentificationChamberShapes;
 import com.buuz135.replication.block.tile.DisintegratorBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
+import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Consumer;
 
 public class DisintegratorBlock extends RotatableBlock<DisintegratorBlockEntity> implements INetworkDirectionalConnection {
 
@@ -75,5 +83,17 @@ public class DisintegratorBlock extends RotatableBlock<DisintegratorBlockEntity>
     public boolean canConnect(BlockState state, Direction direction) {
         var sideness = FacingUtil.getFacingRelative(direction, state.getValue(FACING_HORIZONTAL));
         return sideness == FacingUtil.Sideness.BOTTOM || sideness == FacingUtil.Sideness.BACK;
+    }
+
+    @Override
+    public void registerRecipe(Consumer<FinishedRecipe> consumer) {
+        TitaniumShapedRecipeBuilder.shapedRecipe(this)
+                .pattern("ITG")
+                .pattern("ITG")
+                .pattern("III")
+                .define('T', ReplicationRegistry.Blocks.MATTER_TANK.getKey().get())
+                .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
+                .define('G', Tags.Items.GLASS)
+                .save(consumer);
     }
 }

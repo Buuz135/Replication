@@ -7,6 +7,8 @@
     "replication:matter_tank",
     "replication:replication_terminal",
     "replication:chip_storage",
-    "replication:deepslate_replica_ore"
+    "replication:deepslate_replica_ore",
+    "replication:replica_block",
+    "replication:raw_replica_block"
   ]
 }

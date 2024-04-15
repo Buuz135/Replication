@@ -1,5 +1,6 @@
 package com.buuz135.replication.client.render;
 
+import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
@@ -84,7 +85,7 @@ public class IdentificationChamberRenderer implements BlockEntityRenderer<Identi
             poseStack.popPose();
         }
         poseStack.translate(-0.5f, -0.375f, -0.5f);
-        var progress = (entity.getProgress() + partialTicks /100f)/ (float) IdentificationChamberBlockEntity.MAX_PROGRESS;
+        var progress = (entity.getProgress() + partialTicks /100f)/ (float) ReplicationConfig.IdentificationChamber.MAX_PROGRESS;
         //progress = 1;
 
         poseStack.translate(0,-0.2f,0);

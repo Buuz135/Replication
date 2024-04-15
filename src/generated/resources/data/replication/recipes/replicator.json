@@ -1,0 +1,45 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:and",
+          "values": [
+            {
+              "type": "forge:item_exists",
+              "item": "replication:replicator"
+            }
+          ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "I": {
+            "item": "replication:replica_ingot"
+          },
+          "M": {
+            "tag": "forge:ingots/iron"
+          },
+          "P": {
+            "item": "minecraft:piston"
+          },
+          "R": {
+            "item": "minecraft:redstone"
+          }
+        },
+        "pattern": [
+          "IP ",
+          "IRM",
+          "III"
+        ],
+        "result": {
+          "item": "replication:replicator"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

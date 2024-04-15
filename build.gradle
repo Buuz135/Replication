@@ -18,7 +18,7 @@ plugins {
 
 
 group = 'com.buuz135'
-version = '1.0.0'
+version = '1.20.1-1.2.10'
 
 java {
     archivesBaseName = 'Replication'
@@ -47,6 +47,8 @@ minecraft {
             property 'forge.logging.console.level', 'info'
 
             property 'forge.enabledGameTestNamespaces', 'Replication'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 replication {
@@ -145,7 +147,7 @@ dependencies {
 
 
     runtimeOnly fg.deobf("curse.maven:industrial-foregoing-266515:4683880")
-    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:4629624")
+    implementation fg.deobf("curse.maven:jade-324717:5072729")
     runtimeOnly fg.deobf("curse.maven:world-stripper-250603:4578579")
 }
 

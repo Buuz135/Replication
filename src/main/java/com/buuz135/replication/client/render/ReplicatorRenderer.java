@@ -1,5 +1,6 @@
 package com.buuz135.replication.client.render;
 
+import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
 import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
@@ -70,7 +71,7 @@ public class ReplicatorRenderer implements BlockEntityRenderer<ReplicatorBlockEn
             for (CompoundInstance compoundInstance : instance) {
                 total += compoundInstance.getAmount();
             }
-            var currentProgress = entity.getProgress() / (float) ReplicatorBlockEntity.MAX_PROGRESS * 1.4;
+            var currentProgress = entity.getProgress() / (float) ReplicationConfig.Replicator.MAX_PROGRESS * 1.4;
             var progressTotal = 0;
             for (CompoundInstance compoundInstance : instance) {
                 if ((progressTotal + compoundInstance.getAmount())/ (double) total >= currentProgress && compoundInstance.getType() instanceof ReplicationCompoundType replicationCompoundType){
@@ -86,7 +87,7 @@ public class ReplicatorRenderer implements BlockEntityRenderer<ReplicatorBlockEn
 
         poseStack.translate(0 , -ReplicatorBlockEntity.LOWER_PROGRESS,0);
 
-        var progress = (entity.getProgress() + partialTicks /100f)/ (float) ReplicatorBlockEntity.MAX_PROGRESS;
+        var progress = (entity.getProgress() + partialTicks /100f)/ (float) ReplicationConfig.Replicator.MAX_PROGRESS;
         //progress = 0;
 
         poseStack.translate(0, ReplicatorBlockEntity.LOWER_PROGRESS * progress, 0);

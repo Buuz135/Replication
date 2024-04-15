@@ -31,6 +31,8 @@ public class ReplicationLootTableDataProvider extends TitaniumLootTableProvider 
             @Override
             protected void generate() {
                 super.generate();
+                add(ReplicationRegistry.Blocks.REPLICA_BLOCK.get(), droppingSelf(ReplicationRegistry.Blocks.REPLICA_BLOCK.get()));
+                add(ReplicationRegistry.Blocks.RAW_REPLICA_BLOCK.get(), droppingSelf(ReplicationRegistry.Blocks.RAW_REPLICA_BLOCK.get()));
                 add(ReplicationRegistry.Blocks.DEEPSLATE_REPLICA_ORE.get(),
                         createSilkTouchDispatchTable(ReplicationRegistry.Blocks.DEEPSLATE_REPLICA_ORE.get(),
                                 (LootPoolEntryContainer.Builder)this.applyExplosionDecay(ReplicationRegistry.Blocks.DEEPSLATE_REPLICA_ORE.get(), LootItem.lootTableItem(ReplicationRegistry.Items.RAW_REPLICA.get()).apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 5.0F))).apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))));

@@ -1,6 +1,7 @@
 package com.buuz135.replication.client.gui;
 
 import com.buuz135.replication.Replication;
+import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.client.gui.button.ReplicationTerminalTexturedButton;
 import com.buuz135.replication.packet.TaskCancelPacket;
@@ -268,7 +269,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
             for (TaskDisplay patternButton : this.visibleButtons) {
                 if (patternButton.cancelButton.isHovered() && Screen.hasShiftDown()){
                     patternButton.cancelButton.mouseClicked(pMouseX, pMouseY, pButton);
-                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(ReplicationRegistry.Sounds.TERMINAL_BUTTON.get(), 1.0F));
                     return true;
                 }
             }

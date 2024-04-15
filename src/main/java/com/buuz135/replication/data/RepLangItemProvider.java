@@ -55,6 +55,7 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("tooltip.replication.terminal.single", "Single");
         this.add("tooltip.replication.terminal.multiple", "Parallel");
         this.add("tooltip.replication.close", "Close");
+        this.add("config.jade.plugin_replication.matter_tank", "Matter Tank");
 
         for (MatterType value : MatterType.values()) {
             this.add("replication.matter_type." + value.getName(), WordUtils.capitalize(value.getName()));

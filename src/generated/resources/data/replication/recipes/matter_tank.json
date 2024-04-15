@@ -1,0 +1,39 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:and",
+          "values": [
+            {
+              "type": "forge:item_exists",
+              "item": "replication:matter_tank"
+            }
+          ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "G": {
+            "tag": "forge:glass"
+          },
+          "I": {
+            "item": "replication:replica_ingot"
+          }
+        },
+        "pattern": [
+          "IGI",
+          "G G",
+          "IGI"
+        ],
+        "result": {
+          "item": "replication:matter_tank"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

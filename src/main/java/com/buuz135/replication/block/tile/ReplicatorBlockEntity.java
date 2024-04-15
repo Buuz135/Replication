@@ -1,5 +1,6 @@
 package com.buuz135.replication.block.tile;
 
+import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.api.task.ReplicationTask;
 import com.buuz135.replication.client.gui.addons.ReplicatorCraftingAddon;
@@ -51,8 +52,7 @@ import java.util.Objects;
 
 public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEntity> implements IRedstoneReader {
 
-    public static final int MAX_PROGRESS = 200;
-    public static final int POWER_TICK = 80;
+
     public static final float LOWER_PROGRESS = 0.563f;
 
     @Save
@@ -77,10 +77,10 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
 
     public ReplicatorBlockEntity(BasicTileBlock<ReplicatorBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
-        this.progress = MAX_PROGRESS;
+        this.progress = ReplicationConfig.Replicator.MAX_PROGRESS;
         this.action = 1;
         this.craftingStack = ItemStack.EMPTY;
-        this.progressBarComponent = new ProgressBarComponent<ReplicatorBlockEntity>(26, 25, 0, MAX_PROGRESS * 2)
+        this.progressBarComponent = new ProgressBarComponent<ReplicatorBlockEntity>(26, 25, 0, ReplicationConfig.Replicator.MAX_PROGRESS * 2)
                 .setBarDirection(ProgressBarComponent.BarDirection.VERTICAL_UP);
         addProgressBar(this.progressBarComponent);
         this.output = (SidedInventoryComponent<ReplicatorBlockEntity>) new SidedInventoryComponent<ReplicatorBlockEntity>("output", 42, 63, 7, 0)
@@ -131,7 +131,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         super.serverTick(level, pos, state, blockEntity);
         if (this.redstoneManager.getAction().canRun(this.getEnvironmentValue(false, null)) && this.redstoneManager.shouldWork()){
             tickProgress();
-            this.progressBarComponent.setProgress(this.action == 1 ? MAX_PROGRESS - progress : MAX_PROGRESS + progress);
+            this.progressBarComponent.setProgress(this.action == 1 ? ReplicationConfig.Replicator.MAX_PROGRESS - progress : ReplicationConfig.Replicator.MAX_PROGRESS + progress);
             syncObject(this.progressBarComponent);
             if (this.level.getGameTime() % 20 == 0 && this.craftingTask == null && this.cachedReplicationTask == null && !this.infiniteCrafting.getFilterSlots()[0].getFilter().isEmpty()){
                 var task = new ReplicationTask(this.infiniteCrafting.getFilterSlots()[0].getFilter().copy(), 1, IReplicationTask.Mode.SINGLE, this.getBlockPos());
@@ -179,11 +179,11 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     }
 
     private void tickProgress(){
-        if (craftingTask != null && getEnergyStorage().getEnergyStored() > POWER_TICK && cachedReplicationTask != null
+        if (craftingTask != null && getEnergyStorage().getEnergyStored() > ReplicationConfig.Replicator.POWER_TICK && cachedReplicationTask != null
                 && cachedReplicationTask.getStoredMatterStack().containsKey(this.getBlockPos().asLong())){
-            getEnergyStorage().extractEnergy(POWER_TICK, false);
+            getEnergyStorage().extractEnergy(ReplicationConfig.Replicator.POWER_TICK, false);
             if (this.action == 0){
-                if (this.progress >= MAX_PROGRESS && ItemHandlerHelper.insertItem(this.output, this.craftingStack.copy(), true).isEmpty()){
+                if (this.progress >= ReplicationConfig.Replicator.MAX_PROGRESS && ItemHandlerHelper.insertItem(this.output, this.craftingStack.copy(), true).isEmpty()){
                     this.action = 1;
                     syncObject(this.action);
                     replicateItem();
@@ -201,7 +201,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
             }
             markComponentDirty();
         }
-        if (craftingTask == null && this.progress < MAX_PROGRESS){
+        if (craftingTask == null && this.progress < ReplicationConfig.Replicator.MAX_PROGRESS){
             this.action = 1;
             ++this.progress;
             syncObject(this.action);
