@@ -52,7 +52,7 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
 
         matrixStack.pushPose();
         //matrixStack.translate(0,1,0);
-        ResourceLocation texture = new ResourceLocation("minecraft:block/white_wool");
+        ResourceLocation texture = new ResourceLocation(Replication.MOD_ID, "block/matter");
         TextureAtlasSprite still = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
         VertexConsumer builder = bufferIn.getBuffer(RenderType.translucent());
 
@@ -131,6 +131,5 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
         }
 
         matrixStack.popPose();
-
     }
 }

@@ -1,5 +1,6 @@
 package com.buuz135.replication.api.matter_fluid.client;
 
+import com.buuz135.replication.Replication;
 import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.matter_fluid.MatterTank;
@@ -68,7 +69,7 @@ public class MatterTankScreenAddon extends BasicScreenAddon {
             double capacity = tank.getCapacity();
             int topBottomPadding = asset.getFluidRenderPadding(Direction.UP) + asset.getFluidRenderPadding(Direction.DOWN);
             int offset = (int) ((stored / capacity) * (area.height - topBottomPadding));
-            ResourceLocation flowing = new ResourceLocation("minecraft:block/white_wool");
+            ResourceLocation flowing = new ResourceLocation(Replication.MOD_ID, "block/matter");
             if (flowing != null) {
                 AbstractTexture texture = screen.getMinecraft().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS); //getAtlasSprite
                 if (texture instanceof TextureAtlas) {
