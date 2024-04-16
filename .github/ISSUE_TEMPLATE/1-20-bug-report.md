@@ -8,7 +8,7 @@ assignees: ''
 ---
 **DO NOT REPORT AN ISSUE IF YOU HAVEN'T TESTED THE ISSUE WITH THE LATEST VERSION IN CURSEFORGE**
 
-**Functional Storage Version:**
+**Replication Version:**
 
 **Titanium Version:**
 
