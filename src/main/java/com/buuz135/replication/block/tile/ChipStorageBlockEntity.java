@@ -20,6 +20,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,6 +51,7 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
         addInventory(this.chips);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void initClient() {
         super.initClient();

@@ -18,7 +18,7 @@ plugins {
 
 
 group = 'com.buuz135'
-version = '1.20.1-1.0.0'
+version = '1.20.1-1.0.1'
 
 java {
     archivesBaseName = 'Replication'
@@ -148,7 +148,7 @@ dependencies {
 
     runtimeOnly fg.deobf("curse.maven:industrial-foregoing-266515:4683880")
     implementation fg.deobf("curse.maven:jade-324717:5072729")
-    runtimeOnly fg.deobf("curse.maven:world-stripper-250603:4578579")
+    //runtimeOnly fg.deobf("curse.maven:world-stripper-250603:4578579")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

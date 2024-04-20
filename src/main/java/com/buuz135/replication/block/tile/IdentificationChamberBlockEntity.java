@@ -104,6 +104,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
         this.addInventory((InventoryComponent<IdentificationChamberBlockEntity>) this.memoryChipOutput);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void initClient() {
         super.initClient();

@@ -120,6 +120,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         addFilter(infiniteCrafting);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void initClient() {
         super.initClient();
