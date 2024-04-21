@@ -3,6 +3,7 @@ package com.buuz135.replication.aequivaleo;
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.client.MatterCalculationStatusToast;
+import com.ldtteam.aequivaleo.api.analysis.AnalysisState;
 import com.ldtteam.aequivaleo.api.plugin.AequivaleoPlugin;
 import com.ldtteam.aequivaleo.api.plugin.IAequivaleoPlugin;
 import net.minecraft.ChatFormatting;
@@ -46,10 +47,20 @@ public class ReplicationAequivaleoPlugin implements IAequivaleoPlugin {
     @Override
     public void onDataSynced(ResourceKey<Level> worldRegistryKey) {
         IAequivaleoPlugin.super.onDataSynced(worldRegistryKey);
-        if (worldRegistryKey.location().toString().equals("minecraft:overworld")){
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void onAnalysisStateChanged(ResourceKey<Level> key, AnalysisState state) {
+        IAequivaleoPlugin.super.onAnalysisStateChanged(key, state);
+        if (key.location().toString().equals("minecraft:overworld") && (state == AnalysisState.COMPLETED || state == AnalysisState.ERRORED)){
+            var subtext = Component.literal("Matter Values Synced").withStyle(style -> style.withColor(0x72e567));
+            if (state == AnalysisState.ERRORED){
+                subtext = Component.literal("Error").withStyle(style -> style.withColor(ChatFormatting.RED));
+            }
             var toast = new MatterCalculationStatusToast(new ItemStack(ReplicationRegistry.Blocks.REPLICATOR.getLeft().get()),
                     Component.literal( "Replication").withStyle(style -> style.withBold(true).withColor(0x72e567)),
-                    Component.literal("Matter Values Synced").withStyle(style -> style.withColor(0x72e567)), false);
+                    subtext, false);
             Minecraft.getInstance().getToasts().addToast(toast);
             new Thread(() -> {
                 try {
@@ -66,4 +77,5 @@ public class ReplicationAequivaleoPlugin implements IAequivaleoPlugin {
     public void onCompoundTypeRegistrySync() {
         IAequivaleoPlugin.super.onCompoundTypeRegistrySync();
     }
+
 }

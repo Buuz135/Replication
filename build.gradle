@@ -143,8 +143,7 @@ dependencies {
     //runtimeOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:universal")
     //compileOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:api")
     //compileOnly fg.deobf("${aequivaleo_location}:${aequivaleo_version}:vanillaapi")
-    implementation fg.deobf("curse.maven:aequivaleo-404450:5200204")
-
+    implementation fg.deobf("curse.maven:aequivaleo-404450:5277323")
 
     runtimeOnly fg.deobf("curse.maven:industrial-foregoing-266515:4683880")
     implementation fg.deobf("curse.maven:jade-324717:5072729")
