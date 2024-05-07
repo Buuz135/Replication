@@ -9,6 +9,7 @@ import com.buuz135.replication.api.network.IMatterTanksSupplier;
 import com.buuz135.replication.client.gui.addons.DisintegratorAddon;
 import com.buuz135.replication.client.gui.addons.IdentificationChamberAddon;
 import com.buuz135.replication.util.InvUtil;
+import com.buuz135.replication.util.ReplicationTags;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
@@ -115,7 +116,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     private void onFinish() {
         for (int i = 0; i < this.input.getSlots(); i++) {
             var stack = this.input.getStackInSlot(i);
-            if (!stack.isEmpty() && this.getEnergyStorage().getEnergyStored() >= ReplicationConfig.Disintegrator.POWER_USAGE){
+            if (!stack.isEmpty() && !stack.is(ReplicationTags.CANT_BE_DISINTEGRATED) && this.getEnergyStorage().getEnergyStored() >= ReplicationConfig.Disintegrator.POWER_USAGE){
                 var data = IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(stack);
                 for (CompoundInstance datum : data) {
                     if (datum.getType() instanceof ReplicationCompoundType replicationCompoundType){

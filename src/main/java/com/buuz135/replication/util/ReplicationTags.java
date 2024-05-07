@@ -10,4 +10,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ReplicationTags {
 
     public static TagKey<Item> CANT_BE_SCANNED = TagUtil.getOrCreateTag(ForgeRegistries.ITEMS, new ResourceLocation(Replication.MOD_ID, "cant_be_scanned"));
+    public static TagKey<Item> CANT_BE_DISINTEGRATED = TagUtil.getOrCreateTag(ForgeRegistries.ITEMS, new ResourceLocation(Replication.MOD_ID, "cant_be_disintegrated"));
+
 }

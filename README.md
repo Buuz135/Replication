@@ -28,3 +28,4 @@ If the type is a tag you need to add the tag to the config file `vanilla-aequiva
 You can create blueprints (one use item) that have a % of the scanned item information using the command `/replication create-blueprint-using-hand &lt;progress&gt;` where progress is a decimal number between 0-1. This will allow you to create the blueprint using the current item in your hand respecting the NBT of the item. Then those blueprints can be transferred using the Identification Chamber or directly to the Chip Storage
 ## Tag
 You can disable an item from being able to be scanned using the tag `replication:cant_be_scanned`. This will only prevent the item from being scanned and not replicated
+You can disable an item from being able to be disintegrated using the tag `replication:cant_be_disintegrated`
