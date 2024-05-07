@@ -16,8 +16,11 @@ import com.ldtteam.aequivaleo.vanilla.api.recipe.equivalency.ICookingEquivalency
 import com.ldtteam.aequivaleo.vanilla.api.recipe.equivalency.ISimpleEquivalencyRecipe;
 import com.ldtteam.aequivaleo.vanilla.api.recipe.equivalency.ISmithingEquivalencyRecipe;
 import com.ldtteam.aequivaleo.vanilla.api.recipe.equivalency.ITagEquivalencyRecipe;
+import com.ldtteam.aequivaleo.vanilla.api.tags.ITagEquivalencyRegistry;
+import com.ldtteam.aequivaleo.vanilla.config.CommonConfiguration;
 import com.ldtteam.aequivaleo.vanilla.recipe.equivalency.CookingEquivalencyRecipe;
 import com.ldtteam.aequivaleo.vanilla.recipe.equivalency.SmithingEquivalencyRecipe;
+import com.ldtteam.aequivaleo.vanilla.tags.TagEquivalencyRegistry;
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -101,7 +104,7 @@ public class ReplicationCompoundTypeGroup implements ICompoundTypeGroup {
     @Override
     public boolean canContributeToRecipeAsInput(IEquivalencyRecipe iEquivalencyRecipe, CompoundInstance compoundInstance) {
         if (iEquivalencyRecipe instanceof ITagEquivalencyRecipe tagRecipe){
-            return ALLOWED_RECIPE_TAGS.contains(tagRecipe.getTag());
+            return ALLOWED_RECIPE_TAGS.contains(tagRecipe.getTag()) || TagEquivalencyRegistry.getInstance().getTags().contains(tagRecipe.getTag());
         }
         return true;
     }
@@ -109,7 +112,7 @@ public class ReplicationCompoundTypeGroup implements ICompoundTypeGroup {
     @Override
     public boolean canContributeToRecipeAsOutput(IEquivalencyRecipe iEquivalencyRecipe, CompoundInstance compoundInstance) {
         if (iEquivalencyRecipe instanceof ITagEquivalencyRecipe tagRecipe){
-            return ALLOWED_RECIPE_TAGS.contains(tagRecipe.getTag());
+            return ALLOWED_RECIPE_TAGS.contains(tagRecipe.getTag()) || TagEquivalencyRegistry.getInstance().getTags().contains(tagRecipe.getTag());
         }
         return true;
     }
