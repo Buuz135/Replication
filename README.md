@@ -24,6 +24,11 @@ To transform items you will need to break them down to their primal values using
 You can modify/add/remove matter values using datapacks, you don't need to add values for each modded item as the system will calculate the values using the crafting recipes. Datapack [examples](https://github.com/Buuz135/Replication/tree/master/src/generated/resources/data/replication/aequivaleo/value/general).
 If the type is a tag you need to add the tag to the config file `vanilla-aequivaleo.toml` to the `tagsToRegister` array.
 
+The different modes possible for the aquivaleo values:
+* ADDITIVE: Adds a value to an item/tag
+* DISABLED: Removes a value to an item/tag
+* REPLACING: Replaces a value to an item/tag
+
 ## Blueprints
 You can create blueprints (one use item) that have a % of the scanned item information using the command `/replication create-blueprint-using-hand &lt;progress&gt;` where progress is a decimal number between 0-1. This will allow you to create the blueprint using the current item in your hand respecting the NBT of the item. Then those blueprints can be transferred using the Identification Chamber or directly to the Chip Storage
 ## Tag

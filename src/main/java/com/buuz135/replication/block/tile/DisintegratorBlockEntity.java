@@ -144,12 +144,14 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                     }
                 }
             }
-            for (MatterTankComponent<DisintegratorBlockEntity> matterTankComponent : this.getMatterTankComponents()) {
-                if (matterTankComponent.isEmpty()){
-                    peekedElement.setAmount(peekedElement.getAmount() - matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.EXECUTE));
-                    if (peekedElement.isEmpty()){
-                        this.queuedMatterStacks.poll();
-                        return;
+            if (!peekedElement.isEmpty()){
+                for (MatterTankComponent<DisintegratorBlockEntity> matterTankComponent : this.getMatterTankComponents()) {
+                    if (matterTankComponent.isEmpty()){
+                        peekedElement.setAmount(peekedElement.getAmount() - matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.EXECUTE));
+                        if (peekedElement.isEmpty()){
+                            this.queuedMatterStacks.poll();
+                            return;
+                        }
                     }
                 }
             }
