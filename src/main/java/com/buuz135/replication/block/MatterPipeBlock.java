@@ -180,7 +180,7 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
 
     @Override
     public void registerRecipe(Consumer<FinishedRecipe> consumer) {
-        TitaniumShapedRecipeBuilder.shapedRecipe(this)
+        TitaniumShapedRecipeBuilder.shapedRecipe(this, 8)
                 .pattern("PPP")
                 .pattern("IRI")
                 .pattern("PPP")

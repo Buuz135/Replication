@@ -1,3 +1,7 @@
+# 1.0.4
+* Changed the pipe recipe to give you 8 items
+* Fixed some tank transfer issues in the Disintegrator
+
 # 1.0.3
 * Slowed Replica animations
 * Fixed tags not working, closes #13 (Check Readme.md)
