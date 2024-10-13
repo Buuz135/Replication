@@ -14,7 +14,7 @@ This mod needs [Aequivaleo](https://www.curseforge.com/minecraft/mc-mods/aequiva
 
 The **Identification Chamber** will scan items to know their matter values and store them into chips. Those **Chips** can be stored in the **Chip Storage** and will be available to the network.
 
-**Replicators** can be used in "Infinite Mode" where they will keep replicating a resource until it is full or has run out matter, you can configure that mode in the GUI.
+**Replicators** can be used in "Infinite Mode", where they will keep replicating a resource until it is full or has run out of matter, you can configure that mode in the GUI.
 
 # How it works
 To transform items you will need to break them down to their primal values using a **Disintegrator**. Using that machine you will transform any item with matter values into matter. Once you have scanned some items and stored their values into chips you can use the **Replication Terminal** to request items. With a request created **Replicators** will use the Matter stored in tanks to replicate the item from scratch and send it back to the terminal.
@@ -30,7 +30,7 @@ The different modes possible for the aquivaleo values:
 * REPLACING: Replaces a value to an item/tag
 
 ## Blueprints
-You can create blueprints (one use item) that have a % of the scanned item information using the command `/replication create-blueprint-using-hand &lt;progress&gt;` where progress is a decimal number between 0-1. This will allow you to create the blueprint using the current item in your hand respecting the NBT of the item. Then those blueprints can be transferred using the Identification Chamber or directly to the Chip Storage
+You can create blueprints (one use item) that have a % of the scanned item information using the command `/replication create-blueprint-using-hand &lt;progress&gt;` where progress is a decimal number between 0 and 1. This will allow you to create the blueprint using the current item in your hand respecting the NBT of the item. Then those blueprints can be transferred using the Identification Chamber or directly to the Chip Storage
 ## Tag
-You can disable an item from being able to be scanned using the tag `replication:cant_be_scanned`. This will only prevent the item from being scanned and not replicated
-You can disable an item from being able to be disintegrated using the tag `replication:cant_be_disintegrated`
+You can disable an item from being scanned using the tag `replication:cant_be_scanned`. This will only prevent the item from being scanned and not replicated
+You can disable an item from being disintegrated using the tag `replication:cant_be_disintegrated`
