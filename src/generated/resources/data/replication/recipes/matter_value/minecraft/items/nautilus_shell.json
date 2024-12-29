@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:nautilus_shell"
+  },
+  "matter": [
+    {
+      "type": "replication:living",
+      "value": 2.0
+    },
+    {
+      "type": "replication:organic",
+      "value": 2.0
+    }
+  ]
+}

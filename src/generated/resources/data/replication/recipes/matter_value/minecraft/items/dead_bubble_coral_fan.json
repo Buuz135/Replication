@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:dead_bubble_coral_fan"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "value": 2.0
+    }
+  ]
+}

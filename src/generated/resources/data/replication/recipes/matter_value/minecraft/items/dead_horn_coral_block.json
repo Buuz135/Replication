@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:dead_horn_coral_block"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "value": 6.0
+    }
+  ]
+}

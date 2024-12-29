@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:rose_bush"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "value": 1.0
+    },
+    {
+      "type": "replication:organic",
+      "value": 1.0
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:dead_brain_coral"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "value": 2.0
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:player_head"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "value": 8.0
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:red_sand"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "value": 1.0
+    }
+  ]
+}

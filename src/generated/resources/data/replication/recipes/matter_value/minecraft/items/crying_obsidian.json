@@ -1,0 +1,20 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:crying_obsidian"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "value": 4.0
+    },
+    {
+      "type": "replication:nether",
+      "value": 1.0
+    },
+    {
+      "type": "replication:quantum",
+      "value": 1.0
+    }
+  ]
+}

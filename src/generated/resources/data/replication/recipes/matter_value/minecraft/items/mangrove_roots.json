@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:mangrove_roots"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "value": 16.0
+    },
+    {
+      "type": "replication:organic",
+      "value": 16.0
+    }
+  ]
+}
