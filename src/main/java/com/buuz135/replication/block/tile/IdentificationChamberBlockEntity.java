@@ -4,6 +4,7 @@ import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
+import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.IdentificationChamberAddon;
 import com.buuz135.replication.client.gui.addons.ReplicatorCraftingAddon;
 import com.buuz135.replication.item.ReplicationItem;
@@ -24,7 +25,6 @@ import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
 import com.hrznstudio.titanium.util.LangUtil;
-import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -64,7 +64,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
         super(base, blockEntityType, pos, state);
         this.input = (SidedInventoryComponent<?>) new SidedInventoryComponent<>("input", 44, 48, 1, 0)
                 .disableFacingAddon()
-                .setInputFilter((itemStack, integer) -> !IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(itemStack).isEmpty()
+                .setInputFilter((itemStack, integer) -> ReplicationCalculation.getMatterCompound(itemStack) != null
                         || itemStack.is(ReplicationRegistry.Items.MATTER_BLUEPRINT.get()))
                 .setOutputFilter((itemStack, integer) -> false)
                 .setSlotLimit(1)

@@ -1,18 +1,19 @@
 package com.buuz135.replication;
 
-import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
-import com.buuz135.replication.aequivaleo.ReplicationCompoundTypeGroup;
 import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.api.matter_fluid.IMatterHandler;
-import com.ldtteam.aequivaleo.api.compound.type.ICompoundType;
-import com.ldtteam.aequivaleo.api.compound.type.group.ICompoundTypeGroup;
+import com.buuz135.replication.recipe.MatterValueRecipe;
+import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
+
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.capabilities.Capability;
@@ -20,6 +21,7 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,26 +37,10 @@ public class ReplicationRegistry {
 
     public static void init(){
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        TYPE_GROUPS.register(eventBus);
-        TYPES.register(eventBus);
+        CustomRecipeTypes.REC.register(eventBus);
+        Serializers.SER.register(eventBus);
         Matter.IMATTER_TYPES.register(eventBus);
     }
-    public static final DeferredRegister<ICompoundType> TYPES = DeferredRegister.create(new ResourceLocation("aequivaleo", "compound_type"), Replication.MOD_ID);
-    public static final DeferredRegister<ICompoundTypeGroup> TYPE_GROUPS = DeferredRegister.create(new ResourceLocation("aequivaleo", "compound_type_group"), Replication.MOD_ID);
-
-    //TYPE GROUPS
-    public static final RegistryObject<ICompoundTypeGroup> MATTER_TYPES_GROUPS = TYPE_GROUPS.register("matter_types", ReplicationCompoundTypeGroup::new);
-
-    //MATTER TYPES
-    public static final RegistryObject<ICompoundType> EARTH = TYPES.register("earth", () -> new ReplicationCompoundType(MatterType.EARTH, MATTER_TYPES_GROUPS));
-    public static final RegistryObject<ICompoundType> NETHER = TYPES.register("nether", () -> new ReplicationCompoundType(MatterType.NETHER, MATTER_TYPES_GROUPS));
-    public static final RegistryObject<ICompoundType> ORGANIC = TYPES.register("organic", () -> new ReplicationCompoundType(MatterType.ORGANIC, MATTER_TYPES_GROUPS));
-    public static final RegistryObject<ICompoundType> ENDER = TYPES.register("ender", () -> new ReplicationCompoundType(MatterType.ENDER, MATTER_TYPES_GROUPS));
-    public static final RegistryObject<ICompoundType> METALLIC = TYPES.register("metallic", () -> new ReplicationCompoundType(MatterType.METALLIC, MATTER_TYPES_GROUPS));
-    public static final RegistryObject<ICompoundType> PRECIOUS = TYPES.register("precious", () -> new ReplicationCompoundType(MatterType.PRECIOUS, MATTER_TYPES_GROUPS));
-    public static final RegistryObject<ICompoundType> QUANTUM = TYPES.register("quantum", () -> new ReplicationCompoundType(MatterType.QUANTUM, MATTER_TYPES_GROUPS));
-    public static final RegistryObject<ICompoundType> LIVING = TYPES.register("living", () -> new ReplicationCompoundType(MatterType.LIVING, MATTER_TYPES_GROUPS));
-
 
     public static class Blocks{
 
@@ -113,6 +99,21 @@ public class ReplicationRegistry {
     public static class Capabilities{
 
         public static Capability<IMatterHandler> MATTER_HANDLER = get(new CapabilityToken<>(){});
+
+    }
+
+    public static class CustomRecipeTypes {
+
+        public static final DeferredRegister<RecipeType<?>> REC = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES.getRegistryKey(), Replication.MOD_ID);
+
+        public static final RegistryObject<RecipeType<MatterValueRecipe>> MATTER_VALUE_RECIPE_TYPE = REC.register("matter_value", () -> RecipeType.simple(new ResourceLocation(Replication.MOD_ID, "matter_value")));
+    }
+
+    public static class Serializers{
+
+        public static final DeferredRegister<RecipeSerializer<?>> SER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS.getRegistryKey(), Replication.MOD_ID);
+
+        public static final RegistryObject<RecipeSerializer<?>> MATTER_VALUE_RECIPE_SERIALIZER = SER.register("matter_value", () -> new GenericSerializer(MatterValueRecipe.class, CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE ));
 
     }
 

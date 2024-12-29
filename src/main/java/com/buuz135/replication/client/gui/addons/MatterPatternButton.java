@@ -1,16 +1,13 @@
 package com.buuz135.replication.client.gui.addons;
 
-import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
 import com.buuz135.replication.api.pattern.MatterPattern;
+import com.buuz135.replication.calculation.MatterValue;
+import com.buuz135.replication.calculation.client.ClientReplicationCalculation;
 import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.util.NumberUtils;
-import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
-import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-
-import java.util.Objects;
 
 public final class MatterPatternButton {
     private final MatterPattern pattern;
@@ -49,16 +46,16 @@ public final class MatterPatternButton {
     }
 
     public void recalculateAmount(String network) {
-        var aqValues = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(pattern.getStack());
-        if (aqValues.isEmpty()) {
+        var matterCompound = ClientReplicationCalculation.getMatterCompound(pattern.getStack());
+        if (matterCompound == null) {
             this.cachedAmount = 0;
         } else {
             this.cachedAmount = Integer.MAX_VALUE;
             var networkValues = MatterFluidSyncPacket.CLIENT_MATTER_STORAGE.get(network);
             if (networkValues != null){
-                for (CompoundInstance aqValue : aqValues) {
-                    var matterType = ((ReplicationCompoundType) aqValue.getType()).getMatterType();
-                    var amount = aqValue.getAmount();
+                for (MatterValue matterValue : matterCompound.getValues().values()) {
+                    var matterType = matterValue.getMatter();
+                    var amount = matterValue.getAmount();
                     this.cachedAmount = (int) Math.min(this.cachedAmount, Math.min(Integer.MAX_VALUE, networkValues.getOrDefault(matterType, 0L) / amount));
                 }
             }

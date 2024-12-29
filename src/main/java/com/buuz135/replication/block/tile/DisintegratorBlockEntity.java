@@ -1,11 +1,13 @@
 package com.buuz135.replication.block.tile;
 
 import com.buuz135.replication.ReplicationConfig;
-import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
 import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
 import com.buuz135.replication.api.network.IMatterTanksSupplier;
+import com.buuz135.replication.calculation.MatterCompound;
+import com.buuz135.replication.calculation.MatterValue;
+import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.DisintegratorAddon;
 import com.buuz135.replication.client.gui.addons.IdentificationChamberAddon;
 import com.buuz135.replication.util.InvUtil;
@@ -19,8 +21,6 @@ import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
-import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
-import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
@@ -63,7 +63,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
         this.queuedMatterStacks = new ArrayDeque<>();
         this.input = (SidedInventoryComponent<?>) new SidedInventoryComponent<>("input", 29, 30, 3, 0)
                 .disableFacingAddon()
-                .setInputFilter((itemStack, integer) -> !IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(itemStack).isEmpty())
+                .setInputFilter((itemStack, integer) -> ReplicationCalculation.getMatterCompound(itemStack) != null)
                 .setOutputFilter((itemStack, integer) -> false)
                 .setSlotLimit(64)
                 .setSlotPosition(integer -> Pair.of(0, 18*integer))
@@ -117,14 +117,14 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
         for (int i = 0; i < this.input.getSlots(); i++) {
             var stack = this.input.getStackInSlot(i);
             if (!stack.isEmpty() && !stack.is(ReplicationTags.CANT_BE_DISINTEGRATED) && this.getEnergyStorage().getEnergyStored() >= ReplicationConfig.Disintegrator.POWER_USAGE){
-                var data = IAequivaleoAPI.getInstance().getEquivalencyResults(this.level.dimension()).dataFor(stack);
-                for (CompoundInstance datum : data) {
-                    if (datum.getType() instanceof ReplicationCompoundType replicationCompoundType){
-                        queuedMatterStacks.add(new MatterStack(replicationCompoundType.getMatterType(), Mth.ceil(datum.getAmount())));
+                var data = ReplicationCalculation.getMatterCompound(stack);
+                if (data != null) {
+                    for (MatterValue matterValue : data.getValues().values()) {
+                        queuedMatterStacks.add(new MatterStack(matterValue.getMatter(), Mth.ceil(matterValue.getAmount())));
                     }
+                    stack.shrink(1);
+                    this.getEnergyStorage().extractEnergy(ReplicationConfig.Disintegrator.POWER_USAGE, false);
                 }
-                stack.shrink(1);
-                this.getEnergyStorage().extractEnergy(ReplicationConfig.Disintegrator.POWER_USAGE, false);
             }
         }
         syncObject(this.input);

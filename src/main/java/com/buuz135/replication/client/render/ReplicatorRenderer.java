@@ -1,12 +1,10 @@
 package com.buuz135.replication.client.render;
 
 import com.buuz135.replication.ReplicationConfig;
-import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
-import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
+import com.buuz135.replication.calculation.MatterValue;
+import com.buuz135.replication.calculation.client.ClientReplicationCalculation;
 import com.hrznstudio.titanium.block.RotatableBlock;
-import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
-import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -66,19 +64,19 @@ public class ReplicatorRenderer implements BlockEntityRenderer<ReplicatorBlockEn
 
         var color = new float[]{1f, 1f, 1f, 0f};
         if (!entity.getCraftingStack().isEmpty() && entity.getAction() == 0){
-            var instance = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(entity.getCraftingStack());
-            var total = 0;
-            for (CompoundInstance compoundInstance : instance) {
-                total += compoundInstance.getAmount();
+            var matterCompound = ClientReplicationCalculation.getMatterCompound(entity.getCraftingStack());
+            var total = 0D;
+            for (MatterValue matterValue : matterCompound.getValues().values()) {
+                total += matterValue.getAmount();
             }
             var currentProgress = entity.getProgress() / (float) ReplicationConfig.Replicator.MAX_PROGRESS * 1.4;
             var progressTotal = 0;
-            for (CompoundInstance compoundInstance : instance) {
-                if ((progressTotal + compoundInstance.getAmount())/ (double) total >= currentProgress && compoundInstance.getType() instanceof ReplicationCompoundType replicationCompoundType){
-                    color = replicationCompoundType.getMatterType().getColor().get();
+            for (MatterValue matterValue : matterCompound.getValues().values()) {
+                if ((progressTotal + matterValue.getAmount())/ (double) total >= currentProgress){
+                    color = matterValue.getMatter().getColor().get();
                     break;
                 }
-                progressTotal += compoundInstance.getAmount();
+                progressTotal += matterValue.getAmount();
             }
         }
         renderPlane(poseStack, multiBufferSource, Block.box( 2,0,2,14,1,12).bounds(), 0,0.15,0, color[0], color[1], color[2], color[3] == 0 ? 0 : 0.75f);

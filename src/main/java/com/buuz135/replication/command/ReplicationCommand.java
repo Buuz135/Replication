@@ -1,20 +1,15 @@
 package com.buuz135.replication.command;
 
 import com.buuz135.replication.ReplicationRegistry;
-import com.buuz135.replication.item.ReplicationItem;
-import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
+import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -22,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -68,7 +62,7 @@ public class ReplicationCommand {
                     .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_bucket"))
                     .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("infested_"))
                     .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_pattern"))
-                    .filter(item -> IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(item).size() == 0).collect(Collectors.toList());
+                    .filter(item -> ReplicationCalculation.getMatterCompound(item) == null).collect(Collectors.toList());
             missing.forEach(item -> LOGGER.info(ForgeRegistries.ITEMS.getKey(item.getItem())));
             for (ItemStack itemStack : missing) {
                 if (!missingItems.contains(itemStack.getItem())){

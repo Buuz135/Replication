@@ -1,37 +1,38 @@
 package com.buuz135.replication.data;
 
-import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
-
+import com.buuz135.replication.calculation.MatterValue;
+import com.buuz135.replication.calculation.ReplicationCalculation;
+import com.buuz135.replication.recipe.MatterValueRecipe;
+import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
+import com.hrznstudio.titanium.recipe.generator.IJsonFile;
+import com.hrznstudio.titanium.recipe.generator.TitaniumSerializableProvider;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
-
 import java.util.Arrays;
+import java.util.Map;
 
 import static net.minecraft.world.item.Items.*;
+import static net.minecraft.world.item.Items.EMERALD;
 
-public class AequivaleoDataProvider{
+public class MatterValueDataProvider extends TitaniumSerializableProvider {
 
-}
+    private Map<IJsonFile, IJSONGenerator> map;
 
-/*public class AequivaleoDataProvider extends ForcedInformationProvider {
-
-    /*
-            MISSING RECIPE HANDLERS
-            COLORING SHULKER
-     */
-
-/*    public AequivaleoDataProvider(String modId, DataGenerator dataGenerator) {
-        super(modId, dataGenerator);
+    public MatterValueDataProvider(DataGenerator generatorIn, String modid) {
+        super(generatorIn, modid);
     }
 
     @Override
-    public void calculateDataToSave() {
+    public void add(Map<IJsonFile, IJSONGenerator> map) {
+        this.map = map;
         saveData(IRON_INGOT, metallic(9));
         saveData(GOLD_INGOT, metallic(9), precious(9));
         saveData(DIAMOND, precious(9*4));
@@ -91,8 +92,8 @@ public class AequivaleoDataProvider{
         saveData(new Item[]{SAND, GRAVEL, RED_SAND}, earth(1));
         saveData(new Item[]{WARPED_NYLIUM, CRIMSON_NYLIUM}, organic(2), nether(1));
         saveData(new Item[]{WHITE_CONCRETE, ORANGE_CONCRETE, MAGENTA_CONCRETE, LIGHT_BLUE_CONCRETE, YELLOW_CONCRETE,
-            LIME_CONCRETE, PINK_CONCRETE, GRAY_CONCRETE, LIGHT_GRAY_CONCRETE, CYAN_CONCRETE, PURPLE_CONCRETE, BLUE_CONCRETE,
-            BROWN_CONCRETE, GREEN_CONCRETE, RED_CONCRETE, BLACK_CONCRETE}, earth(1.25), organic(0.25));
+                LIME_CONCRETE, PINK_CONCRETE, GRAY_CONCRETE, LIGHT_GRAY_CONCRETE, CYAN_CONCRETE, PURPLE_CONCRETE, BLUE_CONCRETE,
+                BROWN_CONCRETE, GREEN_CONCRETE, RED_CONCRETE, BLACK_CONCRETE}, earth(1.25), organic(0.25));
 
         saveData(NETHERRACK, nether(1));
         saveData(SOUL_SAND, nether(2), earth(2));
@@ -108,7 +109,7 @@ public class AequivaleoDataProvider{
         saveData(ECHO_SHARD, quantum(1), living(4));
         saveData(HONEYCOMB, living(2), earth(2));
         saveData(NETHER_WART, living(2), nether(2));
-        saveData(WARPED_NYLIUM, living(2*9), nether(2*9));
+        //saveData(WARPED_NYLIUM, living(2*9), nether(2*9));
         saveData(CHORUS_FRUIT, living(2), ender(8));
 
         saveData(QUARTZ, precious(4), nether(2));
@@ -141,54 +142,53 @@ public class AequivaleoDataProvider{
         saveData(new Item[]{TUBE_CORAL_BLOCK, BRAIN_CORAL_BLOCK, BUBBLE_CORAL_BLOCK, FIRE_CORAL_BLOCK, HORN_CORAL_BLOCK}, organic(6), living(4));
         saveData(new Item[]{TUBE_CORAL, BRAIN_CORAL, BUBBLE_CORAL, FIRE_CORAL, HORN_CORAL, TUBE_CORAL_FAN, BRAIN_CORAL_FAN, BUBBLE_CORAL_FAN, FIRE_CORAL_FAN, HORN_CORAL_FAN}, organic(2), living(1));
         saveData(new Item[]{DEAD_BRAIN_CORAL, DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL, DEAD_TUBE_CORAL_FAN, DEAD_BRAIN_CORAL_FAN, DEAD_BUBBLE_CORAL_FAN, DEAD_FIRE_CORAL_FAN, DEAD_HORN_CORAL_FAN}, organic(2));
+
     }
 
-    private void saveData(Item item, CompoundInstance... instances) {
-        save(specFor(item).withCompounds(instances));
+    private void saveData(Item item, MatterValue... instances) {
+        var rl = BuiltInRegistries.ITEM.getKey(item);
+        var recipe = new MatterValueRecipe(new ResourceLocation(rl.getNamespace(), rl.getNamespace() + "/items/" + rl.getPath()), Ingredient.of(item), instances);
+        map.put(recipe, recipe);
     }
 
-    private void saveData(Item[] items, CompoundInstance... instances) {
+    private void saveData(Item[] items, MatterValue... instances) {
         Arrays.stream(items).forEach(item -> saveData(item, instances));
     }
 
-    private void saveTag(TagKey<Item> tag, CompoundInstance... instances) {
-        if (!ReplicationCompoundTypeGroup.ALLOWED_RECIPE_TAGS.contains(tag)){
-            Replication.LOGGER.error("MISSING ALLOWED TAG " + tag.toString());
-        }
-        save(specFor(tag).withCompounds(instances));
+    private void saveTag(TagKey<Item> tag, MatterValue... instances) {
+        var recipe = new MatterValueRecipe(new ResourceLocation(tag.location().getNamespace(), tag.location().getNamespace() + "/tags/" + tag.location().getPath()), Ingredient.of(tag), instances);
+        map.put(recipe, recipe);
     }
 
-    private static CompoundInstance metallic(double d){
-        return new CompoundInstance(ReplicationRegistry.METALLIC.get(), d);
+    private static MatterValue metallic(double d){
+        return new MatterValue(ReplicationRegistry.Matter.METALLIC.get(), d);
     }
 
-    private static CompoundInstance earth(double d){
-        return new CompoundInstance(ReplicationRegistry.EARTH.get(), d);
+    private static MatterValue earth(double d){
+        return new MatterValue(ReplicationRegistry.Matter.EARTH.get(), d);
     }
 
-    private static CompoundInstance organic(double d){
-        return new CompoundInstance(ReplicationRegistry.ORGANIC.get(), d);
+    private static MatterValue organic(double d){
+        return new MatterValue(ReplicationRegistry.Matter.ORGANIC.get(), d);
     }
 
-    private static CompoundInstance quantum(double d){
-        return new CompoundInstance(ReplicationRegistry.QUANTUM.get(), d);
+    private static MatterValue quantum(double d){
+        return new MatterValue(ReplicationRegistry.Matter.QUANTUM.get(), d);
     }
 
-    private static CompoundInstance nether(double d){
-        return new CompoundInstance(ReplicationRegistry.NETHER.get(), d);
+    private static MatterValue nether(double d){
+        return new MatterValue(ReplicationRegistry.Matter.NETHER.get(), d);
     }
 
-    private static CompoundInstance precious(double d){
-        return new CompoundInstance(ReplicationRegistry.PRECIOUS.get(), d);
+    private static MatterValue precious(double d){
+        return new MatterValue(ReplicationRegistry.Matter.PRECIOUS.get(), d);
     }
 
-    private static CompoundInstance ender(double d){
-        return new CompoundInstance(ReplicationRegistry.ENDER.get(), d);
+    private static MatterValue ender(double d){
+        return new MatterValue(ReplicationRegistry.Matter.ENDER.get(), d);
     }
 
-    private static CompoundInstance living(double d){
-        return new CompoundInstance(ReplicationRegistry.LIVING.get(), d);
+    private static MatterValue living(double d){
+        return new MatterValue(ReplicationRegistry.Matter.LIVING.get(), d);
     }
-
 }
-*/

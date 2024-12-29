@@ -5,6 +5,7 @@ import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.block.*;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
+import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.data.*;
@@ -15,7 +16,6 @@ import com.buuz135.replication.network.MatterNetwork;
 import com.buuz135.replication.packet.*;
 import com.hrznstudio.titanium.block_network.NetworkRegistry;
 import com.hrznstudio.titanium.block_network.element.NetworkElementRegistry;
-import com.hrznstudio.titanium.datagenerator.loot.TitaniumLootTableProvider;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
@@ -67,6 +67,7 @@ public class Replication extends ModuleController {
         NETWORK.registerMessage(TaskSyncPacket.class);
         NETWORK.registerMessage(TaskCancelPacket.class);
         NETWORK.registerMessage(TaskCancelPacket.Response.class);
+        NETWORK.registerMessage(ReplicationCalculationPacket.class);
         ReplicationRegistry.init();
         CommonEvents.init();
         DistExecutor.runWhenOn(Dist.CLIENT, () -> ClientEvents::init);
@@ -149,6 +150,8 @@ public class Replication extends ModuleController {
                 }
             }
         }).subscribe();
+
+        ReplicationCalculation.init();
     }
 
     @Override
@@ -156,12 +159,13 @@ public class Replication extends ModuleController {
         super.addDataProvider(event);
         List<Block> blocks = ForgeRegistries.BLOCKS.getValues().stream().filter(block -> ForgeRegistries.BLOCKS.getKey(block).getNamespace().equals(Replication.MOD_ID)).toList();
 
-        event.getGenerator().addProvider(true, new AequivaleoDataProvider(MOD_ID, event.getGenerator()));
+        //event.getGenerator().addProvider(true, new AequivaleoDataProvider(MOD_ID, event.getGenerator()));
         //event.getGenerator().addProvider(true, new RepBlockstateProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper(), blocks));
         event.getGenerator().addProvider(true, new ReplicationLootTableDataProvider(event.getGenerator(), NonNullLazy.of(() -> blocks)));
         event.getGenerator().addProvider(true, new RepLangItemProvider(event.getGenerator(), MOD_ID, "en_us", blocks));
         var blockTags = new ReplicationBlockTagsProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(), MOD_ID, event.getExistingFileHelper(), blocks);
         event.getGenerator().addProvider(true, blockTags);
         event.getGenerator().addProvider(true, new ReplicationRecipesProvider(event.getGenerator(), NonNullLazy.of(() -> blocks)));
+        event.getGenerator().addProvider(true, new MatterValueDataProvider(event.getGenerator(), MOD_ID));
     }
 }

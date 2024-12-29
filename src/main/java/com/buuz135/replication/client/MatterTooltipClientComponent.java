@@ -1,8 +1,7 @@
 package com.buuz135.replication.client;
 
 import com.buuz135.replication.Replication;
-import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
-import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
+import com.buuz135.replication.calculation.MatterValue;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -33,7 +32,7 @@ public class MatterTooltipClientComponent implements ClientTooltipComponent {
 
     @Override
     public int getWidth(Font p_169952_) {
-        return 18 * instance.getInstance().length;
+        return 18 * instance.getInstance().getValues().size();
     }
 
     @Override
@@ -46,17 +45,17 @@ public class MatterTooltipClientComponent implements ClientTooltipComponent {
     @Override
     public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics){
         int xModifier = 0;
-        for (int i = 0; i < this.instance.getInstance().length; i++) {
-            xModifier += renderInformationPill(this.instance.getInstance()[i], guiGraphics, x + xModifier, y);
+        for (MatterValue value : this.instance.getInstance().getValues().values()) {
+            xModifier += renderInformationPill(value, guiGraphics, x + xModifier, y);
         }
     }
 
-    private int renderInformationPill(CompoundInstance instance, GuiGraphics guiGraphics, int x, int y){
-        var matterType = ((ReplicationCompoundType)instance.getType()).getMatterType();
+    private int renderInformationPill(MatterValue instance, GuiGraphics guiGraphics, int x, int y){
+        var matterType = instance.getMatter();
         var color = matterType.getColor().get();
         var glitch = Minecraft.getInstance().level.random.nextDouble() < 0.001;
         var glitch2 = Minecraft.getInstance().level.random.nextDouble() < 0.003;
-        var numberLength = (instance.getAmount().intValue() + "").toCharArray().length;
+        var numberLength = (Mth.ceil(instance.getAmount()) + "").toCharArray().length;
         RenderSystem.enableBlend();
         //RenderSystem.setShaderColor(color[0], color[1], color[2], (float) (0.25f + Math.sin(Minecraft.getInstance().level.getGameTime() / 12f)) / 6f);
         RenderSystem.setShaderColor(color[0], color[1], color[2], color[3]);
@@ -76,7 +75,7 @@ public class MatterTooltipClientComponent implements ClientTooltipComponent {
         guiGraphics.pose().pushPose();
         float scale = 0.5f;
         guiGraphics.pose().scale(scale, scale, scale);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(Mth.ceil(instance.getAmount())), (int) ((x + (glitch ? 1 : 0) +8 ) / scale), (int) ((y +(glitch ? 1 : 0) +16) / scale), new Color(color[0], color[1], color[2], color[3]).getRGB());
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(Mth.ceil(instance.getAmount())), (int) ((x + (glitch ? 1 : 0) +8 ) / scale), (int) ((y +(glitch ? 1 : 0) +15) / scale), new Color(color[0], color[1], color[2], color[3]).getRGB());
         guiGraphics.pose().popPose();
         /*OLD ENCODED NUMBERS guiGraphics.blit(BAR, x + (glitch ? 1 : 0), y +(glitch ? 1 : 0), 0,56, 3, 15, 128, 128);
         for (int i = 0; i < numberLength * 10 + 1; i++) {
