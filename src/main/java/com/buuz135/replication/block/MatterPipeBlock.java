@@ -13,8 +13,8 @@ import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -35,8 +35,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.Tags;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,13 +69,13 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
     }
 
     public MatterPipeBlock() {
-        super("matter_network_pipe", Properties.copy(Blocks.IRON_BLOCK), MatterPipeBlockEntity.class);
+        super(Properties.ofFullCopy(Blocks.IRON_BLOCK), MatterPipeBlockEntity.class);
         setItemGroup(Replication.TAB);
     }
 
     @Override
     public BlockEntityType.BlockEntitySupplier<?> getTileEntityFactory() {
-        return (pos, state) -> new MatterPipeBlockEntity(this, ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getRight().get(), pos, state);
+        return (pos, state) -> new MatterPipeBlockEntity(this, ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.type().get(), pos, state);
     }
 
     @Override
@@ -112,11 +112,9 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
                 return networkDirectionalConnection.canConnect(relativeState, direction.getOpposite());
             }
         }
-        var tile = world.getBlockEntity(pos.relative(direction));
-        if (tile != null){
-            if (tile.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).isPresent()){
-                return true;
-            }
+        var cap = world.getCapability(Capabilities.EnergyStorage.BLOCK, pos.relative(direction), direction.getOpposite());
+        if (cap != null) {
+            return true;
         }
         return false;
     }
@@ -179,7 +177,7 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
     }
 
     @Override
-    public void registerRecipe(Consumer<FinishedRecipe> consumer) {
+    public void registerRecipe(RecipeOutput consumer) {
         TitaniumShapedRecipeBuilder.shapedRecipe(this, 8)
                 .pattern("PPP")
                 .pattern("IRI")

@@ -13,17 +13,14 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.BoxStyle;
-import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
 import snownee.jade.impl.ui.ProgressElement;
-import snownee.jade.impl.ui.ProgressStyle;
-import snownee.jade.impl.ui.SlimProgressStyle;
 
 import java.awt.*;
 
 public class MatterTankComponentProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
-    public static ResourceLocation MATTER_TANK_LOCATION = new ResourceLocation(Replication.MOD_ID, "matter_tank");
+    public static ResourceLocation MATTER_TANK_LOCATION = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter_tank");
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
@@ -34,7 +31,7 @@ public class MatterTankComponentProvider implements IBlockComponentProvider, ISe
             //color = color.darker();
             iTooltip.add(new ProgressElement(matterStack.getAmount() / 256000f,
                     matterStack.isEmpty() ? Component.translatable("tooltip.titanium.tank.empty") : Component.translatable(matterStack.getTranslationKey()).append(" ").append(NumberUtils.getFormatedBigNumber(matterStack.getAmount()))
-                    , IElementHelper.get().progressStyle().color(color.getRGB()).textColor(0xFFFFFF), BoxStyle.DEFAULT, false));
+                    , IElementHelper.get().progressStyle().color(color.getRGB()).textColor(0xFFFFFF), BoxStyle.getTransparent(), false));
         }
     }
 

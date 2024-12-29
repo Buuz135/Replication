@@ -46,7 +46,7 @@ public class ReplicationTerminalConfigButton extends Button {
         state = (++state) % type.states;
         component.putString("type", type.name());
         component.putInt("state", state);
-        Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable, 999, component));
+        Titanium.NETWORK.sendToServer(new ButtonClickNetworkMessage(locatable, 999, component));
     }
 
     @Override

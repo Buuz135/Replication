@@ -26,8 +26,8 @@ public class MatterStack {
         if (matter == null) {
             LOGGER.fatal("Null fluid supplied to matterstack. Did you try and create a stack for an unregistered matter?");
             throw new IllegalArgumentException("Cannot create a matterstack from a null fluid");
-        } else if (ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getKey(matter) == null) {
-            LOGGER.fatal("Failed attempt to create a MatterStack for an unregistered Matter {} (type {})", ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getKey(matter), matter.getClass().getName());
+        } else if (ReplicationRegistry.MATTER_TYPES_REGISTRY.getKey(matter) == null) {
+            LOGGER.fatal("Failed attempt to create a MatterStack for an unregistered Matter {} (type {})", ReplicationRegistry.MATTER_TYPES_REGISTRY.getKey(matter), matter.getClass().getName());
             throw new IllegalArgumentException("Cannot create a MatterStack from an unregistered fluid");
         }
         this.matter = matter;
@@ -52,8 +52,8 @@ public class MatterStack {
             return EMPTY;
         }
 
-        ResourceLocation matterName = new ResourceLocation(nbt.getString("MatterName"));
-        IMatterType matterType = ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getValue(matterName);
+        ResourceLocation matterName = ResourceLocation.parse(nbt.getString("MatterName"));
+        IMatterType matterType = ReplicationRegistry.MATTER_TYPES_REGISTRY.get(matterName);
         if (matterType == null) {
             return EMPTY;
         }
@@ -62,23 +62,23 @@ public class MatterStack {
         return stack;
     }
 
-    public static MatterStack readFromPacket(FriendlyByteBuf buf) {
-        IMatterType fluid = buf.readRegistryId();
+    /*public static MatterStack readFromPacket(FriendlyByteBuf buf) {
+        IMatterType fluid = buf.read();
         int amount = buf.readVarInt();
         if (fluid == MatterType.EMPTY) return EMPTY;
         return new MatterStack(fluid, amount);
-    }
+    }*/
 
     public CompoundTag writeToNBT(CompoundTag nbt) {
-        nbt.putString("MatterName", ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getKey(getMatterType()).toString());
+        nbt.putString("MatterName", ReplicationRegistry.MATTER_TYPES_REGISTRY.getKey(getMatterType()).toString());
         nbt.putInt("Amount", amount);
         return nbt;
     }
 
-    public void writeToPacket(FriendlyByteBuf buf) {
+    /*public void writeToPacket(FriendlyByteBuf buf) {
         buf.writeRegistryId(ReplicationRegistry.MATTER_TYPES_REGISTRY.get(), getMatterType());
         buf.writeVarInt(getAmount());
-    }
+    }*/
 
     public final IMatterType getMatterType() {
         return isEmpty ? MatterType.EMPTY : matter;

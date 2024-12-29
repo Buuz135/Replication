@@ -1,6 +1,7 @@
 package com.buuz135.replication.api.pattern;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -13,7 +14,7 @@ public interface IMatterPatternModifier<T> {
      * @param progress
      * @return Null if it can't add more items to it
      */
-    @Nullable ModifierAction addPattern(T element, ItemStack stack, float progress);
+    @Nullable ModifierAction addPattern(Level level, T element, ItemStack stack, float progress);
 
 
     public static class ModifierAction{

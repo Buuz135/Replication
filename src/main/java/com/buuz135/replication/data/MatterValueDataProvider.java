@@ -4,35 +4,39 @@ import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.calculation.MatterValue;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.recipe.MatterValueRecipe;
-import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
-import com.hrznstudio.titanium.recipe.generator.IJsonFile;
-import com.hrznstudio.titanium.recipe.generator.TitaniumSerializableProvider;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.Tags;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.world.item.Items.*;
 import static net.minecraft.world.item.Items.EMERALD;
 
-public class MatterValueDataProvider extends TitaniumSerializableProvider {
+public class MatterValueDataProvider extends RecipeProvider {
 
-    private Map<IJsonFile, IJSONGenerator> map;
+    private RecipeOutput recipeOutput;
 
-    public MatterValueDataProvider(DataGenerator generatorIn, String modid) {
-        super(generatorIn, modid);
+    public MatterValueDataProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> prov) {
+        super(generator.getPackOutput(), prov);
     }
 
     @Override
-    public void add(Map<IJsonFile, IJSONGenerator> map) {
-        this.map = map;
+    public void buildRecipes(RecipeOutput consumer) {
+        this.recipeOutput = consumer;
         saveData(IRON_INGOT, metallic(9));
         saveData(GOLD_INGOT, metallic(9), precious(9));
         saveData(DIAMOND, precious(9*4));
@@ -57,7 +61,7 @@ public class MatterValueDataProvider extends TitaniumSerializableProvider {
 
         saveData(STRING, organic(2), living(2));
         saveData(COBWEB, organic(18), living(18));
-        saveData(GRASS, organic(4));
+        saveData(GRASS_BLOCK, organic(4));
         saveData(FERN, organic(4));
         saveData(WET_SPONGE, organic(12), living(4), precious(4));
 
@@ -72,8 +76,8 @@ public class MatterValueDataProvider extends TitaniumSerializableProvider {
         saveData(new Item[]{CRIMSON_FUNGUS, CRIMSON_ROOTS, WEEPING_VINES,
                 WARPED_FUNGUS, WARPED_ROOTS, NETHER_SPROUTS, TWISTING_VINES}, organic(2), nether(2));
 
-        saveTag(Tags.Items.STONE, earth(1));
-        saveTag(Tags.Items.COBBLESTONE, earth(1));
+        saveTag(Tags.Items.STONES, earth(1));
+        saveTag(Tags.Items.COBBLESTONES, earth(1));
         saveData(BLACKSTONE, earth(1), nether(1));
         saveData(OBSIDIAN, earth(4), nether(1));
         saveData(CRYING_OBSIDIAN, earth(4), nether(1), quantum(1));
@@ -125,7 +129,7 @@ public class MatterValueDataProvider extends TitaniumSerializableProvider {
         saveData(new Item[]{EGG, PUMPKIN, CARVED_PUMPKIN, PORKCHOP, APPLE, COD, SALMON, TROPICAL_FISH, PUFFERFISH, MELON_SLICE, BEEF, CHICKEN, POTATO, POISONOUS_POTATO, CARROT, MUTTON, RABBIT, BEETROOT, GLOW_BERRIES, SWEET_BERRIES,RABBIT_FOOT}, organic(4), living(4));
         saveData(GHAST_TEAR, living(2), organic(2), nether(2));
         saveData(BLAZE_ROD, living(2), organic(2), nether(2));
-        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE, BONE, INK_SAC, RABBIT_HIDE, GLOW_INK_SAC, SCUTE, NAUTILUS_SHELL, HEART_OF_THE_SEA}, living(2), organic(2));
+        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE, BONE, INK_SAC, RABBIT_HIDE, GLOW_INK_SAC /*,SCUTE*/, NAUTILUS_SHELL, HEART_OF_THE_SEA}, living(2), organic(2));
         saveData(DRAGON_BREATH, living(2), organic(2), quantum(2));
         saveData(PHANTOM_MEMBRANE, living(2), organic(2), nether(2));
         saveData(SHULKER_SHELL, living(4), nether(8));
@@ -133,7 +137,7 @@ public class MatterValueDataProvider extends TitaniumSerializableProvider {
         saveData(COCOA_BEANS, organic(1), earth(1));
         saveData(ENCHANTED_GOLDEN_APPLE, living(4), precious(9*8*9));
 
-        saveTag(ItemTags.MUSIC_DISCS, precious(3.3), quantum(1));
+        saveTag(ItemTags.CREEPER_DROP_MUSIC_DISCS, precious(3.3), quantum(1));
         saveData(new Item[]{SCULK, SCULK_VEIN}, organic(1), quantum(1));
         saveData(new Item[]{SCULK_CATALYST, SCULK_SHRIEKER, SCULK_SENSOR}, organic(8), quantum(8));
         saveData(new Item[]{WITHER_SKELETON_SKULL, PLAYER_HEAD, ZOMBIE_HEAD, CREEPER_HEAD, PIGLIN_HEAD, DRAGON_HEAD, SKELETON_SKULL}, organic(8));
@@ -147,8 +151,9 @@ public class MatterValueDataProvider extends TitaniumSerializableProvider {
 
     private void saveData(Item item, MatterValue... instances) {
         var rl = BuiltInRegistries.ITEM.getKey(item);
-        var recipe = new MatterValueRecipe(new ResourceLocation(rl.getNamespace(), rl.getNamespace() + "/items/" + rl.getPath()), Ingredient.of(item), instances);
-        map.put(recipe, recipe);
+        var recipeLocation = ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getNamespace() + "/items/" + rl.getPath());
+        var recipe = new MatterValueRecipe( Ingredient.of(item), instances);
+        recipeOutput.accept(recipeLocation, recipe, null);
     }
 
     private void saveData(Item[] items, MatterValue... instances) {
@@ -156,8 +161,9 @@ public class MatterValueDataProvider extends TitaniumSerializableProvider {
     }
 
     private void saveTag(TagKey<Item> tag, MatterValue... instances) {
-        var recipe = new MatterValueRecipe(new ResourceLocation(tag.location().getNamespace(), tag.location().getNamespace() + "/tags/" + tag.location().getPath()), Ingredient.of(tag), instances);
-        map.put(recipe, recipe);
+        var recipeLocation = ResourceLocation.fromNamespaceAndPath(tag.location().getNamespace(), tag.location().getNamespace() + "/tags/" + tag.location().getPath());
+        var recipe = new MatterValueRecipe(Ingredient.of(tag), instances);
+        recipeOutput.accept(recipeLocation, recipe, null);
     }
 
     private static MatterValue metallic(double d){

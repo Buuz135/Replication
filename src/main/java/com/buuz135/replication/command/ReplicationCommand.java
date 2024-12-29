@@ -1,5 +1,6 @@
 package com.buuz135.replication.command;
 
+import com.buuz135.replication.ReplicationAttachments;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.mojang.brigadier.CommandDispatcher;
@@ -15,8 +16,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,19 +52,19 @@ public class ReplicationCommand {
             if (tab == hotbar || tab == search) continue;
             LOGGER.info("SCANNING TAB " + tab.getDisplayName().getString());
             var list = tab.getDisplayItems();
-            var missing = list.stream().filter(item -> ForgeRegistries.ITEMS.getKey(item.getItem()).getNamespace().equals("minecraft"))
-                    .filter(itemStack -> !itemStack.hasTag())
+            var missing = list.stream().filter(item -> BuiltInRegistries.ITEM.getKey(item.getItem()).getNamespace().equals("minecraft"))
+                    .filter(itemStack -> itemStack.getComponents().isEmpty())
                     .filter(itemStack -> !(itemStack.getItem() instanceof SpawnEggItem))
-                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_ore"))
-                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_shulker"))
-                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("raw_"))
-                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_sherd"))
-                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_template"))
-                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_bucket"))
-                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("infested_"))
-                    .filter(itemStack -> !ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().contains("_pattern"))
+                    .filter(itemStack -> !BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().contains("_ore"))
+                    .filter(itemStack -> !BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().contains("_shulker"))
+                    .filter(itemStack -> !BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().contains("raw_"))
+                    .filter(itemStack -> !BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().contains("_sherd"))
+                    .filter(itemStack -> !BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().contains("_template"))
+                    .filter(itemStack -> !BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().contains("_bucket"))
+                    .filter(itemStack -> !BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().contains("infested_"))
+                    .filter(itemStack -> !BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().contains("_pattern"))
                     .filter(item -> ReplicationCalculation.getMatterCompound(item) == null).collect(Collectors.toList());
-            missing.forEach(item -> LOGGER.info(ForgeRegistries.ITEMS.getKey(item.getItem())));
+            missing.forEach(item -> LOGGER.info(BuiltInRegistries.ITEM.getKey(item.getItem())));
             for (ItemStack itemStack : missing) {
                 if (!missingItems.contains(itemStack.getItem())){
                     missingItems.add(itemStack.getItem());
@@ -81,7 +82,7 @@ public class ReplicationCommand {
         try {
             LOGGER.info(context.getSource().getPlayerOrException().getInventory().items.stream()
                             .filter(itemStack -> !itemStack.isEmpty())
-                    .map(itemStack -> ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().toUpperCase(Locale.ROOT)).collect(Collectors.joining(", ")));
+                    .map(itemStack -> BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().toUpperCase(Locale.ROOT)).collect(Collectors.joining(", ")));
         } catch (Exception e) {
 
         }
@@ -91,13 +92,13 @@ public class ReplicationCommand {
 
     public static int createBlueprint(CommandContext<CommandSourceStack> context){
         try {
-            var mainStack = ItemHandlerHelper.copyStackWithSize(context.getSource().getPlayerOrException().getMainHandItem(), 1);
+            var mainStack = context.getSource().getPlayerOrException().getMainHandItem().copyWithCount(1);
             if (!mainStack.isEmpty()){
                 var blueprint = new ItemStack(ReplicationRegistry.Items.MATTER_BLUEPRINT.get());
                 var tag = new CompoundTag();
-                tag.put("Item", mainStack.serializeNBT());
+                tag.put("Item", mainStack.saveOptional(context.getSource().registryAccess()));
                 tag.putDouble("Progress", context.getArgument("progress", Double.class));
-                blueprint.setTag(tag);
+                blueprint.set(ReplicationAttachments.BLUEPRINT, tag);
                 ItemHandlerHelper.giveItemToPlayer(context.getSource().getPlayerOrException(), blueprint, 0);
             }
         } catch (CommandSyntaxException e) {

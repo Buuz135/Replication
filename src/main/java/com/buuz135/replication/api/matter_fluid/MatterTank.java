@@ -1,10 +1,11 @@
 package com.buuz135.replication.api.matter_fluid;
 
-import com.hrznstudio.titanium.nbthandler.data.NBTSerializableNBTHandler;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.function.Predicate;
 
@@ -161,12 +162,12 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         return writeToNBT(new CompoundTag());
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         readFromNBT(nbt);
     }
 }

@@ -2,6 +2,7 @@ package com.buuz135.replication.calculation.client;
 
 import com.buuz135.replication.calculation.MatterCompound;
 import com.buuz135.replication.calculation.ReplicationCalculation;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,11 +22,11 @@ public class ClientReplicationCalculation {
         return null;
     }
 
-    public static void acceptData(CompoundTag compoundTag){
+    public static void acceptData(HolderLookup.Provider provider, CompoundTag compoundTag){
         DEFAULT_MATTER_COMPOUND.clear();
         for (String allKey : compoundTag.getAllKeys()) {
             var matter =  new MatterCompound();
-            matter.deserializeNBT(compoundTag.getCompound(allKey));
+            matter.deserializeNBT(provider, compoundTag.getCompound(allKey));
             DEFAULT_MATTER_COMPOUND.put(allKey, matter);
         }
     }

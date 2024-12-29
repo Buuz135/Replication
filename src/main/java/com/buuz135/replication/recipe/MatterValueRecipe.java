@@ -8,7 +8,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
 import com.hrznstudio.titanium.recipe.serializer.JSONSerializableDataHandler;
-import com.hrznstudio.titanium.recipe.serializer.SerializableRecipe;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -17,51 +19,42 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MatterValueRecipe extends SerializableRecipe {
+public class MatterValueRecipe implements Recipe<CraftingInput>  {
 
 
-    static {
-        JSONSerializableDataHandler.map(MatterValue[].class, matterValues -> {
-            JsonArray array = new JsonArray();
-            for (MatterValue matterValue : matterValues) {
-                JsonObject element = new JsonObject();
-                element.addProperty("type", ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getKey(matterValue.getMatter()).toString());
-                element.addProperty("value", matterValue.getAmount());
-                array.add(element);
-            }
-            return array;
-        }, jsonElement -> {
-            List<MatterValue> values = new ArrayList<>();
-            for (JsonElement element : jsonElement.getAsJsonArray()) {
-                values.add(new MatterValue(ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getValue(new ResourceLocation(element.getAsJsonObject().get("type").getAsString())), element.getAsJsonObject().get("value").getAsDouble()));
-            }
-            return values.toArray(new MatterValue[0]);
-        });
-    }
+    public static final MapCodec<MatterValueRecipe> CODEC = RecordCodecBuilder.mapCodec(in -> in.group(
+            Ingredient.CODEC.fieldOf("input").forGetter(recipe -> recipe.input),
+            MatterValue.CODEC.listOf().fieldOf("matter").forGetter(recipe -> recipe.matter)
+    ).apply(in, MatterValueRecipe::new));
 
     public Ingredient input;
-    public MatterValue[] matter;
+    public List<MatterValue> matter;
 
-    public MatterValueRecipe(ResourceLocation resourceLocation, Ingredient input, MatterValue... matter) {
-        super(resourceLocation);
+    public MatterValueRecipe(Ingredient input, MatterValue... matter) {
+        this(input, Arrays.asList(matter));
+    }
+
+    public MatterValueRecipe(Ingredient input, List<MatterValue> matter) {
+        super();
         this.input = input;
         this.matter = matter;
     }
 
-    public MatterValueRecipe(ResourceLocation pId) {
-        super(pId);
+    public MatterValueRecipe() {
+        super();
     }
 
 
     @Override
-    public boolean matches(Container container, Level level) {
+    public boolean matches(CraftingInput craftingInput, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingInput craftingInput, HolderLookup.Provider provider) {
         return null;
     }
 
@@ -71,13 +64,13 @@ public class MatterValueRecipe extends SerializableRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
-        return ItemStack.EMPTY;
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        return null;
     }
 
     @Override
-    public GenericSerializer<? extends SerializableRecipe> getSerializer() {
-        return (GenericSerializer<? extends SerializableRecipe>) ReplicationRegistry.Serializers.MATTER_VALUE_RECIPE_SERIALIZER.get();
+    public RecipeSerializer<?> getSerializer() {
+        return ReplicationRegistry.Serializers.MATTER_VALUE_RECIPE_SERIALIZER.get();
     }
 
     @Override

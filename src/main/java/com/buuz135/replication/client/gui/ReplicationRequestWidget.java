@@ -22,8 +22,8 @@ import java.util.List;
 
 public class ReplicationRequestWidget extends AbstractWidget implements Renderable {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Replication.MOD_ID, "textures/gui/request_window.png");
-    private static final ResourceLocation BUTTONS = new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/request_window.png");
+    private static final ResourceLocation BUTTONS = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
     private final MatterPatternButton matterPatternButton;
     private final ReplicationTerminalScreen replicationTerminalScreen;
     private final Button closeButton;

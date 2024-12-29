@@ -1,8 +1,9 @@
 package com.buuz135.replication.data;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.client.model.generators.BlockModelProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
 
 public class RepModelProvider extends BlockModelProvider {
 

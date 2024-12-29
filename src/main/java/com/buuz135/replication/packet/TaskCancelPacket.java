@@ -12,8 +12,7 @@ import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import com.hrznstudio.titanium.network.Message;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.LinkedHashMap;
 
@@ -31,11 +30,11 @@ public class TaskCancelPacket extends Message {
     }
 
     @Override
-    protected void handleMessage(NetworkEvent.Context context) {
+    protected void handleMessage(IPayloadContext context) {
         context.enqueueWork(() -> {
-            for (Network network : NetworkManager.get(context.getSender().level()).getNetworks()) {
+            for (Network network : NetworkManager.get(context.player().level()).getNetworks()) {
                 if (network.getId().equals(this.network) && network instanceof MatterNetwork matterNetwork){
-                    matterNetwork.cancelTask(task, context.getSender().level());
+                    matterNetwork.cancelTask(task, context.player().level());
                     break;
                 }
             }
@@ -58,7 +57,7 @@ public class TaskCancelPacket extends Message {
         }
 
         @Override
-        protected void handleMessage(NetworkEvent.Context context) {
+        protected void handleMessage(IPayloadContext context) {
             context.enqueueWork(() -> {
                TaskSyncPacket.CLIENT_TASK_STORAGE.getOrDefault(network, new LinkedHashMap<>()).remove(task);
                 if (Minecraft.getInstance().screen instanceof ReplicationTerminalScreen terminalScreen){

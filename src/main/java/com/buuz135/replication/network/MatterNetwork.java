@@ -29,9 +29,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.energy.EnergyStorage;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.network.NetworkDirection;
+import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +42,7 @@ import java.util.function.BiPredicate;
 
 public class MatterNetwork extends Network {
 
-    public static ResourceLocation MATTER = new ResourceLocation(Replication.MOD_ID, "matter");
+    public static ResourceLocation MATTER = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter");
 
     private EnergyStorage energyStorage;
     private List<NetworkElement> matterStacksConsumers;
@@ -202,7 +202,7 @@ public class MatterNetwork extends Network {
     }
 
     public void sendTaskSyncPacket(ServerPlayer serverPlayer, IReplicationTask task){
-        Replication.NETWORK.get().sendTo(new TaskSyncPacket(this.getId(), task.getUuid().toString(), task.serializeNBT()), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        Replication.NETWORK.sendTo(new TaskSyncPacket(this.getId(), task.getUuid().toString(), task.serializeNBT(serverPlayer.level().registryAccess())), serverPlayer);
     }
 
     public long calculateMatterAmount(IMatterType matterType){
@@ -221,13 +221,13 @@ public class MatterNetwork extends Network {
     }
 
     public void sendPatternSyncPacket(ServerPlayer serverPlayer, IMatterPatternHolder holder, BlockPos blockPos){
-        List<MatterPattern> patterns = (holder).getPatterns(holder);
-        Replication.NETWORK.get().sendTo(new PatternSyncStoragePacket(this.getId(), blockPos.asLong(),
-                patterns.stream().map(MatterPattern::getStack).toList()), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        List<MatterPattern> patterns = (holder).getPatterns(serverPlayer.level(), holder);
+        Replication.NETWORK.sendTo(new PatternSyncStoragePacket(this.getId(), blockPos.asLong(),
+                patterns.stream().map(MatterPattern::getStack).toList()), serverPlayer);
     }
 
     public void sendMatterSyncPacket(ServerPlayer serverPlayer, long amount, IMatterType type){
-        Replication.NETWORK.get().sendTo(new MatterFluidSyncPacket(this.getId(), amount, ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getKey(type)), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        Replication.NETWORK.sendTo(new MatterFluidSyncPacket(this.getId(), amount, ReplicationRegistry.MATTER_TYPES_REGISTRY.getKey(type)), serverPlayer);
     }
 
     public void markDirty(ServerLevel serverLevel){
@@ -266,7 +266,7 @@ public class MatterNetwork extends Network {
     public CompoundTag writeToNbt(CompoundTag tag) {
         var nbt = super.writeToNbt(tag);
         nbt.putInt("Power", this.energyStorage.getEnergyStored());
-        nbt.put("TaskManager", this.taskManager.serializeNBT());
+        nbt.put("TaskManager", this.taskManager.serializeNBT(ServerLifecycleHooks.getCurrentServer().registryAccess()));
         return nbt;
     }
 
@@ -331,7 +331,7 @@ public class MatterNetwork extends Network {
             var tile = terminal.getLevel().getBlockEntity(terminal.getPos());
             if (tile instanceof ReplicationTerminalBlockEntity terminalBlockEntity){
                 terminalBlockEntity.getTerminalPlayerTracker().getPlayers().forEach(serverPlayer -> {
-                    Replication.NETWORK.get().sendTo(new TaskCancelPacket.Response(task, this.getId()), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+                    Replication.NETWORK.sendTo(new TaskCancelPacket.Response(task, this.getId()), serverPlayer);
                 });
             }
         }
@@ -348,7 +348,7 @@ public class MatterNetwork extends Network {
         @Override
         public Network create(CompoundTag tag) {
             var taskManager = new ReplicationTaskManager();
-            taskManager.deserializeNBT(tag.getCompound("TaskManager"));
+            taskManager.deserializeNBT(ServerLifecycleHooks.getCurrentServer().registryAccess(), tag.getCompound("TaskManager"));
             MatterNetwork network = new MatterNetwork(BlockPos.of(tag.getLong("origin")), tag.getString("id"), tag.getInt("Power"), taskManager);
 
             LOGGER.debug("Deserialized matter network {} of type {}", network.getId(), network.getType().toString());

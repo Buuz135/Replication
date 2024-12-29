@@ -14,14 +14,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,12 +60,12 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
     }
 
     @Override
-    public InteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == InteractionResult.SUCCESS) {
-            return InteractionResult.SUCCESS;
+    public ItemInteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ItemInteractionResult.SUCCESS) {
+            return ItemInteractionResult.SUCCESS;
         }
         openGui(playerIn);
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override
@@ -96,7 +97,7 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
         for (int i = 0; i < this.chips.getSlots(); i++) {
             var slot = this.chips.getStackInSlot(i);
             if (!slot.isEmpty() && slot.getItem() instanceof IMatterPatternHolder stackHolder){
-                List<MatterPattern> patterns = (stackHolder).getPatterns(slot);
+                List<MatterPattern> patterns = (stackHolder).getPatterns(this.level, slot);
                 patterns.forEach(pattern -> {
                     if (!pattern.getStack().isEmpty() && pattern.getCompletion() == 1){
                         this.cachedPatters.add(pattern);
@@ -137,7 +138,7 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
     }
 
     @Override
-    public List<MatterPattern> getPatterns(ChipStorageBlockEntity element) {
+    public List<MatterPattern> getPatterns(Level level, ChipStorageBlockEntity element) {
         return this.cachedPatters;
     }
 

@@ -9,11 +9,12 @@ import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.network.MatterNetwork;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -175,9 +176,9 @@ public class ReplicationTask implements IReplicationTask {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.put("Crafting", this.crafting.serializeNBT());
+        compoundTag.put("Crafting", this.crafting.saveOptional(provider));
         compoundTag.putInt("Current", this.currentAmount);
         compoundTag.putInt("Total", this.totalAmount);
         CompoundTag matterStacksCompound = new CompoundTag();
@@ -197,8 +198,8 @@ public class ReplicationTask implements IReplicationTask {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag compoundTag) {
-        this.crafting = ItemStack.of(compoundTag.getCompound("Crafting"));
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
+        this.crafting = ItemStack.parseOptional(provider, compoundTag.getCompound("Crafting"));
         this.currentAmount = compoundTag.getInt("Current");
         this.totalAmount = compoundTag.getInt("Total");
         this.matterStacks = new HashMap<>();

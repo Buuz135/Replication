@@ -1,10 +1,9 @@
 package com.buuz135.replication.api.matter_fluid;
 
-import net.minecraftforge.common.capabilities.AutoRegisterCapability;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-@AutoRegisterCapability
+
 public interface IMatterHandler {
 
 

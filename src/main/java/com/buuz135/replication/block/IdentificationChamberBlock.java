@@ -11,9 +11,7 @@ import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
@@ -21,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -29,13 +27,13 @@ import java.util.function.Consumer;
 public class IdentificationChamberBlock extends RotatableBlock<IdentificationChamberBlockEntity> implements INetworkDirectionalConnection {
 
     public IdentificationChamberBlock() {
-        super("identification_chamber", Properties.copy(Blocks.IRON_BLOCK), IdentificationChamberBlockEntity.class);
+        super("identification_chamber", Properties.ofFullCopy(Blocks.IRON_BLOCK), IdentificationChamberBlockEntity.class);
         setItemGroup(Replication.TAB);
     }
 
     @Override
     public BlockEntityType.BlockEntitySupplier<?> getTileEntityFactory() {
-        return (pos, blockState) -> new IdentificationChamberBlockEntity(this, ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.getRight().get(), pos, blockState);
+        return (pos, blockState) -> new IdentificationChamberBlockEntity(this, ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.type().get(), pos, blockState);
     }
 
     @NotNull
@@ -89,7 +87,7 @@ public class IdentificationChamberBlock extends RotatableBlock<IdentificationCha
     }
 
     @Override
-    public void registerRecipe(Consumer<FinishedRecipe> consumer) {
+    public void registerRecipe(RecipeOutput consumer) {
         TitaniumShapedRecipeBuilder.shapedRecipe(this)
                 .pattern("ID ")
                 .pattern("IRD")

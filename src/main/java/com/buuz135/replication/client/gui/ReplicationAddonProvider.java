@@ -15,7 +15,7 @@ import java.awt.*;
 
 public class ReplicationAddonProvider implements IAssetProvider {
 
-    public static ResourceLocation DEFAULT_LOCATION = new ResourceLocation(Replication.MOD_ID, "textures/gui/background.png");
+    public static ResourceLocation DEFAULT_LOCATION = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/background.png");
     public static ReplicationAddonProvider INSTANCE = new ReplicationAddonProvider();
 
     private final IAsset SLOT = new IAsset() {

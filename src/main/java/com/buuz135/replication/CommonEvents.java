@@ -11,10 +11,10 @@ import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.registries.NewRegistryEvent;
-import net.minecraftforge.registries.RegistryBuilder;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
+
 
 import java.util.function.Supplier;
 
@@ -32,7 +32,7 @@ public class CommonEvents {
 
         EventManager.mod(NewRegistryEvent.class)
                 .process(newRegistryEvent -> {
-                    ReplicationRegistry.MATTER_TYPES_REGISTRY = newRegistryEvent.create(new RegistryBuilder<IMatterType>().setName(new ResourceLocation(Replication.MOD_ID, "matter_types")));
+                    ReplicationRegistry.MATTER_TYPES_REGISTRY = newRegistryEvent.create(new RegistryBuilder<IMatterType>(ReplicationRegistry.MATTER_TYPES_KEY));
                 }).subscribe();
 
     }

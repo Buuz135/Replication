@@ -21,7 +21,7 @@ public record TerminalMatterValueDisplay(IMatterType type, long amount){
         var color = type.getColor().get();
         guiGraphics.setColor(color[0], color[1], color[2], color[3]);
         RenderSystem.enableBlend();
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/mattertypes/" + type.getName().toLowerCase() + ".png"), x + 2, y + 2, 0,0, 16, 16, 16, 16);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/mattertypes/" + type.getName().toLowerCase() + ".png"), x + 2, y + 2, 0,0, 16, 16, 16, 16);
         RenderSystem.disableBlend();
         guiGraphics.setColor(1, 1, 1, 1);
         guiGraphics.pose().pushPose();

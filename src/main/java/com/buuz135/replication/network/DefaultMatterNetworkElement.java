@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 
 public class DefaultMatterNetworkElement extends NetworkElement {
 
-    public static final ResourceLocation ID = new ResourceLocation(Replication.MOD_ID, "default_matter");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "default_matter");
 
     public DefaultMatterNetworkElement(Level level, BlockPos pos) {
         super(level, pos);

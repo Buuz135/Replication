@@ -1,8 +1,9 @@
 package com.buuz135.replication.api.pattern;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public class MatterPattern implements INBTSerializable<CompoundTag> {
 
@@ -37,16 +38,16 @@ public class MatterPattern implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.put("Stack", this.stack.serializeNBT());
+        compoundTag.put("Stack", this.stack.saveOptional(provider));
         compoundTag.putFloat("Completion", this.completion);
         return compoundTag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        this.stack = ItemStack.of(nbt.getCompound("Stack"));
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        this.stack = ItemStack.parseOptional(provider, nbt.getCompound("Stack"));
         this.completion = nbt.getFloat("Completion");
     }
 

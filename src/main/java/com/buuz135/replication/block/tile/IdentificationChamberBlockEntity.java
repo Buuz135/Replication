@@ -1,49 +1,32 @@
 package com.buuz135.replication.block.tile;
 
+import com.buuz135.replication.ReplicationAttachments;
 import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.IdentificationChamberAddon;
-import com.buuz135.replication.client.gui.addons.ReplicatorCraftingAddon;
-import com.buuz135.replication.item.ReplicationItem;
 import com.buuz135.replication.util.InvUtil;
 import com.buuz135.replication.util.ReplicationTags;
 import com.hrznstudio.titanium.annotation.Save;
-import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.AssetTypes;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
-import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
-import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
-import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
-import com.hrznstudio.titanium.util.LangUtil;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.List;
 
 public class IdentificationChamberBlockEntity extends ReplicationMachine<IdentificationChamberBlockEntity>{
 
@@ -118,14 +101,14 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                 var stack = this.memoryChipInput.getStackInSlot(i);
                 if (!stack.isEmpty() && stack.getItem() instanceof IMatterPatternModifier<?> patternModifier){
                     IMatterPatternModifier.ModifierAction returnedValue = null;
-                    if (input.is(ReplicationRegistry.Items.MATTER_BLUEPRINT.get()) && input.hasTag()){
-                        var item = ItemStack.of(input.getTag().getCompound("Item"));
-                        var progress = input.getTag().getDouble("Progress");
-                        returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(stack, item, (float) progress);
+                    if (input.has(ReplicationAttachments.BLUEPRINT)){
+                        var item = ItemStack.parseOptional(this.level.registryAccess(), input.get(ReplicationAttachments.BLUEPRINT).getCompound("Item"));
+                        var progress = input.get(ReplicationAttachments.BLUEPRINT).getDouble("Progress");
+                        returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(this.level, stack, item, (float) progress);
                         input.shrink(1);
                         syncObject(this.input);
                     } else {
-                        returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(stack, input,  0.2f);
+                        returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(this.level, stack, input,  0.2f);
                     }
                     if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1){
                         input.shrink(1);

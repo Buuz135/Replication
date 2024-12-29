@@ -8,8 +8,10 @@ import com.hrznstudio.titanium.container.addon.SlotContainerAddon;
 import com.hrznstudio.titanium.container.addon.UpdatableSlotItemHandler;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -17,15 +19,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
 
 import java.awt.*;
 
 public class ReplicationTerminalContainer extends AbstractContainerMenu {
 
-    public static RegistryObject<MenuType<?>> TYPE;
+    public static DeferredHolder<MenuType<?>, MenuType<?>> TYPE;
 
     private Inventory inventory;
     private ReplicationTerminalBlockEntity blockEntity;
@@ -40,7 +41,7 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
         super(TYPE.get(), id);
         this.inventory = inventory;
         this.isEnabled = true;
-        LocatorInstance instance = LocatorFactory.readPacketBuffer(buffer);
+        LocatorInstance instance = LocatorFactory.readPacketBuffer(new RegistryFriendlyByteBuf(buffer, Minecraft.getInstance().level.registryAccess()));
         if (instance != null) {
             Player playerEntity = inventory.player;
             var provider = instance.locale(playerEntity).orElse(null);

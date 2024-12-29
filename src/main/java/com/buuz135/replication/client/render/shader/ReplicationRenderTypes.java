@@ -67,7 +67,7 @@ public class ReplicationRenderTypes extends RenderType {
             this.name = name;
             this.format = format;
             this.builder = Util.memoize(builder);
-            this.shaderLocation = new ResourceLocation(Replication.MOD_ID, this.name);
+            this.shaderLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, this.name);
         }
 
         public RenderType using(List<ShaderTexture> textures) {

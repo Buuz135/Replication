@@ -18,7 +18,7 @@ import java.awt.*;
 
 public class MatterTooltipClientComponent implements ClientTooltipComponent {
 
-    public static final ResourceLocation BAR = new ResourceLocation(Replication.MOD_ID, "textures/gui/matter_bar.png");
+    public static final ResourceLocation BAR = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/matter_bar.png");
     private final MatterTooltipComponent instance;
 
     public MatterTooltipClientComponent(MatterTooltipComponent instance) {
@@ -59,7 +59,7 @@ public class MatterTooltipClientComponent implements ClientTooltipComponent {
         RenderSystem.enableBlend();
         //RenderSystem.setShaderColor(color[0], color[1], color[2], (float) (0.25f + Math.sin(Minecraft.getInstance().level.getGameTime() / 12f)) / 6f);
         RenderSystem.setShaderColor(color[0], color[1], color[2], color[3]);
-        /*STYLE 1 guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/mattertypes/" + matterType.getName().toLowerCase() + ".png"), x + (glitch ? 1 : 0), y +(glitch ? 1 : 0), 0,0, 16, 16, 16, 16);
+        /*STYLE 1 guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/mattertypes/" + matterType.getName().toLowerCase() + ".png"), x + (glitch ? 1 : 0), y +(glitch ? 1 : 0), 0,0, 16, 16, 16, 16);
         float size = 0.45f;
         guiGraphics.blit(BAR, x + (glitch ? 1 : 0), y +(glitch ? 1 : 0) +17, 40 * size,40 * size, (int) (38 * size), (int) (16 * size), (int) (128 * size), (int) (128 * size));
         RenderSystem.setShaderColor(1,1,1,1);
@@ -68,7 +68,7 @@ public class MatterTooltipClientComponent implements ClientTooltipComponent {
         guiGraphics.pose().scale(scale, scale, scale);
         guiGraphics.drawString(Minecraft.getInstance().font, String.valueOf((int)Math.ceil(instance.getAmount())), (int) ((x + (glitch ? 1 : 0) +9 ) / scale) - Minecraft.getInstance().font.width(String.valueOf((int)Math.ceil(instance.getAmount()))) / 2, (int) ((y +(glitch ? 1 : 0) +18) / scale), new Color(color[0], color[1], color[2], color[3]).getRGB());
         guiGraphics.pose().popPose();*/
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/mattertypes/" + matterType.getName().toLowerCase() + ".png"), x + (glitch ? 1 : 0), y +(glitch ? 1 : 0), 0,0, 16, 16, 16, 16);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/mattertypes/" + matterType.getName().toLowerCase() + ".png"), x + (glitch ? 1 : 0), y +(glitch ? 1 : 0), 0,0, 16, 16, 16, 16);
         float size = 1;
         guiGraphics.blit(BAR, x + (glitch ? 1 : 0) -1, y +(glitch ? 1 : 0) -1, 60 * size,57 * size, 18, 22, (int) (128 * size), (int) (128 * size));
         RenderSystem.setShaderColor(1,1,1,1);

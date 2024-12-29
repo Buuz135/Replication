@@ -2,13 +2,12 @@ package com.buuz135.replication.data;
 
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.MatterType;
-import com.buuz135.replication.block.ReplicatorBlock;
-import com.buuz135.replication.item.ReplicationItem;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.data.LanguageProvider;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.List;
@@ -24,7 +23,7 @@ public class RepLangItemProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         this.add("itemGroup.replication", "Replication");
-        this.blocks.forEach(block -> this.add(block, WordUtils.capitalize(ForgeRegistries.BLOCKS.getKey(block).getPath().replace("_", " "))));
+        this.blocks.forEach(block -> this.add(block, WordUtils.capitalize(BuiltInRegistries.BLOCK.getKey(block).getPath().replace("_", " "))));
         this.formatItem(ReplicationRegistry.Items.MEMORY_CHIP.get());
         this.formatItem(ReplicationRegistry.Items.MATTER_BLUEPRINT.get());
         this.formatItem(ReplicationRegistry.Items.RAW_REPLICA.get());
@@ -63,6 +62,6 @@ public class RepLangItemProvider extends LanguageProvider {
     }
 
     private void formatItem(Item item){
-        this.add(item, WordUtils.capitalize(ForgeRegistries.ITEMS.getKey(item).getPath().replace("_", " ")));
+        this.add(item, WordUtils.capitalize(BuiltInRegistries.ITEM.getKey(item).getPath().replace("_", " ")));
     }
 }

@@ -5,16 +5,17 @@ import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.MatterPipeBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +31,14 @@ public class RepBlockstateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        var pipe = getMultipartBuilder(ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getKey().get());
-        pipe.part().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(Replication.MOD_ID, "block/matter_network_pipe_middle"))).addModel();
-        pipe.part().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(Replication.MOD_ID, "block/matter_network_pipe_side"))).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.NORTH), true);
-        pipe.part().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationY(180).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.SOUTH), true);
-        pipe.part().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationY(90).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.EAST), true);
-        pipe.part().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationY(270).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.WEST), true);
-        pipe.part().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationX(90).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.DOWN), true);
-        pipe.part().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationX(270).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.UP), true);
+        var pipe = getMultipartBuilder(ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getBlock());
+        pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_middle"))).addModel();
+        pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_side"))).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.NORTH), true);
+        pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationY(180).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.SOUTH), true);
+        pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationY(90).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.EAST), true);
+        pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationY(270).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.WEST), true);
+        pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationX(90).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.DOWN), true);
+        pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationX(270).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.UP), true);
 
         this.blocks.stream().filter(blockBase -> blockBase instanceof RotatableBlock<?>)
                 .map(blockBase -> (RotatableBlock) blockBase)
@@ -57,6 +58,6 @@ public class RepBlockstateProvider extends BlockStateProvider {
     }
 
     public static ResourceLocation getModel(Block block) {
-        return new ResourceLocation(ForgeRegistries.BLOCKS.getKey(block).getNamespace(), "block/" + ForgeRegistries.BLOCKS.getKey(block).getPath());
+        return ResourceLocation.fromNamespaceAndPath(BuiltInRegistries.BLOCK.getKey(block).getNamespace(), "block/" + BuiltInRegistries.BLOCK.getKey(block).getPath());
     }
 }

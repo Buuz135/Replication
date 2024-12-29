@@ -11,9 +11,7 @@ import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
@@ -21,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -30,12 +28,12 @@ public class ChipStorageBlock extends RotatableBlock<ChipStorageBlockEntity> imp
 
 
     public ChipStorageBlock() {
-        super("chip_storage", Properties.copy(Blocks.IRON_BLOCK), ChipStorageBlockEntity.class);
+        super("chip_storage", Properties.ofFullCopy(Blocks.IRON_BLOCK), ChipStorageBlockEntity.class);
     }
 
     @Override
     public BlockEntityType.BlockEntitySupplier<?> getTileEntityFactory() {
-        return (blockPos, blockState) -> new ChipStorageBlockEntity(this, ReplicationRegistry.Blocks.CHIP_STORAGE.getRight().get(), blockPos, blockState);
+        return (blockPos, blockState) -> new ChipStorageBlockEntity(this, ReplicationRegistry.Blocks.CHIP_STORAGE.type().get(), blockPos, blockState);
     }
 
     @NotNull
@@ -86,8 +84,10 @@ public class ChipStorageBlock extends RotatableBlock<ChipStorageBlockEntity> imp
         return sideness == FacingUtil.Sideness.BACK || direction == Direction.DOWN;
     }
 
+
+
     @Override
-    public void registerRecipe(Consumer<FinishedRecipe> consumer) {
+    public void registerRecipe(RecipeOutput consumer) {
         TitaniumShapedRecipeBuilder.shapedRecipe(this)
                 .pattern("MM ")
                 .pattern("ICG")

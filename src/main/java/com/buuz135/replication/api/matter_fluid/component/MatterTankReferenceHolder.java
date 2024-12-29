@@ -4,7 +4,6 @@ import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraftforge.registries.ForgeRegistry;
 
 public class MatterTankReferenceHolder implements ContainerData {
 
@@ -22,7 +21,7 @@ public class MatterTankReferenceHolder implements ContainerData {
         if (matterStack.isEmpty()) {
             return -1;
         } else if (index == 0) {
-            return ((ForgeRegistry<IMatterType>) ReplicationRegistry.MATTER_TYPES_REGISTRY.get()).getID(matterStack.getMatterType());
+            return ReplicationRegistry.MATTER_TYPES_REGISTRY.getId(matterStack.getMatterType());
         } else {
             return matterStack.getAmount();
         }
@@ -37,7 +36,7 @@ public class MatterTankReferenceHolder implements ContainerData {
         }
 
         if (matterAmount >= 0 && matterId >= 0) {
-            matterTankComponent.setMatterStack(new MatterStack(((ForgeRegistry<IMatterType>) ReplicationRegistry.MATTER_TYPES_REGISTRY.get()).getValue(matterId), matterAmount));
+            matterTankComponent.setMatterStack(new MatterStack(ReplicationRegistry.MATTER_TYPES_REGISTRY.getHolder(matterId).get().value(), matterAmount));
         } else {
             matterTankComponent.setMatterStack(MatterStack.EMPTY);
         }

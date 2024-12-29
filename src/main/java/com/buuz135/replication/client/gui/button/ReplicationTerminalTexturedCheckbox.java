@@ -21,7 +21,9 @@ public class ReplicationTerminalTexturedCheckbox extends Checkbox {
     private final int textureY;
 
     public ReplicationTerminalTexturedCheckbox(int pX, int pY, int pWidth, int pHeight, Component component, ResourceLocation textureRL, int textureX, int textureY, boolean pSelected, boolean pShowLabel) {
-        super(pX, pY, pWidth, pHeight, component, pSelected);
+        super(pX, pY, pWidth, component, Minecraft.getInstance().font, pSelected, (checkbox, b) -> {
+
+        });
         this.textureRL = textureRL;
         this.textureX = textureX;
         this.textureY = textureY;

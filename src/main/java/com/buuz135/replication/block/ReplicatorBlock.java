@@ -11,9 +11,7 @@ import com.hrznstudio.titanium.util.FacingUtil;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -24,7 +22,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -34,13 +32,13 @@ import java.util.stream.Stream;
 public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> implements INetworkDirectionalConnection {
 
     public ReplicatorBlock() {
-        super("replicator", Properties.copy(Blocks.IRON_BLOCK), ReplicatorBlockEntity.class);
+        super("replicator", Properties.ofFullCopy(Blocks.IRON_BLOCK), ReplicatorBlockEntity.class);
         setItemGroup(Replication.TAB);
     }
 
     @Override
     public BlockEntityType.BlockEntitySupplier<?> getTileEntityFactory() {
-        return (pos, blockState) -> new ReplicatorBlockEntity(this, ReplicationRegistry.Blocks.REPLICATOR.getRight().get(), pos, blockState);
+        return (pos, blockState) -> new ReplicatorBlockEntity(this, ReplicationRegistry.Blocks.REPLICATOR.type().get(), pos, blockState);
     }
 
     @NotNull
@@ -111,7 +109,7 @@ public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> imple
     }
 
     @Override
-    public void registerRecipe(Consumer<FinishedRecipe> consumer) {
+    public void registerRecipe(RecipeOutput consumer) {
         TitaniumShapedRecipeBuilder.shapedRecipe(this)
                 .pattern("IP ")
                 .pattern("IRM")

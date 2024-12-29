@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
 
 public class ReplicationTerminalScreen extends AbstractContainerScreen<ReplicationTerminalContainer> {
 
-    public static ResourceLocation TEXTURE = new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal.png");
-    public static ResourceLocation BUTTONS = new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
+    public static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal.png");
+    public static ResourceLocation BUTTONS = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
     private EditBox searchBox;
     private PatternMenu patternMenu;
     private float scrollOffs;
@@ -124,7 +124,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float v, int mouseX, int mouseY) {
-        this.renderBackground(guiGraphics);
+        //super.renderBackground(guiGraphics, mouseX, mouseY, v);
 
         int x = this.leftPos;
         int y = this.topPos;
@@ -137,7 +137,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         }else {
             guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
             // TODO: Work on the Extras
-            guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), x + this.imageWidth, y + 19, 0, 0, 27, 174);
+            guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), x + this.imageWidth, y + 19, 0, 0, 27, 174);
             this.searchBox.render(guiGraphics, mouseX, mouseY, v);
             this.craftingButton.render(guiGraphics, mouseX, mouseY, v);
 
@@ -154,7 +154,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     @Override
     protected void containerTick() {
         super.containerTick();
-        this.searchBox.tick();
+        //this.searchBox.tick(); TODO
         var shouldSort = false;
         for (MatterPatternButton matterPatternButton : this.patternMenu.matterPatternButtonList) {
             if (matterPatternButton.isShouldDisplayAnimation() && (matterPatternButton.createdWhen() + 20) < Minecraft.getInstance().level.getGameTime()) {
@@ -206,14 +206,14 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     }
 
     @Override
-    public boolean mouseScrolled(double p_98527_, double p_98528_, double p_98529_) {
+    public boolean mouseScrolled(double p_98527_, double p_98528_, double scrollX, double scrollY) {
         if (this.replicationTaskWidget != null){
-            return this.replicationTaskWidget.mouseScrolled(p_98527_, p_98528_, p_98529_);
+            return this.replicationTaskWidget.mouseScrolled(p_98527_, p_98528_, scrollX, scrollY);
         }
         if (!this.patternMenu.canScroll()) {
             return false;
         } else {
-            this.scrollOffs = this.patternMenu.subtractInputFromScroll(this.scrollOffs, p_98529_);
+            this.scrollOffs = this.patternMenu.subtractInputFromScroll(this.scrollOffs, scrollX);
             this.patternMenu.scrollTo(this.scrollOffs);
             return true;
         }
@@ -306,7 +306,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         var temp = PatternSyncStoragePacket.CLIENT_PATTERN_STORAGE.getOrDefault(this.menu.getNetwork(), new HashMap<>())
                 .values().stream().flatMap(Collection::stream).map(stack -> new MatterPatternButton(new MatterPattern(stack, 1), -1, Minecraft.getInstance().level.getGameTime(), this.menu.getNetwork())).collect(Collectors.toList());
         for (MatterPatternButton matterPatternButton : temp) {
-            if (existing.stream().noneMatch(o -> ItemStack.isSameItemSameTags(o, matterPatternButton.pattern().getStack()))) {
+            if (existing.stream().noneMatch(o -> ItemStack.isSameItemSameComponents(o, matterPatternButton.pattern().getStack()))) {
                 this.patternMenu.matterPatternButtonList.add(matterPatternButton);
                 existing.add(matterPatternButton.pattern().getStack());
             }
@@ -351,7 +351,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     }
 
     public void createTask(MatterPattern pattern, int i, boolean parallelMode) {
-        Replication.NETWORK.get().sendToServer(new TaskCreatePacket(this.menu.getNetwork(), i, pattern.getStack(), parallelMode, this.menu.getPosition()));
+        Replication.NETWORK.sendToServer(new TaskCreatePacket(this.menu.getNetwork(), i, pattern.getStack(), parallelMode, this.menu.getPosition()));
         disableRequest();
     }
 

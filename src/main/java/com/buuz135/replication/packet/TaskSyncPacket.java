@@ -7,7 +7,7 @@ import com.hrznstudio.titanium.network.Message;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -30,10 +30,10 @@ public class TaskSyncPacket extends Message {
     }
 
     @Override
-    protected void handleMessage(NetworkEvent.Context context) {
+    protected void handleMessage(IPayloadContext context) {
         context.enqueueWork(() -> {
             var task = new ReplicationTask(ItemStack.EMPTY, Integer.MAX_VALUE, IReplicationTask.Mode.SINGLE, null);
-            task.deserializeNBT(tag);
+            task.deserializeNBT(context.player().level().registryAccess(), tag);
             var tasks = CLIENT_TASK_STORAGE.computeIfAbsent(this.network, s -> new LinkedHashMap<>());
             if (task.getTotalAmount() == task.getCurrentAmount()){
                 tasks.remove(uuid);

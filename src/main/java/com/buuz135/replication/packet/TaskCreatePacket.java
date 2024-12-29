@@ -9,7 +9,7 @@ import com.hrznstudio.titanium.network.Message;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class TaskCreatePacket extends Message {
 
@@ -31,13 +31,13 @@ public class TaskCreatePacket extends Message {
     }
 
     @Override
-    protected void handleMessage(NetworkEvent.Context context) {
+    protected void handleMessage(IPayloadContext context) {
         context.enqueueWork(() -> {
-            for (Network network : NetworkManager.get(context.getSender().level()).getNetworks()) {
+            for (Network network : NetworkManager.get(context.player().level()).getNetworks()) {
                 if (network.getId().equals(networkId) && network instanceof MatterNetwork matterNetwork){
                     var task = new ReplicationTask(stack, amount, parallelMode ? IReplicationTask.Mode.MULTIPLE : IReplicationTask.Mode.SINGLE, source);
                     matterNetwork.getTaskManager().getPendingTasks().put(task.getUuid().toString(), task);
-                    ((MatterNetwork) network).onTaskValueChanged(task, (ServerLevel) context.getSender().level());
+                    ((MatterNetwork) network).onTaskValueChanged(task, (ServerLevel) context.player().level());
                     break;
                 }
             }

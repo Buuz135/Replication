@@ -1,6 +1,7 @@
 package com.buuz135.replication.client;
 
 import com.buuz135.replication.Replication;
+import com.buuz135.replication.ReplicationAttachments;
 import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
@@ -41,11 +42,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.model.SimpleModelState;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.model.SimpleModelState;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.joml.Matrix4f;
 
 import java.io.IOException;
@@ -54,8 +54,8 @@ import java.text.DecimalFormat;
 public class ClientEvents {
 
     public static void init(){
-        EventManager.mod(FMLClientSetupEvent.class).process(fmlClientSetupEvent -> {
-            MenuScreens.register((MenuType<? extends ReplicationTerminalContainer>) ReplicationTerminalContainer.TYPE.get(), ReplicationTerminalScreen::new);
+        EventManager.mod(RegisterMenuScreensEvent.class).process(event -> {
+            event.register((MenuType<? extends ReplicationTerminalContainer>) ReplicationTerminalContainer.TYPE.get(), ReplicationTerminalScreen::new);
         }).subscribe();
         EventManager.mod(RegisterClientTooltipComponentFactoriesEvent.class).process(event -> {
             event.register(MatterTooltipComponent.class, MatterTooltipClientComponent::new);
@@ -73,26 +73,26 @@ public class ClientEvents {
             }
         }).subscribe();
         EventManager.forge(ItemTooltipEvent.class).process(pre -> {
-            if (ItemStack.isSameItem(pre.getItemStack(), new ItemStack(ReplicationRegistry.Blocks.MATTER_TANK.getLeft().get())) && pre.getItemStack().hasTag()){
-                var tag = pre.getItemStack().getTag().getCompound("Tile").getCompound("tank");
+            if (ItemStack.isSameItem(pre.getItemStack(), new ItemStack(ReplicationRegistry.Blocks.MATTER_TANK.getBlock())) && pre.getItemStack().has(ReplicationAttachments.TILE)){
+                var tag = pre.getItemStack().get(ReplicationAttachments.TILE).getCompound("tank");
                 var matterStack = MatterStack.loadFluidStackFromNBT(tag);
                 pre.getToolTip().add(1, Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(matterStack.getAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(256000) + ChatFormatting.DARK_AQUA + " matter")));
                 pre.getToolTip().add(1, Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.replication.tank.matter").getString()).append(matterStack.isEmpty() ? Component.translatable("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE) : Component.translatable(matterStack.getTranslationKey())).withStyle(ChatFormatting.WHITE));
             }
         }).subscribe();
         EventManager.mod(EntityRenderersEvent.RegisterRenderers.class).process(event -> {
-            event.registerBlockEntityRenderer((BlockEntityType<? extends ReplicatorBlockEntity>)ReplicationRegistry.Blocks.REPLICATOR.getRight().get(), p_173571_ -> new ReplicatorRenderer());
-            event.registerBlockEntityRenderer((BlockEntityType<? extends MatterPipeBlockEntity>)ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getRight().get(), MatterPipeRenderer::new);
-            event.registerBlockEntityRenderer((BlockEntityType<? extends MatterTankBlockEntity>)ReplicationRegistry.Blocks.MATTER_TANK.getRight().get(), MatterTankRenderer::new);
-            event.registerBlockEntityRenderer((BlockEntityType<? extends DisintegratorBlockEntity>)ReplicationRegistry.Blocks.DISINTEGRATOR.getRight().get(), DisintegratorRenderer::new);
-            event.registerBlockEntityRenderer((BlockEntityType<? extends ChipStorageBlockEntity>)ReplicationRegistry.Blocks.CHIP_STORAGE.getRight().get(), ChipStorageRenderer::new);
-            event.registerBlockEntityRenderer((BlockEntityType<? extends IdentificationChamberBlockEntity>)ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.getRight().get(), p_173571_ -> new IdentificationChamberRenderer());
+            event.registerBlockEntityRenderer((BlockEntityType<? extends ReplicatorBlockEntity>)ReplicationRegistry.Blocks.REPLICATOR.type().get(), p_173571_ -> new ReplicatorRenderer());
+            event.registerBlockEntityRenderer((BlockEntityType<? extends MatterPipeBlockEntity>)ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.type().get(), MatterPipeRenderer::new);
+            event.registerBlockEntityRenderer((BlockEntityType<? extends MatterTankBlockEntity>)ReplicationRegistry.Blocks.MATTER_TANK.type().get(), MatterTankRenderer::new);
+            event.registerBlockEntityRenderer((BlockEntityType<? extends DisintegratorBlockEntity>)ReplicationRegistry.Blocks.DISINTEGRATOR.type().get(), DisintegratorRenderer::new);
+            event.registerBlockEntityRenderer((BlockEntityType<? extends ChipStorageBlockEntity>)ReplicationRegistry.Blocks.CHIP_STORAGE.type().get(), ChipStorageRenderer::new);
+            event.registerBlockEntityRenderer((BlockEntityType<? extends IdentificationChamberBlockEntity>)ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.type().get(), p_173571_ -> new IdentificationChamberRenderer());
         }).subscribe();
         EventManager.mod(ModelEvent.BakingCompleted.class).process(event -> {
-            ReplicatorRenderer.PLATE = bakeModel(new ResourceLocation(Replication.MOD_ID, "block/replicator_plate"), event.getModelBakery());
-            DisintegratorRenderer.BLADE = bakeModel(new ResourceLocation(Replication.MOD_ID, "block/disintegrator_blade"), event.getModelBakery());
+            ReplicatorRenderer.PLATE = bakeModel(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator_plate"), event.getModelBakery());
+            DisintegratorRenderer.BLADE = bakeModel(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/disintegrator_blade"), event.getModelBakery());
             for (int i = 0; i < 8; i++) {
-                ChipStorageRenderer.CHIP_MODELS.add(bakeModel(new ResourceLocation(Replication.MOD_ID, "block/chips/chip_storage_chips_" + i), event.getModelBakery()));
+                ChipStorageRenderer.CHIP_MODELS.add(bakeModel(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/chips/chip_storage_chips_" + i), event.getModelBakery()));
             }
         }).subscribe();
         EventManager.forge(RenderHighlightEvent.Block.class).process(ClientEvents::blockOverlayEvent).subscribe();
@@ -111,9 +111,10 @@ public class ClientEvents {
     }
 
     private static BakedModel bakeModel(ResourceLocation model, ModelBakery modelBakery){
+        var modelResourceLocation = new ModelResourceLocation(model, "standalone");
         UnbakedModel unbakedModel = modelBakery.getModel(model);
-        ModelBaker baker = modelBakery.new ModelBakerImpl((modelLoc, material) -> material.sprite(), model);
-        return unbakedModel.bake(baker, Material::sprite, new SimpleModelState(Transformation.identity()), model);
+        ModelBaker baker = modelBakery.new ModelBakerImpl((modelLoc, material) -> material.sprite(), modelResourceLocation);
+        return unbakedModel.bake(baker, Material::sprite, new SimpleModelState(Transformation.identity()));
     }
 
     public static void blockOverlayEvent(RenderHighlightEvent.Block event) {
@@ -138,7 +139,7 @@ public class ClientEvents {
                     drawShape(stack, builder, body, blockpos.getX() - d0, blockpos.getY() - d1, blockpos.getZ() - d2, 0, 0, 0, 0.4F);
                     stack.translate(0 , -ReplicatorBlockEntity.LOWER_PROGRESS,0);
 
-                    var progress = (replicatorBlockEntity.getProgress() + event.getPartialTick() /100f)/ (float) ReplicationConfig.Replicator.MAX_PROGRESS;
+                    var progress = (replicatorBlockEntity.getProgress() /* + event.getPartialTick() /100f*/)/ (float) ReplicationConfig.Replicator.MAX_PROGRESS;
                     //progress = 0;
 
                     stack.translate(0, ReplicatorBlockEntity.LOWER_PROGRESS * progress, 0);
@@ -160,8 +161,8 @@ public class ClientEvents {
             f = f / f3;
             f1 = f1 / f3;
             f2 = f2 / f3;
-            bufferIn.vertex(matrix4f, (float) (p_230013_12_ + xIn), (float) (p_230013_14_ + yIn), (float) (p_230013_16_ + zIn)).color(red, green, blue, alpha).normal(posestack$pose.normal(), f, f1, f2).endVertex();
-            bufferIn.vertex(matrix4f, (float) (p_230013_18_ + xIn), (float) (p_230013_20_ + yIn), (float) (p_230013_22_ + zIn)).color(red, green, blue, alpha).normal(posestack$pose.normal(), f, f1, f2).endVertex();
+            bufferIn.addVertex(matrix4f, (float) (p_230013_12_ + xIn), (float) (p_230013_14_ + yIn), (float) (p_230013_16_ + zIn)).setColor(red, green, blue, alpha).setNormal(posestack$pose, f, f1, f2);
+            bufferIn.addVertex(matrix4f, (float) (p_230013_18_ + xIn), (float) (p_230013_20_ + yIn), (float) (p_230013_22_ + zIn)).setColor(red, green, blue, alpha).setNormal(posestack$pose, f, f1, f2);
         });
     }
 }

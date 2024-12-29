@@ -14,15 +14,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.minecraft.world.item.crafting.*;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.checkerframework.checker.units.qual.C;
@@ -46,7 +41,7 @@ public class ReplicationCalculation {
         EventManager.forge(OnDatapackSyncEvent.class).process(ReplicationCalculation::recipesUpdatedEvent).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(playerLoggedInEvent -> {
             if (!cachedSyncTag.isEmpty() && playerLoggedInEvent.getEntity() instanceof ServerPlayer serverPlayer) {
-                Replication.NETWORK.get().sendTo(new ReplicationCalculationPacket(cachedSyncTag), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+                Replication.NETWORK.sendTo(new ReplicationCalculationPacket(cachedSyncTag), serverPlayer);
             }
         }).subscribe();
     }
@@ -57,11 +52,11 @@ public class ReplicationCalculation {
             //LOADING DEFAULT VALUES
             long time = System.currentTimeMillis();
             DEFAULT_MATTER_COMPOUND = new HashMap<>();
-            for (MatterValueRecipe matterValueRecipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get())) {
-                for (ItemStack item : matterValueRecipe.input.getItems()) {
+            for (RecipeHolder<MatterValueRecipe> matterValueRecipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor((RecipeType<MatterValueRecipe>) ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get())) {
+                for (ItemStack item : matterValueRecipe.value().input.getItems()) {
                     var name = getNameFromStack(item);
                     var compound = new MatterCompound();
-                    for (MatterValue matterValue : matterValueRecipe.matter) {
+                    for (MatterValue matterValue : matterValueRecipe.value().matter) {
                         compound.add(matterValue);
                     }
                     DEFAULT_MATTER_COMPOUND.put(name, compound);
@@ -72,10 +67,10 @@ public class ReplicationCalculation {
             //SORTING RECIPES
             SORTED_CALCULATION_REFERENCE = new HashMap<String, CalculationReference>();
             time = System.currentTimeMillis();
-            for (CraftingRecipe craftingRecipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
-                var result = craftingRecipe.getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess());
+            for (RecipeHolder<CraftingRecipe> craftingRecipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
+                var result = craftingRecipe.value().getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess());
                 var rl = getNameFromStack(result);
-                SORTED_CALCULATION_REFERENCE.computeIfAbsent(rl, string -> new CalculationReference(result, new ArrayList<>())).getReferences().add(new RecipeReference(craftingRecipe.getId(), result, craftingRecipe.getIngredients()));
+                SORTED_CALCULATION_REFERENCE.computeIfAbsent(rl, string -> new CalculationReference(result, new ArrayList<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, craftingRecipe.value().getIngredients()));
             }
             CALCULATOR_LOG.info("Sorted Recipes in " + (System.currentTimeMillis() - time) + "ms");
 
@@ -101,7 +96,7 @@ public class ReplicationCalculation {
                     var compound = getMatterCompound(new ItemStack(item), 0, new ArrayList<>(), false);
                     if (compound != null && !compound.getValues().isEmpty()) {
                         if (false) CALCULATOR_LOG.info(rl.toString() + " -> " + compound.toString());
-                        cachedSyncTag.put(rl.toString() , compound.serializeNBT());
+                        cachedSyncTag.put(rl.toString() , compound.serializeNBT(ServerLifecycleHooks.getCurrentServer().registryAccess()));
                         ++amount;
                     }
                 }
@@ -111,7 +106,7 @@ public class ReplicationCalculation {
                     var compound = getMatterCompound(new ItemStack(item), 0, new ArrayList<>(), false);
                     if (compound != null && !compound.getValues().isEmpty()) {
                         if (false) CALCULATOR_LOG.info(rl.toString() + " -> " + compound.toString());
-                        cachedSyncTag.put(rl.toString() , compound.serializeNBT());
+                        cachedSyncTag.put(rl.toString() , compound.serializeNBT(ServerLifecycleHooks.getCurrentServer().registryAccess()));
                         ++amount;
                     }
                 }
@@ -120,7 +115,7 @@ public class ReplicationCalculation {
 
 
             for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-                Replication.NETWORK.get().sendTo(new ReplicationCalculationPacket(cachedSyncTag), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+                Replication.NETWORK.sendTo(new ReplicationCalculationPacket(cachedSyncTag), player);
             }
         }, "Replication").start();
     }

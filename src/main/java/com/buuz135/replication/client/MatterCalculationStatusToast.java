@@ -29,7 +29,7 @@ public class MatterCalculationStatusToast implements Toast {
 
     @Override
     public Visibility render(GuiGraphics guiGraphics, ToastComponent p_230444_2_, long p_230444_3_) {
-        var texture = new ResourceLocation(Replication.MOD_ID, "textures/gui/toasts.png");
+        var texture = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/toasts.png");
         //RenderSystem.setShaderTexture(0, texture);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1f);
         //p_230444_2_.render(guiGraphics);

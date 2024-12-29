@@ -10,17 +10,14 @@ import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.world.item.Items;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -28,12 +25,12 @@ import java.util.function.Consumer;
 public class DisintegratorBlock extends RotatableBlock<DisintegratorBlockEntity> implements INetworkDirectionalConnection {
 
     public DisintegratorBlock() {
-        super("desintegrator", Properties.copy(Blocks.IRON_BLOCK), DisintegratorBlockEntity.class);
+        super("desintegrator", Properties.ofFullCopy(Blocks.IRON_BLOCK), DisintegratorBlockEntity.class);
     }
 
     @Override
     public BlockEntityType.BlockEntitySupplier<?> getTileEntityFactory() {
-        return (pos, blockState) -> new DisintegratorBlockEntity(this, ReplicationRegistry.Blocks.DISINTEGRATOR.getRight().get(), pos, blockState);
+        return (pos, blockState) -> new DisintegratorBlockEntity(this, ReplicationRegistry.Blocks.DISINTEGRATOR.type().get(), pos, blockState);
     }
 
     @NotNull
@@ -86,14 +83,14 @@ public class DisintegratorBlock extends RotatableBlock<DisintegratorBlockEntity>
     }
 
     @Override
-    public void registerRecipe(Consumer<FinishedRecipe> consumer) {
+    public void registerRecipe(RecipeOutput consumer) {
         TitaniumShapedRecipeBuilder.shapedRecipe(this)
                 .pattern("ITG")
                 .pattern("ITG")
                 .pattern("III")
-                .define('T', ReplicationRegistry.Blocks.MATTER_TANK.getKey().get())
+                .define('T', ReplicationRegistry.Blocks.MATTER_TANK.getBlock())
                 .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
-                .define('G', Tags.Items.GLASS)
+                .define('G', Tags.Items.GLASS_BLOCKS)
                 .save(consumer);
     }
 }

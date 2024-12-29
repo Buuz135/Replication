@@ -32,14 +32,14 @@ public class ChipStorageAddon extends BasicScreenAddon {
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider iAssetProvider,  int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0,0,200);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 70, guiY + 19, 244,164,12,14);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 91, guiY + 19, 244,164,12,14);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 49, guiY + 40, 244,164,12,14);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 112, guiY + 40, 244,164,12,14);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 49, guiY + 61, 244,164,12,14);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 112, guiY + 61, 244,164,12,14);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 70, guiY + 82, 244,164,12,14);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 91, guiY + 82, 244,164,12,14);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 70, guiY + 19, 244,164,12,14);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 91, guiY + 19, 244,164,12,14);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 49, guiY + 40, 244,164,12,14);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 112, guiY + 40, 244,164,12,14);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 49, guiY + 61, 244,164,12,14);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 112, guiY + 61, 244,164,12,14);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 70, guiY + 82, 244,164,12,14);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 91, guiY + 82, 244,164,12,14);
         guiGraphics.pose().popPose();
     }
 

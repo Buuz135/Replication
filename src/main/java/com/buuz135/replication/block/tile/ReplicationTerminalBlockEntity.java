@@ -15,13 +15,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -68,9 +68,9 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
     }
 
     @Override
-    public InteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == InteractionResult.SUCCESS) {
-            return InteractionResult.SUCCESS;
+    public ItemInteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ItemInteractionResult.SUCCESS) {
+            return ItemInteractionResult.SUCCESS;
         }
         if (playerIn instanceof ServerPlayer serverPlayer) {
             for (NetworkElement chipSupplier : this.getNetwork().getChipSuppliers()) {
@@ -79,20 +79,20 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
                     this.getNetwork().sendPatternSyncPacket(serverPlayer, holder, tile.getBlockPos());
                 }
             }
-            ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getValues().forEach(iMatterType -> this.getNetwork().sendMatterSyncPacket(serverPlayer, this.getNetwork().calculateMatterAmount(iMatterType), iMatterType));
+            ReplicationRegistry.MATTER_TYPES_REGISTRY.forEach(iMatterType -> this.getNetwork().sendMatterSyncPacket(serverPlayer, this.getNetwork().calculateMatterAmount(iMatterType), iMatterType));
             this.getLevel().getServer().submitAsync(() -> {
                 this.getNetwork().getTaskManager().getPendingTasks().values().forEach(task -> {
                     this.getNetwork().sendTaskSyncPacket(serverPlayer, task);
                 });
             });
-            NetworkHooks.openScreen(serverPlayer, this, buffer -> {
+            serverPlayer.openMenu(this, buffer -> {
                 LocatorFactory.writePacketBuffer(buffer, new TileEntityLocatorInstance(this.worldPosition));
                 buffer.writeUtf(this.getNetwork().getId());
                 buffer.writeInt(this.sortingTypeValue);
                 buffer.writeInt(this.sortingDirection);
             });
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override

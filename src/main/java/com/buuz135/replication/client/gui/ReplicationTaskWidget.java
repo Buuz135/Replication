@@ -27,8 +27,8 @@ import java.util.List;
 
 public class ReplicationTaskWidget extends AbstractWidget implements Renderable {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Replication.MOD_ID, "textures/gui/task_window.png");
-    private static final ResourceLocation EXTRAS = new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/task_window.png");
+    private static final ResourceLocation EXTRAS = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
     private final ReplicationTerminalScreen replicationTerminalScreen;
     private final ReplicationTerminalTexturedButton closeButton;
     private final List<AbstractWidget> widgets;
@@ -111,7 +111,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
     }
 
     @Override
-    public boolean mouseScrolled(double p_98527_, double p_98528_, double p_98529_) {
+    public boolean mouseScrolled(double p_98527_, double p_98528_, double p_98529_, double scrollY) {
         if (!this.canScroll()) {
             return false;
         } else {
@@ -184,7 +184,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
 
             this.cancelButton = new ReplicationTerminalTexturedButton(72, 1, 5, 5, Component.empty(), EXTRAS,
                     Component.translatable("tooltip.replication.terminal.cancel_task").getString(), 251, 59, 246, 59, button -> {
-                Replication.NETWORK.get().sendToServer(new TaskCancelPacket(task.getUuid().toString(), ReplicationTaskWidget.this.replicationTerminalScreen.getMenu().getNetwork()));
+                Replication.NETWORK.sendToServer(new TaskCancelPacket(task.getUuid().toString(), ReplicationTaskWidget.this.replicationTerminalScreen.getMenu().getNetwork()));
             });
         }
 

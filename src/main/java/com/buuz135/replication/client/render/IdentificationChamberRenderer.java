@@ -112,8 +112,8 @@ public class IdentificationChamberRenderer implements BlockEntityRenderer<Identi
 
     private static void drawLine(PoseStack matrixStackIn, VertexConsumer bufferIn, float xIn, float zIn, float xTo, float zTo,float red, float green, float blue, float alpha) {
         Matrix4f matrix4f = matrixStackIn.last().pose();
-        bufferIn.vertex(matrix4f, xIn, 1, zIn).color(red, green, blue, alpha).endVertex();
-        bufferIn.vertex(matrix4f, zTo, 1, xTo).color(red, green, blue, alpha).endVertex();
+        bufferIn.addVertex(matrix4f, xIn, 1, zIn).setColor(red, green, blue, alpha);
+        bufferIn.addVertex(matrix4f, zTo, 1, xTo).setColor(red, green, blue, alpha);
 
     }
 

@@ -32,9 +32,9 @@ public class ReplicatorCraftingAddon extends BasicScreenAddon {
 
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider iAssetProvider,  int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 41, guiY + 26, 211,125,45,36);
-//        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + this.getPosX() + 50 + 6, guiY + this.getPosY(), 206,125,50,27);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 100, guiY + 58, 250,161,6,3);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 41, guiY + 26, 211,125,45,36);
+//        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + this.getPosX() + 50 + 6, guiY + this.getPosY(), 206,125,50,27);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 100, guiY + 58, 250,161,6,3);
         if (!blockEntity.getCraftingStack().isEmpty()){
             guiGraphics.renderItem(blockEntity.getCraftingStack(), guiX + 67, guiY + 29);
         }
@@ -46,7 +46,7 @@ public class ReplicatorCraftingAddon extends BasicScreenAddon {
         guiGraphics.pose().popPose();
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0,0,100);
-        guiGraphics.blit(new ResourceLocation(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 46, guiY + 32, 232,164,12,9);
+        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 46, guiY + 32, 232,164,12,9);
         guiGraphics.pose().popPose();
 
         if (!blockEntity.getCraftingStack().isEmpty() && mouseX > (guiX + 67) && mouseX < (guiX + 67 + 16) && mouseY > (guiY + 29) && mouseY < (guiY + 29 + 16)) {

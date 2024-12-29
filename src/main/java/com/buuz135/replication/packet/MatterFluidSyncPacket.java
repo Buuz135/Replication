@@ -7,7 +7,7 @@ import com.hrznstudio.titanium.network.Message;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +30,9 @@ public class MatterFluidSyncPacket extends Message {
     }
 
     @Override
-    protected void handleMessage(NetworkEvent.Context context) {
+    protected void handleMessage(IPayloadContext context) {
         context.enqueueWork(() -> {
-            CLIENT_MATTER_STORAGE.computeIfAbsent(this.network, s -> new HashMap<>()).put(ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getValue(this.matterType), this.amount);
+            CLIENT_MATTER_STORAGE.computeIfAbsent(this.network, s -> new HashMap<>()).put(ReplicationRegistry.MATTER_TYPES_REGISTRY.get(this.matterType), this.amount);
             if (Minecraft.getInstance().screen instanceof ReplicationTerminalScreen terminalScreen){
                 terminalScreen.refreshTanks();
             }

@@ -20,8 +20,8 @@ import org.joml.Matrix4f;
 import java.util.List;
 
 public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements BlockEntityRenderer<T> {
-    public static final ResourceLocation END_SKY_LOCATION = new ResourceLocation("textures/environment/end_sky.png");
-    public static final ResourceLocation END_PORTAL_LOCATION = new ResourceLocation(Replication.MOD_ID, "textures/block/pipe_render.png");
+    public static final ResourceLocation END_SKY_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft","textures/environment/end_sky.png");
+    public static final ResourceLocation END_PORTAL_LOCATION = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/block/pipe_render.png");
 
     public MatterPipeRenderer(BlockEntityRendererProvider.Context p_173689_) {
     }
@@ -67,34 +67,34 @@ public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements Bloc
         float vMax = blockEntity.getBlockPos().getZ() + 1;
 
         if (!isUp){
-            consumer.vertex(matrix, min, max, max).uv(uMin + min, vMin + max).endVertex();
-            consumer.vertex(matrix, max, max, max).uv(uMin + max, vMin + max).endVertex();
-            consumer.vertex(matrix, max, max, min).uv(uMin + max, vMin + min).endVertex();
-            consumer.vertex(matrix, min, max, min).uv(uMin + min, vMin + min).endVertex();
+            consumer.addVertex(matrix, min, max, max).setUv(uMin + min, vMin + max);
+            consumer.addVertex(matrix, max, max, max).setUv(uMin + max, vMin + max);
+            consumer.addVertex(matrix, max, max, min).setUv(uMin + max, vMin + min);
+            consumer.addVertex(matrix, min, max, min).setUv(uMin + min, vMin + min);
         }
         if (isNorth) {
-            consumer.vertex(matrix, min, max, min).uv(uMin + min, vMin + min).endVertex();
-            consumer.vertex(matrix, max, max, min).uv(uMin + max, vMin + min).endVertex();
-            consumer.vertex(matrix, max, max, 0).uv(uMin + max, vMin).endVertex();
-            consumer.vertex(matrix, min, max, 0).uv(uMin + min, vMin).endVertex();
+            consumer.addVertex(matrix, min, max, min).setUv(uMin + min, vMin + min);
+            consumer.addVertex(matrix, max, max, min).setUv(uMin + max, vMin + min);
+            consumer.addVertex(matrix, max, max, 0).setUv(uMin + max, vMin);
+            consumer.addVertex(matrix, min, max, 0).setUv(uMin + min, vMin);
         }
         if (isSouth) {
-            consumer.vertex(matrix, min, max, 1).uv(uMin + min, vMax).endVertex();
-            consumer.vertex(matrix, max, max, 1).uv(uMin + max, vMax).endVertex();
-            consumer.vertex(matrix, max, max, max).uv(uMin + max, vMin + max).endVertex();
-            consumer.vertex(matrix, min, max, max).uv(uMin + min, vMin + max).endVertex();
+            consumer.addVertex(matrix, min, max, 1).setUv(uMin + min, vMax);
+            consumer.addVertex(matrix, max, max, 1).setUv(uMin + max, vMax);
+            consumer.addVertex(matrix, max, max, max).setUv(uMin + max, vMin + max);
+            consumer.addVertex(matrix, min, max, max).setUv(uMin + min, vMin + max);
         }
         if (isEast) {
-            consumer.vertex(matrix, max, max, max).uv(uMin + max, vMin + max).endVertex();
-            consumer.vertex(matrix, 1, max, max).uv(uMax, vMin + max).endVertex();
-            consumer.vertex(matrix, 1, max, min).uv(uMax, vMin + min).endVertex();
-            consumer.vertex(matrix, max, max, min).uv(uMin + max, vMin + min).endVertex();
+            consumer.addVertex(matrix, max, max, max).setUv(uMin + max, vMin + max);
+            consumer.addVertex(matrix, 1, max, max).setUv(uMax, vMin + max);
+            consumer.addVertex(matrix, 1, max, min).setUv(uMax, vMin + min);
+            consumer.addVertex(matrix, max, max, min).setUv(uMin + max, vMin + min);
         }
         if (isWest) {
-            consumer.vertex(matrix, 0, max, max).uv(uMin, vMin + max).endVertex();
-            consumer.vertex(matrix, min, max, max).uv(uMin + min, vMin + max).endVertex();
-            consumer.vertex(matrix, min, max, min).uv(uMin + min, vMin + min).endVertex();
-            consumer.vertex(matrix, 0, max, min).uv(uMin, vMin + min).endVertex();
+            consumer.addVertex(matrix, 0, max, max).setUv(uMin, vMin + max);
+            consumer.addVertex(matrix, min, max, max).setUv(uMin + min, vMin + max);
+            consumer.addVertex(matrix, min, max, min).setUv(uMin + min, vMin + min);
+            consumer.addVertex(matrix, 0, max, min).setUv(uMin, vMin + min);
         }
     }
 
@@ -105,34 +105,34 @@ public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements Bloc
         float vMax = blockEntity.getBlockPos().getZ() + 1;
 
         if (!isDown){
-            consumer.vertex(matrix, min, min, min).uv(uMin + min, vMin + min).endVertex();
-            consumer.vertex(matrix, max, min, min).uv(uMin + max, vMin + min).endVertex();
-            consumer.vertex(matrix, max, min, max).uv(uMin + max, vMin + max).endVertex();
-            consumer.vertex(matrix, min, min, max).uv(uMin + min, vMin + max).endVertex();
+            consumer.addVertex(matrix, min, min, min).setUv(uMin + min, vMin + min);
+            consumer.addVertex(matrix, max, min, min).setUv(uMin + max, vMin + min);
+            consumer.addVertex(matrix, max, min, max).setUv(uMin + max, vMin + max);
+            consumer.addVertex(matrix, min, min, max).setUv(uMin + min, vMin + max);
         }
         if (isNorth) {
-            consumer.vertex(matrix, min, min, 0).uv(uMin + min, vMin).endVertex();
-            consumer.vertex(matrix, max, min, 0).uv(uMin + max, vMin).endVertex();
-            consumer.vertex(matrix, max, min, min).uv(uMin + max, vMin + min).endVertex();
-            consumer.vertex(matrix, min, min, min).uv(uMin + min, vMin + min).endVertex();
+            consumer.addVertex(matrix, min, min, 0).setUv(uMin + min, vMin);
+            consumer.addVertex(matrix, max, min, 0).setUv(uMin + max, vMin);
+            consumer.addVertex(matrix, max, min, min).setUv(uMin + max, vMin + min);
+            consumer.addVertex(matrix, min, min, min).setUv(uMin + min, vMin + min);
         }
         if (isSouth) {
-            consumer.vertex(matrix, min, min, max).uv(uMin + min, vMin + max).endVertex();
-            consumer.vertex(matrix, max, min, max).uv(uMin + max, vMin + max).endVertex();
-            consumer.vertex(matrix, max, min, 1).uv(uMin + max, vMax).endVertex();
-            consumer.vertex(matrix, min, min, 1).uv(uMin + min, vMax).endVertex();
+            consumer.addVertex(matrix, min, min, max).setUv(uMin + min, vMin + max);
+            consumer.addVertex(matrix, max, min, max).setUv(uMin + max, vMin + max);
+            consumer.addVertex(matrix, max, min, 1).setUv(uMin + max, vMax);
+            consumer.addVertex(matrix, min, min, 1).setUv(uMin + min, vMax);
         }
         if (isEast) {
-            consumer.vertex(matrix, max, min, min).uv(uMin + max, vMin + min).endVertex();
-            consumer.vertex(matrix, 1, min, min).uv(uMax, vMin + min).endVertex();
-            consumer.vertex(matrix, 1, min, max).uv(uMax, vMin + max).endVertex();
-            consumer.vertex(matrix, max, min, max).uv(uMin + max, vMin + max).endVertex();
+            consumer.addVertex(matrix, max, min, min).setUv(uMin + max, vMin + min);
+            consumer.addVertex(matrix, 1, min, min).setUv(uMax, vMin + min);
+            consumer.addVertex(matrix, 1, min, max).setUv(uMax, vMin + max);
+            consumer.addVertex(matrix, max, min, max).setUv(uMin + max, vMin + max);
         }
         if (isWest) {
-            consumer.vertex(matrix, 0, min, min).uv(uMin, vMin + min).endVertex();
-            consumer.vertex(matrix, min, min, min).uv(uMin + min, vMin + min).endVertex();
-            consumer.vertex(matrix, min, min, max).uv(uMin + min, vMin + max).endVertex();
-            consumer.vertex(matrix, 0, min, max).uv(uMin, vMin + max).endVertex();
+            consumer.addVertex(matrix, 0, min, min).setUv(uMin, vMin + min);
+            consumer.addVertex(matrix, min, min, min).setUv(uMin + min, vMin + min);
+            consumer.addVertex(matrix, min, min, max).setUv(uMin + min, vMin + max);
+            consumer.addVertex(matrix, 0, min, max).setUv(uMin, vMin + max);
         }
     }
 
@@ -142,34 +142,34 @@ public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements Bloc
         float vMin = blockEntity.getBlockPos().getY();
         float vMax = blockEntity.getBlockPos().getY() + 1;
         if (!isNorth){
-            consumer.vertex(matrix, max, max, min).uv(uMin + max, vMin + max).endVertex(); //TOPLEFT
-            consumer.vertex(matrix, max, min, min).uv(uMin + max, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, min, min, min).uv(uMin + min, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, min, max, min).uv(uMin + min, vMin + max).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, max, max, min).setUv(uMin + max, vMin + max); //TOPLEFT
+            consumer.addVertex(matrix, max, min, min).setUv(uMin + max, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, min, min, min).setUv(uMin + min, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, min, max, min).setUv(uMin + min, vMin + max);//TOPRIGHT
         }
         if (isEast){
-            consumer.vertex(matrix, 1, max, min).uv(uMax, vMin + max).endVertex(); //TOPLEFT
-            consumer.vertex(matrix, 1, min, min).uv(uMax, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, max, min, min).uv(uMin + max, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, max, max, min).uv(uMin + max, vMin + max).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, 1, max, min).setUv(uMax, vMin + max); //TOPLEFT
+            consumer.addVertex(matrix, 1, min, min).setUv(uMax, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, max, min, min).setUv(uMin + max, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, max, max, min).setUv(uMin + max, vMin + max);//TOPRIGHT
         }
         if (isWest){
-            consumer.vertex(matrix, min, max, min).uv(uMin + min, vMin + max).endVertex(); //TOPLEFT
-            consumer.vertex(matrix, min, min, min).uv(uMin + min, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, 0, min, min).uv(uMin, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, 0, max, min).uv(uMin, vMin + max).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, min, max, min).setUv(uMin + min, vMin + max); //TOPLEFT
+            consumer.addVertex(matrix, min, min, min).setUv(uMin + min, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, 0, min, min).setUv(uMin, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, 0, max, min).setUv(uMin, vMin + max);//TOPRIGHT
         }
         if (isUp){
-            consumer.vertex(matrix, max, 1, min).uv(uMin + max, vMax).endVertex(); //TOPLEFT
-            consumer.vertex(matrix, max, max, min).uv(uMin + max, vMin + max).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, min, max, min).uv(uMin + min, vMin + max).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, min, 1, min).uv(uMin + min, vMax).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, max, 1, min).setUv(uMin + max, vMax); //TOPLEFT
+            consumer.addVertex(matrix, max, max, min).setUv(uMin + max, vMin + max);//BOTTOMLEFT
+            consumer.addVertex(matrix, min, max, min).setUv(uMin + min, vMin + max);//BOTTOMRIGHT
+            consumer.addVertex(matrix, min, 1, min).setUv(uMin + min, vMax);//TOPRIGHT
         }
         if (isDown){
-            consumer.vertex(matrix, max, min, min).uv(uMin + max, vMin + min).endVertex(); //TOPLEFT
-            consumer.vertex(matrix, max, 0, min).uv(uMin + max, vMin).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, min, 0, min).uv(uMin + min, vMin).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, min, min, min).uv(uMin + min, vMin + min).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, max, min, min).setUv(uMin + max, vMin + min); //TOPLEFT
+            consumer.addVertex(matrix, max, 0, min).setUv(uMin + max, vMin);//BOTTOMLEFT
+            consumer.addVertex(matrix, min, 0, min).setUv(uMin + min, vMin);//BOTTOMRIGHT
+            consumer.addVertex(matrix, min, min, min).setUv(uMin + min, vMin + min);//TOPRIGHT
         }
     }
 
@@ -179,34 +179,34 @@ public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements Bloc
         float vMin = blockEntity.getBlockPos().getY();
         float vMax = blockEntity.getBlockPos().getY() + 1;
         if (!isWest){
-            consumer.vertex(matrix, min, max, min).uv(uMin + min, vMin + max).endVertex();//TOPLEFT
-            consumer.vertex(matrix, min, min, min).uv(uMin + min, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, min, min, max).uv(uMin + max, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, min, max, max).uv(uMin + max, vMin + max).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, min, max, min).setUv(uMin + min, vMin + max);//TOPLEFT
+            consumer.addVertex(matrix, min, min, min).setUv(uMin + min, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, min, min, max).setUv(uMin + max, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, min, max, max).setUv(uMin + max, vMin + max);//TOPRIGHT
         }
         if (isUp){
-            consumer.vertex(matrix, min, 1, min).uv(uMin + min, vMax).endVertex();//TOPLEFT
-            consumer.vertex(matrix, min, max, min).uv(uMin + min, vMin + max).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, min, max, max).uv(uMin + max, vMin + max).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, min, 1, max).uv(uMin + max, vMax).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, min, 1, min).setUv(uMin + min, vMax);//TOPLEFT
+            consumer.addVertex(matrix, min, max, min).setUv(uMin + min, vMin + max);//BOTTOMLEFT
+            consumer.addVertex(matrix, min, max, max).setUv(uMin + max, vMin + max);//BOTTOMRIGHT
+            consumer.addVertex(matrix, min, 1, max).setUv(uMin + max, vMax);//TOPRIGHT
         }
         if (isDown){
-            consumer.vertex(matrix, min, min, min).uv(uMin + min, vMin + min).endVertex();//TOPLEFT
-            consumer.vertex(matrix, min, 0, min).uv(uMin + min, vMin).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, min, 0, max).uv(uMin + max, vMin).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, min, min, max).uv(uMin + max, vMin + min).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, min, min, min).setUv(uMin + min, vMin + min);//TOPLEFT
+            consumer.addVertex(matrix, min, 0, min).setUv(uMin + min, vMin);//BOTTOMLEFT
+            consumer.addVertex(matrix, min, 0, max).setUv(uMin + max, vMin);//BOTTOMRIGHT
+            consumer.addVertex(matrix, min, min, max).setUv(uMin + max, vMin + min);//TOPRIGHT
         }
         if (isNorth){
-            consumer.vertex(matrix, min, max, 0).uv(uMin, vMin + max).endVertex();//TOPLEFT
-            consumer.vertex(matrix, min, min, 0).uv(uMin, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, min, min, min).uv(uMin + min, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, min, max, min).uv(uMin + min, vMin + max).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, min, max, 0).setUv(uMin, vMin + max);//TOPLEFT
+            consumer.addVertex(matrix, min, min, 0).setUv(uMin, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, min, min, min).setUv(uMin + min, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, min, max, min).setUv(uMin + min, vMin + max);//TOPRIGHT
         }
         if (isSouth){
-            consumer.vertex(matrix, min, max, max).uv(uMin + max, vMin + max).endVertex();//TOPLEFT
-            consumer.vertex(matrix, min, min, max).uv(uMin + max, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, min, min, 1).uv(uMax, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, min, max, 1).uv(uMax, vMin + max).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, min, max, max).setUv(uMin + max, vMin + max);//TOPLEFT
+            consumer.addVertex(matrix, min, min, max).setUv(uMin + max, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, min, min, 1).setUv(uMax, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, min, max, 1).setUv(uMax, vMin + max);//TOPRIGHT
         }
     }
 
@@ -216,34 +216,34 @@ public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements Bloc
         float vMin = blockEntity.getBlockPos().getY();
         float vMax = blockEntity.getBlockPos().getY() + 1;
         if (!isEast){
-            consumer.vertex(matrix, max, max, max).uv(uMin + max, vMin + max).endVertex();//TOPLEFT
-            consumer.vertex(matrix, max, min, max).uv(uMin + max, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, max, min, min).uv(uMin + min, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, max, max, min).uv(uMin + min, vMin + max).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, max, max, max).setUv(uMin + max, vMin + max);//TOPLEFT
+            consumer.addVertex(matrix, max, min, max).setUv(uMin + max, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, max, min, min).setUv(uMin + min, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, max, max, min).setUv(uMin + min, vMin + max);//TOPRIGHT
         }
         if (isUp){
-            consumer.vertex(matrix, max, 1, max).uv(uMin + max, vMax).endVertex();//TOPLEFT
-            consumer.vertex(matrix, max, max, max).uv(uMin + max, vMin + max).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, max, max, min).uv(uMin + min, vMin + max).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, max, 1, min).uv(uMin + min, vMax).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, max, 1, max).setUv(uMin + max, vMax);//TOPLEFT
+            consumer.addVertex(matrix, max, max, max).setUv(uMin + max, vMin + max);//BOTTOMLEFT
+            consumer.addVertex(matrix, max, max, min).setUv(uMin + min, vMin + max);//BOTTOMRIGHT
+            consumer.addVertex(matrix, max, 1, min).setUv(uMin + min, vMax);//TOPRIGHT
         }
         if (isDown){
-            consumer.vertex(matrix, max, min, max).uv(uMin + max, vMin + min).endVertex();//TOPLEFT
-            consumer.vertex(matrix, max, 0, max).uv(uMin + max, vMin).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, max, 0, min).uv(uMin + min, vMin).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, max, min, min).uv(uMin + min, vMin + min).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, max, min, max).setUv(uMin + max, vMin + min);//TOPLEFT
+            consumer.addVertex(matrix, max, 0, max).setUv(uMin + max, vMin);//BOTTOMLEFT
+            consumer.addVertex(matrix, max, 0, min).setUv(uMin + min, vMin);//BOTTOMRIGHT
+            consumer.addVertex(matrix, max, min, min).setUv(uMin + min, vMin + min);//TOPRIGHT
         }
         if (isNorth){
-            consumer.vertex(matrix, max, max, min).uv(uMin + min, vMin + max).endVertex();//TOPLEFT
-            consumer.vertex(matrix, max, min, min).uv(uMin + min, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, max, min, 0).uv(uMin, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, max, max, 0).uv(uMin, vMin + max).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, max, max, min).setUv(uMin + min, vMin + max);//TOPLEFT
+            consumer.addVertex(matrix, max, min, min).setUv(uMin + min, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, max, min, 0).setUv(uMin, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, max, max, 0).setUv(uMin, vMin + max);//TOPRIGHT
         }
         if (isSouth){
-            consumer.vertex(matrix, max, max, 1).uv(uMax, vMin + max).endVertex();//TOPLEFT
-            consumer.vertex(matrix, max, min, 1).uv(uMax, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, max, min, max).uv(uMin + max, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, max, max, max).uv(uMin + max, vMin + max).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, max, max, 1).setUv(uMax, vMin + max);//TOPLEFT
+            consumer.addVertex(matrix, max, min, 1).setUv(uMax, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, max, min, max).setUv(uMin + max, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, max, max, max).setUv(uMin + max, vMin + max);//TOPRIGHT
         }
     }
 
@@ -254,34 +254,34 @@ public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements Bloc
         float vMin = blockEntity.getBlockPos().getY();
         float vMax = blockEntity.getBlockPos().getY() + 1;
         if (!isSouth){
-            consumer.vertex(matrix, min, max, max).uv(uMin + min, vMin + max).endVertex();//TOPLEFT
-            consumer.vertex(matrix, min, min, max).uv(uMin + min, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, max, min, max).uv(uMin + max, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, max, max, max).uv(uMin + max, vMin + max).endVertex(); //TOPRIGHT
+            consumer.addVertex(matrix, min, max, max).setUv(uMin + min, vMin + max);//TOPLEFT
+            consumer.addVertex(matrix, min, min, max).setUv(uMin + min, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, max, min, max).setUv(uMin + max, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, max, max, max).setUv(uMin + max, vMin + max); //TOPRIGHT
         }
         if (isEast){
-            consumer.vertex(matrix, max, max, max).uv(uMin + max, vMin + max).endVertex();//TOPLEFT
-            consumer.vertex(matrix, max, min, max).uv(uMin + max, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, 1, min, max).uv(uMax, vMin + min).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, 1, max, max).uv(uMax, vMin + max).endVertex(); //TOPRIGHT
+            consumer.addVertex(matrix, max, max, max).setUv(uMin + max, vMin + max);//TOPLEFT
+            consumer.addVertex(matrix, max, min, max).setUv(uMin + max, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, 1, min, max).setUv(uMax, vMin + min);//BOTTOMRIGHT
+            consumer.addVertex(matrix, 1, max, max).setUv(uMax, vMin + max); //TOPRIGHT
         }
         if (isWest){
-            consumer.vertex(matrix, 0, min, max).uv(uMin, vMin + min).endVertex();//TOPLEFT
-            consumer.vertex(matrix, min, min, max).uv(uMin + min, vMin + min).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, min, max, max).uv(uMin + min, vMin + max).endVertex(); //BOTTOMRIGHT
-            consumer.vertex(matrix, 0, max, max).uv(uMin, vMin + max).endVertex();//TOPRIGHT
+            consumer.addVertex(matrix, 0, min, max).setUv(uMin, vMin + min);//TOPLEFT
+            consumer.addVertex(matrix, min, min, max).setUv(uMin + min, vMin + min);//BOTTOMLEFT
+            consumer.addVertex(matrix, min, max, max).setUv(uMin + min, vMin + max); //BOTTOMRIGHT
+            consumer.addVertex(matrix, 0, max, max).setUv(uMin, vMin + max);//TOPRIGHT
         }
         if (isUp){
-            consumer.vertex(matrix, min, 1, max).uv(uMin + min, vMax).endVertex();//TOPLEFT
-            consumer.vertex(matrix, min, max, max).uv(uMin + min, vMin + max).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, max, max, max).uv(uMin + max, vMin + max).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, max, 1, max).uv(uMin + max, vMax).endVertex(); //TOPRIGHT
+            consumer.addVertex(matrix, min, 1, max).setUv(uMin + min, vMax);//TOPLEFT
+            consumer.addVertex(matrix, min, max, max).setUv(uMin + min, vMin + max);//BOTTOMLEFT
+            consumer.addVertex(matrix, max, max, max).setUv(uMin + max, vMin + max);//BOTTOMRIGHT
+            consumer.addVertex(matrix, max, 1, max).setUv(uMin + max, vMax); //TOPRIGHT
         }
         if (isDown){
-            consumer.vertex(matrix, min, min, max).uv(uMin + min, vMin + min).endVertex();//TOPLEFT
-            consumer.vertex(matrix, min, 0, max).uv(uMin + min, vMin).endVertex();//BOTTOMLEFT
-            consumer.vertex(matrix, max, 0, max).uv(uMin + max, vMin).endVertex();//BOTTOMRIGHT
-            consumer.vertex(matrix, max, min, max).uv(uMin + max, vMin + min).endVertex(); //TOPRIGHT
+            consumer.addVertex(matrix, min, min, max).setUv(uMin + min, vMin + min);//TOPLEFT
+            consumer.addVertex(matrix, min, 0, max).setUv(uMin + min, vMin);//BOTTOMLEFT
+            consumer.addVertex(matrix, max, 0, max).setUv(uMin + max, vMin);//BOTTOMRIGHT
+            consumer.addVertex(matrix, max, min, max).setUv(uMin + max, vMin + min); //TOPRIGHT
         }
     }
 
@@ -292,10 +292,10 @@ public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements Bloc
             float vMin = blockEntity.getBlockPos().getZ();
             float vMax = blockEntity.getBlockPos().getZ() + 1;
 
-            consumer.vertex(matrix, minX, minY, minZ).uv(uMin, vMax).endVertex();
-            consumer.vertex(matrix, maxX, minY, maxZ).uv(uMax, vMax).endVertex();
-            consumer.vertex(matrix, maxX, maxY, maxZ).uv(uMax, vMin).endVertex();
-            consumer.vertex(matrix, minX, maxY, maxZ).uv(uMin, vMin).endVertex();
+            consumer.addVertex(matrix, minX, minY, minZ).setUv(uMin, vMax);
+            consumer.addVertex(matrix, maxX, minY, maxZ).setUv(uMax, vMax);
+            consumer.addVertex(matrix, maxX, maxY, maxZ).setUv(uMax, vMin);
+            consumer.addVertex(matrix, minX, maxY, maxZ).setUv(uMin, vMin);
         }
     }
 
@@ -312,37 +312,37 @@ public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements Bloc
 
         buffer = renderTypeBuffer.getBuffer(renderType);
 
-        buffer.vertex(matrix, x1, y1, z1).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x1, y2, z1).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z1).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y1, z1).color(red, green, blue, alpha).endVertex();
+        buffer.addVertex(matrix, x1, y1, z1).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x1, y2, z1).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y2, z1).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y1, z1).setColor(red, green, blue, alpha);
 
-        buffer.vertex(matrix, x1, y1, z2).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y1, z2).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z2).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x1, y2, z2).color(red, green, blue, alpha).endVertex();
-
-
-        buffer.vertex(matrix, x1, y1, z1).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y1, z1).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y1, z2).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x1, y1, z2).color(red, green, blue, alpha).endVertex();
-
-        buffer.vertex(matrix, x1, y2, z1).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x1, y2, z2).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z2).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z1).color(red, green, blue, alpha).endVertex();
+        buffer.addVertex(matrix, x1, y1, z2).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y1, z2).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y2, z2).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x1, y2, z2).setColor(red, green, blue, alpha);
 
 
-        buffer.vertex(matrix, x1, y1, z1).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x1, y1, z2).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x1, y2, z2).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x1, y2, z1).color(red, green, blue, alpha).endVertex();
+        buffer.addVertex(matrix, x1, y1, z1).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y1, z1).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y1, z2).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x1, y1, z2).setColor(red, green, blue, alpha);
 
-        buffer.vertex(matrix, x2, y1, z1).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z1).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y2, z2).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(matrix, x2, y1, z2).color(red, green, blue, alpha).endVertex();
+        buffer.addVertex(matrix, x1, y2, z1).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x1, y2, z2).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y2, z2).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y2, z1).setColor(red, green, blue, alpha);
+
+
+        buffer.addVertex(matrix, x1, y1, z1).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x1, y1, z2).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x1, y2, z2).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x1, y2, z1).setColor(red, green, blue, alpha);
+
+        buffer.addVertex(matrix, x2, y1, z1).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y2, z1).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y2, z2).setColor(red, green, blue, alpha);
+        buffer.addVertex(matrix, x2, y1, z2).setColor(red, green, blue, alpha);
     }
 
     protected float getOffsetUp() {
@@ -356,7 +356,7 @@ public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements Bloc
     protected RenderType renderType() {
         return ReplicationRenderTypes.getRenderType("matter_pipe")
                 .using(List.of(
-                        new ShaderTexture(new ResourceLocation("replication:textures/block/shader.png"))
+                        new ShaderTexture(ResourceLocation.parse("replication:textures/block/shader.png"))
 
                 ));
     }

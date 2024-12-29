@@ -10,30 +10,20 @@ import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class ReplicationMachine<T extends NetworkBlockEntity<T>> extends NetworkBlockEntity<T>{
 
     @Save
-    private final EnergyStorageComponent<T> energyStorage;
-    private final LazyOptional<IEnergyStorage> lazyEnergyStorage = LazyOptional.of(this::getEnergyStorage);
+    private final EnergyStorageComponent<T> energyStorage;;
 
     public ReplicationMachine(BasicTileBlock<T> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
@@ -47,12 +37,12 @@ public abstract class ReplicationMachine<T extends NetworkBlockEntity<T>> extend
     }
 
     @Override
-    public InteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == InteractionResult.SUCCESS) {
-            return InteractionResult.SUCCESS;
+    public ItemInteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ItemInteractionResult.SUCCESS) {
+            return ItemInteractionResult.SUCCESS;
         }
         openGui(playerIn);
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Nonnull
@@ -77,23 +67,8 @@ public abstract class ReplicationMachine<T extends NetworkBlockEntity<T>> extend
     }
 
     @Nonnull
-    @Override
-    public <U> LazyOptional<U> getCapability(@Nonnull Capability<U> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return lazyEnergyStorage.cast();
-        }
-        return super.getCapability(cap, side);
-    }
-
-    @Nonnull
     protected EnergyStorageComponent<T> createEnergyStorage() {
         return new EnergyStorageComponent<>(25000, 9, 28);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyEnergyStorage.invalidate();
     }
 
     @Override

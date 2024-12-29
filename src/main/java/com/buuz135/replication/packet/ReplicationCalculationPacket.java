@@ -12,7 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
 
@@ -28,14 +28,14 @@ public class ReplicationCalculationPacket extends Message {
     }
 
     @Override
-    protected void handleMessage(NetworkEvent.Context context) {
+    protected void handleMessage(IPayloadContext context) {
         context.enqueueWork(() -> {
-            ClientReplicationCalculation.acceptData(data);
+            ClientReplicationCalculation.acceptData(context.player().level().registryAccess(), data);
             var subtext = Component.literal("Matter Values Synced").withStyle(style -> style.withColor(0x72e567));
             /*if (state == AnalysisState.ERRORED){
                 subtext = Component.literal("Error").withStyle(style -> style.withColor(ChatFormatting.RED));
             }*/
-            var toast = new MatterCalculationStatusToast(new ItemStack(ReplicationRegistry.Blocks.REPLICATOR.getLeft().get()),
+            var toast = new MatterCalculationStatusToast(new ItemStack(ReplicationRegistry.Blocks.REPLICATOR.getBlock()),
                     Component.literal( "Replication").withStyle(style -> style.withBold(true).withColor(0x72e567)),
                     subtext, false);
             Minecraft.getInstance().getToasts().addToast(toast);

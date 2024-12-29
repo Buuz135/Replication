@@ -39,11 +39,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -220,20 +219,16 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         this.cachedReplicationTask.finalizeReplication(this.level, this.getBlockPos(), this.getNetwork());
         this.getNetwork().onTaskValueChanged(this.cachedReplicationTask, (ServerLevel) this.level);
         if (!this.getBlockPos().equals(this.cachedReplicationTask.getSource())){
-            var entity = this.level.getBlockEntity(this.cachedReplicationTask.getSource());
-            if (entity != null){
-                if (entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).isPresent()){
-                    entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).ifPresent(iItemHandler -> {
-                        if (!ItemHandlerHelper.insertItem(iItemHandler, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false).isEmpty()){
-                            ItemHandlerHelper.insertItem(this.output, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false) ;
-                        }
-                    });
+            var capability = this.level.getCapability(Capabilities.ItemHandler.BLOCK, this.cachedReplicationTask.getSource(), Direction.UP);
+                if (capability != null){
+                    if (!ItemHandlerHelper.insertItem(capability, this.cachedReplicationTask.getReplicatingStack().copyWithCount(1), true).isEmpty()){
+                        ItemHandlerHelper.insertItem(this.output, this.cachedReplicationTask.getReplicatingStack().copyWithCount(1), false);
+                    }
                 } else {
-                    ItemHandlerHelper.insertItem(this.output, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false);
+                    ItemHandlerHelper.insertItem(this.output, this.cachedReplicationTask.getReplicatingStack().copyWithCount(1), false);
                 }
-            }
         }else {
-            ItemHandlerHelper.insertItem(this.output, ItemHandlerHelper.copyStackWithSize(this.cachedReplicationTask.getReplicatingStack(), 1), false);
+            ItemHandlerHelper.insertItem(this.output, this.cachedReplicationTask.getReplicatingStack().copyWithCount(1), false);
         }
         this.cachedReplicationTask = null;
         this.craftingStack = ItemStack.EMPTY;
