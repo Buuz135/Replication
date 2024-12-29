@@ -1,13 +1,13 @@
 package com.buuz135.replication.api.task;
 
-import com.buuz135.replication.aequivaleo.ReplicationCompoundType;
 import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.network.IMatterTanksSupplier;
+import com.buuz135.replication.calculation.MatterCompound;
+import com.buuz135.replication.calculation.MatterValue;
+import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.network.MatterNetwork;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
-import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
-import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -15,9 +15,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
-public class ReplicationTask implements IReplicationTask{
+public class ReplicationTask implements IReplicationTask {
 
     private UUID uuid;
     private ItemStack crafting;
@@ -94,32 +97,30 @@ public class ReplicationTask implements IReplicationTask{
 
     @Override
     public void storeMatterStacksFor(Level level, BlockPos pos, MatterNetwork matterNetwork) {
-        var data = IAequivaleoAPI.getInstance().getEquivalencyResults(level.dimension()).dataFor(this.getReplicatingStack());
+        var data = ReplicationCalculation.getMatterCompound(this.getReplicatingStack());
         List<MatterStack> matterStackList = new ArrayList<>();
-        if (checkHasEnough(data, level, pos, matterNetwork)){
-            for (CompoundInstance compoundInstance : data) {
-                var type = compoundInstance.getType();
-                if (type instanceof ReplicationCompoundType replicationCompoundType){
-                    var amount = Mth.ceil(compoundInstance.getAmount());
-                    for (NetworkElement matterStacksSupplier : matterNetwork.getMatterStacksHolders()) {
-                        var tile = matterStacksSupplier.getLevel().getBlockEntity(matterStacksSupplier.getPos());
-                        if (tile instanceof IMatterTanksSupplier tanksSupplier){
-                            for (IMatterTank tank : tanksSupplier.getTanks()) {
-                                if (!tank.getMatter().isEmpty() && tank.getMatter().getMatterType().equals(replicationCompoundType.getMatterType())){
-                                    var drained = tank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-                                    amount -= drained.getAmount();
-                                    if (amount <= 0){
-                                        break;
-                                    }
+        if (data != null && checkHasEnough(data, level, pos, matterNetwork)) {
+            for (MatterValue matterValue : data.getValues().values()) {
+                var type = matterValue.getMatter();
+                var amount = Mth.ceil(matterValue.getAmount());
+                for (NetworkElement matterStacksSupplier : matterNetwork.getMatterStacksHolders()) {
+                    var tile = matterStacksSupplier.getLevel().getBlockEntity(matterStacksSupplier.getPos());
+                    if (tile instanceof IMatterTanksSupplier tanksSupplier) {
+                        for (IMatterTank tank : tanksSupplier.getTanks()) {
+                            if (!tank.getMatter().isEmpty() && tank.getMatter().getMatterType().equals(type)) {
+                                var drained = tank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                                amount -= drained.getAmount();
+                                if (amount <= 0) {
+                                    break;
                                 }
                             }
                         }
-                        if (amount <= 0){
-                            break;
-                        }
                     }
-                    matterStackList.add(new MatterStack(replicationCompoundType.getMatterType(), (int) Math.ceil(compoundInstance.getAmount())));
+                    if (amount <= 0) {
+                        break;
+                    }
                 }
+                matterStackList.add(new MatterStack(type, (int) Math.ceil(matterValue.getAmount())));
             }
             this.getStoredMatterStack().put(pos.asLong(), matterStackList);
         }
@@ -130,7 +131,7 @@ public class ReplicationTask implements IReplicationTask{
         ++this.currentAmount;
         this.matterStacks.remove(pos.asLong());
         this.replicatorsOnTask.remove(pos.asLong());
-        if (this.currentAmount >= this.totalAmount){
+        if (this.currentAmount >= this.totalAmount) {
             matterNetwork.getTaskManager().getPendingTasks().remove(this.getUuid().toString());
         }
     }
@@ -145,31 +146,29 @@ public class ReplicationTask implements IReplicationTask{
         return this.dirty;
     }
 
-    private boolean checkHasEnough(Set<CompoundInstance> data, Level level, BlockPos pos, MatterNetwork matterNetwork){
-        for (CompoundInstance compoundInstance : data) {
-            var type = compoundInstance.getType();
-            if (type instanceof ReplicationCompoundType replicationCompoundType){
-                var amount = (int) Math.ceil(compoundInstance.getAmount());
-                for (NetworkElement matterStacksSupplier : matterNetwork.getMatterStacksHolders()) {
-                    var tile = matterStacksSupplier.getLevel().getBlockEntity(matterStacksSupplier.getPos());
-                    if (tile instanceof IMatterTanksSupplier tanksSupplier){
-                        for (IMatterTank tank : tanksSupplier.getTanks()) {
-                            if (!tank.getMatter().isEmpty() && tank.getMatter().getMatterType().equals(replicationCompoundType.getMatterType())){
-                                var drained = tank.drain(amount, IFluidHandler.FluidAction.SIMULATE);
-                                amount -= drained.getAmount();
-                                if (amount <= 0){
-                                    break;
-                                }
+    private boolean checkHasEnough(MatterCompound data, Level level, BlockPos pos, MatterNetwork matterNetwork) {
+        for (MatterValue matterValue : data.getValues().values()) {
+            var type = matterValue.getMatter();
+            var amount = (int) Math.ceil(matterValue.getAmount());
+            for (NetworkElement matterStacksSupplier : matterNetwork.getMatterStacksHolders()) {
+                var tile = matterStacksSupplier.getLevel().getBlockEntity(matterStacksSupplier.getPos());
+                if (tile instanceof IMatterTanksSupplier tanksSupplier) {
+                    for (IMatterTank tank : tanksSupplier.getTanks()) {
+                        if (!tank.getMatter().isEmpty() && tank.getMatter().getMatterType().equals(type)) {
+                            var drained = tank.drain(amount, IFluidHandler.FluidAction.SIMULATE);
+                            amount -= drained.getAmount();
+                            if (amount <= 0) {
+                                break;
                             }
                         }
                     }
-                    if (amount <= 0){
-                        break;
-                    }
                 }
-                if (amount > 0){
-                    return false;
+                if (amount <= 0) {
+                    break;
                 }
+            }
+            if (amount > 0) {
+                return false;
             }
         }
         return true;

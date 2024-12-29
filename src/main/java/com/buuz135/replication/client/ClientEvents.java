@@ -6,6 +6,7 @@ import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.block.ReplicatorBlock;
 import com.buuz135.replication.block.tile.*;
+import com.buuz135.replication.calculation.client.ClientReplicationCalculation;
 import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
 import com.buuz135.replication.client.render.*;
 import com.buuz135.replication.client.render.shader.ReplicationRenderTypes;
@@ -15,7 +16,6 @@ import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.util.RayTraceUtils;
-import com.ldtteam.aequivaleo.api.IAequivaleoAPI;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Either;
@@ -62,9 +62,9 @@ public class ClientEvents {
         }).subscribe();
         EventManager.forge(RenderTooltipEvent.GatherComponents.class).process(pre -> {
             if (Minecraft.getInstance().level != null){
-                var instance = IAequivaleoAPI.getInstance().getEquivalencyResults(Minecraft.getInstance().level.dimension()).dataFor(pre.getItemStack());
-                if (instance.size() > 0){
-                    if (Screen.hasShiftDown()){
+                var instance = ClientReplicationCalculation.getMatterCompound(pre.getItemStack());
+                if (instance != null){
+                    if (Screen.hasShiftDown() || true){
                         pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(instance)));
                     } else {
                         pre.getTooltipElements().add(Either.left(Component.literal("ℹ Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));

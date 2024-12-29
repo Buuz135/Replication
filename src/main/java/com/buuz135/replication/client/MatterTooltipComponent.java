@@ -1,20 +1,20 @@
 package com.buuz135.replication.client;
 
-import com.ldtteam.aequivaleo.api.compound.CompoundInstance;
+import com.buuz135.replication.calculation.MatterCompound;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
 import java.util.Set;
 
 public class MatterTooltipComponent implements TooltipComponent {
 
-    private final CompoundInstance[] instance;
+    private final MatterCompound instance;
 
 
-    public MatterTooltipComponent(Set<CompoundInstance> instance) {
-        this.instance = instance.toArray(new CompoundInstance[]{});
+    public MatterTooltipComponent(MatterCompound instance) {
+        this.instance = instance;
     }
 
-    public CompoundInstance[] getInstance() {
+    public MatterCompound getInstance() {
         return instance;
     }
 }
