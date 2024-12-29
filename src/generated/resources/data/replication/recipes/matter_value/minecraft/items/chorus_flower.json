@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:chorus_flower"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "value": 1.0
+    },
+    {
+      "type": "replication:quantum",
+      "value": 1.0
+    }
+  ]
+}

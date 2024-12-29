@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:diamond"
+  },
+  "matter": [
+    {
+      "type": "replication:precious",
+      "value": 36.0
+    }
+  ]
+}

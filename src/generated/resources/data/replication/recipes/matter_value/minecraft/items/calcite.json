@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:calcite"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "value": 2.0
+    }
+  ]
+}

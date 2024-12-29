@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:tube_coral"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "value": 2.0
+    },
+    {
+      "type": "replication:living",
+      "value": 1.0
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:sculk_shrieker"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "value": 8.0
+    },
+    {
+      "type": "replication:quantum",
+      "value": 8.0
+    }
+  ]
+}
