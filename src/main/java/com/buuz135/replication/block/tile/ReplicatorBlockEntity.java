@@ -92,6 +92,12 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         this.addButton(redstoneButton = new RedstoneControlButtonComponent<>(154, 84, 14, 14, () -> this.redstoneManager, () -> this));
 //        this.infiniteCrafting = new ItemStackFilter("infiniteCrafting", 1);
         this.infiniteCrafting = new ItemStackFilter("infiniteCrafting", 1){
+
+            @Override
+            public void setFilter(int slot, ItemStack stack) {
+                super.setFilter(slot, stack.getItem().getDefaultInstance());
+            }
+
             @OnlyIn(Dist.CLIENT)
             @Override
             public List<IFactory<? extends IScreenAddon>> getScreenAddons() {

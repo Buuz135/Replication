@@ -1,5 +1,6 @@
 package com.buuz135.replication.data;
 
+import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.calculation.MatterValue;
 import com.buuz135.replication.calculation.ReplicationCalculation;
@@ -57,7 +58,7 @@ public class MatterValueDataProvider extends TitaniumSerializableProvider {
 
         saveData(STRING, organic(2), living(2));
         saveData(COBWEB, organic(18), living(18));
-        saveData(GRASS, organic(4));
+        saveData(GRASS_BLOCK, organic(4));
         saveData(FERN, organic(4));
         saveData(WET_SPONGE, organic(12), living(4), precious(4));
 
@@ -72,8 +73,8 @@ public class MatterValueDataProvider extends TitaniumSerializableProvider {
         saveData(new Item[]{CRIMSON_FUNGUS, CRIMSON_ROOTS, WEEPING_VINES,
                 WARPED_FUNGUS, WARPED_ROOTS, NETHER_SPROUTS, TWISTING_VINES}, organic(2), nether(2));
 
-        saveTag(Tags.Items.STONE, earth(1));
-        saveTag(Tags.Items.COBBLESTONE, earth(1));
+        saveTag(Tags.Items.STONE, earth(2));
+        saveTag(Tags.Items.COBBLESTONE, earth(2));
         saveData(BLACKSTONE, earth(1), nether(1));
         saveData(OBSIDIAN, earth(4), nether(1));
         saveData(CRYING_OBSIDIAN, earth(4), nether(1), quantum(1));
@@ -89,7 +90,7 @@ public class MatterValueDataProvider extends TitaniumSerializableProvider {
         saveData(MUD, earth(1));
         saveData(FLINT, earth(1));
         saveData(CLAY_BALL, earth(2));
-        saveData(new Item[]{SAND, GRAVEL, RED_SAND}, earth(1));
+        saveData(new Item[]{SAND, GRAVEL, RED_SAND}, earth(2));
         saveData(new Item[]{WARPED_NYLIUM, CRIMSON_NYLIUM}, organic(2), nether(1));
         saveData(new Item[]{WHITE_CONCRETE, ORANGE_CONCRETE, MAGENTA_CONCRETE, LIGHT_BLUE_CONCRETE, YELLOW_CONCRETE,
                 LIME_CONCRETE, PINK_CONCRETE, GRAY_CONCRETE, LIGHT_GRAY_CONCRETE, CYAN_CONCRETE, PURPLE_CONCRETE, BLUE_CONCRETE,

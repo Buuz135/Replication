@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-30T00:08:38.4261029	Recipes
+// 1.21.1	2024-12-30T14:00:30.0165076	Recipes
 0e2e80e06c5992885609317413a8d6f6ede0408e data/replication/advancement/recipes/misc/blasting_raw_replica.json
 885215f7b02a0e3a1a2d8cea262f562a668b17a8 data/replication/advancement/recipes/misc/chip_storage.json
 2b1a60e85e62003c00d92f07413d9748ce1cb335 data/replication/advancement/recipes/misc/disintegrator.json
@@ -11,9 +11,11 @@ f99ed92a76e3f0f73c07a99585674df2a2456010 data/replication/advancement/recipes/mi
 87a3c736746f7df11b4223e72375a866d298904d data/replication/advancement/recipes/misc/smelting_raw_replica.json
 bfd41a3675c779ca14214f3ba72b45be35bc799e data/replication/recipe/blasting_raw_replica.json
 d48f131a4f5a21e2f9d329404c1d2c4063feb81b data/replication/recipe/chip_storage.json
-ec5ad260948e4f865df1423fdc482f666a5acd68 data/replication/recipe/c/tags/cobblestones.json
+5896c5ed730bad489353b83b28b4ad42c5958987 data/replication/recipe/c/tags/cobblestones.json
+f5d22cdab227dba8bbbda25de717a382a3a2b27d data/replication/recipe/c/tags/gravels.json
 66e75db2545dd90126ddf5c7bbabd681ceb99968 data/replication/recipe/c/tags/mushrooms.json
-d2fa544894906ef7cfeca7e331399902cbb632bc data/replication/recipe/c/tags/stones.json
+91840921df32c663b7eec8c851f4ecbef6a5d438 data/replication/recipe/c/tags/sands.json
+a8c87ab0af93bf66f4f72f69985143ab7755fe11 data/replication/recipe/c/tags/stones.json
 51b31b06cdf7fc3b5e723b5ab0b44946ea000237 data/replication/recipe/disintegrator.json
 e5a0492c8399d894737549bb61543a373c210312 data/replication/recipe/identification_chamber.json
 08c79d766312933aa90734a4bab250511374cc43 data/replication/recipe/matter_network_pipe.json
@@ -101,7 +103,6 @@ a6b17de34d42602867a2a09e3d880e12e95d9514 data/replication/recipe/minecraft/items
 5f5aabb34ca5d57fc65de7d4011986003be70444 data/replication/recipe/minecraft/items/glow_lichen.json
 37a9b904416103d441f15721508c8f154710ba13 data/replication/recipe/minecraft/items/gold_ingot.json
 08e4469a50d07811ba8c21dddf24332c6773c7d6 data/replication/recipe/minecraft/items/grass_block.json
-0ae2aaa0fa0dfe8f305d23d7b80d34fc4e028ed3 data/replication/recipe/minecraft/items/gravel.json
 205570d8ca7396206ed5d748115a68b5511694d0 data/replication/recipe/minecraft/items/gray_concrete.json
 3a29e4741b813200b2cfcb6e2bc99fd81fb65062 data/replication/recipe/minecraft/items/green_concrete.json
 442f6d1cc1733e20d9de4de554990881a867ddc9 data/replication/recipe/minecraft/items/gunpowder.json
@@ -121,7 +122,6 @@ b275036d1e9a4f1e889ea00843e02a38b864c573 data/replication/recipe/minecraft/items
 baebc17982ce796a9072622b798575c824f0ec82 data/replication/recipe/minecraft/items/leather.json
 a5a4d24fd709d8a8c5eb2c51744d0c972a0a6abe data/replication/recipe/minecraft/items/light_blue_concrete.json
 8c741b761200dc98796733e33ff333b954104596 data/replication/recipe/minecraft/items/light_gray_concrete.json
-47e62cbe6d2b0d096a7fc30c282d5bfc3e4bf502 data/replication/recipe/minecraft/items/lilac.json
 b444ea9884a93aa802cd0d45eab667a9f543b505 data/replication/recipe/minecraft/items/lily_pad.json
 61e9e5f5c8d11201b22ac50c299a095a8432d739 data/replication/recipe/minecraft/items/lime_concrete.json
 8b56acad61eac4b98059afb5f7354a56bf0d27f5 data/replication/recipe/minecraft/items/magenta_concrete.json
@@ -139,11 +139,9 @@ ba1c48291b36827fde6d0db9c3160e1edb5e7062 data/replication/recipe/minecraft/items
 b4426cc59d1002a6480089ce639983edab782471 data/replication/recipe/minecraft/items/obsidian.json
 daaa6bcc9f6b12b847f6165cec99a711edceeea5 data/replication/recipe/minecraft/items/orange_concrete.json
 7b3e299e7fb2f743b9bf84d0b2d372fd12092fb0 data/replication/recipe/minecraft/items/oxidized_copper.json
-5de2df8c2afc14ca3635cbbd51a5330b37c8579a data/replication/recipe/minecraft/items/peony.json
 199a62f30f526cfe15ba816f2ef801e2e59fd266 data/replication/recipe/minecraft/items/phantom_membrane.json
 5e61a43f73e8690e86fba92611c6860ba1668906 data/replication/recipe/minecraft/items/piglin_head.json
 47c152908464f1ebcf8cb505b5a9bbcc2ff4f3c1 data/replication/recipe/minecraft/items/pink_concrete.json
-3b89a0c15b3b70ad04eee3eb78612c1aedd607c4 data/replication/recipe/minecraft/items/pitcher_plant.json
 369cf5a5dff283944cf16cd1dc6237dbbf0a36a3 data/replication/recipe/minecraft/items/pitcher_pod.json
 1c106d4f67aeab19efc0e2628ea34b8ca4b3b7e5 data/replication/recipe/minecraft/items/player_head.json
 c725361c448663d828fa78d51225b23921c2b6c4 data/replication/recipe/minecraft/items/podzol.json
@@ -162,12 +160,9 @@ fe3a054c878e3ce91cfcbf2b8db62bc9b56ff901 data/replication/recipe/minecraft/items
 ac0bea1de14a1b278497bf33f09c2d9d7b2385d4 data/replication/recipe/minecraft/items/rabbit_hide.json
 e5c296908d0b4621921eb2cb88342c2d842bc489 data/replication/recipe/minecraft/items/redstone.json
 c8a631b591cdf1d48ba11765144f4d70ca7102f7 data/replication/recipe/minecraft/items/red_concrete.json
-9413d3004badffca1d13f0e0def1b4324bfc7bfa data/replication/recipe/minecraft/items/red_sand.json
 27f373d0002e1cb0ce9a714b1449d128a434436f data/replication/recipe/minecraft/items/rooted_dirt.json
-bab9ee8fbed6e652243d47ddb84a86788f6a3472 data/replication/recipe/minecraft/items/rose_bush.json
 1bdcdb5201c7d126d0909dc3d1747efab57188da data/replication/recipe/minecraft/items/rotten_flesh.json
 cb1935fb5e394959b4577e4e1ea4cb79c74a5728 data/replication/recipe/minecraft/items/salmon.json
-b15c56003db704f637531a611b3f47e5f4123b0e data/replication/recipe/minecraft/items/sand.json
 6d637942668a2af104c83b523a5994caa905fd62 data/replication/recipe/minecraft/items/sculk.json
 baa649d56b040e66ef69c4118f553d8b8a67823e data/replication/recipe/minecraft/items/sculk_catalyst.json
 70a8ffd6bec22408640a7445a99f66ecf916f7d3 data/replication/recipe/minecraft/items/sculk_sensor.json
@@ -186,7 +181,6 @@ dd4e9a3303af2b3fbbf22f593430359306b50499 data/replication/recipe/minecraft/items
 292390fae5b8a17b122d77fd41e0995040366cb4 data/replication/recipe/minecraft/items/spider_eye.json
 815c4ec821f29075d0bd6d6191704edbd13d7045 data/replication/recipe/minecraft/items/string.json
 dbca4622c3fdaf6cd89ea53eee86173ee9c9bddb data/replication/recipe/minecraft/items/sugar_cane.json
-9a59b5b6807132a46e5c5e133048f8a737dea4a8 data/replication/recipe/minecraft/items/sunflower.json
 34e1fcb7fef6974d5b3d6fc9a23117838202e280 data/replication/recipe/minecraft/items/sweet_berries.json
 4140ecb2ed3556d6eb0f228caf11bb290903a12d data/replication/recipe/minecraft/items/tall_grass.json
 ea0d432f5b11d95243c2a8860d6509d97ae68364 data/replication/recipe/minecraft/items/torchflower_seeds.json

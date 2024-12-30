@@ -1,7 +1,6 @@
 package com.buuz135.replication.client;
 
 import com.buuz135.replication.Replication;
-import com.buuz135.replication.ReplicationAttachments;
 import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
