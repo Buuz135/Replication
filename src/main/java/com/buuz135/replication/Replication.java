@@ -44,6 +44,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -160,7 +161,7 @@ public class Replication extends ModuleController {
             TAB.getTabList().add(item);
             return item;
         });
-        EventManager.mod(BuildCreativeModeTabContentsEvent.class).process(buildCreativeModeTabContentsEvent -> {
+        EventManager.mod(BuildCreativeModeTabContentsEvent.class, EventPriority.LOW).process(buildCreativeModeTabContentsEvent -> {
             if (buildCreativeModeTabContentsEvent.getTabKey().location().equals(TAB.getResourceLocation())){
                 for (IMatterType value : ReplicationRegistry.MATTER_TYPES_REGISTRY.stream().toList()) {
                     if (value.equals(MatterType.EMPTY)) continue;
