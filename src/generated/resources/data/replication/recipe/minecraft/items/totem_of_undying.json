@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:totem_of_undying"
+  },
+  "matter": [
+    {
+      "type": "replication:precious",
+      "amount": 16.0
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 8.0
+    }
+  ]
+}

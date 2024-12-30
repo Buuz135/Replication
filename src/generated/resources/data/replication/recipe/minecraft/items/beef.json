@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:beef"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "amount": 4.0
+    },
+    {
+      "type": "replication:living",
+      "amount": 4.0
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:dragon_head"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "amount": 8.0
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:pointed_dripstone"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 1.0
+    }
+  ]
+}

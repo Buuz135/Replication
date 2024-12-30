@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:rabbit_hide"
+  },
+  "matter": [
+    {
+      "type": "replication:living",
+      "amount": 2.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 2.0
+    }
+  ]
+}

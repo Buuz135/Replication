@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:shulker_shell"
+  },
+  "matter": [
+    {
+      "type": "replication:living",
+      "amount": 4.0
+    },
+    {
+      "type": "replication:nether",
+      "amount": 8.0
+    }
+  ]
+}

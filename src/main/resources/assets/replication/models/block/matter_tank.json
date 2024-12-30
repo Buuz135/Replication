@@ -4,7 +4,8 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"1": "replication:block/matter_tank",
-		"particle": "replication:block/matter_tank"
+		"particle": "replication:block/matter_tank",
+		"fluid": "replication:block/matter"
 	},
 	"elements": [
 		{

@@ -78,7 +78,7 @@ public class Replication extends ModuleController {
 
     @Override
     protected void initModules() {
-        this.addCreativeTab("main", () -> new ItemStack(ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getLeft().get()), "replication", TAB);
+        this.addCreativeTab("main", () -> new ItemStack(ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getBlock()), "replication", TAB);
 
         ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE = this.getRegistries().registerBlockWithTile("matter_network_pipe", MatterPipeBlock::new, TAB);
         ReplicationRegistry.Blocks.REPLICATOR = this.getRegistries().registerBlockWithTile("replicator", ReplicatorBlock::new, TAB);
@@ -136,7 +136,7 @@ public class Replication extends ModuleController {
         });
         EventManager.mod(BuildCreativeModeTabContentsEvent.class).process(buildCreativeModeTabContentsEvent -> {
             if (buildCreativeModeTabContentsEvent.getTabKey().location().equals(TAB.getResourceLocation())){
-                for (IMatterType value : ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getValues()) {
+                for (IMatterType value : ReplicationRegistry.MATTER_TYPES_REGISTRY.stream().toList()) {
                     if (value.equals(MatterType.EMPTY)) continue;
                     var matterStack = new MatterStack(value, 256000);
                     var compound = new CompoundTag();

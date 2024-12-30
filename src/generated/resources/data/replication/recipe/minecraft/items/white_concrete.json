@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:white_concrete"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 1.25
+    },
+    {
+      "type": "replication:organic",
+      "amount": 0.25
+    }
+  ]
+}

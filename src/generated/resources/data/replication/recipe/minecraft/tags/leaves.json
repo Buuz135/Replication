@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "tag": "minecraft:leaves"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "amount": 4.0
+    }
+  ]
+}
