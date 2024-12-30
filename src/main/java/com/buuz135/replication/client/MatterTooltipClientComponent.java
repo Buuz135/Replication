@@ -3,13 +3,11 @@ package com.buuz135.replication.client;
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.calculation.MatterValue;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
@@ -32,7 +30,7 @@ public class MatterTooltipClientComponent implements ClientTooltipComponent {
 
     @Override
     public int getWidth(Font p_169952_) {
-        return 18 * instance.getInstance().getValues().size();
+        return 19 * instance.getInstance().getValues().size();
     }
 
     @Override

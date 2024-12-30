@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:honey_block"
+  },
+  "matter": [
+    {
+      "type": "replication:living",
+      "amount": 18.0
+    },
+    {
+      "type": "replication:earth",
+      "amount": 18.0
+    }
+  ]
+}

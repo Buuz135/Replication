@@ -46,7 +46,7 @@ public class ReplicationConfig {
 
         @ConfigVal(comment = "The progress shown in game will be double")
         @ConfigVal.InRangeInt(min = 1)
-        public static int MAX_PROGRESS = 200;
+        public static int MAX_PROGRESS = 100;
 
         @ConfigVal
         @ConfigVal.InRangeInt(min = 1)

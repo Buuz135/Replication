@@ -1,7 +1,6 @@
 package com.buuz135.replication.client.gui.button;
 
 import com.buuz135.replication.ReplicationRegistry;
-import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -11,7 +10,6 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 
 public class ReplicationTerminalTexturedCheckbox extends Checkbox {
@@ -24,6 +22,7 @@ public class ReplicationTerminalTexturedCheckbox extends Checkbox {
         super(pX, pY, pWidth, component, Minecraft.getInstance().font, pSelected, (checkbox, b) -> {
 
         });
+        this.height = pHeight;
         this.textureRL = textureRL;
         this.textureX = textureX;
         this.textureY = textureY;

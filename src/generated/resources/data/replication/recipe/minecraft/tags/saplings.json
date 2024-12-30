@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "tag": "minecraft:saplings"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 16.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 16.0
+    }
+  ]
+}

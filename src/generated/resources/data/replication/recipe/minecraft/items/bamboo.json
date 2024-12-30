@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:bamboo"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 0.5
+    },
+    {
+      "type": "replication:organic",
+      "amount": 0.5
+    }
+  ]
+}

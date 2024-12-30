@@ -14,7 +14,7 @@ public class MatterValue implements INBTSerializable<CompoundTag> {
 
     public static final Codec<MatterValue> CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance ->
             instance.group(
-                    ResourceLocation.CODEC.fieldOf("matter").forGetter(o -> ReplicationRegistry.MATTER_TYPES_REGISTRY.getKey(o.matter)),
+                    ResourceLocation.CODEC.fieldOf("type").forGetter(o -> ReplicationRegistry.MATTER_TYPES_REGISTRY.getKey(o.matter)),
                     Codec.DOUBLE.fieldOf("amount").forGetter(MatterValue::getAmount)
             ).apply(instance, MatterValue::new)));
 

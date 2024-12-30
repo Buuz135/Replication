@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:dead_tube_coral_fan"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "amount": 2.0
+    }
+  ]
+}

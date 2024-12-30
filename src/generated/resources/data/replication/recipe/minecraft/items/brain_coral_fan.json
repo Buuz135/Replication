@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:brain_coral_fan"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "amount": 2.0
+    },
+    {
+      "type": "replication:living",
+      "amount": 1.0
+    }
+  ]
+}

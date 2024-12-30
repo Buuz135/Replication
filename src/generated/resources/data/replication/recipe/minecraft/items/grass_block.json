@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:grass_block"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "amount": 4.0
+    }
+  ]
+}

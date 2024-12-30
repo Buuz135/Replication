@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:wheat"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "amount": 2.0
+    },
+    {
+      "type": "replication:earth",
+      "amount": 2.0
+    }
+  ]
+}

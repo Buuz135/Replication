@@ -31,7 +31,7 @@ public class MatterTankComponentProvider implements IBlockComponentProvider, ISe
             //color = color.darker();
             iTooltip.add(new ProgressElement(matterStack.getAmount() / 256000f,
                     matterStack.isEmpty() ? Component.translatable("tooltip.titanium.tank.empty") : Component.translatable(matterStack.getTranslationKey()).append(" ").append(NumberUtils.getFormatedBigNumber(matterStack.getAmount()))
-                    , IElementHelper.get().progressStyle().color(color.getRGB()).textColor(0xFFFFFF), BoxStyle.getTransparent(), false));
+                    , IElementHelper.get().progressStyle().color(color.getRGB()).textColor(0xFFFFFF), BoxStyle.getNestedBox(), false));
         }
     }
 

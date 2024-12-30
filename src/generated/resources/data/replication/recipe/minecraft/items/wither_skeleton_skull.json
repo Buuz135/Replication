@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:wither_skeleton_skull"
+  },
+  "matter": [
+    {
+      "type": "replication:organic",
+      "amount": 8.0
+    }
+  ]
+}

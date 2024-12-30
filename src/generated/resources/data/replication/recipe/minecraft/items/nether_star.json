@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:nether_star"
+  },
+  "matter": [
+    {
+      "type": "replication:quantum",
+      "amount": 64.0
+    },
+    {
+      "type": "replication:nether",
+      "amount": 16.0
+    }
+  ]
+}

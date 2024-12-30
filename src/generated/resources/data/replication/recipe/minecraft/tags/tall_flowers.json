@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "tag": "minecraft:tall_flowers"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 4.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 4.0
+    }
+  ]
+}

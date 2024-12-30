@@ -1,40 +1,27 @@
 package com.buuz135.replication.data;
 
+import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.calculation.MatterValue;
-import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.recipe.MatterValueRecipe;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.world.item.Items.*;
-import static net.minecraft.world.item.Items.EMERALD;
 
-public class MatterValueDataProvider extends RecipeProvider {
+public class MatterValueDataProvider {
 
     private RecipeOutput recipeOutput;
 
-    public MatterValueDataProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> prov) {
-        super(generator.getPackOutput(), prov);
-    }
 
-    @Override
     public void buildRecipes(RecipeOutput consumer) {
         this.recipeOutput = consumer;
         saveData(IRON_INGOT, metallic(9));
@@ -86,7 +73,7 @@ public class MatterValueDataProvider extends RecipeProvider {
         saveData(DIRT, earth(1));
         saveData(ROOTED_DIRT, earth(1));
         saveData(MYCELIUM, earth(1), organic(4));
-        saveData(GRASS_BLOCK, earth(1), organic(1));
+        saveData(SHORT_GRASS, earth(1), organic(1));
         saveData(PODZOL, earth(1), organic(1));
         saveData(ICE, earth(4), organic(4));
         saveData(SNOWBALL, earth(1));
@@ -151,7 +138,7 @@ public class MatterValueDataProvider extends RecipeProvider {
 
     private void saveData(Item item, MatterValue... instances) {
         var rl = BuiltInRegistries.ITEM.getKey(item);
-        var recipeLocation = ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getNamespace() + "/items/" + rl.getPath());
+        var recipeLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, rl.getNamespace() + "/items/" + rl.getPath());
         var recipe = new MatterValueRecipe( Ingredient.of(item), instances);
         recipeOutput.accept(recipeLocation, recipe, null);
     }
@@ -161,7 +148,7 @@ public class MatterValueDataProvider extends RecipeProvider {
     }
 
     private void saveTag(TagKey<Item> tag, MatterValue... instances) {
-        var recipeLocation = ResourceLocation.fromNamespaceAndPath(tag.location().getNamespace(), tag.location().getNamespace() + "/tags/" + tag.location().getPath());
+        var recipeLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, tag.location().getNamespace() + "/tags/" + tag.location().getPath());
         var recipe = new MatterValueRecipe(Ingredient.of(tag), instances);
         recipeOutput.accept(recipeLocation, recipe, null);
     }

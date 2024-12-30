@@ -19,13 +19,10 @@ import com.hrznstudio.titanium.client.screen.addon.ItemstackFilterScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.button.RedstoneControlButtonComponent;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
-import com.hrznstudio.titanium.component.inventory.InventoryComponent;
 import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.filter.ItemStackFilter;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.hrznstudio.titanium.util.FacingUtil;
-import com.hrznstudio.titanium.util.InventoryUtil;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,7 +30,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -221,7 +217,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         if (!this.getBlockPos().equals(this.cachedReplicationTask.getSource())){
             var capability = this.level.getCapability(Capabilities.ItemHandler.BLOCK, this.cachedReplicationTask.getSource(), Direction.UP);
                 if (capability != null){
-                    if (!ItemHandlerHelper.insertItem(capability, this.cachedReplicationTask.getReplicatingStack().copyWithCount(1), true).isEmpty()){
+                    if (!ItemHandlerHelper.insertItem(capability, this.cachedReplicationTask.getReplicatingStack().copyWithCount(1), false).isEmpty()) {
                         ItemHandlerHelper.insertItem(this.output, this.cachedReplicationTask.getReplicatingStack().copyWithCount(1), false);
                     }
                 } else {

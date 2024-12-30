@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:tall_grass"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 1.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 1.0
+    }
+  ]
+}

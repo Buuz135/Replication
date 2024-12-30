@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:mycelium"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 1.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 4.0
+    }
+  ]
+}
