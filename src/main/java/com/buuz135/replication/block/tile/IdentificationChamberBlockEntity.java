@@ -57,7 +57,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
         InvUtil.disableAllSidesAndEnable(this.input, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK);
         this.addInventory((InventoryComponent<IdentificationChamberBlockEntity>) input);
 
-        this.progressBarComponent = new ProgressBarComponent<>(72, 48, ReplicationConfig.IdentificationChamber.MAX_PROGRESS)
+        this.progressBarComponent = new ProgressBarComponent<>(72, 48, ReplicationConfig.IdentificationChamber.MAX_PROGRESS * 2)
                 .setCanIncrease(iComponentHarness -> canIncrease())
                 .setOnTickWork(() -> {
                     syncObject(this.progressBarComponent);
@@ -81,8 +81,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                 .setInputFilter((itemStack, integer) -> false)
                 .setOutputFilter((itemStack, integer) -> true)
                 .setSlotPosition(integer -> Pair.of(0, 18*integer))
-                .setColorGuiEnabled(false)
-        ;
+                .setColorGuiEnabled(false);
         InvUtil.disableAllSidesAndEnable(this.memoryChipOutput, state.getValue(RotatableBlock.FACING_HORIZONTAL), IFacingComponent.FaceMode.ENABLED, FacingUtil.Sideness.BOTTOM, FacingUtil.Sideness.BACK);
         this.addInventory((InventoryComponent<IdentificationChamberBlockEntity>) this.memoryChipOutput);
     }
@@ -95,7 +94,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     }
 
     private void onFinish(){
-        var input = this.getInput().getStackInSlot(0);
+        var input = this.getInput().getStackInSlot(0).getItem().getDefaultInstance();
         if (!input.isEmpty()){
             for (int i = 0; i < this.memoryChipInput.getSlots(); i++) {
                 var stack = this.memoryChipInput.getStackInSlot(i);
@@ -105,13 +104,13 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                         var item = ItemStack.parseOptional(this.level.registryAccess(), input.get(ReplicationAttachments.BLUEPRINT).getCompound("Item"));
                         var progress = input.get(ReplicationAttachments.BLUEPRINT).getDouble("Progress");
                         returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(this.level, stack, item, (float) progress);
-                        input.shrink(1);
+                        this.getInput().getStackInSlot(0).shrink(1);
                         syncObject(this.input);
                     } else {
                         returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(this.level, stack, input,  0.2f);
                     }
                     if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1){
-                        input.shrink(1);
+                        this.getInput().getStackInSlot(0).shrink(1);
                         syncObject(this.input);
                     }
                     if (returnedValue.getPattern() != null){

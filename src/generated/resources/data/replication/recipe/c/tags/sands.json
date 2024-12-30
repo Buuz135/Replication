@@ -1,16 +1,12 @@
 {
   "type": "replication:matter_value",
   "input": {
-    "item": "minecraft:sunflower"
+    "tag": "c:sands"
   },
   "matter": [
     {
       "type": "replication:earth",
-      "amount": 1.0
-    },
-    {
-      "type": "replication:organic",
-      "amount": 1.0
+      "amount": 2.0
     }
   ]
 }

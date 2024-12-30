@@ -63,8 +63,8 @@ public class MatterValueDataProvider {
         saveData(new Item[]{CRIMSON_FUNGUS, CRIMSON_ROOTS, WEEPING_VINES,
                 WARPED_FUNGUS, WARPED_ROOTS, NETHER_SPROUTS, TWISTING_VINES}, organic(2), nether(2));
 
-        saveTag(Tags.Items.STONES, earth(1));
-        saveTag(Tags.Items.COBBLESTONES, earth(1));
+        saveTag(Tags.Items.STONES, earth(2));
+        saveTag(Tags.Items.COBBLESTONES, earth(2));
         saveData(BLACKSTONE, earth(1), nether(1));
         saveData(OBSIDIAN, earth(4), nether(1));
         saveData(CRYING_OBSIDIAN, earth(4), nether(1), quantum(1));
@@ -80,7 +80,8 @@ public class MatterValueDataProvider {
         saveData(MUD, earth(1));
         saveData(FLINT, earth(1));
         saveData(CLAY_BALL, earth(2));
-        saveData(new Item[]{SAND, GRAVEL, RED_SAND}, earth(1));
+        saveTag(Tags.Items.SANDS, earth(2));
+        saveTag(Tags.Items.GRAVELS, earth(2));
         saveData(new Item[]{WARPED_NYLIUM, CRIMSON_NYLIUM}, organic(2), nether(1));
         saveData(new Item[]{WHITE_CONCRETE, ORANGE_CONCRETE, MAGENTA_CONCRETE, LIGHT_BLUE_CONCRETE, YELLOW_CONCRETE,
                 LIME_CONCRETE, PINK_CONCRETE, GRAY_CONCRETE, LIGHT_GRAY_CONCRETE, CYAN_CONCRETE, PURPLE_CONCRETE, BLUE_CONCRETE,
@@ -116,20 +117,22 @@ public class MatterValueDataProvider {
         saveData(new Item[]{EGG, PUMPKIN, CARVED_PUMPKIN, PORKCHOP, APPLE, COD, SALMON, TROPICAL_FISH, PUFFERFISH, MELON_SLICE, BEEF, CHICKEN, POTATO, POISONOUS_POTATO, CARROT, MUTTON, RABBIT, BEETROOT, GLOW_BERRIES, SWEET_BERRIES,RABBIT_FOOT}, organic(4), living(4));
         saveData(GHAST_TEAR, living(2), organic(2), nether(2));
         saveData(BLAZE_ROD, living(2), organic(2), nether(2));
-        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE, BONE, INK_SAC, RABBIT_HIDE, GLOW_INK_SAC /*,SCUTE*/, NAUTILUS_SHELL, HEART_OF_THE_SEA}, living(2), organic(2));
+        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE, INK_SAC, RABBIT_HIDE, GLOW_INK_SAC, TURTLE_SCUTE, NAUTILUS_SHELL, HEART_OF_THE_SEA}, living(2), organic(2));
+        saveData(BONE, living(3), organic(3));
         saveData(DRAGON_BREATH, living(2), organic(2), quantum(2));
         saveData(PHANTOM_MEMBRANE, living(2), organic(2), nether(2));
         saveData(SHULKER_SHELL, living(4), nether(8));
         saveData(TOTEM_OF_UNDYING, precious(16), quantum(8));
         saveData(COCOA_BEANS, organic(1), earth(1));
         saveData(ENCHANTED_GOLDEN_APPLE, living(4), precious(9*8*9));
+        saveData(new Item[]{OCHRE_FROGLIGHT, PEARLESCENT_FROGLIGHT, PEARLESCENT_FROGLIGHT}, living(2), organic(2));
 
         saveTag(ItemTags.CREEPER_DROP_MUSIC_DISCS, precious(3.3), quantum(1));
         saveData(new Item[]{SCULK, SCULK_VEIN}, organic(1), quantum(1));
         saveData(new Item[]{SCULK_CATALYST, SCULK_SHRIEKER, SCULK_SENSOR}, organic(8), quantum(8));
         saveData(new Item[]{WITHER_SKELETON_SKULL, PLAYER_HEAD, ZOMBIE_HEAD, CREEPER_HEAD, PIGLIN_HEAD, DRAGON_HEAD, SKELETON_SKULL}, organic(8));
         saveData(new Item[]{DEAD_TUBE_CORAL_BLOCK, DEAD_BRAIN_CORAL_BLOCK, DEAD_BUBBLE_CORAL_BLOCK, DEAD_FIRE_CORAL_BLOCK, DEAD_HORN_CORAL_BLOCK}, organic(6));
-        saveData(new Item[]{CACTUS, VINE, TALL_GRASS, LARGE_FERN, SUNFLOWER, LILAC, ROSE_BUSH, PEONY, PITCHER_PLANT, BIG_DRIPLEAF, TORCHFLOWER_SEEDS, PITCHER_POD, SMALL_DRIPLEAF, LILY_PAD, HANGING_ROOTS, GLOW_LICHEN}, earth(1), organic(1));
+        saveData(new Item[]{CACTUS, VINE, TALL_GRASS, LARGE_FERN, BIG_DRIPLEAF, TORCHFLOWER_SEEDS, PITCHER_POD, SMALL_DRIPLEAF, LILY_PAD, HANGING_ROOTS, GLOW_LICHEN}, earth(1), organic(1));
         saveData(new Item[]{TUBE_CORAL_BLOCK, BRAIN_CORAL_BLOCK, BUBBLE_CORAL_BLOCK, FIRE_CORAL_BLOCK, HORN_CORAL_BLOCK}, organic(6), living(4));
         saveData(new Item[]{TUBE_CORAL, BRAIN_CORAL, BUBBLE_CORAL, FIRE_CORAL, HORN_CORAL, TUBE_CORAL_FAN, BRAIN_CORAL_FAN, BUBBLE_CORAL_FAN, FIRE_CORAL_FAN, HORN_CORAL_FAN}, organic(2), living(1));
         saveData(new Item[]{DEAD_BRAIN_CORAL, DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL, DEAD_TUBE_CORAL_FAN, DEAD_BRAIN_CORAL_FAN, DEAD_BUBBLE_CORAL_FAN, DEAD_FIRE_CORAL_FAN, DEAD_HORN_CORAL_FAN}, organic(2));

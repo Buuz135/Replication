@@ -2,6 +2,7 @@ package com.buuz135.replication.client;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.calculation.MatterValue;
+import com.buuz135.replication.util.NumberUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -73,7 +74,8 @@ public class MatterTooltipClientComponent implements ClientTooltipComponent {
         guiGraphics.pose().pushPose();
         float scale = 0.5f;
         guiGraphics.pose().scale(scale, scale, scale);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, String.valueOf(Mth.ceil(instance.getAmount())), (int) ((x + (glitch ? 1 : 0) +8 ) / scale), (int) ((y +(glitch ? 1 : 0) +15) / scale), new Color(color[0], color[1], color[2], color[3]).getRGB());
+        var number = NumberUtils.getFormatedBigNumber(Mth.ceil(instance.getAmount()));
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, number, (int) ((x + (glitch ? 1 : 0) + 8) / scale), (int) ((y + (glitch ? 1 : 0) + 15) / scale), new Color(color[0], color[1], color[2], color[3]).getRGB());
         guiGraphics.pose().popPose();
         /*OLD ENCODED NUMBERS guiGraphics.blit(BAR, x + (glitch ? 1 : 0), y +(glitch ? 1 : 0), 0,56, 3, 15, 128, 128);
         for (int i = 0; i < numberLength * 10 + 1; i++) {

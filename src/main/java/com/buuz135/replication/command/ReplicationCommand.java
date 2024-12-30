@@ -16,7 +16,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
-
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +52,7 @@ public class ReplicationCommand {
             LOGGER.info("SCANNING TAB " + tab.getDisplayName().getString());
             var list = tab.getDisplayItems();
             var missing = list.stream().filter(item -> BuiltInRegistries.ITEM.getKey(item.getItem()).getNamespace().equals("minecraft"))
-                    .filter(itemStack -> itemStack.getComponents().isEmpty())
+                    //.filter(itemStack -> itemStack.getComponents().isEmpty())
                     .filter(itemStack -> !(itemStack.getItem() instanceof SpawnEggItem))
                     .filter(itemStack -> !BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().contains("_ore"))
                     .filter(itemStack -> !BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().contains("_shulker"))
