@@ -1,16 +1,16 @@
 {
   "type": "replication:matter_value",
   "input": {
-    "item": "minecraft:bone"
+    "item": "minecraft:verdant_froglight"
   },
   "matter": [
     {
       "type": "replication:living",
-      "amount": 3.0
+      "amount": 2.0
     },
     {
       "type": "replication:organic",
-      "amount": 3.0
+      "amount": 2.0
     }
   ]
 }

@@ -125,7 +125,7 @@ public class MatterValueDataProvider {
         saveData(TOTEM_OF_UNDYING, precious(16), quantum(8));
         saveData(COCOA_BEANS, organic(1), earth(1));
         saveData(ENCHANTED_GOLDEN_APPLE, living(4), precious(9*8*9));
-        saveData(new Item[]{OCHRE_FROGLIGHT, PEARLESCENT_FROGLIGHT, PEARLESCENT_FROGLIGHT}, living(2), organic(2));
+        saveData(new Item[]{OCHRE_FROGLIGHT, PEARLESCENT_FROGLIGHT, VERDANT_FROGLIGHT}, living(2), organic(2));
 
         saveTag(ItemTags.CREEPER_DROP_MUSIC_DISCS, precious(3.3), quantum(1));
         saveData(new Item[]{SCULK, SCULK_VEIN}, organic(1), quantum(1));
