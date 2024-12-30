@@ -1,6 +1,7 @@
 package com.buuz135.replication.calculation;
 
 import com.buuz135.replication.Replication;
+import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.packet.ReplicationCalculationPacket;
@@ -275,7 +276,7 @@ public class ReplicationCalculation {
                 return this.cached;
             }
             // SAFETY CHECKS
-            if (visitedCalculations.size() > 11 || visitedRecipes.size() > 50) { //TODO CONFIG
+            if (visitedCalculations.size() > ReplicationConfig.RecipeCalculation.MAX_RECIPE_DEPTH || visitedRecipes.size() > ReplicationConfig.RecipeCalculation.MAX_VISITED_RECIPES) { //TODO CONFIG
                 if (printDebug)
                     CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "POSIBLE INFINTE LOOP FOUND, BREAKING");
                 //resolved = true;

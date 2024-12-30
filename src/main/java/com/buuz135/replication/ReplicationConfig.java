@@ -54,4 +54,17 @@ public class ReplicationConfig {
 
     }
 
+    @ConfigFile.Child(ReplicationConfig.class)
+    public class RecipeCalculation {
+
+        @ConfigVal.InRangeInt(min = 1)
+        public static int MAX_RECIPE_DEPTH = 11;
+
+        @ConfigVal
+        @ConfigVal.InRangeInt(min = 1)
+        public static int MAX_VISITED_RECIPES = 50;
+
+    }
+
+
 }
