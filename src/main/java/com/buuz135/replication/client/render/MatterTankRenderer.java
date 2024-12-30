@@ -2,37 +2,21 @@ package com.buuz135.replication.client.render;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.api.IMatterType;
-import com.buuz135.replication.api.MatterType;
-import com.buuz135.replication.block.MatterPipeBlock;
-import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.block.tile.MatterTankBlockEntity;
-import com.buuz135.replication.client.render.shader.ReplicationRenderTypes;
-import com.buuz135.replication.client.render.shader.ShaderTexture;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.AABB;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-
-import java.util.List;
 
 public class MatterTankRenderer<T extends MatterTankBlockEntity> implements BlockEntityRenderer<T> {
 
@@ -44,7 +28,8 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
     public void render(T tile, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn) {
         var padding = 0.2;
         var matterStack = tile.getTanks().get(0).getMatter();
-        if (!matterStack.isEmpty())renderFaces(poseStack, multiBufferSource, new AABB(padding,0.255,padding,1-padding,0.255 + (matterStack.getAmount()/ (double) tile.getTanks().get(0).getCapacity()) * 0.5,1-padding), combinedLightIn, combinedOverlayIn, matterStack.getMatterType());
+        if (!matterStack.isEmpty())
+            renderFaces(poseStack, multiBufferSource, new AABB(padding, 0.255, padding, 1 - padding, 0.255 + (matterStack.getAmount() / (double) tile.getTanks().get(0).getCapacity()) * 0.5, 1 - padding), LightTexture.FULL_BRIGHT, combinedOverlayIn, matterStack.getMatterType());
     }
 
     private void renderFaces(PoseStack matrixStack, MultiBufferSource bufferIn, AABB bounds, int combinedLight, int combinedOverlay, IMatterType matterType) {
@@ -67,13 +52,12 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
         float y2 = (float) bounds.maxY;
         float z1 = (float) bounds.minZ;
         float z2 = (float) bounds.maxZ;
-        float bx1 = (float) (bounds.minX * 16);
-        float bx2 = (float) (bounds.maxX * 16);
-        float by1 = (float) (bounds.minY * 16);
-        float by2 = (float) (bounds.maxY * 16);
-        float bz1 = (float) (bounds.minZ * 16);
-        float bz2 = (float) (bounds.maxZ * 16);
-
+        float bx1 = (float) (bounds.minX);
+        float bx2 = (float) (bounds.maxX);
+        float by1 = (float) (bounds.minY);
+        float by2 = (float) (bounds.maxY);
+        float bz1 = (float) (bounds.minZ);
+        float bz2 = (float) (bounds.maxZ);
 
         Matrix4f posMat = matrixStack.last().pose();
 
