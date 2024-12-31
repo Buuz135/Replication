@@ -46,8 +46,11 @@ import net.minecraft.world.level.material.MapColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
@@ -101,6 +104,12 @@ public class Replication extends ModuleController {
                 return null;
             }, ReplicationRegistry.Blocks.DISINTEGRATOR.getBlock(), ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.getBlock(), ReplicationRegistry.Blocks.REPLICATOR.getBlock());
         }).subscribe();
+
+        if (ModList.get().isLoaded("darkmodeeverywhere")) {
+            EventManager.mod(InterModEnqueueEvent.class).process(interModEnqueueEvent -> {
+                InterModComms.sendTo("darkmodeeverywhere", "dme-shaderblacklist", () -> "com.buuz135.replication");
+            }).subscribe();
+        }
     }
 
     @Override

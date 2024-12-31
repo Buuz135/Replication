@@ -1,5 +1,8 @@
-# 1.1.1
+# 1.1.2
 
+* Blacklisted replication from Dark Mode Everywhere
+
+# 1.1.1
 * Reduced Replica Ore Spawn rate
 * Fixed culling on Replica Ore
 
