@@ -12,36 +12,90 @@
       "from": [ 0, 0, 0 ],
       "to": [ 16, 16, 16 ],
       "faces": {
-        "down":  { "texture": "#base" },
-        "up":    { "texture": "#base" },
-        "north": { "texture": "#base" },
-        "south": { "texture": "#base" },
-        "west":  { "texture": "#base" },
-        "east":  { "texture": "#base" }
+        "down": {
+          "texture": "#base",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#base",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#base",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#base",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#base",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#base",
+          "cullface": "east"
+        }
       }
     },
     {
       "from": [ 0, 0, 0 ],
       "to": [ 16, 16, 16 ],
       "faces": {
-        "down":  { "texture": "#base_overlay" },
-        "up":    { "texture": "#base_overlay" },
-        "north": { "texture": "#base_overlay" },
-        "south": { "texture": "#base_overlay" },
-        "west":  { "texture": "#base_overlay" },
-        "east":  { "texture": "#base_overlay" }
+        "down": {
+          "texture": "#base_overlay",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#base_overlay",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#base_overlay",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#base_overlay",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#base_overlay",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#base_overlay",
+          "cullface": "east"
+        }
       }
     },
     {
       "from": [ 0, 0, 0 ],
       "to": [ 16, 16, 16 ],
       "faces": {
-        "down":  { "texture": "#overlay"},
-        "up":    { "texture": "#overlay"},
-        "north": { "texture": "#overlay"},
-        "south": { "texture": "#overlay"},
-        "west":  { "texture": "#overlay"},
-        "east":  { "texture": "#overlay"}
+        "down": {
+          "texture": "#overlay",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#overlay",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#overlay",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#overlay",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#overlay",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#overlay",
+          "cullface": "east"
+        }
       },
       "neoforge_data": {
         "block_light": 15,

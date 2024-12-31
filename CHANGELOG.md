@@ -1,5 +1,9 @@
-# 1.1.0
+# 1.1.1
 
+* Reduced Replica Ore Spawn rate
+* Fixed culling on Replica Ore
+
+# 1.1.0
 * Ported to 1.21, recipe calculation much improved
 
 # 1.0.4
