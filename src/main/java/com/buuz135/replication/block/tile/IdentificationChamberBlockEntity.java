@@ -101,6 +101,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                 if (!stack.isEmpty() && stack.getItem() instanceof IMatterPatternModifier<?> patternModifier){
                     IMatterPatternModifier.ModifierAction returnedValue = null;
                     if (input.has(ReplicationAttachments.BLUEPRINT)){
+                        input = this.getInput().getStackInSlot(0);
                         var item = ItemStack.parseOptional(this.level.registryAccess(), input.get(ReplicationAttachments.BLUEPRINT).getCompound("Item"));
                         var progress = input.get(ReplicationAttachments.BLUEPRINT).getDouble("Progress");
                         returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(this.level, stack, item, (float) progress);

@@ -14,10 +14,10 @@ jobs:
         uses: actions/checkout@v2
       - name: validate gradle wrapper
         uses: gradle/wrapper-validation-action@v1
-      - name: setup jdk 17
+      - name: setup jdk 21
         uses: actions/setup-java@v1
         with:
-          java-version: "17"
+          java-version: "21"
       - name: make gradle wrapper executable
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
@@ -32,11 +32,10 @@ jobs:
           files-secondary: build/libs/*-@(dev|sources).jar
           version-type: beta
           version: ${{ github.ref_name }}
-          loaders: forge
-          game-versions: 1.20.1
-          java: 17
+          loaders: neoforge
+          game-versions: 1.21.1
+          java: 21
           name: ""
-          changelog: "https://github.com/Buuz135/Replication/blob/main/CHANGELOG.md"
+          changelog: "https://github.com/Buuz135/Replication/blob/1.21/CHANGELOG.md"
           dependencies: |
             titanium | depends
-            aequivaleo | depends

@@ -54,7 +54,7 @@ public class ClientEvents {
             if (Minecraft.getInstance().level != null){
                 var instance = ClientReplicationCalculation.getMatterCompound(pre.getItemStack());
                 if (instance != null){
-                    if (Screen.hasShiftDown() || true){
+                    if (Screen.hasShiftDown()) {
                         pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(instance)));
                     } else {
                         pre.getTooltipElements().add(Either.left(Component.literal("ℹ Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));

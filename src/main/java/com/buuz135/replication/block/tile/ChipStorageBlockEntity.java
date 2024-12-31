@@ -5,7 +5,6 @@ import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.MatterPattern;
 import com.buuz135.replication.client.gui.ReplicationAddonProvider;
 import com.buuz135.replication.client.gui.addons.ChipStorageAddon;
-import com.buuz135.replication.client.gui.addons.DisintegratorAddon;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
@@ -13,11 +12,8 @@ import com.hrznstudio.titanium.component.inventory.SidedInventoryComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -92,7 +88,7 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
         }
     }
 
-    private void cachePatterns(){
+    public void cachePatterns() {
         this.cachedPatters = new ArrayList<>();
         for (int i = 0; i < this.chips.getSlots(); i++) {
             var slot = this.chips.getStackInSlot(i);

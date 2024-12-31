@@ -1,3 +1,7 @@
+# 1.1.0
+
+* Ported to 1.21, recipe calculation much improved
+
 # 1.0.4
 * Changed the pipe recipe to give you 8 items
 * Fixed some tank transfer issues in the Disintegrator
