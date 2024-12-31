@@ -141,7 +141,7 @@ public class MatterValueDataProvider {
 
     private void saveData(Item item, MatterValue... instances) {
         var rl = BuiltInRegistries.ITEM.getKey(item);
-        var recipeLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, rl.getNamespace() + "/items/" + rl.getPath());
+        var recipeLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + rl.getNamespace() + "/items/" + rl.getPath());
         var recipe = new MatterValueRecipe( Ingredient.of(item), instances);
         recipeOutput.accept(recipeLocation, recipe, null);
     }
@@ -151,7 +151,7 @@ public class MatterValueDataProvider {
     }
 
     private void saveTag(TagKey<Item> tag, MatterValue... instances) {
-        var recipeLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, tag.location().getNamespace() + "/tags/" + tag.location().getPath());
+        var recipeLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + tag.location().getNamespace() + "/tags/" + tag.location().getPath());
         var recipe = new MatterValueRecipe(Ingredient.of(tag), instances);
         recipeOutput.accept(recipeLocation, recipe, null);
     }
