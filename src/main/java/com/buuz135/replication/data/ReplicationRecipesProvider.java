@@ -4,6 +4,7 @@ import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
+import com.hrznstudio.titanium.recipe.generator.TitaniumShapelessRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -43,6 +44,11 @@ public class ReplicationRecipesProvider extends RecipeProvider {
                 .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
                 .define('G', Items.GOLD_INGOT)
                 .save(consumer);
+        TitaniumShapelessRecipeBuilder.shapelessRecipe(ReplicationRegistry.Blocks.RAW_REPLICA_BLOCK.get()).requires(ReplicationRegistry.Items.RAW_REPLICA.get(), 9).save(consumer);
+        TitaniumShapelessRecipeBuilder.shapelessRecipe(ReplicationRegistry.Items.RAW_REPLICA.get(), 9).requires(ReplicationRegistry.Blocks.RAW_REPLICA_BLOCK.get(), 1).save(consumer);
+        TitaniumShapelessRecipeBuilder.shapelessRecipe(ReplicationRegistry.Blocks.REPLICA_BLOCK.get()).requires(ReplicationRegistry.Items.REPLICA_INGOT.get(), 9).save(consumer);
+        TitaniumShapelessRecipeBuilder.shapelessRecipe(ReplicationRegistry.Items.REPLICA_INGOT.get(), 9).requires(ReplicationRegistry.Blocks.REPLICA_BLOCK.get(), 1).save(consumer);
+
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ReplicationRegistry.Items.RAW_REPLICA.get()), RecipeCategory.MISC, ReplicationRegistry.Items.REPLICA_INGOT.get(), 0.35F, 200)
                 .unlockedBy("has_plastic", this.has(ReplicationRegistry.Items.RAW_REPLICA.get())).save(consumer, ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "smelting_raw_replica"));
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(ReplicationRegistry.Items.RAW_REPLICA.get()), RecipeCategory.MISC, ReplicationRegistry.Items.REPLICA_INGOT.get(), 0.35F, 100)

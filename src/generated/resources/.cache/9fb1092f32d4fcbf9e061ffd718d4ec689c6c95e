@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-30T22:48:33.8761583	Recipes
+// 1.21.1	2024-12-31T13:02:43.3353051	Recipes
 0e2e80e06c5992885609317413a8d6f6ede0408e data/replication/advancement/recipes/misc/blasting_raw_replica.json
 885215f7b02a0e3a1a2d8cea262f562a668b17a8 data/replication/advancement/recipes/misc/chip_storage.json
 2b1a60e85e62003c00d92f07413d9748ce1cb335 data/replication/advancement/recipes/misc/disintegrator.json
@@ -6,8 +6,12 @@
 d5ebc8091977a857667da39e31284238b8f4dbe7 data/replication/advancement/recipes/misc/matter_network_pipe.json
 d6bd760e1d3b507bd1bc16f63598688e57b53be7 data/replication/advancement/recipes/misc/matter_tank.json
 add6acca8fd63f728c35a43b787d3068ea5f3e6a data/replication/advancement/recipes/misc/memory_chip.json
+e15190202b677c7ce1398186f27814d688fe84f5 data/replication/advancement/recipes/misc/raw_replica.json
+e9df175b2384dc2dddb4a390d36323e1aa75892b data/replication/advancement/recipes/misc/raw_replica_block.json
 57432e61d58cc778d334ca85b4e1072454603de8 data/replication/advancement/recipes/misc/replication_terminal.json
 f99ed92a76e3f0f73c07a99585674df2a2456010 data/replication/advancement/recipes/misc/replicator.json
+359d089325eedf550fa937106fb2c948a22eede0 data/replication/advancement/recipes/misc/replica_block.json
+7de949f767e2e7f5085f2ae2d1bf6ca80ef3f8e7 data/replication/advancement/recipes/misc/replica_ingot.json
 87a3c736746f7df11b4223e72375a866d298904d data/replication/advancement/recipes/misc/smelting_raw_replica.json
 bfd41a3675c779ca14214f3ba72b45be35bc799e data/replication/recipe/blasting_raw_replica.json
 d48f131a4f5a21e2f9d329404c1d2c4063feb81b data/replication/recipe/chip_storage.json
@@ -212,6 +216,10 @@ afd08c002e8e04d72f6cf924120d6186055c2d8d data/replication/recipe/matter_values/m
 b68f0500d2395583b014b6d5a17a4224e89d8873 data/replication/recipe/matter_values/minecraft/tags/small_flowers.json
 08677a81bf3d3e06e1f17f53e6e789ec447dd866 data/replication/recipe/matter_values/minecraft/tags/tall_flowers.json
 70218081be0b731b44c8337345829c2e52d1a8f0 data/replication/recipe/memory_chip.json
+d6dd362f191391c06ab5b413361b22840ee827a7 data/replication/recipe/raw_replica.json
+6a7fd9d5f3dc5c92c558fa86d9e66f0dd3c2fac7 data/replication/recipe/raw_replica_block.json
 47c33699d67d1401f8d22322655f0e9b148b223f data/replication/recipe/replication_terminal.json
 94496db2e1939f6a0f8e0d4290b62ef8792fb402 data/replication/recipe/replicator.json
+b6de1471a797b7192d8a0630994eadb285fafbac data/replication/recipe/replica_block.json
+b17d87133d4c284874eb266c334d5d31e1cb57b7 data/replication/recipe/replica_ingot.json
 c777cbe9576b6ec315875cb00432b55de3a6c564 data/replication/recipe/smelting_raw_replica.json
