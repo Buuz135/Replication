@@ -62,13 +62,8 @@ public class MatterValueRecipe extends SerializableRecipe {
     }
 
     @Override
-<<<<<<<HEAD
     public ItemStack assemble(Container container, RegistryAccess registryAccess) {
-        return null;
-=======
-        public ItemStack assemble (CraftingInput craftingInput, HolderLookup.Provider provider){
-            return ItemStack.EMPTY;
->>>>>>>9415 b55(Return empty on the recipe)
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -77,11 +72,7 @@ public class MatterValueRecipe extends SerializableRecipe {
     }
 
     @Override
-<<<<<<<HEAD
     public ItemStack getResultItem(RegistryAccess registryAccess) {
-=======
-            public ItemStack getResultItem (HolderLookup.Provider provider){
->>>>>>>9415 b55(Return empty on the recipe)
         return ItemStack.EMPTY;
     }
 
