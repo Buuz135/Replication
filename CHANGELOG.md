@@ -1,5 +1,8 @@
-# 1.1.2
+# 1.1.3
 
+* Fixed server side crashes
+
+# 1.1.2
 * Blacklisted replication from Dark Mode Everywhere
 
 # 1.1.1

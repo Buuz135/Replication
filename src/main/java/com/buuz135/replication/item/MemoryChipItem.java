@@ -1,7 +1,6 @@
 package com.buuz135.replication.item;
 
 import com.buuz135.replication.ReplicationAttachments;
-import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
 import com.buuz135.replication.api.pattern.MatterPattern;
@@ -14,6 +13,8 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -87,6 +88,7 @@ public class MemoryChipItem extends ReplicationItem implements IMatterPatternHol
         return key == Key.SHIFT;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void addTooltipDetails(@Nullable BasicItem.Key key, ItemStack stack, List<Component> tooltip, boolean advanced) {
         super.addTooltipDetails(key, stack, tooltip, advanced);
