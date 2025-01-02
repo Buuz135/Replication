@@ -1,5 +1,8 @@
-# 1.1.3
+# 1.1.4
 
+* Removed the filter that stopped the items with extra components from being calculated
+
+# 1.1.3
 * Fixed server side crashes
 
 # 1.1.2

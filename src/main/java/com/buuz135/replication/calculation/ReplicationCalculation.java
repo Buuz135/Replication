@@ -5,7 +5,6 @@ import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.packet.ReplicationCalculationPacket;
 import com.buuz135.replication.recipe.MatterValueRecipe;
-import com.buuz135.replication.util.InvUtil;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -111,7 +110,7 @@ public class ReplicationCalculation {
                     }
                     try {
                         var stack = item.getDefaultInstance();
-                        if (InvUtil.hasExtraComponents(stack)) continue;
+                        //if (InvUtil.hasExtraComponents(stack)) continue;
                         var rl = getNameFromStack(stack);
                         if (!DEFAULT_MATTER_COMPOUND.containsKey(rl) && !SORTED_CALCULATION_REFERENCE.containsKey(rl)) {
                             continue;
