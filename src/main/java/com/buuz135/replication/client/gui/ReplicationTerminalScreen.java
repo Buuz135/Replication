@@ -23,13 +23,10 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
-
-import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,6 +52,8 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         this.imageHeight = 256;
         this.inventoryLabelY = 120;
         this.titleLabelY = -10;
+        this.height = imageHeight;
+        this.width = imageWidth;
     }
 
     @Override

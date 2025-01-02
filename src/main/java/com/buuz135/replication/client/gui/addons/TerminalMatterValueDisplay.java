@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,6 +29,10 @@ public record TerminalMatterValueDisplay(IMatterType type, long amount){
         float scale = 0.5f;
         guiGraphics.pose().scale(scale, scale, scale);
         var display = NumberUtils.getFormatedBigNumber((int) amount);
+        var opacity = (int) (0.85 * 255.0F) << 24 & -16777216;
+        var size = Minecraft.getInstance().font.width(display) * scale;
+        guiGraphics.fill((int) ((x + 17) / scale - Minecraft.getInstance().font.width(display)), (int) ((y + 13) / scale), (int) ((x + 18 + size) / scale - Minecraft.getInstance().font.width(display)), (int) ((y + 14 + 8 * scale) / scale), 0, FastColor.ARGB32.multiply(opacity, 0xFFFFFFFF));
+
         guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 18) / scale - Minecraft.getInstance().font.width(display), (y + 14) / scale , 0xFFFFFF, true);
 //        guiGraphics.drawString(Minecraft.getInstance().font, "Matter: " + type.getName().toUpperCase(), (x + 24) / scale, (y + 6) / scale, 0x72e567, false);
 //        guiGraphics.drawString(Minecraft.getInstance().font, "Amount: " + new DecimalFormat().format(amount), (x + 24) / scale, (y + 11) / scale, 0x72e567, false);

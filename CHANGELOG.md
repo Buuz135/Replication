@@ -1,5 +1,6 @@
 # 1.1.4
 
+* Added a tint on the background of the matter tank numbers in the terminal to improve readability
 * Removed the filter that stopped the items with extra components from being calculated
 
 # 1.1.3
