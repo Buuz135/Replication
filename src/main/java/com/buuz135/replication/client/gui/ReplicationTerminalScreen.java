@@ -123,7 +123,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float v, int mouseX, int mouseY) {
-        this.renderBackground(guiGraphics);
+        //super.renderBackground(guiGraphics, mouseX, mouseY, v);
 
         int x = this.leftPos;
         int y = this.topPos;
@@ -175,7 +175,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         }
     }
 
-    private boolean shouldBaseGUIRender(){
+    public boolean shouldBaseGUIRender() {
         return this.replicationRequestWidget == null && replicationTaskWidget == null;
     }
 
