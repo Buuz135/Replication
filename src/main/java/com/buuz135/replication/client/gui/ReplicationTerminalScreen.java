@@ -146,7 +146,34 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
             guiGraphics.blit(BUTTONS, j, k + (int) ((float) (i - k - 5) * this.scrollOffs), 245, 0, 11, 5);
 
+            //Crafting rendering
+            /*guiGraphics.blit(BUTTONS, x - 27, y + 19, 47, 0, 27, 174);
+            guiGraphics.pose().pushPose();
+            var scale = 0.75f;
+            guiGraphics.pose().scale(scale, scale, scale);
+            guiGraphics.renderItem(new ItemStack(ReplicationRegistry.Blocks.REPLICATOR.asItem()), (int) ((x  - 27) / scale), (int) ((y + 19) / scale));
 
+
+            guiGraphics.pose().popPose();
+            var tasks = TaskSyncPacket.CLIENT_TASK_STORAGE.getOrDefault(this.getMenu().getNetwork(), new HashMap<>()).values().stream().toList();
+            for (int l = 0; l < 8; l++) {
+                if (tasks.size() <= l) continue;
+                var task = tasks.get(l);
+
+                guiGraphics.renderItem(task.getReplicatingStack(), x  - 18, y + 28 + l * 20);
+
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(0,0,200);
+                scale = 0.6f;
+                guiGraphics.pose().scale(scale, scale, scale);
+                var display = NumberUtils.getFormatedBigNumber(task.getTotalAmount() - task.getCurrentAmount());
+                var opacity = (int) (0.5 * 255.0F) << 24 & -16777216;
+                var size = Minecraft.getInstance().font.width(display) * scale;
+                guiGraphics.fill((int) ((x  - 18 + 16) / scale - Minecraft.getInstance().font.width(display)), (int) ((y + 28 + l * 20 + 11) / scale), (int) ((x  - 18 + 16 + size) / scale - Minecraft.getInstance().font.width(display)), (int) ((y + 28 + l * 20 + 11 + 8 * scale) / scale), 0, FastColor.ARGB32.multiply(opacity, 0xFFFFFFFF));
+                guiGraphics.drawString(Minecraft.getInstance().font, display, (x  - 18 + 16) / scale - Minecraft.getInstance().font.width(display), (y + 28 + l * 20 + 11) / scale, 0x72e567, false);
+                guiGraphics.pose().popPose();
+
+            }*/
         }
     }
 
