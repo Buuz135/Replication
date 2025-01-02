@@ -136,7 +136,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         }else {
             guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
             // TODO: Work on the Extras
-            guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), x + this.imageWidth, y + 19, 0, 0, 27, 174);
+            guiGraphics.blit(BUTTONS, x + this.imageWidth, y + 19, 0, 0, 27, 174);
             this.searchBox.render(guiGraphics, mouseX, mouseY, v);
             this.craftingButton.render(guiGraphics, mouseX, mouseY, v);
 
@@ -175,7 +175,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         }
     }
 
-    private boolean shouldBaseGUIRender(){
+    public boolean shouldBaseGUIRender() {
         return this.replicationRequestWidget == null && replicationTaskWidget == null;
     }
 

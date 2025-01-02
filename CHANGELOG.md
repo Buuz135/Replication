@@ -1,5 +1,6 @@
 # 1.1.4
 
+* Added regions to JEI so items don't overlap replication screens, closes #17
 * Added a tint on the background of the matter tank numbers in the terminal to improve readability
 * Removed the filter that stopped the items with extra components from being calculated
 
