@@ -26,7 +26,7 @@ public class ReplicationTerminalScreenHandler implements IGuiContainerHandler<Re
             rectangles.add(new Rect2i(containerScreen.getGuiLeft() + containerScreen.getXSize(), containerScreen.getGuiTop() + 20, 27, 174));
         } else {
             rectangles.add(new Rect2i(containerScreen.getGuiLeft() + containerScreen.getXSize(), containerScreen.getGuiTop(), 50, containerScreen.getYSize()));
-
+            rectangles.add(new Rect2i(containerScreen.getGuiLeft() - 30, containerScreen.getGuiTop(), 50, containerScreen.getYSize()));
         }
         return rectangles;
     }
