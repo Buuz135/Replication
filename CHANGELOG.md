@@ -1,3 +1,8 @@
+# 1.1.5
+
+* Fixed matter components being added to empty stacks and Matter components are now always shown when the Replication
+  Terminal is open
+
 # 1.1.4
 
 * Added regions to JEI so items don't overlap replication screens, closes #17

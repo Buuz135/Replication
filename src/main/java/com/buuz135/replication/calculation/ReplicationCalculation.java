@@ -110,6 +110,7 @@ public class ReplicationCalculation {
                     }
                     try {
                         var stack = item.getDefaultInstance();
+                        if (stack.isEmpty()) continue;
                         //if (InvUtil.hasExtraComponents(stack)) continue;
                         var rl = getNameFromStack(stack);
                         if (!DEFAULT_MATTER_COMPOUND.containsKey(rl) && !SORTED_CALCULATION_REFERENCE.containsKey(rl)) {
