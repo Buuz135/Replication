@@ -1,3 +1,7 @@
+# 1.1.7
+
+* Changed Replicators to consume power only when working for real
+
 # 1.1.6
 
 * Fixed Replicators going to infinity when their inventory is full
