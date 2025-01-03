@@ -1,3 +1,7 @@
+# 1.1.6
+
+* Fixed Replicators going to infinity when their inventory is full
+
 # 1.1.5
 
 * Fixed matter components being added to empty stacks and Matter components are now always shown when the Replication
