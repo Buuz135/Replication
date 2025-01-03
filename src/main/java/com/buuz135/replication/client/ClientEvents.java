@@ -53,10 +53,10 @@ public class ClientEvents {
             event.register(MatterTooltipComponent.class, MatterTooltipClientComponent::new);
         }).subscribe();
         EventManager.forge(RenderTooltipEvent.GatherComponents.class).process(pre -> {
-            if (Minecraft.getInstance().level != null){
+            if (Minecraft.getInstance().level != null && !pre.getItemStack().isEmpty()) {
                 var instance = ClientReplicationCalculation.getMatterCompound(pre.getItemStack());
-                if (instance != null){
-                    if (Screen.hasShiftDown()) {
+                if (instance != null && !instance.getValues().isEmpty()) {
+                    if (Screen.hasShiftDown() || Minecraft.getInstance().screen instanceof ReplicationTerminalScreen) {
                         pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(instance)));
                     } else {
                         pre.getTooltipElements().add(Either.left(Component.literal("ℹ Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));

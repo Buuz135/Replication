@@ -27,13 +27,11 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 
 
 public class ReplicationCalculation {
@@ -99,11 +97,10 @@ public class ReplicationCalculation {
 
             /*
             time = System.currentTimeMillis();
-            CALCULATOR_LOG.info("minecraft:oak_planks");
-            var resolved = SORTED_CALCULATION_REFERENCE.get("minecraft:oak_planks").resolve(0, new ArrayList<>(), true);
+            CALCULATOR_LOG.info("minecraft:red_dye");
+            var resolved = SORTED_CALCULATION_REFERENCE.get("minecraft:red_dye").resolve(0, new ArrayList<>(), true);
             CALCULATOR_LOG.info(resolved);
             CALCULATOR_LOG.info("Checked oak in " + (System.currentTimeMillis() - time) + "ms");
-
             */
 
 
@@ -122,7 +119,8 @@ public class ReplicationCalculation {
                     }
                     try {
                         var stack = item.getDefaultInstance();
-
+                        if (stack.isEmpty()) continue;
+                        //if (InvUtil.hasExtraComponents(stack)) continue;
                         var rl = getNameFromStack(stack);
                         if (!DEFAULT_MATTER_COMPOUND.containsKey(rl) && !SORTED_CALCULATION_REFERENCE.containsKey(rl)) {
                             continue;
