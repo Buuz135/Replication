@@ -40,6 +40,7 @@ import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
@@ -51,7 +52,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-// The value here should match an entry in the META-INF/mods.toml file
+// The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod("replication")
 public class Replication extends ModuleController {
 
@@ -136,7 +137,7 @@ public class Replication extends ModuleController {
             TAB.getTabList().add(item);
             return item;
         });
-        EventManager.mod(BuildCreativeModeTabContentsEvent.class).process(buildCreativeModeTabContentsEvent -> {
+        EventManager.mod(BuildCreativeModeTabContentsEvent.class, EventPriority.LOW).process(buildCreativeModeTabContentsEvent -> {
             if (buildCreativeModeTabContentsEvent.getTabKey().location().equals(TAB.getResourceLocation())){
                 for (IMatterType value : ReplicationRegistry.MATTER_TYPES_REGISTRY.get().getValues()) {
                     if (value.equals(MatterType.EMPTY)) continue;
@@ -173,7 +174,8 @@ public class Replication extends ModuleController {
         event.getGenerator().addProvider(true, new RepLangItemProvider(event.getGenerator(), MOD_ID, "en_us", blocks));
         var blockTags = new ReplicationBlockTagsProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(), MOD_ID, event.getExistingFileHelper(), blocks);
         event.getGenerator().addProvider(true, blockTags);
-        event.getGenerator().addProvider(true, new ReplicationRecipesProvider(event.getGenerator(), NonNullLazy.of(() -> blocks)));
+        event.getGenerator().addProvider(true, new ReplicationItemTagsProvider(event.getGenerator(), event.getLookupProvider(), blockTags.contentsGetter(), MOD_ID, event.getExistingFileHelper()));
+        event.getGenerator().addProvider(true, new ReplicationRecipesProvider(event.getGenerator(), () -> blocks));
         event.getGenerator().addProvider(true, new MatterValueDataProvider(event.getGenerator(), MOD_ID));
     }
 }

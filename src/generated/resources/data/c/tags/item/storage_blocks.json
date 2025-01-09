@@ -1,0 +1,6 @@
+{
+  "values": [
+    "replication:replica_block",
+    "replication:raw_replica_block"
+  ]
+}
