@@ -9,10 +9,7 @@ import com.buuz135.replication.block.tile.ReplicationMachine;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
-import com.buuz135.replication.data.RepLangItemProvider;
-import com.buuz135.replication.data.ReplicationBlockTagsProvider;
-import com.buuz135.replication.data.ReplicationLootTableDataProvider;
-import com.buuz135.replication.data.ReplicationRecipesProvider;
+import com.buuz135.replication.data.*;
 import com.buuz135.replication.item.MatterBluePrintItem;
 import com.buuz135.replication.item.MemoryChipItem;
 import com.buuz135.replication.network.DefaultMatterNetworkElement;
@@ -199,6 +196,7 @@ public class Replication extends ModuleController {
         event.getGenerator().addProvider(true, new RepLangItemProvider(event.getGenerator(), MOD_ID, "en_us", blocks));
         var blockTags = new ReplicationBlockTagsProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(), MOD_ID, event.getExistingFileHelper(), blocks);
         event.getGenerator().addProvider(true, blockTags);
+        event.getGenerator().addProvider(true, new ReplicationItemTagsProvider(event.getGenerator(), event.getLookupProvider(), blockTags.contentsGetter(), MOD_ID, event.getExistingFileHelper()));
         event.getGenerator().addProvider(true, new ReplicationRecipesProvider(event.getGenerator(), () -> blocks, event.getLookupProvider()));
     }
 }

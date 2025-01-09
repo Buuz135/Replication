@@ -1,3 +1,9 @@
-// 1.21.1	2024-12-29T23:44:52.407812	Tags for minecraft:block mod id replication
+// 1.21.1	2025-01-09T20:04:22.952101	Tags for minecraft:block mod id replication
+566f92c53c5b9baff70d86375e4303aaae2a7fa7 data/c/tags/block/ores.json
+566f92c53c5b9baff70d86375e4303aaae2a7fa7 data/c/tags/block/ores/replica.json
+566f92c53c5b9baff70d86375e4303aaae2a7fa7 data/c/tags/block/ores_in_ground/deepslate.json
+5a88c1249f3a388d71dbf748137d9b701e886bd2 data/c/tags/block/storage_blocks.json
+68877469a633cf890ecd8ca2c0f9cd6ea44e83a2 data/c/tags/block/storage_blocks/raw_replica.json
+6892c0df0ba58b640b488bf34f342f80b2f07361 data/c/tags/block/storage_blocks/replica.json
 1a0e918c99fca66e96eb9006953d8f3de66f1e88 data/minecraft/tags/block/mineable/pickaxe.json
 566f92c53c5b9baff70d86375e4303aaae2a7fa7 data/minecraft/tags/block/needs_iron_tool.json
