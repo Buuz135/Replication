@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.buuz135'
-version = '1.21.1-1.1.7'
+version = '1.21.1-1.1.8'
 
 java {
     archivesBaseName = 'Replication'

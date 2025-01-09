@@ -1,25 +1,17 @@
 package com.buuz135.replication.client.render;
 
-import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.block.tile.DisintegratorBlockEntity;
-import com.buuz135.replication.block.tile.MatterTankBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.phys.AABB;
-import org.joml.Matrix4f;
 
 public class DisintegratorRenderer<T extends DisintegratorBlockEntity> implements BlockEntityRenderer<T> {
 
@@ -50,7 +42,8 @@ public class DisintegratorRenderer<T extends DisintegratorBlockEntity> implement
         var speed = 20F;
         poseStack.pushPose();
         poseStack.translate(0, -0.505f, 0);
-        poseStack.mulPose(Axis.YP.rotationDegrees((tile.getLevel().getGameTime() % (360/speed))*speed + v));
+        var time = tile.getLevel().getGameTime() % 36000;
+        poseStack.mulPose(Axis.YP.rotationDegrees((time % (360f / speed)) * speed + v));
         Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(poseStack.last(),  multiBufferSource.getBuffer(RenderType.cutout()), null, BLADE, 255, 255, 255, combinedLightIn ,combinedOverlayIn);
         poseStack.popPose();
 
@@ -70,8 +63,8 @@ public class DisintegratorRenderer<T extends DisintegratorBlockEntity> implement
 
                 poseStack.mulPose(Axis.YP.rotationDegrees((360/3F)*i));
 
-                poseStack.mulPose(Axis.YP.rotationDegrees((tile.getLevel().getGameTime() % (360/speed))*speed + v));
-                poseStack.mulPose(Axis.ZP.rotationDegrees((tile.getLevel().getGameTime() % 360 + ((360/3F * (i + 1)))) +v));
+                poseStack.mulPose(Axis.YP.rotationDegrees((time % (360 / speed)) * speed + v));
+                poseStack.mulPose(Axis.ZP.rotationDegrees((time % 360 + ((360 / 3F * (i + 1)))) + v));
                 poseStack.translate(0,-0.05,-0.2);
                 poseStack.scale(scale, scale,scale);
 

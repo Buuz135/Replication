@@ -1,3 +1,8 @@
+# 1.1.8
+
+* Fixed Disintegrator being able to work even if the internal buffer was full
+* Fixed Disintegrator animation in worlds with long game time
+
 # 1.1.7
 
 * Changed Replicators to consume power only when working for real

@@ -5,11 +5,9 @@ import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
 import com.buuz135.replication.api.network.IMatterTanksSupplier;
-import com.buuz135.replication.calculation.MatterCompound;
 import com.buuz135.replication.calculation.MatterValue;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.DisintegratorAddon;
-import com.buuz135.replication.client.gui.addons.IdentificationChamberAddon;
 import com.buuz135.replication.util.InvUtil;
 import com.buuz135.replication.util.ReplicationTags;
 import com.hrznstudio.titanium.annotation.Save;
@@ -23,7 +21,6 @@ import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -74,11 +71,11 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
         this.addInventory((InventoryComponent<DisintegratorBlockEntity>) input);
 
         this.progressBarComponent = new ProgressBarComponent<>(48, 28, ReplicationConfig.Disintegrator.MAX_PROGRESS)
-                .setCanIncrease(iComponentHarness -> queuedMatterStacks.isEmpty())
                 .setOnTickWork(() -> {
                     syncObject(this.progressBarComponent);
                 })
                 .setCanIncrease(iComponentHarness -> {
+                    if (!queuedMatterStacks.isEmpty()) return false;
                     if (this.getEnergyStorage().getEnergyStored() < ReplicationConfig.Disintegrator.POWER_USAGE) return false;
                     for (int i = 0; i < this.input.getSlots(); i++) {
                         var stack = this.input.getStackInSlot(i);
