@@ -1,6 +1,7 @@
 # 1.1.9
 
 * Matter Tanks can be locked now, and fixed them having their nbt reapplied constantly
+* Replicators will now autobalance their crafting jobs, closes #23
 
 # 1.1.8
 

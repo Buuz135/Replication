@@ -86,9 +86,9 @@ public class ReplicationTask implements IReplicationTask {
     }
 
     @Override
-    public boolean canAcceptReplicator(BlockPos replicator) {
+    public boolean canAcceptReplicator(BlockPos replicator, int maxReplicatorsInMultipleMode) {
         return (this.mode == Mode.SINGLE && this.replicatorsOnTask.isEmpty()) ||
-                (this.mode == Mode.MULTIPLE && this.replicatorsOnTask.size() < 16 && (this.getTotalAmount() - this.getCurrentAmount() - this.replicatorsOnTask.size()) > 0);
+                (this.mode == Mode.MULTIPLE && this.replicatorsOnTask.size() < maxReplicatorsInMultipleMode && (this.getTotalAmount() - this.getCurrentAmount() - this.replicatorsOnTask.size()) > 0);
     }
 
     @Override

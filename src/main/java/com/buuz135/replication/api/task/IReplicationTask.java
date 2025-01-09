@@ -30,7 +30,7 @@ public interface IReplicationTask extends INBTSerializable<CompoundTag> {
 
     BlockPos getSource();
 
-    boolean canAcceptReplicator(BlockPos replicator);
+    boolean canAcceptReplicator(BlockPos replicator, int maxReplicatorsInMultipleMode);
 
     void acceptReplicator(BlockPos replicator);
 
