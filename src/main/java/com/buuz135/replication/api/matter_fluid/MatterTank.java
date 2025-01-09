@@ -54,7 +54,7 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
     }
 
     public MatterTank readFromNBT(CompoundTag nbt) {
-        MatterStack fluid = MatterStack.loadFluidStackFromNBT(nbt);
+        MatterStack fluid = MatterStack.loadMatterStackFromNBT(nbt);
         setMatter(fluid);
         return this;
     }

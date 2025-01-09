@@ -7,6 +7,7 @@ import com.buuz135.replication.block.tile.MatterTankBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
+import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -81,7 +83,7 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
         BlockEntity tankTile = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (tankTile instanceof MatterTankBlockEntity tile) {
             if (!tile.getTanks().get(0).getMatter().isEmpty()) {
-                stack.getOrCreateTag().put("Tile", tankTile.saveWithoutMetadata());
+                stack.getOrCreateTag().put("Tile", NBTManager.getInstance().writeTileEntity(tile, new CompoundTag()));
             }
         }
         stacks.add(stack);
