@@ -151,7 +151,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
                 this.getNetwork().onTaskValueChanged(task, (ServerLevel) this.level);
             }
             if (this.level.getGameTime() % 20 == 0 && this.craftingTask == null){
-                var task = this.getNetwork().getTaskManager().findTaskForReplicator(this.getBlockPos());
+                var task = this.getNetwork().getTaskManager().findTaskForReplicator(this.getBlockPos(), this.getNetwork());
                 if (task != null){
                     task.acceptReplicator(this.getBlockPos());
                     this.craftingTask = task.getUuid().toString();
@@ -249,6 +249,17 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         this.craftingTask = null;
         this.redstoneManager.finish();
         syncObject(this.craftingStack);
+    }
+
+    @Override
+    public void setRemoved() {
+        if (this.cachedReplicationTask != null) {
+            this.cachedReplicationTask.getReplicatorsOnTask().remove(this.getBlockPos().asLong());
+            if (this.cachedReplicationTask.getReplicatorsOnTask().isEmpty()) {
+                this.getNetwork().cancelTask(this.craftingTask, this.level);
+            }
+        }
+        super.setRemoved();
     }
 
     public void cancelTask(){

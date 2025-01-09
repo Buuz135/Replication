@@ -2,6 +2,7 @@ package com.buuz135.replication.network.task;
 
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.api.task.ReplicationTask;
+import com.buuz135.replication.network.MatterNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -23,9 +24,12 @@ public class ReplicationTaskManager implements INBTSerializable<CompoundTag> {
         return pendingTasks;
     }
     @Nullable
-    public IReplicationTask findTaskForReplicator(BlockPos pos){
+    public IReplicationTask findTaskForReplicator(BlockPos pos, MatterNetwork matterNetwork) {
+        var replicatorsAmount = matterNetwork.getReplicators().size();
+        var pendingTasksAmount = pendingTasks.size();
+        if (pendingTasksAmount == 0) pendingTasksAmount = 1;
         for (IReplicationTask value : this.getPendingTasks().values()) {
-            if (value.canAcceptReplicator(pos)){
+            if (value.canAcceptReplicator(pos, (int) Math.max(1, Math.ceil(replicatorsAmount / (double) pendingTasksAmount)))) {
                 return value;
             }
         }

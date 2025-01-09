@@ -10,7 +10,6 @@ import com.buuz135.replication.api.network.IMatterTanksSupplier;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.MatterPattern;
 import com.buuz135.replication.api.task.IReplicationTask;
-import com.buuz135.replication.api.task.ReplicationTask;
 import com.buuz135.replication.block.tile.ReplicationTerminalBlockEntity;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
 import com.buuz135.replication.network.task.ReplicationTaskManager;
@@ -21,7 +20,6 @@ import com.buuz135.replication.packet.TaskSyncPacket;
 import com.hrznstudio.titanium.block_network.Network;
 import com.hrznstudio.titanium.block_network.NetworkFactory;
 import com.hrznstudio.titanium.block_network.NetworkManager;
-import com.hrznstudio.titanium.block_network.NetworkRegistry;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -51,6 +49,7 @@ public class MatterNetwork extends Network {
     private List<NetworkElement> queueNetworkElements;
     private List<NetworkElement> chipSuppliers;
     private List<NetworkElement> terminals;
+    private List<NetworkElement> replicators;
 
     private ReplicationTaskManager taskManager;
 
@@ -65,6 +64,7 @@ public class MatterNetwork extends Network {
         this.queueNetworkElements = new ArrayList<>();
         this.chipSuppliers = new ArrayList<>();
         this.terminals = new ArrayList<>();
+        this.replicators = new ArrayList<>();
         this.taskManager = taskManager;
     }
 
@@ -78,6 +78,7 @@ public class MatterNetwork extends Network {
         this.matterStacksConsumers.remove(element);
         this.chipSuppliers.remove(element);
         this.terminals.remove(element);
+        this.replicators.remove(element);
     }
 
     @Override
@@ -95,6 +96,11 @@ public class MatterNetwork extends Network {
                 this.chipSuppliers.add(element);
             }else if (tile instanceof ReplicationTerminalBlockEntity){
                 this.terminals.add(element);
+            }
+            if (tile instanceof ReplicatorBlockEntity) {
+                {
+                    this.replicators.add(element);
+                }
             }
         }
         this.queueNetworkElements.clear();
@@ -252,6 +258,10 @@ public class MatterNetwork extends Network {
 
     public List<NetworkElement> getTerminals() {
         return terminals;
+    }
+
+    public List<NetworkElement> getReplicators() {
+        return replicators;
     }
 
     @Override
