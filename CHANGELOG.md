@@ -1,3 +1,7 @@
+# 1.1.9
+
+* Matter Tanks can be locked now, and fixed them having their nbt reapplied constantly
+
 # 1.1.8
 
 * Fixed Disintegrator being able to work even if the internal buffer was full

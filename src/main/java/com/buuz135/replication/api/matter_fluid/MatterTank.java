@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.function.Predicate;
 
@@ -55,7 +54,7 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
     }
 
     public MatterTank readFromNBT(CompoundTag nbt) {
-        MatterStack fluid = MatterStack.loadFluidStackFromNBT(nbt);
+        MatterStack fluid = MatterStack.loadMatterStackFromNBT(nbt);
         setMatter(fluid);
         return this;
     }

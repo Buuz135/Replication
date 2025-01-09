@@ -11,7 +11,6 @@ import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
-import com.hrznstudio.titanium.container.addon.IntArrayReferenceHolderAddon;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.api.distmarker.Dist;
@@ -19,10 +18,10 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class MatterTankComponent<T extends IComponentHarness> extends MatterTank implements IScreenAddonProvider,
         IContainerAddonProvider, INBTSerializable<CompoundTag> {
@@ -34,6 +33,7 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
     private FluidTankComponent.Type tankType;
     private FluidTankComponent.Action tankAction;
     private Runnable onContentChange;
+    private Predicate<MatterStack> insertPredicate;
 
     public MatterTankComponent(String name, int amount, int posX, int posY) {
         super(amount);
@@ -44,6 +44,8 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
         this.tankAction = FluidTankComponent.Action.BOTH;
         this.onContentChange = () -> {
         };
+        this.insertPredicate = (stack) -> true;
+
     }
 
     /**
@@ -105,9 +107,18 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
         return this;
     }
 
+    public MatterTankComponent<T> setInputFilter(Predicate<MatterStack> predicate) {
+        this.insertPredicate = predicate;
+        return this;
+    }
+
+    public Predicate<MatterStack> getInsertPredicate() {
+        return insertPredicate;
+    }
+
     @Override
     public int fill(MatterStack resource, IFluidHandler.FluidAction action) {
-        return getTankAction().canFill() ? super.fill(resource, action) : 0;
+        return getTankAction().canFill() && insertPredicate.test(resource) ? super.fill(resource, action) : 0;
     }
 
     @Nonnull

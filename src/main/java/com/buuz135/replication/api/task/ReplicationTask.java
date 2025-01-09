@@ -208,7 +208,7 @@ public class ReplicationTask implements IReplicationTask {
             CompoundTag list = matterStacksCompound.getCompound(allKey);
             List<MatterStack> matterStackList = new ArrayList<>();
             for (String key : list.getAllKeys()) {
-                matterStackList.add(MatterStack.loadFluidStackFromNBT(list.getCompound(key)));
+                matterStackList.add(MatterStack.loadMatterStackFromNBT(list.getCompound(key)));
             }
             this.matterStacks.put(Long.parseLong(allKey), matterStackList);
         }

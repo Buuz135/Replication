@@ -7,14 +7,16 @@ import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
 import com.buuz135.replication.api.network.IMatterTanksConsumer;
 import com.buuz135.replication.api.network.IMatterTanksSupplier;
 import com.buuz135.replication.client.gui.ReplicationAddonProvider;
+import com.buuz135.replication.container.component.LockableMatterTankBundle;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,21 +27,24 @@ import java.util.List;
 
 public class MatterTankBlockEntity extends NetworkBlockEntity<MatterTankBlockEntity> implements IMatterTanksSupplier, IMatterTanksConsumer {
 
-
     @Save
-    private MatterTankComponent<MatterTankBlockEntity> tank;
+    private LockableMatterTankBundle<MatterTankBlockEntity> lockableMatterTankBundle;
     private IMatterType cachedType = MatterType.EMPTY;
 
     public MatterTankBlockEntity(BasicTileBlock<MatterTankBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
-        this.tank = new MatterTankComponent<MatterTankBlockEntity>("tank", 256000, 78, 28).setTankAction(FluidTankComponent.Action.BOTH).setOnContentChange(this::onTankContentChange);
-        this.addMatterTank(this.tank);
+        this.lockableMatterTankBundle = new LockableMatterTankBundle<>(this,
+                new MatterTankComponent<MatterTankBlockEntity>("tank", 256000, 78, 28).setTankAction(FluidTankComponent.Action.BOTH).setOnContentChange(this::onTankContentChange),
+                78 + 20, 28, false);
+        this.addBundle(lockableMatterTankBundle);
+        this.addMatterTank(this.lockableMatterTankBundle.getTank());
     }
 
     private void onTankContentChange(){
+        syncObject(this.lockableMatterTankBundle);
         this.getNetwork().onTankValueChanged(cachedType);
-        if (!cachedType.equals(this.tank.getMatter().getMatterType())){
-            this.cachedType = this.tank.getMatter().getMatterType();
+        if (!cachedType.equals(this.lockableMatterTankBundle.getTank().getMatter().getMatterType())) {
+            this.cachedType = this.lockableMatterTankBundle.getTank().getMatter().getMatterType();
             this.getNetwork().onTankValueChanged(cachedType);
         }
     }
@@ -77,5 +82,13 @@ public class MatterTankBlockEntity extends NetworkBlockEntity<MatterTankBlockEnt
     @Override
     public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
         return super.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) - 16;
+    }
+
+    @Override
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.loadAdditional(compound, provider);
+        if (compound.contains("tank")) {
+            this.lockableMatterTankBundle.getTank().deserializeNBT(provider, compound.getCompound("tank"));
+        }
     }
 }

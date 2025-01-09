@@ -25,7 +25,7 @@ public class MatterTankComponentProvider implements IBlockComponentProvider, ISe
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getServerData().contains("MatterStack")){
-            var matterStack = MatterStack.loadFluidStackFromNBT(blockAccessor.getServerData().getCompound("MatterStack"));
+            var matterStack = MatterStack.loadMatterStackFromNBT(blockAccessor.getServerData().getCompound("MatterStack"));
             var floatColor = matterStack.getMatterType().getColor().get();
             var color = new Color(floatColor[0], floatColor[1], floatColor[2], floatColor[3]);
             //color = color.darker();

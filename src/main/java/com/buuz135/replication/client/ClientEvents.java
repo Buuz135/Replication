@@ -64,8 +64,8 @@ public class ClientEvents {
         }).subscribe();
         EventManager.forge(ItemTooltipEvent.class).process(pre -> {
             if (ItemStack.isSameItem(pre.getItemStack(), new ItemStack(ReplicationRegistry.Blocks.MATTER_TANK.getBlock())) && pre.getItemStack().has(ReplicationAttachments.TILE)){
-                var tag = pre.getItemStack().get(ReplicationAttachments.TILE).getCompound("tank");
-                var matterStack = MatterStack.loadFluidStackFromNBT(tag);
+                var tag = pre.getItemStack().get(ReplicationAttachments.TILE);
+                var matterStack = MatterStack.loadMatterStackFromNBT(tag.contains("tank") ? tag.getCompound("tank") : tag.getCompound("lockableMatterTankBundle").getCompound("Tank"));
                 pre.getToolTip().add(1, Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(matterStack.getAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(256000) + ChatFormatting.DARK_AQUA + " matter")));
                 pre.getToolTip().add(1, Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.replication.tank.matter").getString()).append(matterStack.isEmpty() ? Component.translatable("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE) : Component.translatable(matterStack.getTranslationKey())).withStyle(ChatFormatting.WHITE));
             }

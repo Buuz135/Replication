@@ -3,10 +3,8 @@ package com.buuz135.replication.api.matter_fluid;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.api.MatterType;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +42,7 @@ public class MatterStack {
      * This provides a safe method for retrieving a FluidStack - if the Fluid is invalid, the stack
      * will return as null.
      */
-    public static MatterStack loadFluidStackFromNBT(CompoundTag nbt) {
+    public static MatterStack loadMatterStackFromNBT(CompoundTag nbt) {
         if (nbt == null) {
             return EMPTY;
         }

@@ -3,21 +3,19 @@ package com.buuz135.replication.block;
 import com.buuz135.replication.ReplicationAttachments;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.shapes.MatterTankShapes;
-import com.buuz135.replication.block.shapes.ReplicationTerminalShapes;
 import com.buuz135.replication.block.tile.MatterTankBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
+import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
-import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -35,7 +33,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> implements INetworkDirectionalConnection {
 
@@ -81,7 +78,7 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
         BlockEntity tankTile = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (tankTile instanceof MatterTankBlockEntity tile) {
             if (!tile.getTanks().get(0).getMatter().isEmpty()) {
-                stack.set(ReplicationAttachments.TILE, tankTile.saveWithoutMetadata(tile.getLevel().registryAccess()));
+                stack.set(ReplicationAttachments.TILE, NBTManager.getInstance().writeTileEntity(tile, new CompoundTag()));
             }
         }
         stacks.add(stack);
