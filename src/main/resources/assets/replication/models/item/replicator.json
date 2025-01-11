@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/block",
-  "loader": "neoforge:composite",
+  "loader": "forge:composite",
   "children": {
     "base": {
       "parent": "replication:block/replicator"
