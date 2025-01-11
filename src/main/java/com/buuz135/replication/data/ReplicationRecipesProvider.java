@@ -2,18 +2,14 @@ package com.buuz135.replication.data;
 
 import com.buuz135.replication.ReplicationRegistry;
 import com.hrznstudio.titanium.block.BasicTileBlock;
-import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.recipe.generator.TitaniumRecipeProvider;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
+import com.hrznstudio.titanium.recipe.generator.TitaniumShapelessRecipeBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.NonNullLazy;
 
 import java.util.List;
@@ -45,6 +41,9 @@ public class ReplicationRecipesProvider extends TitaniumRecipeProvider {
                 .save(consumer);
         simpleCookingRecipe(consumer, "furnace", RecipeSerializer.SMELTING_RECIPE, 200, ReplicationRegistry.Items.RAW_REPLICA.get(), ReplicationRegistry.Items.REPLICA_INGOT.get(), 0.35F);
         simpleCookingRecipe(consumer, "blasting", RecipeSerializer.BLASTING_RECIPE, 100, ReplicationRegistry.Items.RAW_REPLICA.get(), ReplicationRegistry.Items.REPLICA_INGOT.get(), 0.35F);
-
+        TitaniumShapelessRecipeBuilder.shapelessRecipe(ReplicationRegistry.Blocks.RAW_REPLICA_BLOCK.get()).requires(ReplicationRegistry.Items.RAW_REPLICA.get(), 9).save(consumer);
+        TitaniumShapelessRecipeBuilder.shapelessRecipe(ReplicationRegistry.Items.RAW_REPLICA.get(), 9).requires(ReplicationRegistry.Blocks.RAW_REPLICA_BLOCK.get(), 1).save(consumer);
+        TitaniumShapelessRecipeBuilder.shapelessRecipe(ReplicationRegistry.Blocks.REPLICA_BLOCK.get()).requires(ReplicationRegistry.Items.REPLICA_INGOT.get(), 9).save(consumer);
+        TitaniumShapelessRecipeBuilder.shapelessRecipe(ReplicationRegistry.Items.REPLICA_INGOT.get(), 9).requires(ReplicationRegistry.Blocks.REPLICA_BLOCK.get(), 1).save(consumer);
     }
 }
