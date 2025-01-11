@@ -1,21 +1,13 @@
 package com.buuz135.replication.item;
 
-import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
-import com.buuz135.replication.api.pattern.MatterPattern;
-import com.buuz135.replication.block.ChipStorageBlock;
 import com.buuz135.replication.block.tile.ChipStorageBlockEntity;
 import com.hrznstudio.titanium.item.BasicItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -63,6 +55,7 @@ public class MatterBluePrintItem extends ReplicationItem {
                         var returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(stack, item, (float) pContext.getItemInHand().getTag().getDouble("Progress"));
                         if (returnedValue.getPattern() != null){
                             pContext.getItemInHand().shrink(1);
+                            chipStorageBlockEntity.cachePatterns();
                             return InteractionResult.CONSUME;
                         }
                     }

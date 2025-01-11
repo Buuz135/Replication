@@ -2,18 +2,19 @@ package com.buuz135.replication.recipe;
 
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.calculation.MatterValue;
-import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
 import com.hrznstudio.titanium.recipe.serializer.JSONSerializableDataHandler;
 import com.hrznstudio.titanium.recipe.serializer.SerializableRecipe;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -61,8 +62,13 @@ public class MatterValueRecipe extends SerializableRecipe {
     }
 
     @Override
+<<<<<<<HEAD
     public ItemStack assemble(Container container, RegistryAccess registryAccess) {
         return null;
+=======
+        public ItemStack assemble (CraftingInput craftingInput, HolderLookup.Provider provider){
+            return ItemStack.EMPTY;
+>>>>>>>9415 b55(Return empty on the recipe)
     }
 
     @Override
@@ -71,7 +77,11 @@ public class MatterValueRecipe extends SerializableRecipe {
     }
 
     @Override
+<<<<<<<HEAD
     public ItemStack getResultItem(RegistryAccess registryAccess) {
+=======
+            public ItemStack getResultItem (HolderLookup.Provider provider){
+>>>>>>>9415 b55(Return empty on the recipe)
         return ItemStack.EMPTY;
     }
 

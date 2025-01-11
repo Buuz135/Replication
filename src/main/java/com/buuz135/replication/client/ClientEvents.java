@@ -11,11 +11,7 @@ import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
 import com.buuz135.replication.client.render.*;
 import com.buuz135.replication.client.render.shader.ReplicationRenderTypes;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
-import com.hrznstudio.titanium.block.BasicBlock;
-import com.hrznstudio.titanium.client.screen.container.BasicAddonScreen;
-import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.hrznstudio.titanium.event.handler.EventManager;
-import com.hrznstudio.titanium.util.RayTraceUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Either;
@@ -26,17 +22,14 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -44,7 +37,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.joml.Matrix4f;
 
@@ -64,7 +56,7 @@ public class ClientEvents {
             if (Minecraft.getInstance().level != null){
                 var instance = ClientReplicationCalculation.getMatterCompound(pre.getItemStack());
                 if (instance != null){
-                    if (Screen.hasShiftDown() || true){
+                    if (Screen.hasShiftDown()) {
                         pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(instance)));
                     } else {
                         pre.getTooltipElements().add(Either.left(Component.literal("ℹ Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));
