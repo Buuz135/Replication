@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "tag": "forge:cobblestone"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "value": 2.0
+    }
+  ]
+}

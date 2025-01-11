@@ -1,0 +1,43 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:and",
+          "values": [
+            {
+              "type": "forge:item_exists",
+              "item": "replication:matter_network_pipe"
+            }
+          ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "I": {
+            "item": "replication:replica_ingot"
+          },
+          "P": {
+            "tag": "forge:glass_panes"
+          },
+          "R": {
+            "item": "minecraft:redstone"
+          }
+        },
+        "pattern": [
+          "PPP",
+          "IRI",
+          "PPP"
+        ],
+        "result": {
+          "count": 8,
+          "item": "replication:matter_network_pipe"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

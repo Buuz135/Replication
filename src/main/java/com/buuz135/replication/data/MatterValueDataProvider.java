@@ -1,9 +1,7 @@
 package com.buuz135.replication.data;
 
-import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.calculation.MatterValue;
-import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.recipe.MatterValueRecipe;
 import com.hrznstudio.titanium.recipe.generator.IJSONGenerator;
 import com.hrznstudio.titanium.recipe.generator.IJsonFile;
@@ -21,7 +19,6 @@ import java.util.Arrays;
 import java.util.Map;
 
 import static net.minecraft.world.item.Items.*;
-import static net.minecraft.world.item.Items.EMERALD;
 
 public class MatterValueDataProvider extends TitaniumSerializableProvider {
 
@@ -83,7 +80,7 @@ public class MatterValueDataProvider extends TitaniumSerializableProvider {
         saveData(DIRT, earth(1));
         saveData(ROOTED_DIRT, earth(1));
         saveData(MYCELIUM, earth(1), organic(4));
-        saveData(GRASS_BLOCK, earth(1), organic(1));
+        saveData(GRASS, earth(1), organic(1));
         saveData(PODZOL, earth(1), organic(1));
         saveData(ICE, earth(4), organic(4));
         saveData(SNOWBALL, earth(1));

@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:amethyst_shard"
+  },
+  "matter": [
+    {
+      "type": "replication:precious",
+      "value": 4.0
+    },
+    {
+      "type": "replication:earth",
+      "value": 1.0
+    }
+  ]
+}

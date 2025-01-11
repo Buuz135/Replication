@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:oxidized_copper"
+  },
+  "matter": [
+    {
+      "type": "replication:precious",
+      "value": 8.0
+    },
+    {
+      "type": "replication:metallic",
+      "value": 8.0
+    }
+  ]
+}

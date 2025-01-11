@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "replication:replica_ingot"
+    },
+    {
+      "item": "replication:replica_ingot"
+    },
+    {
+      "item": "replication:replica_ingot"
+    },
+    {
+      "item": "replication:replica_ingot"
+    },
+    {
+      "item": "replication:replica_ingot"
+    },
+    {
+      "item": "replication:replica_ingot"
+    },
+    {
+      "item": "replication:replica_ingot"
+    },
+    {
+      "item": "replication:replica_ingot"
+    },
+    {
+      "item": "replication:replica_ingot"
+    }
+  ],
+  "result": {
+    "item": "replication:replica_block"
+  }
+}

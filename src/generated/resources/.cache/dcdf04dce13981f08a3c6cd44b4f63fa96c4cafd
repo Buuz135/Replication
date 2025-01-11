@@ -1,11 +1,11 @@
-// 1.21.1	2025-01-09T20:07:17.5875408	Tags for minecraft:item mod id replication
-9b8899e920afd86d67ce98aa4c2be36779898d06 data/c/tags/item/ingots.json
-9b8899e920afd86d67ce98aa4c2be36779898d06 data/c/tags/item/ingots/replica.json
-566f92c53c5b9baff70d86375e4303aaae2a7fa7 data/c/tags/item/ores.json
-566f92c53c5b9baff70d86375e4303aaae2a7fa7 data/c/tags/item/ores/replica.json
-566f92c53c5b9baff70d86375e4303aaae2a7fa7 data/c/tags/item/ores_in_ground/deepslate.json
-d307064edfddb1c1f94cbe3664bead28e6cbf21d data/c/tags/item/raw_materials.json
-d307064edfddb1c1f94cbe3664bead28e6cbf21d data/c/tags/item/raw_materials/replica.json
-5a88c1249f3a388d71dbf748137d9b701e886bd2 data/c/tags/item/storage_blocks.json
-68877469a633cf890ecd8ca2c0f9cd6ea44e83a2 data/c/tags/item/storage_blocks/raw_replica.json
-6892c0df0ba58b640b488bf34f342f80b2f07361 data/c/tags/item/storage_blocks/replica.json
+// 1.20.1	2025-01-11T15:20:25.7343914	Tags for minecraft:item mod id replication
+9b8899e920afd86d67ce98aa4c2be36779898d06 data/forge/tags/items/ingots.json
+9b8899e920afd86d67ce98aa4c2be36779898d06 data/forge/tags/items/ingots/replica.json
+566f92c53c5b9baff70d86375e4303aaae2a7fa7 data/forge/tags/items/ores.json
+566f92c53c5b9baff70d86375e4303aaae2a7fa7 data/forge/tags/items/ores/replica.json
+566f92c53c5b9baff70d86375e4303aaae2a7fa7 data/forge/tags/items/ores_in_ground/deepslate.json
+d307064edfddb1c1f94cbe3664bead28e6cbf21d data/forge/tags/items/raw_materials.json
+d307064edfddb1c1f94cbe3664bead28e6cbf21d data/forge/tags/items/raw_materials/replica.json
+5a88c1249f3a388d71dbf748137d9b701e886bd2 data/forge/tags/items/storage_blocks.json
+68877469a633cf890ecd8ca2c0f9cd6ea44e83a2 data/forge/tags/items/storage_blocks/raw_replica.json
+6892c0df0ba58b640b488bf34f342f80b2f07361 data/forge/tags/items/storage_blocks/replica.json

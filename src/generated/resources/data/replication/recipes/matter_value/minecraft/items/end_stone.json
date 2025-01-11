@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "item": "minecraft:end_stone"
+  },
+  "matter": [
+    {
+      "type": "replication:ender",
+      "value": 1.0
+    }
+  ]
+}
