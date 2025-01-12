@@ -1,3 +1,7 @@
+# 1.1.1
+
+* Fixed Terminal not having a background
+
 # 1.1.0
 
 ### Backported from 1.21, recipe calculation much improved

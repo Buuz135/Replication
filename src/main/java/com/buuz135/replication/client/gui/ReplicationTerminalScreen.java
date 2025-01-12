@@ -123,7 +123,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float v, int mouseX, int mouseY) {
-        //super.renderBackground(guiGraphics, mouseX, mouseY, v);
+        super.renderBackground(guiGraphics);
 
         int x = this.leftPos;
         int y = this.topPos;
