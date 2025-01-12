@@ -5,10 +5,10 @@ import com.buuz135.replication.calculation.MatterValue;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.hrznstudio.titanium.network.CompoundSerializableDataHandler;
 import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
 import com.hrznstudio.titanium.recipe.serializer.JSONSerializableDataHandler;
 import com.hrznstudio.titanium.recipe.serializer.SerializableRecipe;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -24,6 +24,20 @@ public class MatterValueRecipe extends SerializableRecipe {
 
 
     static {
+        CompoundSerializableDataHandler.map(MatterValue[].class, friendlyByteBuf -> {
+            var amount = friendlyByteBuf.readVarInt();
+            var array = new MatterValue[amount];
+            for (int i = 0; i < amount; i++) {
+                array[i] = new MatterValue(ReplicationRegistry.Matter.EMPTY.get(), 0);
+                array[i].deserializeNBT(friendlyByteBuf.readNbt());
+            }
+            return array;
+        }, (friendlyByteBuf, matterValues) -> {
+            friendlyByteBuf.writeVarInt(matterValues.length);
+            for (var matterValue : matterValues) {
+                friendlyByteBuf.writeNbt(matterValue.serializeNBT());
+            }
+        });
         JSONSerializableDataHandler.map(MatterValue[].class, matterValues -> {
             JsonArray array = new JsonArray();
             for (MatterValue matterValue : matterValues) {

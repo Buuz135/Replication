@@ -1,6 +1,7 @@
 # 1.1.1
 
 * Fixed Terminal not having a background
+* Fixed matter values not having nbt parsers
 
 # 1.1.0
 
