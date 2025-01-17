@@ -6,14 +6,16 @@ import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.packet.ReplicationCalculationPacket;
 import com.buuz135.replication.recipe.MatterValueRecipe;
 import com.hrznstudio.titanium.event.handler.EventManager;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
@@ -29,12 +31,15 @@ public class ReplicationCalculation {
 
     public static final Logger CALCULATOR_LOG = LogManager.getLogger("Replication Calculator");
 
+
     public static HashMap<String, CalculationReference> SORTED_CALCULATION_REFERENCE = new HashMap<String, CalculationReference>();
     public static HashMap<String, MatterCompound> DEFAULT_MATTER_COMPOUND = new HashMap<String, MatterCompound>();
     private static CompoundTag cachedSyncTag = new CompoundTag();
 
     public static void init() {
-        EventManager.forge(OnDatapackSyncEvent.class).process(ReplicationCalculation::recipesUpdatedEvent).subscribe();
+        EventManager.forge(AddReloadListenerEvent.class).process(addReloadListenerEvent -> {
+            addReloadListenerEvent.addListener((ResourceManagerReloadListener) resourceManager -> recipesUpdatedEvent(addReloadListenerEvent.getServerResources().getRecipeManager(), addReloadListenerEvent.getRegistryAccess()));
+        }).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(playerLoggedInEvent -> {
             if (!cachedSyncTag.isEmpty() && playerLoggedInEvent.getEntity() instanceof ServerPlayer serverPlayer) {
                 Replication.NETWORK.sendTo(new ReplicationCalculationPacket(cachedSyncTag), serverPlayer);
@@ -48,7 +53,7 @@ public class ReplicationCalculation {
         return BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
     }
 
-    public static void recipesUpdatedEvent(OnDatapackSyncEvent event) {
+    public static void recipesUpdatedEvent(RecipeManager recipeManager, RegistryAccess registryAccess) {
         CALCULATOR_LOG.info("Updating replication calculation");
         new Thread(() -> {
             INGREDIENT_CACHE = new HashMap<>();
@@ -56,7 +61,7 @@ public class ReplicationCalculation {
             //LOADING DEFAULT VALUES
             long time = System.currentTimeMillis();
             DEFAULT_MATTER_COMPOUND = new HashMap<>();
-            for (RecipeHolder<MatterValueRecipe> matterValueRecipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor((RecipeType<MatterValueRecipe>) ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get())) {
+            for (RecipeHolder<MatterValueRecipe> matterValueRecipe : recipeManager.getAllRecipesFor((RecipeType<MatterValueRecipe>) ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get())) {
                 for (ItemStack item : matterValueRecipe.value().input.getItems()) {
                     var name = getNameFromStack(item);
                     var compound = new MatterCompound();
@@ -71,13 +76,13 @@ public class ReplicationCalculation {
             //SORTING RECIPES
             SORTED_CALCULATION_REFERENCE = new HashMap<String, CalculationReference>();
             time = System.currentTimeMillis();
-            for (RecipeHolder<CraftingRecipe> craftingRecipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
-                var result = craftingRecipe.value().getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess());
+            for (RecipeHolder<CraftingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
+                var result = craftingRecipe.value().getResultItem(registryAccess);
                 var rl = getNameFromStack(result);
                 SORTED_CALCULATION_REFERENCE.computeIfAbsent(rl, string -> new CalculationReference(result, new ArrayList<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, craftingRecipe.value().getIngredients()));
             }
-            for (RecipeHolder<SmeltingRecipe> craftingRecipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
-                var result = craftingRecipe.value().getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess());
+            for (RecipeHolder<SmeltingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
+                var result = craftingRecipe.value().getResultItem(registryAccess);
                 var rl = getNameFromStack(result);
                 SORTED_CALCULATION_REFERENCE.computeIfAbsent(rl, string -> new CalculationReference(result, new ArrayList<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, craftingRecipe.value().getIngredients()));
             }
@@ -120,7 +125,7 @@ public class ReplicationCalculation {
                         // CALCULATOR_LOG.info("---------------------------------------------");
                         if (compound != null && !compound.getValues().isEmpty()) {
                             if (false) CALCULATOR_LOG.info(rl + " -> " + compound.toString());
-                            tempTag.put(rl, compound.serializeNBT(ServerLifecycleHooks.getCurrentServer().registryAccess()));
+                            tempTag.put(rl, compound.serializeNBT(registryAccess));
                             ++amount;
                         }
                     } catch (Exception e) {
@@ -130,11 +135,13 @@ public class ReplicationCalculation {
                 CALCULATOR_LOG.info("Resolved " + amount + " values in " + (System.currentTimeMillis() - time) + "ms");
             }
             cachedSyncTag = tempTag;
-
-            for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-                Replication.NETWORK.sendTo(new ReplicationCalculationPacket(cachedSyncTag), player);
+            if (ServerLifecycleHooks.getCurrentServer() != null) {
+                for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+                    Replication.NETWORK.sendTo(new ReplicationCalculationPacket(cachedSyncTag), player);
+                }
             }
         }, "Replication").start();
+
     }
 
     private static class RecipeReference {

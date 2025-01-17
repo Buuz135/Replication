@@ -1,3 +1,7 @@
+# 1.1.10
+
+* Changed when Replication Calculation is executed to avoid multiple runs, closes #25
+
 # 1.1.9
 
 * Matter Tanks can be locked now, and fixed them having their nbt reapplied constantly
