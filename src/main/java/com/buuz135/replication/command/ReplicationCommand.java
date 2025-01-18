@@ -1,7 +1,9 @@
 package com.buuz135.replication.command;
 
 import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.calculation.ReplicationCalculation;
+import com.buuz135.replication.calculation.client.ClientReplicationCalculation;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -11,6 +13,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -20,9 +23,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ReplicationCommand {
 
@@ -34,6 +41,7 @@ public class ReplicationCommand {
                 .literal("replication")
                 .then(Commands.literal("dump-inventory").executes(context -> dumpInventoryItems(context)).requires(commandSourceStack -> commandSourceStack.hasPermission(4)))
                 .then(Commands.literal("dump-missing").executes(context -> dumpMissing(context)).requires(commandSourceStack -> commandSourceStack.hasPermission(4)))
+                .then(Commands.literal("export-to-csv").executes(context -> exportToCSV(context)))
                 .then(
                         Commands.literal("create-blueprint-using-hand")
                                 .requires(commandSourceStack -> commandSourceStack.hasPermission(4))
@@ -81,7 +89,7 @@ public class ReplicationCommand {
         try {
             LOGGER.info(context.getSource().getPlayerOrException().getInventory().items.stream()
                             .filter(itemStack -> !itemStack.isEmpty())
-                    .map(itemStack -> ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getPath().toUpperCase(Locale.ROOT)).collect(Collectors.joining(", ")));
+                    .map(itemStack -> BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().toUpperCase(Locale.ROOT)).collect(Collectors.joining(", ")));
         } catch (Exception e) {
 
         }
@@ -104,5 +112,57 @@ public class ReplicationCommand {
             throw new RuntimeException(e);
         }
         return 1;
+    }
+
+    public static int exportToCSV(CommandContext<CommandSourceStack> context) {
+        new Thread(() -> {
+            try {
+                File csvFile = new File("replication-matter-data.csv");
+                csvFile.createNewFile();
+                try (PrintWriter pw = new PrintWriter(csvFile)) {
+                    var headers = new ArrayList<>();
+                    for (IMatterType iMatterType : ReplicationRegistry.MATTER_TYPES_REGISTRY.get()) {
+                        headers.add(iMatterType.equals(ReplicationRegistry.Matter.EMPTY.get()) ? "" : iMatterType.toString());
+                    }
+                    pw.println(convertToCSV(headers.toArray(new String[0])));
+                    for (String s : ClientReplicationCalculation.DEFAULT_MATTER_COMPOUND.keySet()) {
+                        var line = new ArrayList<>();
+                        line.add(s);
+                        var matter = ClientReplicationCalculation.DEFAULT_MATTER_COMPOUND.get(s);
+                        for (IMatterType iMatterType : ReplicationRegistry.MATTER_TYPES_REGISTRY.get()) {
+                            if (iMatterType.equals(ReplicationRegistry.Matter.EMPTY.get())) continue;
+                            if (matter.getValues().containsKey(iMatterType)) {
+                                line.add(matter.getValues().get(iMatterType).getAmount() + "");
+                            } else {
+                                line.add("0.0");
+                            }
+                        }
+                        pw.println(convertToCSV(line.toArray(new String[0])));
+                    }
+                }
+                context.getSource().sendSystemMessage(Component.literal("Exported to file replication-matter-data.csv in your instance folder"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+        return 1;
+    }
+
+    public static String convertToCSV(String[] data) {
+        return Stream.of(data)
+                .map(ReplicationCommand::escapeSpecialCharacters)
+                .collect(Collectors.joining(","));
+    }
+
+    public static String escapeSpecialCharacters(String data) {
+        if (data == null) {
+            throw new IllegalArgumentException("Input data cannot be null");
+        }
+        String escapedData = data.replaceAll("\\R", " ");
+        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+            data = data.replace("\"", "\"\"");
+            escapedData = "\"" + data + "\"";
+        }
+        return escapedData;
     }
 }

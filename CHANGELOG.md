@@ -1,3 +1,8 @@
+# 1.1.2
+
+* Added `/replication export-to-csv` to export matter values to a csv file, closes #24
+* Changed when Replication Calculation is executed to avoid multiple runs
+
 # 1.1.1
 
 * Fixed Terminal not having a background
