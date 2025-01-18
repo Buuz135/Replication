@@ -1,3 +1,7 @@
+# 1.1.11
+
+* Added `/replication export-to-csv` to export matter values to a csv file, closes #24
+
 # 1.1.10
 
 * Changed when Replication Calculation is executed to avoid multiple runs, closes #25
