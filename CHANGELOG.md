@@ -1,3 +1,7 @@
+# 1.1.12
+
+* Added GuideMe support
+
 # 1.1.11
 
 * Added `/replication export-to-csv` to export matter values to a csv file, closes #24
