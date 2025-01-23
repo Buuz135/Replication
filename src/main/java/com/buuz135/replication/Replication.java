@@ -23,6 +23,7 @@ import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.tab.TitaniumTab;
+import guideme.Guide;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -183,6 +184,10 @@ public class Replication extends ModuleController {
         }).subscribe();
 
         ReplicationCalculation.init();
+
+        if (ModList.get().isLoaded("guideme")) {
+            Guide.builder(ResourceLocation.parse("replication:main")).build();
+        }
     }
 
     @Override

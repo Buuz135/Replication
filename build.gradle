@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.buuz135'
-version = '1.21.1-1.1.11'
+version = '1.21.1-1.1.12'
 
 java {
     archivesBaseName = 'Replication'
@@ -69,7 +69,8 @@ dependencies {
     compileOnly "curse.maven:the-one-probe-245211:5475189"
     runtimeOnly "curse.maven:industrial-foregoing-266515:6030556"
     runtimeOnly "curse.maven:dark-mode-everywhere-574123:5922655"
-
+    implementation "curse.maven:guideme-1173950:6114965"
+    runtimeOnly "curse.maven:applied-energistics-2-223794:6087880"
 }
 
 jar {
