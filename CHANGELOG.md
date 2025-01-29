@@ -2,6 +2,7 @@
 
 * Added `/replication export-to-csv` to export matter values to a csv file, closes #24
 * Changed when Replication Calculation is executed to avoid multiple runs
+* Fixed replica worldgen closes #28
 
 # 1.1.1
 
