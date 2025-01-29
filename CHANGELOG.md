@@ -1,3 +1,7 @@
+# 1.1.13
+
+* Fixed recipe calculation checking tag values too early, closes #26
+
 # 1.1.12
 
 * Added GuideMe support
