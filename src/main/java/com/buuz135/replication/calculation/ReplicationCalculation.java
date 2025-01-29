@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -33,12 +34,16 @@ public class ReplicationCalculation {
     public static final Logger CALCULATOR_LOG = LogManager.getLogger("Replication Calculator");
 
     public static HashMap<String, CalculationReference> SORTED_CALCULATION_REFERENCE = new HashMap<String, CalculationReference>();
+    public static List<MatterValueRecipe> DEFAULT_MATTER_RECIPE = new ArrayList<>();
     public static HashMap<String, MatterCompound> DEFAULT_MATTER_COMPOUND = new HashMap<String, MatterCompound>();
     private static CompoundTag cachedSyncTag = new CompoundTag();
 
     public static void init() {
         EventManager.forge(AddReloadListenerEvent.class).process(addReloadListenerEvent -> {
-            addReloadListenerEvent.addListener((ResourceManagerReloadListener) resourceManager -> recipesUpdatedEvent(addReloadListenerEvent.getServerResources().getRecipeManager(), addReloadListenerEvent.getServerResources().tagManager.registryAccess));
+            addReloadListenerEvent.addListener((ResourceManagerReloadListener) resourceManager -> organizeRecipes(addReloadListenerEvent.getServerResources().getRecipeManager(), addReloadListenerEvent.getServerResources().tagManager.registryAccess));
+        }).subscribe();
+        EventManager.forge(TagsUpdatedEvent.class).process(tagsUpdatedEvent -> {
+            if (tagsUpdatedEvent.getUpdateCause() == TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD) calculateRecipes();
         }).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(playerLoggedInEvent -> {
             if (!cachedSyncTag.isEmpty() && playerLoggedInEvent.getEntity() instanceof ServerPlayer serverPlayer) {
@@ -53,15 +58,36 @@ public class ReplicationCalculation {
         return BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
     }
 
-    public static void recipesUpdatedEvent(RecipeManager recipeManager, RegistryAccess registryAccess) {
+    public static void organizeRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
+        INGREDIENT_CACHE = new HashMap<>();
+        cachedSyncTag = new CompoundTag();
+        //LOADING DEFAULT VALUES
+        long time = System.currentTimeMillis();
+        DEFAULT_MATTER_COMPOUND = new HashMap<>();
+        DEFAULT_MATTER_RECIPE = recipeManager.getAllRecipesFor(ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get());
+
+
+        //SORTING RECIPES
+        SORTED_CALCULATION_REFERENCE = new HashMap<String, CalculationReference>();
+        time = System.currentTimeMillis();
+        for (CraftingRecipe craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
+            var result = craftingRecipe.getResultItem(registryAccess);
+            var rl = getNameFromStack(result);
+            SORTED_CALCULATION_REFERENCE.computeIfAbsent(rl, string -> new CalculationReference(result, new ArrayList<>())).getReferences().add(new RecipeReference(craftingRecipe.getId(), result, craftingRecipe.getIngredients()));
+        }
+        for (SmeltingRecipe craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
+            var result = craftingRecipe.getResultItem(registryAccess);
+            var rl = getNameFromStack(result);
+            SORTED_CALCULATION_REFERENCE.computeIfAbsent(rl, string -> new CalculationReference(result, new ArrayList<>())).getReferences().add(new RecipeReference(craftingRecipe.getId(), result, craftingRecipe.getIngredients()));
+        }
+        CALCULATOR_LOG.info("Sorted Recipes in " + (System.currentTimeMillis() - time) + "ms");
+    }
+
+    public static void calculateRecipes() {
         CALCULATOR_LOG.info("Updating replication calculation");
         new Thread(() -> {
-            INGREDIENT_CACHE = new HashMap<>();
-            cachedSyncTag = new CompoundTag();
-            //LOADING DEFAULT VALUES
             long time = System.currentTimeMillis();
-            DEFAULT_MATTER_COMPOUND = new HashMap<>();
-            for (MatterValueRecipe matterValueRecipe : recipeManager.getAllRecipesFor(ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get())) {
+            for (MatterValueRecipe matterValueRecipe : DEFAULT_MATTER_RECIPE) {
                 for (ItemStack item : matterValueRecipe.input.getItems()) {
                     var name = getNameFromStack(item);
                     var compound = new MatterCompound();
@@ -72,21 +98,6 @@ public class ReplicationCalculation {
                 }
             }
             CALCULATOR_LOG.info("Loaded default values in " + (System.currentTimeMillis() - time) + "ms");
-
-            //SORTING RECIPES
-            SORTED_CALCULATION_REFERENCE = new HashMap<String, CalculationReference>();
-            time = System.currentTimeMillis();
-            for (CraftingRecipe craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
-                var result = craftingRecipe.getResultItem(registryAccess);
-                var rl = getNameFromStack(result);
-                SORTED_CALCULATION_REFERENCE.computeIfAbsent(rl, string -> new CalculationReference(result, new ArrayList<>())).getReferences().add(new RecipeReference(craftingRecipe.getId(), result, craftingRecipe.getIngredients()));
-            }
-            for (SmeltingRecipe craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
-                var result = craftingRecipe.getResultItem(registryAccess);
-                var rl = getNameFromStack(result);
-                SORTED_CALCULATION_REFERENCE.computeIfAbsent(rl, string -> new CalculationReference(result, new ArrayList<>())).getReferences().add(new RecipeReference(craftingRecipe.getId(), result, craftingRecipe.getIngredients()));
-            }
-            CALCULATOR_LOG.info("Sorted Recipes in " + (System.currentTimeMillis() - time) + "ms");
 
 
             //RESOLVING VALUES

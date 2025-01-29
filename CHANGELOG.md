@@ -1,3 +1,7 @@
+# 1.1.3
+
+* Fixed recipe calculation checking tag values too early, closes #26
+
 # 1.1.2
 
 * Added `/replication export-to-csv` to export matter values to a csv file, closes #24
