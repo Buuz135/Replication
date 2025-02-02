@@ -14,20 +14,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> implements INetworkDirectionalConnection {
 
@@ -102,7 +96,7 @@ public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> imple
     }
 
     @Override
-    public boolean canConnect(BlockState state, Direction direction) {
+    public boolean canConnect(Level level, BlockPos pos, BlockState state, Direction direction) {
         var sideness = FacingUtil.getFacingRelative(direction, state.getValue(FACING_HORIZONTAL));
         if (direction == Direction.UP) return false;
         return sideness == FacingUtil.Sideness.BOTTOM || sideness == FacingUtil.Sideness.BACK;

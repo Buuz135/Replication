@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.buuz135'
-version = '1.21.1-1.1.13'
+version = '1.21.1-1.1.14'
 
 java {
     archivesBaseName = 'Replication'
@@ -64,7 +64,7 @@ dependencies {
     compileOnly "mezz.jei:jei-1.21.1-common-api:$jei_version"
     compileOnly "mezz.jei:jei-1.21.1-neoforge-api:$jei_version"
     runtimeOnly "mezz.jei:jei-1.21.1-neoforge:$jei_version"
-    implementation project.dependencies.create('com.hrznstudio:titanium:1.21-4.0.20')
+    implementation project.dependencies.create('com.hrznstudio:titanium:1.21-4.0.32')
     implementation "curse.maven:jade-324717:5444008"
     compileOnly "curse.maven:the-one-probe-245211:5475189"
     runtimeOnly "curse.maven:industrial-foregoing-266515:6030556"

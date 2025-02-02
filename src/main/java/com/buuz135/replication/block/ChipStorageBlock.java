@@ -2,9 +2,7 @@ package com.buuz135.replication.block;
 
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.shapes.ChipStorageShapes;
-import com.buuz135.replication.block.shapes.DisintegratorShapes;
 import com.buuz135.replication.block.tile.ChipStorageBlockEntity;
-import com.buuz135.replication.block.tile.DisintegratorBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
@@ -14,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,8 +20,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Consumer;
 
 public class ChipStorageBlock extends RotatableBlock<ChipStorageBlockEntity> implements INetworkDirectionalConnection {
 
@@ -79,7 +76,7 @@ public class ChipStorageBlock extends RotatableBlock<ChipStorageBlockEntity> imp
         return super.getShape(state, p_60556_, p_60557_, p_60558_);
     }
     @Override
-    public boolean canConnect(BlockState state, Direction direction) {
+    public boolean canConnect(Level level, BlockPos pos, BlockState state, Direction direction) {
         var sideness = FacingUtil.getFacingRelative(direction, state.getValue(FACING_HORIZONTAL));
         return sideness == FacingUtil.Sideness.BACK || direction == Direction.DOWN;
     }

@@ -95,8 +95,7 @@ public class Replication extends ModuleController {
                 return null;
             }, ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getBlock());
             event.registerBlock(Capabilities.EnergyStorage.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
-                ;
-                if (blockState.getBlock() instanceof INetworkDirectionalConnection connection && connection.canConnect(blockState, direction) && blockEntity instanceof ReplicationMachine<?> machine) {
+                if (blockState.getBlock() instanceof INetworkDirectionalConnection connection && connection.canConnect(level, blockPos, blockState, direction) && blockEntity instanceof ReplicationMachine<?> machine) {
                     return machine.getEnergyStorage();
                 }
                 return null;

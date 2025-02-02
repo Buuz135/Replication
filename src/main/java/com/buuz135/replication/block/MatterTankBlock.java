@@ -62,7 +62,7 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
         return MatterTankShapes.SHAPE;
     }
     @Override
-    public boolean canConnect(BlockState state, Direction direction) {
+    public boolean canConnect(Level level, BlockPos pos, BlockState state, Direction direction) {
         return direction == Direction.UP || direction == Direction.DOWN;
     }
 
