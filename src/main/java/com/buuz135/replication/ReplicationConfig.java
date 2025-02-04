@@ -57,7 +57,8 @@ public class ReplicationConfig {
     @ConfigFile.Child(ReplicationConfig.class)
     public class RecipeCalculation {
 
-        @ConfigVal.InRangeInt(min = 1)
+        @ConfigVal(comment = "Setting this to 0 will disable the recipe calculation")
+        @ConfigVal.InRangeInt(min = 0)
         public static int MAX_RECIPE_DEPTH = 11;
 
         @ConfigVal
