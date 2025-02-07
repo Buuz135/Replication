@@ -215,6 +215,7 @@ public class ReplicationCalculation {
             }
         } else {
             //CALCULATE
+            if(ReplicationConfig.RecipeCalculation.MAX_RECIPE_DEPTH == 0) return null;
             var name = getNameFromStack(item);
             if (SORTED_CALCULATION_REFERENCE.containsKey(name)) {
                 if (printDebug)
