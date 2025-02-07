@@ -1,3 +1,11 @@
+# 1.1.15
+
+* Added MatterOpedia, a system to search what items have a specific matter value
+
+# 1.1.14
+
+* Updated titanium dep
+
 # 1.1.13
 
 * Fixed recipe calculation checking tag values too early, closes #26

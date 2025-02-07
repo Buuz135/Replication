@@ -1,11 +1,9 @@
 package com.buuz135.replication.client.gui.button;
 
 import com.buuz135.replication.ReplicationRegistry;
-import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
 import com.hrznstudio.titanium.Titanium;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
-import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -15,8 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-
-import java.awt.*;
 
 public class ReplicationTerminalConfigButton extends Button {
     private final ResourceLocation textureRL;
@@ -87,7 +83,9 @@ public class ReplicationTerminalConfigButton extends Button {
 
     public static enum Type{
         SORTING_TYPE(2),
-        SORTING_DIRECTION(2);
+        SORTING_DIRECTION(2),
+        MATTEROPEDIA_TYPE(2),
+        MATTEROPEDIA_DIRECTION(2);
 
         private final int states;
 

@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.buuz135'
-version = '1.21.1-1.1.14'
+version = '1.21.1-1.1.15'
 
 java {
     archivesBaseName = 'Replication'
@@ -58,6 +58,14 @@ repositories {
     maven {
         url = "https://www.cursemaven.com"
     }
+    maven {
+        name "Modmaven"
+        url "https://modmaven.dev/"
+        // For Gradle 5.1 and above, limit it to just AE2
+        content {
+            includeGroup 'appeng'
+        }
+    }
 }
 
 dependencies {
@@ -69,8 +77,9 @@ dependencies {
     compileOnly "curse.maven:the-one-probe-245211:5475189"
     runtimeOnly "curse.maven:industrial-foregoing-266515:6030556"
     runtimeOnly "curse.maven:dark-mode-everywhere-574123:5922655"
-    implementation "curse.maven:guideme-1173950:6114965"
+    implementation "curse.maven:guideme-1173950:6165912"
     runtimeOnly "curse.maven:applied-energistics-2-223794:6087880"
+    implementation "appeng:appliedenergistics2:19.0.27"
 }
 
 jar {

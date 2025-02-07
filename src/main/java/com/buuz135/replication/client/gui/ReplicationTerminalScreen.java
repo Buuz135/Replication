@@ -44,6 +44,8 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     private ReplicationTerminalConfigButton sortingType;
     private ReplicationTerminalConfigButton sortingDirection;
     private ReplicationTerminalTexturedButton craftingButton;
+    private ReplicationTerminalTexturedButton matterOpediaButton;
+    private MatterOpediaTaskWidget matterOpediaTaskWidget;
 
     public ReplicationTerminalScreen(ReplicationTerminalContainer container, Inventory inventory, Component component) {
         super(container, inventory, component);
@@ -67,7 +69,10 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         this.addWidget(this.searchBox);
         this.addWidget(this.craftingButton = new ReplicationTerminalTexturedButton(this.leftPos + 176, this.topPos + 10, 9, 9, Component.empty(), BUTTONS,
                 Component.translatable("replication.crafting_tasks").getString(), 247, 41,238, 41, button -> {enableTask(new ReplicationTaskWidget((this.width - 256) / 2,(this.height - 256) / 2, 256,256, Component.translatable("replication.crafting_tasks"), this));}));
-
+        this.addWidget(this.matterOpediaButton = new ReplicationTerminalTexturedButton(this.leftPos + 66, this.topPos + 10, 9, 9, Component.empty(), BUTTONS,
+                Component.translatable("replication.matteropedia").getString(), 229, 5, 220, 5, button -> {
+            enableMatteropedia(new MatterOpediaTaskWidget(this.leftPos, this.topPos, this.imageWidth, this.imageHeight, Component.translatable("replication.crafting_tasks"), this, "earth"));
+        }));
         this.addRenderableWidget(this.sortingType = new ReplicationTerminalConfigButton(this.leftPos + 10, this.topPos + 10, 9, 9, BUTTONS, new TileEntityLocatorInstance(menu.getPosition()), ReplicationTerminalConfigButton.Type.SORTING_TYPE, this.menu.getSortingType(),
                 247, 5, 238, 5) {
             @Override
@@ -133,12 +138,15 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             this.replicationRequestWidget.renderWidget(guiGraphics, mouseX, mouseY, v);
         } else if (this.replicationTaskWidget != null){
             this.replicationTaskWidget.renderWidget(guiGraphics, mouseX, mouseY, v);
-        }else {
+        } else if (this.matterOpediaTaskWidget != null) {
+            this.matterOpediaTaskWidget.renderWidget(guiGraphics, mouseX, mouseY, v);
+        } else {
             guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
             // TODO: Work on the Extras
             guiGraphics.blit(BUTTONS, x + this.imageWidth, y + 19, 0, 0, 27, 174);
             this.searchBox.render(guiGraphics, mouseX, mouseY, v);
             this.craftingButton.render(guiGraphics, mouseX, mouseY, v);
+            this.matterOpediaButton.render(guiGraphics, mouseX, mouseY, v);
 
             int j = this.leftPos + 175;
             int k = this.topPos + 28;
@@ -203,7 +211,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     }
 
     public boolean shouldBaseGUIRender() {
-        return this.replicationRequestWidget == null && replicationTaskWidget == null;
+        return this.replicationRequestWidget == null && this.replicationTaskWidget == null && this.matterOpediaTaskWidget == null;
     }
 
     protected boolean insideScrollbar(double p_98524_, double p_98525_) {
@@ -218,7 +226,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     public boolean mouseDragged(double p_98535_, double p_98536_, int p_98537_, double p_98538_, double p_98539_) {
-        if (this.replicationTaskWidget != null){
+        if (this.matterOpediaTaskWidget != null) {
+            this.matterOpediaTaskWidget.mouseDragged(p_98535_, p_98536_, p_98537_, p_98538_, p_98539_);
+        } else if (this.replicationTaskWidget != null) {
             this.replicationTaskWidget.mouseDragged( p_98535_,  p_98536_,  p_98537_,  p_98538_,  p_98539_);
         } else if (this.scrolling) {
             int i = this.topPos + 18;
@@ -233,6 +243,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     public boolean mouseScrolled(double p_98527_, double p_98528_, double scrollX, double scrollY) {
+        if (this.matterOpediaTaskWidget != null) {
+            return this.matterOpediaTaskWidget.mouseScrolled(p_98527_, p_98528_, scrollX, scrollY);
+        }
         if (this.replicationTaskWidget != null){
             return this.replicationTaskWidget.mouseScrolled(p_98527_, p_98528_, scrollX, scrollY);
         }
@@ -247,6 +260,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if (this.matterOpediaTaskWidget != null) {
+            return this.matterOpediaTaskWidget.mouseClicked(pMouseX, pMouseY, pButton);
+        }
         if (this.replicationTaskWidget != null){
             return this.replicationTaskWidget.mouseClicked(pMouseX, pMouseY, pButton);
         }
@@ -264,6 +280,14 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
                 if (this.patternMenu.mouseClicked(pMouseX, pMouseY, pButton)) {
                     return true;
                 }
+                for (int displayIndex = 0; displayIndex < this.terminalMatterValueDisplays.size(); displayIndex++) {
+                    var matterTankDisplay = this.terminalMatterValueDisplays.get(displayIndex);
+                    if (pMouseX >= this.leftPos + this.getXSize() && pMouseX <= this.leftPos + this.getXSize() + 20 && pMouseY > this.topPos + (displayIndex) * 20 + 26 && pMouseY < this.topPos + (displayIndex + 1) * 20 + 26) {
+                        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(ReplicationRegistry.Sounds.TERMINAL_BUTTON.get(), 1.0F));
+                        enableMatteropedia(new MatterOpediaTaskWidget(this.leftPos, this.topPos, this.imageWidth, this.imageHeight, Component.translatable("replication.crafting_tasks"), this, matterTankDisplay.type().getName()));
+                        return true;
+                    }
+                }
             }
         }
 
@@ -272,6 +296,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     public boolean mouseReleased(double p_98622_, double p_98623_, int p_98624_) {
+        if (this.matterOpediaTaskWidget != null) {
+            this.matterOpediaTaskWidget.mouseReleased(p_98622_, p_98623_, p_98624_);
+        }
         if (this.replicationTaskWidget != null){
             this.replicationTaskWidget.mouseReleased(p_98622_, p_98623_, p_98624_);
         }
@@ -283,6 +310,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     public boolean charTyped(char pCodePoint, int pModifiers) {
+        if (this.matterOpediaTaskWidget != null) {
+            return this.matterOpediaTaskWidget.charTyped(pCodePoint, pModifiers);
+        }
         String s = this.searchBox.getValue();
         if (this.replicationRequestWidget == null) {
             if (this.searchBox.charTyped(pCodePoint, pModifiers)) {
@@ -306,6 +336,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     @Override
     public boolean keyPressed(int p_98547_, int p_98548_, int p_98549_) {
+        if (this.matterOpediaTaskWidget != null) {
+            return this.matterOpediaTaskWidget.keyPressed(p_98547_, p_98548_, p_98549_);
+        }
         String s = this.searchBox.getValue();
         if (this.replicationRequestWidget == null) {
             if (this.searchBox.keyPressed(p_98547_, p_98548_, p_98549_)) {
@@ -354,26 +387,38 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
 
     public void enableRequest(ReplicationRequestWidget widget) {
         this.replicationRequestWidget = widget;
-        this.menu.setEnabled(false);
+        this.menu.setEnabled(ReplicationTerminalContainer.SlotVisualType.NONE);
         this.replicationRequestWidget.getWidgets().forEach(this::addWidget);
     }
 
     public void disableRequest() {
         this.replicationRequestWidget.getWidgets().forEach(abstractWidget -> this.children().remove(abstractWidget));
         this.replicationRequestWidget = null;
-        this.menu.setEnabled(true);
+        this.menu.setEnabled(ReplicationTerminalContainer.SlotVisualType.ALL);
     }
 
     public void enableTask(ReplicationTaskWidget widget) {
         this.replicationTaskWidget = widget;
-        this.menu.setEnabled(false);
+        this.menu.setEnabled(ReplicationTerminalContainer.SlotVisualType.NONE);
         this.replicationTaskWidget.getWidgets().forEach(this::addWidget);
     }
 
     public void disableTask() {
         this.replicationTaskWidget.getWidgets().forEach(abstractWidget -> this.children().remove(abstractWidget));
         this.replicationTaskWidget = null;
-        this.menu.setEnabled(true);
+        this.menu.setEnabled(ReplicationTerminalContainer.SlotVisualType.ALL);
+    }
+
+    public void enableMatteropedia(MatterOpediaTaskWidget widget) {
+        this.matterOpediaTaskWidget = widget;
+        this.menu.setEnabled(ReplicationTerminalContainer.SlotVisualType.INVENTORY_ONLY);
+        this.matterOpediaTaskWidget.getWidgets().forEach(this::addWidget);
+    }
+
+    public void disableMatteropedia() {
+        this.matterOpediaTaskWidget.getWidgets().forEach(abstractWidget -> this.children().remove(abstractWidget));
+        this.matterOpediaTaskWidget = null;
+        this.menu.setEnabled(ReplicationTerminalContainer.SlotVisualType.ALL);
     }
 
     public void createTask(MatterPattern pattern, int i, boolean parallelMode) {
@@ -386,7 +431,6 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             this.replicationTaskWidget.refreshTasks();
         }
     }
-
 
     public class PatternMenu {
         public List<MatterPatternButton> matterPatternButtonList = new ArrayList<>();

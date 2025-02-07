@@ -14,7 +14,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -37,6 +36,10 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
     private int sortingTypeValue;
     @Save
     private int sortingDirection;
+    @Save
+    private int matterOpediaSortingTypeValue;
+    @Save
+    private int matterOpediaSortingDirection;
     private TerminalPlayerTracker terminalPlayerTracker;
 
 
@@ -45,6 +48,8 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
         this.terminalPlayerTracker = new TerminalPlayerTracker();
         this.sortingTypeValue = 0;
         this.sortingDirection = 1;
+        this.matterOpediaSortingTypeValue = 0;
+        this.matterOpediaSortingDirection = 1;
         this.output = new InventoryComponent<ReplicationTerminalBlockEntity>("output", 11,131, 9*2)
                 .setRange(9,2);
         this.addInventory(this.output);
@@ -90,6 +95,8 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
                 buffer.writeUtf(this.getNetwork().getId());
                 buffer.writeInt(this.sortingTypeValue);
                 buffer.writeInt(this.sortingDirection);
+                buffer.writeInt(this.matterOpediaSortingTypeValue);
+                buffer.writeInt(this.matterOpediaSortingDirection);
             });
         }
         return ItemInteractionResult.SUCCESS;
@@ -107,6 +114,12 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
             } else if (type.equals("SORTING_ACTION")){
                 sortingDirection = value;
                 syncObject(sortingDirection);
+            } else if (type.equals("MATTEROPEDIA_TYPE")) {
+                matterOpediaSortingTypeValue = value;
+                syncObject(matterOpediaSortingTypeValue);
+            } else if (type.equals("MATTEROPEDIA_DIRECTION")) {
+                matterOpediaSortingDirection = value;
+                syncObject(matterOpediaSortingDirection);
             }
         }
     }

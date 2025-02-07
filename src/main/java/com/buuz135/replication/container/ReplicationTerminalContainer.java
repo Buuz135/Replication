@@ -2,9 +2,6 @@ package com.buuz135.replication.container;
 
 import com.buuz135.replication.block.tile.ReplicationTerminalBlockEntity;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.container.BasicAddonContainer;
-import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
-import com.hrznstudio.titanium.container.addon.SlotContainerAddon;
 import com.hrznstudio.titanium.container.addon.UpdatableSlotItemHandler;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
@@ -21,7 +18,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-
 import java.awt.*;
 
 public class ReplicationTerminalContainer extends AbstractContainerMenu {
@@ -33,14 +29,16 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
     private String network;
     private int sortingType;
     private int sortingValue;
+    private int matterOpediaSortingType;
+    private int matterOpediaSortingValue;
     private BlockPos position;
 
-    private boolean isEnabled;
+    private SlotVisualType visualType;
 
     public ReplicationTerminalContainer(int id, Inventory inventory, FriendlyByteBuf buffer) {
         super(TYPE.get(), id);
         this.inventory = inventory;
-        this.isEnabled = true;
+        this.visualType = SlotVisualType.ALL;
         LocatorInstance instance = LocatorFactory.readPacketBuffer(new RegistryFriendlyByteBuf(buffer, Minecraft.getInstance().level.registryAccess()));
         if (instance != null) {
             Player playerEntity = inventory.player;
@@ -54,7 +52,7 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
                                 addSlot(new UpdatableSlotItemHandler(addonProvider.getOutput(), slot.getContainerSlot(), slot.x, slot.y){
                                     @Override
                                     public boolean isActive() {
-                                        return isEnabled;
+                                        return visualType == SlotVisualType.ALL;
                                     }
                                 });
                             });
@@ -66,6 +64,8 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
         this.network = buffer.readUtf();
         this.sortingType = buffer.readInt();
         this.sortingValue = buffer.readInt();
+        this.matterOpediaSortingType = buffer.readInt();
+        this.matterOpediaSortingValue = buffer.readInt();
         this.initInventory();
     }
 
@@ -96,7 +96,7 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
                             addSlot(new UpdatableSlotItemHandler(this.blockEntity.getOutput(), slot.getContainerSlot(), slot.x, slot.y){
                                 @Override
                                 public boolean isActive() {
-                                    return isEnabled;
+                                    return visualType == SlotVisualType.ALL;
                                 }
                             });
                         });
@@ -113,7 +113,7 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
                 addSlot(new Slot(inventory, j + i * 9 + 9, invPos.x + j * 18 + 2, invPos.y + i * 18 - 3){
                     @Override
                     public boolean isActive() {
-                        return isEnabled;
+                        return visualType == SlotVisualType.ALL || visualType == SlotVisualType.INVENTORY_ONLY;
                     }
                 });
             }
@@ -126,7 +126,7 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
             addSlot(new Slot(getPlayerInventory(), k, hotbarPos.x + k * 18 + 2, hotbarPos.y - 3){
                 @Override
                 public boolean isActive() {
-                    return isEnabled;
+                    return visualType == SlotVisualType.ALL || visualType == SlotVisualType.INVENTORY_ONLY;
                 }
             });
         }
@@ -142,6 +142,14 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
 
     public int getSortingType() {
         return sortingType;
+    }
+
+    public int getMatterOpediaSortingValue() {
+        return matterOpediaSortingValue;
+    }
+
+    public int getMatterOpediaSortingType() {
+        return matterOpediaSortingType;
     }
 
     public int getSortingValue() {
@@ -191,7 +199,13 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
         return position;
     }
 
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+    public void setEnabled(SlotVisualType enabled) {
+        visualType = enabled;
+    }
+
+    public enum SlotVisualType {
+        NONE,
+        INVENTORY_ONLY,
+        ALL;
     }
 }
