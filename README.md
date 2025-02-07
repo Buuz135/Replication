@@ -35,3 +35,5 @@ blueprints can be transferred using the Identification Chamber or directly to th
 ## Tag
 You can disable an item from being scanned using the tag `replication:cant_be_scanned`. This will only prevent the item from being scanned and not replicated
 You can disable an item from being disintegrated using the tag `replication:cant_be_disintegrated`
+You can disable a calculation of an item by adding it the tag `replication:skip_calculation`, it will always return
+empty in all calculation checks.

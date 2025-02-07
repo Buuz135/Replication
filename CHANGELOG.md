@@ -1,6 +1,8 @@
 # 1.1.15
 
 * Added MatterOpedia, a system to search what items have a specific matter value
+* Added a tag to skip calculation checks `replication:skip_calculation`
+*
 
 # 1.1.14
 

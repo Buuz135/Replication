@@ -5,6 +5,7 @@ import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.packet.ReplicationCalculationPacket;
 import com.buuz135.replication.recipe.MatterValueRecipe;
+import com.buuz135.replication.util.ReplicationTags;
 import com.hrznstudio.titanium.event.handler.EventManager;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -216,6 +217,7 @@ public class ReplicationCalculation {
         } else {
             //CALCULATE
             if(ReplicationConfig.RecipeCalculation.MAX_RECIPE_DEPTH == 0) return null;
+            if (item.is(ReplicationTags.SKIP_CALCULATION)) return null;
             var name = getNameFromStack(item);
             if (SORTED_CALCULATION_REFERENCE.containsKey(name)) {
                 if (printDebug)
