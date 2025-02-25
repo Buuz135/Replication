@@ -2,6 +2,7 @@
 
 * Increased identification progress and added a config option for it
 * Added a bunch of values for default common tags
+* Added a command to dump missing common tags that dont have a default recipe for matter values
 
 # 1.1.15
 

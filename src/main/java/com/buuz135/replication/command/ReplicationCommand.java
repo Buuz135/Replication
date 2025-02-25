@@ -5,6 +5,8 @@ import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.calculation.client.ClientReplicationCalculation;
+import com.buuz135.replication.recipe.MatterValueRecipe;
+import com.hrznstudio.titanium.util.RecipeUtil;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -18,6 +20,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,6 +44,7 @@ public class ReplicationCommand {
                 .literal("replication")
                 .then(Commands.literal("dump-inventory").executes(context -> dumpInventoryItems(context)).requires(commandSourceStack -> commandSourceStack.hasPermission(4)))
                 .then(Commands.literal("dump-missing").executes(context -> dumpMissing(context)).requires(commandSourceStack -> commandSourceStack.hasPermission(4)))
+                .then(Commands.literal("dump-missing-common-tags").executes(context -> dumpMissingCommonTags(context)).requires(commandSourceStack -> commandSourceStack.hasPermission(4)))
                 .then(Commands.literal("export-to-csv").executes(context -> exportToCSV(context)))
                 .then(
                         Commands.literal("create-blueprint-using-hand")
@@ -80,6 +85,7 @@ public class ReplicationCommand {
             LOGGER.info("--------------------------------------------");
         }
         LOGGER.info("WE ARE TOTAL MISSING " + missingItems.size() + " items");
+        context.getSource().sendSystemMessage(Component.literal("Dumped missing items to log"));
 
         return 1;
     }
@@ -110,6 +116,30 @@ public class ReplicationCommand {
         } catch (CommandSyntaxException e) {
             throw new RuntimeException(e);
         }
+        return 1;
+    }
+
+    public static int dumpMissingCommonTags(CommandContext<CommandSourceStack> context) {
+        List<MatterValueRecipe> recipes = (List<MatterValueRecipe>) RecipeUtil.getRecipes(context.getSource().getLevel(), ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get());
+        List<String> availableTags = new ArrayList<>();
+        for (var recipe : recipes) {
+            if (recipe.input.getValues().length > 0 && recipe.input.getValues()[0] instanceof Ingredient.TagValue) {
+                var tag = ((Ingredient.TagValue) recipe.input.getValues()[0]).tag();
+                if (tag.location().getNamespace().equals("c")) {
+                    availableTags.add(tag.toString());
+                }
+            }
+        }
+        LOGGER.info("MISSING COMMON TAGS");
+        BuiltInRegistries.ITEM.getTagNames().forEach(itemTagKey -> {
+            var name = itemTagKey.location();
+            if (name.getNamespace().equals("c") && !availableTags.contains(name.toString())) {
+                LOGGER.info(name.toString());
+            }
+        });
+        LOGGER.info("--------------------------------------------");
+        context.getSource().sendSystemMessage(Component.literal("Dumped missing common tags to log"));
+
         return 1;
     }
 
