@@ -1,3 +1,7 @@
+# 1.1.17
+
+* Fixed replicators getting stuck if the crafting task doesn't exist anymore
+
 # 1.1.16
 
 * Increased identification progress and added a config option for it
