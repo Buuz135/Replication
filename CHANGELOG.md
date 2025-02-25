@@ -1,3 +1,7 @@
+# 1.1.16
+
+* Increased identification progress and added a config option for it
+
 # 1.1.15
 
 * Added MatterOpedia, a system to search what items have a specific matter value

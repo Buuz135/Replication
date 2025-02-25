@@ -108,7 +108,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                         this.getInput().getStackInSlot(0).shrink(1);
                         syncObject(this.input);
                     } else {
-                        returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(this.level, stack, input,  0.2f);
+                        returnedValue = ((IMatterPatternModifier<ItemStack>) patternModifier).addPattern(this.level, stack, input, (float) ReplicationConfig.IdentificationChamber.IDENTIFICATION_PROGRESS);
                     }
                     if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1){
                         this.getInput().getStackInSlot(0).shrink(1);

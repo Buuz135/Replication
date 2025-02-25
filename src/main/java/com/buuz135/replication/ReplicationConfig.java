@@ -30,6 +30,10 @@ public class ReplicationConfig {
         @ConfigVal.InRangeInt(min = 1)
         public static int POWER_USAGE = 5000;
 
+        @ConfigVal
+        @ConfigVal.InRangeDouble(min = 0, max = 1)
+        public static double IDENTIFICATION_PROGRESS = 0.5;
+
     }
 
     @ConfigFile.Child(ReplicationConfig.class)
