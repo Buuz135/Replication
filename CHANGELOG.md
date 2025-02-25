@@ -1,6 +1,7 @@
 # 1.1.16
 
 * Increased identification progress and added a config option for it
+* Added a bunch of values for default common tags
 
 # 1.1.15
 

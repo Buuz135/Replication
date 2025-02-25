@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "tag": "c:dust/dark"
+  },
+  "matter": [
+    {
+      "type": "replication:precious",
+      "amount": 12.0
+    }
+  ]
+}

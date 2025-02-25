@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "tag": "c:ingots/tungsten"
+  },
+  "matter": [
+    {
+      "type": "replication:metallic",
+      "amount": 18.0
+    },
+    {
+      "type": "replication:precious",
+      "amount": 9.0
+    }
+  ]
+}

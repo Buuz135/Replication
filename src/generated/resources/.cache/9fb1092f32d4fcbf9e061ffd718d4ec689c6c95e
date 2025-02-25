@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-31T13:02:43.3353051	Recipes
+// 1.21.1	2025-02-25T16:53:58.2189122	Recipes
 0e2e80e06c5992885609317413a8d6f6ede0408e data/replication/advancement/recipes/misc/blasting_raw_replica.json
 885215f7b02a0e3a1a2d8cea262f562a668b17a8 data/replication/advancement/recipes/misc/chip_storage.json
 2b1a60e85e62003c00d92f07413d9748ce1cb335 data/replication/advancement/recipes/misc/disintegrator.json
@@ -19,10 +19,36 @@ d48f131a4f5a21e2f9d329404c1d2c4063feb81b data/replication/recipe/chip_storage.js
 e5a0492c8399d894737549bb61543a373c210312 data/replication/recipe/identification_chamber.json
 08c79d766312933aa90734a4bab250511374cc43 data/replication/recipe/matter_network_pipe.json
 498ab7789a2309beb740628c5d73d1401812f211 data/replication/recipe/matter_tank.json
+734fb83f37b17d72f2a39f4ef82ada717316871d data/replication/recipe/matter_values/c/tags/berries.json
 5896c5ed730bad489353b83b28b4ad42c5958987 data/replication/recipe/matter_values/c/tags/cobblestones.json
+bbf68df42a45c7fbf482f13f1cb6615d20700952 data/replication/recipe/matter_values/c/tags/cork.json
+4b506219411dcdae9ae32eb5f9a8b6c5d5838416 data/replication/recipe/matter_values/c/tags/crops.json
+60c88557727e915cf1b74515f04333d0296ecab1 data/replication/recipe/matter_values/c/tags/dust/dark.json
+ac7231718277aa61552113aeb25297841af73d69 data/replication/recipe/matter_values/c/tags/food/berry.json
+c08ea8c14f253325086673cbf61d94713a419c11 data/replication/recipe/matter_values/c/tags/fruits.json
+910b6071fadbcc7e87ca7c3e5c099f248103043e data/replication/recipe/matter_values/c/tags/gems/dark.json
 f5d22cdab227dba8bbbda25de717a382a3a2b27d data/replication/recipe/matter_values/c/tags/gravels.json
+c1837cce627226f244a7a832c4e349e14331d368 data/replication/recipe/matter_values/c/tags/ingots/aluminum.json
+880dd706ebce9aa013bd9af6c07b2dca736fe7a3 data/replication/recipe/matter_values/c/tags/ingots/antimony.json
+17875c4afad57e239726325ae159236c98ec49ab data/replication/recipe/matter_values/c/tags/ingots/iesnium.json
+5916e1aa471c03d5c48c44ed079d17b5ec144a5d data/replication/recipe/matter_values/c/tags/ingots/iridium.json
+ea88fb78086891240f3055df9dc889fdc3bf8745 data/replication/recipe/matter_values/c/tags/ingots/lead.json
+c7e7cbe815e7aca6a4cf9d9617f45b150c8f3226 data/replication/recipe/matter_values/c/tags/ingots/mithril.json
+d070b83df62cbc5979bd1996512cb52426cc4f4b data/replication/recipe/matter_values/c/tags/ingots/nickel.json
+75c6c7efdc95cb9bb7c617a4e212fcd89c627234 data/replication/recipe/matter_values/c/tags/ingots/osmium.json
+65b06593843d48a3d37b6b614626a56a5b494d28 data/replication/recipe/matter_values/c/tags/ingots/platinum.json
+ab232a76c00b05d68daee6b2a4a97ab3582c7b13 data/replication/recipe/matter_values/c/tags/ingots/plutonium.json
+99c6f80ac027dedbfff66d40ebc5af2d7a6dc0c9 data/replication/recipe/matter_values/c/tags/ingots/silver.json
+4da3e06c543cda880badb88fc111564d27e3f9eb data/replication/recipe/matter_values/c/tags/ingots/tin.json
+cfb80e890aa0e190ee2958031cfa547b5fd3b07c data/replication/recipe/matter_values/c/tags/ingots/titanium.json
+531e120ce7e507ed335b31df17e97dcd0486f3ef data/replication/recipe/matter_values/c/tags/ingots/tungsten.json
+f46730e180ef2ea0e82614f438bb16d985582be9 data/replication/recipe/matter_values/c/tags/ingots/uraninite.json
+e6e8298c3c9478ddcec582ada6a3dd914c9e12b6 data/replication/recipe/matter_values/c/tags/ingots/uranium.json
 66e75db2545dd90126ddf5c7bbabd681ceb99968 data/replication/recipe/matter_values/c/tags/mushrooms.json
+b83783623aca27e4bc65f17d440e291b00420011 data/replication/recipe/matter_values/c/tags/nuts.json
+b7d4aa657e17992e0f14475b10f7122b0c5814ca data/replication/recipe/matter_values/c/tags/plastics.json
 91840921df32c663b7eec8c851f4ecbef6a5d438 data/replication/recipe/matter_values/c/tags/sands.json
+2cd59f9483fae2aa7ffb14436c3ee5eb39b122d4 data/replication/recipe/matter_values/c/tags/silicon.json
 a8c87ab0af93bf66f4f72f69985143ab7755fe11 data/replication/recipe/matter_values/c/tags/stones.json
 8d020e0f2d04b374bd01b2fb3a906ce303682f24 data/replication/recipe/matter_values/minecraft/items/amethyst_shard.json
 25961df9b93000144c89a6660fb414bb4f1d4d0a data/replication/recipe/matter_values/minecraft/items/ancient_debris.json

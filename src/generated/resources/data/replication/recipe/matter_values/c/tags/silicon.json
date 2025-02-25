@@ -1,0 +1,12 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "tag": "c:silicon"
+  },
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 2.0
+    }
+  ]
+}

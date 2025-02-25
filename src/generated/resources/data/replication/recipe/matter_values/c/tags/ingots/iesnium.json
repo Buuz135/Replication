@@ -1,0 +1,16 @@
+{
+  "type": "replication:matter_value",
+  "input": {
+    "tag": "c:ingots/iesnium"
+  },
+  "matter": [
+    {
+      "type": "replication:metallic",
+      "amount": 9.0
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 9.0
+    }
+  ]
+}

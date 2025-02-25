@@ -4,6 +4,7 @@ import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.calculation.MatterValue;
 import com.buuz135.replication.recipe.MatterValueRecipe;
+import com.hrznstudio.titanium.util.TagUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -137,6 +138,36 @@ public class MatterValueDataProvider {
         saveData(new Item[]{TUBE_CORAL, BRAIN_CORAL, BUBBLE_CORAL, FIRE_CORAL, HORN_CORAL, TUBE_CORAL_FAN, BRAIN_CORAL_FAN, BUBBLE_CORAL_FAN, FIRE_CORAL_FAN, HORN_CORAL_FAN}, organic(2), living(1));
         saveData(new Item[]{DEAD_BRAIN_CORAL, DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL, DEAD_TUBE_CORAL, DEAD_TUBE_CORAL_FAN, DEAD_BRAIN_CORAL_FAN, DEAD_BUBBLE_CORAL_FAN, DEAD_FIRE_CORAL_FAN, DEAD_HORN_CORAL_FAN}, organic(2));
 
+        saveCommonTag("ingots/osmium", metallic(9), precious(9));
+        saveCommonTag("ingots/aluminum", metallic(9), precious(9));
+        saveCommonTag("ingots/antimony", metallic(9));
+        saveCommonTag("ingots/lead", metallic(9));
+        saveCommonTag("ingots/iridium", metallic(9), precious(9), quantum(9));
+        saveCommonTag("ingots/nickel", metallic(9));
+        saveCommonTag("ingots/platinum", metallic(9), precious(18));
+        saveCommonTag("ingots/plutonium", metallic(9), precious(18), quantum(18));
+        saveCommonTag("ingots/iesnium", metallic(9), quantum(9));
+        saveCommonTag("ingots/silver", metallic(9), precious(9));
+        saveCommonTag("ingots/tin", metallic(9));
+        saveCommonTag("ingots/titanium", metallic(9), precious(9));
+        saveCommonTag("ingots/tungsten", metallic(18), precious(9));
+        saveCommonTag("ingots/uranium", metallic(9), quantum(9));
+        saveCommonTag("ingots/uraninite", metallic(9), quantum(9));
+        saveCommonTag("ingots/mithril", metallic(9), precious(18));
+        saveCommonTag("plastics", organic(9), precious(2));
+
+        saveCommonTag("cork", organic(2));
+        saveCommonTag("gems/dark", precious(24));
+        saveCommonTag("dust/dark", precious(12));
+        saveCommonTag("silicon", earth(2));
+
+        saveCommonTag("berries", earth(4), organic(4));
+        saveCommonTag("fruits", earth(4), organic(4));
+        saveCommonTag("nuts", earth(4), organic(4));
+        saveCommonTag("food/berry", earth(4), organic(4));
+
+        saveCommonTag("crops", earth(2), organic(2));
+
     }
 
     private void saveData(Item item, MatterValue... instances) {
@@ -155,6 +186,14 @@ public class MatterValueDataProvider {
         var recipe = new MatterValueRecipe(Ingredient.of(tag), instances);
         recipeOutput.accept(recipeLocation, recipe, null);
     }
+
+    private void saveCommonTag(String tagName, MatterValue... instances) {
+        var tag = TagUtil.getItemTag(ResourceLocation.fromNamespaceAndPath("c", tagName));
+        var recipeLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + tag.location().getNamespace() + "/tags/" + tag.location().getPath());
+        var recipe = new MatterValueRecipe(Ingredient.of(tag), instances);
+        recipeOutput.accept(recipeLocation, recipe, null);
+    }
+
 
     private static MatterValue metallic(double d){
         return new MatterValue(ReplicationRegistry.Matter.METALLIC.get(), d);
