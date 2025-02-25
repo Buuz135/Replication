@@ -35,8 +35,8 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
     }
 
     @Override
-    public void clearRemoved() {
-        super.clearRemoved();
+    public void onLoad() {
+        super.onLoad();
         if (!level.isClientSide) {
             NetworkManager networkManager = NetworkManager.get(level);
 

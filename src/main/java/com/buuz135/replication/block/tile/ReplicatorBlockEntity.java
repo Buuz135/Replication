@@ -156,11 +156,14 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
                     this.getNetwork().onTaskValueChanged(task, (ServerLevel) this.level);
                 }
             }
-            if (this.level.getGameTime() % 20 == 0 && this.craftingTask != null && this.cachedReplicationTask == null
-                    && this.getNetwork().getTaskManager().getPendingTasks().containsKey(this.craftingTask)){
-                this.cachedReplicationTask = this.getNetwork().getTaskManager().getPendingTasks().get(this.craftingTask);
-                this.craftingStack = this.cachedReplicationTask.getReplicatingStack();
-                syncObject(this.craftingStack);
+            if (this.level.getGameTime() % 20 == 0 && this.craftingTask != null && this.cachedReplicationTask == null) {
+                if (this.getNetwork().getTaskManager().getPendingTasks().containsKey(this.craftingTask)) {
+                    this.cachedReplicationTask = this.getNetwork().getTaskManager().getPendingTasks().get(this.craftingTask);
+                    this.craftingStack = this.cachedReplicationTask.getReplicatingStack();
+                    syncObject(this.craftingStack);
+                } else {
+                    cancelTask();
+                }
             }
             if (this.level.getGameTime() % 20 == 0 && this.craftingTask != null && this.cachedReplicationTask != null
                     && !this.cachedReplicationTask.getStoredMatterStack().containsKey(this.getBlockPos().asLong())){
