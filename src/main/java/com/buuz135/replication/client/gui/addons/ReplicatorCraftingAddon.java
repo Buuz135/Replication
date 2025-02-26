@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class ReplicatorCraftingAddon extends BasicScreenAddon {
@@ -42,7 +43,7 @@ public class ReplicatorCraftingAddon extends BasicScreenAddon {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(scale, scale, scale);
 //        guiGraphics.drawString(Minecraft.getInstance().font, LangUtil.getString("replication.current_crafting"), (guiX + this.getPosX() +2) * 1/scale, (guiY + this.getPosY() + 2) * 1/scale, 0x72e567, false);
-        guiGraphics.drawString(Minecraft.getInstance().font, LangUtil.getString("replication.infinite_mode") + ": " + (blockEntity.isInfinite() ? "True" : "False"), (guiX + 41) * 1/scale, (guiY + 20) * 1/scale, 0x72e567, false);
+        guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("replication.infinite_mode").append(blockEntity.isInfinite() ? Component.translatable("replication.true") : Component.translatable("replication.false")).getString(), (guiX + 41) * 1/scale, (guiY + 20) * 1/scale, 0x72e567, false);
         guiGraphics.pose().popPose();
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0,0,100);

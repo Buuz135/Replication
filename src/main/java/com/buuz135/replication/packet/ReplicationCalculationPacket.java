@@ -33,12 +33,12 @@ public class ReplicationCalculationPacket extends Message {
     @OnlyIn(Dist.CLIENT)
     private void handle(IPayloadContext context) {
         ClientReplicationCalculation.acceptData(context.player().level().registryAccess(), data);
-        var subtext = Component.literal("Matter Values Synced").withStyle(style -> style.withColor(0x72e567));
+        var subtext = Component.translatable("replication.toast_context").withStyle(style -> style.withColor(0x72e567));
             /*if (state == AnalysisState.ERRORED){
                 subtext = Component.literal("Error").withStyle(style -> style.withColor(ChatFormatting.RED));
             }*/
         var toast = new MatterCalculationStatusToast(new ItemStack(ReplicationRegistry.Blocks.REPLICATOR.getBlock()),
-                Component.literal("Replication").withStyle(style -> style.withBold(true).withColor(0x72e567)),
+                Component.translatable("replication.toast_title").withStyle(style -> style.withBold(true).withColor(0x72e567)),
                 subtext, false);
         Minecraft.getInstance().getToasts().addToast(toast);
         new Thread(() -> {

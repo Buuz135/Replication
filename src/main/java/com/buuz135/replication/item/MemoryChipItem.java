@@ -109,7 +109,7 @@ public class MemoryChipItem extends ReplicationItem implements IMatterPatternHol
                 }
             }
             if (fullPatterns < getPatternSlots(stack)){
-                tooltip.add(Component.literal(getPatternSlots(stack) - fullPatterns + " ").withStyle(ChatFormatting.GOLD).append(Component.literal("slots left").withStyle(ChatFormatting.WHITE)));
+                tooltip.add(Component.translatable("tooltip.replication.memory_chip_slot", Component.literal(String.valueOf(getPatternSlots(stack) - fullPatterns)).withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.WHITE));
             }
         }
     }
