@@ -21,6 +21,7 @@ import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -130,6 +131,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     @Override
     public void serverTick(Level level, BlockPos pos, BlockState state, DisintegratorBlockEntity blockEntity) {
         super.serverTick(level, pos, state, blockEntity);
+        if (this.level.getGameTime() % 5 == 0) splitItems();
         if (!this.queuedMatterStacks.isEmpty()){
             var peekedElement = this.queuedMatterStacks.peek();
             for (MatterTankComponent<DisintegratorBlockEntity> matterTankComponent : this.getMatterTankComponents()) {
@@ -182,5 +184,29 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     @Override
     public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
         return super.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) - 16;
+    }
+
+    public void splitItems() {
+        for (int i = 0; i < this.input.getSlots(); i++) {
+            if (!this.input.getStackInSlot(i).isEmpty()) {
+                var stack = this.input.getStackInSlot(i);
+                for (int j = 0; j < this.input.getSlots(); j++) {
+                    if (i == j) continue;
+                    var otherSlot = this.input.getStackInSlot(j);
+                    if (stack.getCount() > 1 && this.input.getStackInSlot(j).isEmpty()) {
+                        var copied = stack.copyWithCount(1);
+                        stack.shrink(1);
+                        this.input.setStackInSlot(j, copied);
+                        this.input.setStackInSlot(i, stack);
+                    } else if (ItemStack.isSameItemSameComponents(stack, otherSlot) && stack.getCount() > otherSlot.getCount()) {
+                        var copied = otherSlot.copyWithCount(otherSlot.getCount() + 1);
+                        stack.shrink(1);
+                        this.input.setStackInSlot(j, copied);
+                        this.input.setStackInSlot(i, stack);
+                    }
+                }
+            }
+        }
+
     }
 }

@@ -1,3 +1,7 @@
+# 1.1.18
+
+* Disintegrator will now split items
+
 # 1.1.17
 
 * Fixed replicators getting stuck if the crafting task doesn't exist anymore
