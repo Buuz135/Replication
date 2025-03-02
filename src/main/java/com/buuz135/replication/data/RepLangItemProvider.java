@@ -41,8 +41,13 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("replication.replicate", "Replicate");
         this.add("replication.crafting_tasks", "Replication Tasks");
         this.add("replication.current_crafting", "Replicating");
-        this.add("replication.infinite_mode", "Infinite Mode");
+        this.add("replication.infinite_mode", "Infinite Mode: ");
         this.add("replication.matteropedia", "MatterOpedia");
+        this.add("replication.subtitle.terminal_button", "Press Terminal Button");
+        this.add("replication.toast_context", "Matter Values Synced");
+        this.add("replication.toast_title", "Replication");
+        this.add("replication.false", "False");
+        this.add("replication.true", "True");
         this.add("tooltip.replication.terminal.sorting_type.state_0", "Sorting Type: Amount");
         this.add("tooltip.replication.terminal.sorting_type.state_1", "Sorting Type: Name");
         this.add("tooltip.replication.terminal.sorting_direction.state_0", "Sorting Direction: Ascending");
@@ -58,6 +63,9 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("tooltip.replication.terminal.single", "Single");
         this.add("tooltip.replication.terminal.multiple", "Parallel");
         this.add("tooltip.replication.close", "Close");
+        this.add("tooltip.replication.matter_value", "ℹ Hold %s to see matter values");
+        this.add("tooltip.replication.memory_chip_slot", "%s slots left");
+        this.add("tooltip.replication.tank.unit", " matter");
         this.add("config.jade.plugin_replication.matter_tank", "Matter Tank");
 
         for (MatterType value : MatterType.values()) {

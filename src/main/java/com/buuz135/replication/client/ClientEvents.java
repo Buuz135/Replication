@@ -57,7 +57,7 @@ public class ClientEvents {
                     if (Screen.hasShiftDown() || Minecraft.getInstance().screen instanceof ReplicationTerminalScreen) {
                         pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(instance)));
                     } else {
-                        pre.getTooltipElements().add(Either.left(Component.literal("ℹ Hold ").withStyle(ChatFormatting.GRAY).append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).append(" to see matter values").withStyle(ChatFormatting.GRAY)));
+                        pre.getTooltipElements().add(Either.left(Component.translatable("tooltip.replication.matter_value", Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GRAY)));
                     }
                 }
             }
@@ -66,7 +66,7 @@ public class ClientEvents {
             if (ItemStack.isSameItem(pre.getItemStack(), new ItemStack(ReplicationRegistry.Blocks.MATTER_TANK.getBlock())) && pre.getItemStack().has(ReplicationAttachments.TILE)){
                 var tag = pre.getItemStack().get(ReplicationAttachments.TILE);
                 var matterStack = MatterStack.loadMatterStackFromNBT(tag.contains("tank") ? tag.getCompound("tank") : tag.getCompound("lockableMatterTankBundle").getCompound("Tank"));
-                pre.getToolTip().add(1, Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(matterStack.getAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(256000) + ChatFormatting.DARK_AQUA + " matter")));
+                pre.getToolTip().add(1, Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(matterStack.getAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(256000))).append(Component.translatable("tooltip.replication.tank.unit").withStyle(ChatFormatting.DARK_AQUA)));
                 pre.getToolTip().add(1, Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.replication.tank.matter").getString()).append(matterStack.isEmpty() ? Component.translatable("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE) : Component.translatable(matterStack.getTranslationKey())).withStyle(ChatFormatting.WHITE));
             }
         }).subscribe();

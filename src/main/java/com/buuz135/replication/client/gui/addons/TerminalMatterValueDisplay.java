@@ -41,7 +41,7 @@ public record TerminalMatterValueDisplay(IMatterType type, long amount){
         if (mouseX > x && mouseX <= x + 18 && mouseY > y && mouseY <= y + 18) {
             List<Component> strings = new ArrayList<>();
             strings.add(Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.replication.tank.matter").getString()).append(Component.translatable("replication.matter_type." + type.getName())).withStyle(ChatFormatting.WHITE));
-            strings.add(net.minecraft.network.chat.Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(amount) +  ChatFormatting.DARK_AQUA + " matter")));
+            strings.add(net.minecraft.network.chat.Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(amount))).append(Component.translatable("tooltip.replication.tank.unit").withStyle(ChatFormatting.DARK_AQUA)));
             guiGraphics.renderTooltip(Minecraft.getInstance().font, strings, Optional.empty(), (int) mouseX, (int) mouseY);
         }
     }
