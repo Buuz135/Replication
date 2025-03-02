@@ -1,6 +1,10 @@
 # 1.1.18
 
 * Disintegrator will now split items
+* Queued MatterStacks inside the Disintegrator will now be saved
+* Added config for the Disintegrator tank and Matter tank sizes
+* Better number formatting for big numbers in the Matter tooltip
+* MatterStacks now can be a java double in size
 
 # 1.1.17
 

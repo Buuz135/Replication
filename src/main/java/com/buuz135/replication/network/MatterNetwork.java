@@ -118,7 +118,7 @@ public class MatterNetwork extends Network {
                             if (destination instanceof IMatterTanksConsumer consumerDestination){
                                 for (IMatterTank outputTank : consumerDestination.getTanks()) {
                                     if (outputTank.getMatter().isMatterEqual(inputTank.getMatter()) && outputTank.getMatterAmount() < outputTank.getCapacity()) {
-                                        inputTank.drain(outputTank.fill(inputTank.drain(1024*4, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                                        inputTank.drain(outputTank.fill(inputTank.drain(outputTank.getCapacity(), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
                                         didWork = true;
                                         break;
                                     }
@@ -132,7 +132,7 @@ public class MatterNetwork extends Network {
                                 if (destination instanceof IMatterTanksConsumer consumerDestination){
                                     for (IMatterTank outputTank : consumerDestination.getTanks()) {
                                         if (outputTank.getMatter().isEmpty()) {
-                                            inputTank.drain(outputTank.fill(inputTank.drain(1024*4, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                                            inputTank.drain(outputTank.fill(inputTank.drain(outputTank.getCapacity(), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
                                             didWork = true;
                                             break;
                                         }

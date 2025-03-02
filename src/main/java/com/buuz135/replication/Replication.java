@@ -171,7 +171,7 @@ public class Replication extends ModuleController {
             if (buildCreativeModeTabContentsEvent.getTabKey().location().equals(TAB.getResourceLocation())){
                 for (IMatterType value : ReplicationRegistry.MATTER_TYPES_REGISTRY.stream().toList()) {
                     if (value.equals(MatterType.EMPTY)) continue;
-                    var matterStack = new MatterStack(value, 256000);
+                    var matterStack = new MatterStack(value, ReplicationConfig.MatterTank.CAPACITY);
                     var tile = new CompoundTag();
                     var tank = matterStack.writeToNBT(new CompoundTag());
                     tile.put("tank", tank);

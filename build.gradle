@@ -80,6 +80,7 @@ dependencies {
     implementation "curse.maven:guideme-1173950:6165912"
     runtimeOnly "curse.maven:applied-energistics-2-223794:6087880"
     implementation "appeng:appliedenergistics2:19.0.27"
+    runtimeOnly "curse.maven:allthecompressed-514045:6121584"
 }
 
 jar {

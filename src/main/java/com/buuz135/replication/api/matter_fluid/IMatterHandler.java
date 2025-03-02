@@ -39,7 +39,7 @@ public interface IMatterHandler {
      * @param tank Tank to query.
      * @return The maximum fluid amount held by the tank.
      */
-    int getTankCapacity(int tank);
+    double getTankCapacity(int tank);
 
     /**
      * This function is a way to determine which matter can exist inside a given handler. General purpose tanks will
@@ -59,7 +59,7 @@ public interface IMatterHandler {
      * @param action   If SIMULATE, fill will only be simulated.
      * @return Amount of resource that was (or would have been, if simulated) filled.
      */
-    int fill(MatterStack resource, IFluidHandler.FluidAction action);
+    double fill(MatterStack resource, IFluidHandler.FluidAction action);
 
     /**
      * Drains fluid out of internal tanks, distribution is left entirely to the IMatterHandler.
@@ -83,6 +83,6 @@ public interface IMatterHandler {
      * simulated) drained.
      */
     @NotNull
-    MatterStack drain(int maxDrain, IFluidHandler.FluidAction action);
+    MatterStack drain(double maxDrain, IFluidHandler.FluidAction action);
 
 }

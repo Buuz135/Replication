@@ -347,7 +347,7 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
             var scale = 0.5f;
             var amount = getAmountFor(MatterOpediaTaskWidget.this.searchMatterType);
             if (amount > 0) {
-                var display = NumberUtils.getFormatedBigNumber((int) Math.ceil(amount));
+                var display = NumberUtils.getFormatedBigNumber(amount);
                 guiGraphics.pose().scale(scale, scale, scale);
                 guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 18) / scale - Minecraft.getInstance().font.width(display), (y + 14) / scale, 0xFFFFFF, true);
             }

@@ -17,6 +17,10 @@ public class ReplicationConfig {
         @ConfigVal.InRangeInt(min = 1)
         public static int POWER_USAGE = 1500;
 
+        @ConfigVal
+        @ConfigVal.InRangeInt(min = 1)
+        public static int TANK_CAPACITY = 16000;
+
     }
 
     @ConfigFile.Child(ReplicationConfig.class)
@@ -71,5 +75,12 @@ public class ReplicationConfig {
 
     }
 
+    @ConfigFile.Child(ReplicationConfig.class)
+    public class MatterTank {
 
+        @ConfigVal()
+        @ConfigVal.InRangeInt(min = 1)
+        public static int CAPACITY = 256000;
+
+    }
 }

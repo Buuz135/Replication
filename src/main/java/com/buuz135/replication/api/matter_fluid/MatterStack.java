@@ -17,10 +17,10 @@ public class MatterStack {
     private static final Logger LOGGER = LogManager.getLogger();
     public static final MatterStack EMPTY = new MatterStack(MatterType.EMPTY, 0);
     private boolean isEmpty;
-    private int amount;
+    private double amount;
     private final IMatterType matter;
 
-    public MatterStack(IMatterType matter, int amount) {
+    public MatterStack(IMatterType matter, double amount) {
         if (matter == null) {
             LOGGER.fatal("Null fluid supplied to matterstack. Did you try and create a stack for an unregistered matter?");
             throw new IllegalArgumentException("Cannot create a matterstack from a null fluid");
@@ -34,7 +34,7 @@ public class MatterStack {
         updateEmpty();
     }
 
-    public MatterStack(MatterStack matterStack, int amount) {
+    public MatterStack(MatterStack matterStack, double amount) {
         this(matterStack.getMatterType(), amount);
     }
 
@@ -55,7 +55,7 @@ public class MatterStack {
         if (matterType == null) {
             return EMPTY;
         }
-        MatterStack stack = new MatterStack(matterType, nbt.getInt("Amount"));
+        MatterStack stack = new MatterStack(matterType, nbt.getDouble("Amount"));
 
         return stack;
     }
@@ -69,7 +69,7 @@ public class MatterStack {
 
     public CompoundTag writeToNBT(CompoundTag nbt) {
         nbt.putString("MatterName", ReplicationRegistry.MATTER_TYPES_REGISTRY.getKey(getMatterType()).toString());
-        nbt.putInt("Amount", amount);
+        nbt.putDouble("Amount", amount);
         return nbt;
     }
 
@@ -90,21 +90,21 @@ public class MatterStack {
         isEmpty = getMatterType() == MatterType.EMPTY || amount <= 0;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return isEmpty ? 0 : amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         if (getMatterType() == MatterType.EMPTY) throw new IllegalStateException("Can't modify the empty stack.");
         this.amount = amount;
         updateEmpty();
     }
 
-    public void grow(int amount) {
+    public void grow(double amount) {
         setAmount(this.amount + amount);
     }
 
-    public void shrink(int amount) {
+    public void shrink(double amount) {
         setAmount(this.amount - amount);
     }
 
@@ -150,7 +150,7 @@ public class MatterStack {
     public final int hashCode() {
         int code = 1;
         code = 31 * code + getMatterType().hashCode();
-        code = 31 * code + amount;
+        //code = 31 * code + amount;
         return code;
     }
 

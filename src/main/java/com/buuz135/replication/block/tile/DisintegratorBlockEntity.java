@@ -9,6 +9,7 @@ import com.buuz135.replication.calculation.MatterValue;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.DisintegratorAddon;
 import com.buuz135.replication.util.InvUtil;
+import com.buuz135.replication.util.NumberUtils;
 import com.buuz135.replication.util.ReplicationTags;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
@@ -20,7 +21,8 @@ import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -118,7 +120,8 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                 var data = ReplicationCalculation.getMatterCompound(stack);
                 if (data != null) {
                     for (MatterValue matterValue : data.getValues().values()) {
-                        queuedMatterStacks.add(new MatterStack(matterValue.getMatter(), Mth.ceil(matterValue.getAmount())));
+                        queuedMatterStacks.add(new MatterStack(matterValue.getMatter(), NumberUtils.customCeil(matterValue.getAmount())));
+                        markComponentDirty();
                     }
                     stack.shrink(1);
                     this.getEnergyStorage().extractEnergy(ReplicationConfig.Disintegrator.POWER_USAGE, false);
@@ -134,9 +137,14 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
         if (this.level.getGameTime() % 5 == 0) splitItems();
         if (!this.queuedMatterStacks.isEmpty()){
             var peekedElement = this.queuedMatterStacks.peek();
+            if (peekedElement.getAmount() < 0) {
+                this.queuedMatterStacks.poll();
+                return;
+            }
             for (MatterTankComponent<DisintegratorBlockEntity> matterTankComponent : this.getMatterTankComponents()) {
                 if (!matterTankComponent.isEmpty() && matterTankComponent.getMatter().isMatterEqual(peekedElement) && matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.SIMULATE) <= peekedElement.getAmount()){
                     peekedElement.setAmount(peekedElement.getAmount() - matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.EXECUTE));
+                    markComponentDirty();
                     if (peekedElement.isEmpty()){
                         this.queuedMatterStacks.poll();
                         return;
@@ -147,6 +155,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                 for (MatterTankComponent<DisintegratorBlockEntity> matterTankComponent : this.getMatterTankComponents()) {
                     if (matterTankComponent.isEmpty()){
                         peekedElement.setAmount(peekedElement.getAmount() - matterTankComponent.fillForced(peekedElement, IFluidHandler.FluidAction.EXECUTE));
+                        markComponentDirty();
                         if (peekedElement.isEmpty()){
                             this.queuedMatterStacks.poll();
                             return;
@@ -158,7 +167,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     }
 
     private MatterTankComponent<DisintegratorBlockEntity> createMatterTank(int index){
-        return new MatterTankComponent<DisintegratorBlockEntity>("tank"+index, 16000, 42 + index * 18 , 28).setTankAction(FluidTankComponent.Action.DRAIN);
+        return new MatterTankComponent<DisintegratorBlockEntity>("tank" + index, ReplicationConfig.Disintegrator.TANK_CAPACITY, 42 + index * 18, 28).setTankAction(FluidTankComponent.Action.DRAIN);
     }
 
     @NotNull
@@ -207,6 +216,29 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                 }
             }
         }
+    }
 
+    @Override
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.loadAdditional(compound, provider);
+        if (compound.contains("queuedMatterStacks")) {
+            this.queuedMatterStacks.clear();
+            var queuedMatterStacks = compound.getCompound("queuedMatterStacks");
+            for (String allKey : queuedMatterStacks.getAllKeys()) {
+                this.queuedMatterStacks.add(MatterStack.loadMatterStackFromNBT(queuedMatterStacks.getCompound(allKey)));
+            }
+        }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        super.saveAdditional(compoundTag, provider);
+        var queuedMatterStacks = new CompoundTag();
+        var i = 0;
+        for (MatterStack queuedMatterStack : this.queuedMatterStacks) {
+            queuedMatterStacks.put(i + "", queuedMatterStack.writeToNBT(new CompoundTag()));
+            ++i;
+        }
+        compoundTag.put("queuedMatterStacks", queuedMatterStacks);
     }
 }

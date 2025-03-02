@@ -117,7 +117,7 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
     }
 
     @Override
-    public int fill(MatterStack resource, IFluidHandler.FluidAction action) {
+    public double fill(MatterStack resource, IFluidHandler.FluidAction action) {
         return getTankAction().canFill() && insertPredicate.test(resource) ? super.fill(resource, action) : 0;
     }
 
@@ -136,13 +136,13 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
 
     @Nonnull
     @Override
-    public MatterStack drain(int maxDrain, IFluidHandler.FluidAction action) {
+    public MatterStack drain(double maxDrain, IFluidHandler.FluidAction action) {
         return getTankAction().canDrain() ? drainInternal(maxDrain, action) : MatterStack.EMPTY;
     }
 
     @Nonnull
-    private MatterStack drainInternal(int maxDrain, IFluidHandler.FluidAction action) {
-        int drained = maxDrain;
+    private MatterStack drainInternal(double maxDrain, IFluidHandler.FluidAction action) {
+        double drained = maxDrain;
         if (matterStack.getAmount() < drained) {
             drained = matterStack.getAmount();
         }
@@ -154,7 +154,7 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
         return stack;
     }
 
-    public int fillForced(MatterStack resource, IFluidHandler.FluidAction action) {
+    public double fillForced(MatterStack resource, IFluidHandler.FluidAction action) {
         return super.fill(resource, action);
     }
 
@@ -167,7 +167,7 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
     }
 
     @Nonnull
-    public MatterStack drainForced(int maxDrain, IFluidHandler.FluidAction action) {
+    public MatterStack drainForced(double maxDrain, IFluidHandler.FluidAction action) {
         return drainInternal(maxDrain, action);
     }
 

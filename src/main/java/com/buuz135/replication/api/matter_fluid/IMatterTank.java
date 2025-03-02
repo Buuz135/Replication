@@ -14,12 +14,12 @@ public interface IMatterTank {
     /**
      * @return Current amount of matter in the tank.
      */
-    int getMatterAmount();
+    double getMatterAmount();
 
     /**
      * @return Capacity of this matter tank.
      */
-    int getCapacity();
+    double getCapacity();
 
     /**
      * @param stack MatterStack holding the Fluid to be queried.
@@ -32,7 +32,7 @@ public interface IMatterTank {
      * @param action   If SIMULATE, the fill will only be simulated.
      * @return Amount of fluid that was accepted (or would be, if simulated) by the tank.
      */
-    int fill(MatterStack resource, IFluidHandler.FluidAction action);
+    double fill(MatterStack resource, IFluidHandler.FluidAction action);
 
     /**
      * @param maxDrain Maximum amount of fluid to be removed from the container.
@@ -40,7 +40,7 @@ public interface IMatterTank {
      * @return Amount of matter that was removed (or would be, if simulated) from the tank.
      */
     @NotNull
-    MatterStack drain(int maxDrain, IFluidHandler.FluidAction action);
+    MatterStack drain(double maxDrain, IFluidHandler.FluidAction action);
 
     /**
      * @param resource Maximum amount of fluid to be removed from the container.

@@ -1,5 +1,6 @@
 package com.buuz135.replication.block.tile;
 
+import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.api.MatterType;
 import com.buuz135.replication.api.matter_fluid.IMatterTank;
@@ -34,7 +35,7 @@ public class MatterTankBlockEntity extends NetworkBlockEntity<MatterTankBlockEnt
     public MatterTankBlockEntity(BasicTileBlock<MatterTankBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
         this.lockableMatterTankBundle = new LockableMatterTankBundle<>(this,
-                new MatterTankComponent<MatterTankBlockEntity>("tank", 256000, 78, 28).setTankAction(FluidTankComponent.Action.BOTH).setOnContentChange(this::onTankContentChange),
+                new MatterTankComponent<MatterTankBlockEntity>("tank", ReplicationConfig.MatterTank.CAPACITY, 78, 28).setTankAction(FluidTankComponent.Action.BOTH).setOnContentChange(this::onTankContentChange),
                 78 + 20, 28, false);
         this.addBundle(lockableMatterTankBundle);
         this.addMatterTank(this.lockableMatterTankBundle.getTank());

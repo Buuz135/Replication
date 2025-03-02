@@ -35,7 +35,7 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
         return validator.test(stack);
     }
 
-    public int getCapacity() {
+    public double getCapacity() {
         return capacity;
     }
 
@@ -49,7 +49,7 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
         return matterStack;
     }
 
-    public int getMatterAmount() {
+    public double getMatterAmount() {
         return matterStack.getAmount();
     }
 
@@ -76,7 +76,7 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
     }
 
     @Override
-    public int getTankCapacity(int tank) {
+    public double getTankCapacity(int tank) {
         return getCapacity();
     }
 
@@ -86,7 +86,7 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
     }
 
     @Override
-    public int fill(MatterStack resource, IFluidHandler.FluidAction action) {
+    public double fill(MatterStack resource, IFluidHandler.FluidAction action) {
         if (resource.isEmpty() || !isMatterValid(resource)) {
             return 0;
         }
@@ -107,7 +107,7 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
         if (!matterStack.isMatterEqual(resource)) {
             return 0;
         }
-        int filled = capacity - matterStack.getAmount();
+        double filled = capacity - matterStack.getAmount();
 
         if (resource.getAmount() < filled) {
             matterStack.grow(resource.getAmount());
@@ -131,8 +131,8 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
 
     @NotNull
     @Override
-    public MatterStack drain(int maxDrain, IFluidHandler.FluidAction action) {
-        int drained = maxDrain;
+    public MatterStack drain(double maxDrain, IFluidHandler.FluidAction action) {
+        double drained = maxDrain;
         if (matterStack.getAmount() < drained) {
             drained = matterStack.getAmount();
         }
@@ -156,7 +156,7 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
         return matterStack.isEmpty();
     }
 
-    public int getSpace() {
+    public double getSpace() {
         return Math.max(0, capacity - matterStack.getAmount());
     }
 

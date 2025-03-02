@@ -28,7 +28,7 @@ public record TerminalMatterValueDisplay(IMatterType type, long amount){
         guiGraphics.pose().pushPose();
         float scale = 0.5f;
         guiGraphics.pose().scale(scale, scale, scale);
-        var display = NumberUtils.getFormatedBigNumber((int) amount);
+        var display = NumberUtils.getFormatedBigNumber(amount);
         var opacity = (int) (0.85 * 255.0F) << 24 & -16777216;
         var size = Minecraft.getInstance().font.width(display) * scale;
         guiGraphics.fill((int) ((x + 17) / scale - Minecraft.getInstance().font.width(display)), (int) ((y + 13) / scale), (int) ((x + 18 + size) / scale - Minecraft.getInstance().font.width(display)), (int) ((y + 14 + 8 * scale) / scale), 0, FastColor.ARGB32.multiply(opacity, 0xFFFFFFFF));

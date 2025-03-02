@@ -1,6 +1,7 @@
 package com.buuz135.replication.compat.jade;
 
 import com.buuz135.replication.Replication;
+import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.block.tile.MatterTankBlockEntity;
 import com.buuz135.replication.util.NumberUtils;
@@ -29,7 +30,7 @@ public class MatterTankComponentProvider implements IBlockComponentProvider, ISe
             var floatColor = matterStack.getMatterType().getColor().get();
             var color = new Color(floatColor[0], floatColor[1], floatColor[2], floatColor[3]);
             //color = color.darker();
-            iTooltip.add(new ProgressElement(matterStack.getAmount() / 256000f,
+            iTooltip.add(new ProgressElement((float) (matterStack.getAmount() / ReplicationConfig.MatterTank.CAPACITY),
                     matterStack.isEmpty() ? Component.translatable("tooltip.titanium.tank.empty") : Component.translatable(matterStack.getTranslationKey()).append(" ").append(NumberUtils.getFormatedBigNumber(matterStack.getAmount()))
                     , IElementHelper.get().progressStyle().color(color.getRGB()).textColor(0xFFFFFF), BoxStyle.getNestedBox(), false));
         }

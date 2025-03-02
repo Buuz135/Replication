@@ -1,7 +1,6 @@
 package com.buuz135.replication.api.matter_fluid.component;
 
 import com.buuz135.replication.ReplicationRegistry;
-import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import net.minecraft.world.inventory.ContainerData;
 
@@ -23,7 +22,7 @@ public class MatterTankReferenceHolder implements ContainerData {
         } else if (index == 0) {
             return ReplicationRegistry.MATTER_TYPES_REGISTRY.getId(matterStack.getMatterType());
         } else {
-            return matterStack.getAmount();
+            return (int) matterStack.getAmount();
         }
     }
 
