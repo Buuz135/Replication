@@ -5,6 +5,7 @@
 * Added config for the Disintegrator tank and Matter tank sizes
 * Better number formatting for big numbers in the Matter tooltip
 * MatterStacks now can be a java double in size
+* Added null checks for the energy getter, closes #38
 
 # 1.1.17
 

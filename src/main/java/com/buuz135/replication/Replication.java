@@ -16,6 +16,7 @@ import com.buuz135.replication.network.DefaultMatterNetworkElement;
 import com.buuz135.replication.network.MatterNetwork;
 import com.buuz135.replication.packet.*;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
+import com.hrznstudio.titanium.block_network.NetworkManager;
 import com.hrznstudio.titanium.block_network.NetworkRegistry;
 import com.hrznstudio.titanium.block_network.element.NetworkElementRegistry;
 import com.hrznstudio.titanium.event.handler.EventManager;
@@ -89,7 +90,7 @@ public class Replication extends ModuleController {
         NBTManager.getInstance().scanTileClassForAnnotations(MatterPipeBlockEntity.class);
         EventManager.mod(RegisterCapabilitiesEvent.class).process(event -> {
             event.registerBlock(Capabilities.EnergyStorage.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
-                if (level instanceof ServerLevel && blockEntity instanceof MatterPipeBlockEntity pipe) {
+                if (level instanceof ServerLevel && blockEntity instanceof MatterPipeBlockEntity pipe && NetworkManager.get(level) != null && NetworkManager.get(level).getElement(blockPos) != null) {
                     return pipe.getNetwork().getEnergyStorage();
                 }
                 return null;
