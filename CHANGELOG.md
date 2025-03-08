@@ -4,6 +4,8 @@
   a tag and config to disable)
 * Added config value to hide the press shift text and a config value to hide the matter value tooltip outside the
   replicator, closes #44
+* Duplicate Scanned Items will be removed from the chip if there is a chip with the same value in the chip storage,
+  closes #45
 
 # 1.1.18
 

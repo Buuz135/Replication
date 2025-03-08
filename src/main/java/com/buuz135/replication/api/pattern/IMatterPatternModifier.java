@@ -16,6 +16,8 @@ public interface IMatterPatternModifier<T> {
      */
     @Nullable ModifierAction addPattern(Level level, T element, ItemStack stack, float progress);
 
+    void removePattern(Level level, T element, ItemStack stack);
+
 
     public static class ModifierAction{
 

@@ -74,6 +74,12 @@ public class MemoryChipItem extends ReplicationItem implements IMatterPatternHol
         return ModifierAction.canKeepAdding(newPattern);
     }
 
+    @Override
+    public void removePattern(Level level, ItemStack element, ItemStack stack) {
+        var patterns = getPatterns(level, element).stream().filter(pattern -> !pattern.getStack().isEmpty()).filter(matterPattern -> !ItemStack.isSameItemSameComponents(matterPattern.getStack(), stack)).toList();
+        savePatterns(level, element, patterns);
+    }
+
     private void savePatterns(Level level, ItemStack stack, List<MatterPattern> currentPatterns){
         CompoundTag patterns = new CompoundTag();
         for (int i = 0; i < currentPatterns.size(); i++) {
