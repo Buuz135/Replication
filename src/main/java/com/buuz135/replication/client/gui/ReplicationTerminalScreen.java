@@ -252,7 +252,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
         if (!this.patternMenu.canScroll()) {
             return false;
         } else {
-            this.scrollOffs = this.patternMenu.subtractInputFromScroll(this.scrollOffs, scrollX);
+            this.scrollOffs = this.patternMenu.subtractInputFromScroll(this.scrollOffs, scrollY);
             this.patternMenu.scrollTo(this.scrollOffs);
             return true;
         }
