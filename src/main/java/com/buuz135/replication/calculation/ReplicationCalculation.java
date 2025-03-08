@@ -102,7 +102,6 @@ public class ReplicationCalculation {
             }
             CALCULATOR_LOG.info("Loaded default values in " + (System.currentTimeMillis() - time) + "ms");
 
-
             //RESOLVING VALUES
 
             /*
@@ -242,6 +241,17 @@ public class ReplicationCalculation {
         MatterCompound result = null;
         for (ItemStack item : input.getItems()) {
             var temp = getMatterCompound(item, depth, visitedRecipes, visitedCalculations, printDebug, result);
+            if (ReplicationConfig.RecipeCalculation.SUBTRACT_CRAFTING_REMAINING_ITEM && temp != null && item.hasCraftingRemainingItem() && !item.is(ReplicationTags.DONT_CHECK_FOR_CRAFTING_RESULT)) {
+                var craftingRemainingItem = item.getCraftingRemainingItem();
+                if (ItemStack.isSameItem(craftingRemainingItem, item)) {
+                    temp = new MatterCompound();
+                } else {
+                    var remaining = getMatterCompound(craftingRemainingItem, depth, visitedRecipes, visitedCalculations, printDebug, result);
+                    if (remaining != null) {
+                        temp = temp.duplicate().substract(remaining);
+                    }
+                }
+            }
             if (result == null) {
                 result = temp;
             } else {

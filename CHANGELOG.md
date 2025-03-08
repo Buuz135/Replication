@@ -1,3 +1,8 @@
+# 1.1.19
+
+* Added matter subtraction to the matter calculation for items that have a crafting remaining item, closes #42 (Includes
+  a tag and config to disable)
+
 # 1.1.18
 
 * Disintegrator will now split items

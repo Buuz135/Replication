@@ -12,6 +12,6 @@ public class ReplicationTags {
     public static TagKey<Item> CANT_BE_SCANNED = TagUtil.getOrCreateTag(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "cant_be_scanned"));
     public static TagKey<Item> CANT_BE_DISINTEGRATED = TagUtil.getOrCreateTag(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "cant_be_disintegrated"));
     public static TagKey<Item> SKIP_CALCULATION = TagUtil.getOrCreateTag(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "skip_calculation"));
-
+    public static TagKey<Item> DONT_CHECK_FOR_CRAFTING_RESULT = TagUtil.getOrCreateTag(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "ignore_crafting_result"));
 
 }

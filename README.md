@@ -37,3 +37,4 @@ You can disable an item from being scanned using the tag `replication:cant_be_sc
 You can disable an item from being disintegrated using the tag `replication:cant_be_disintegrated`
 You can disable a calculation of an item by adding it the tag `replication:skip_calculation`, it will always return
 empty in all calculation checks.
+You can disable the subtraction of crafting remaining items using the tag `replication:ignore_crafting_result`

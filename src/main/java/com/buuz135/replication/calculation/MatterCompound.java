@@ -32,6 +32,29 @@ public class MatterCompound implements INBTSerializable<CompoundTag> {
         return this;
     }
 
+    public MatterCompound substract(MatterCompound value) {
+        for (IMatterType iMatterType : value.values.keySet()) {
+            if (this.values.containsKey(iMatterType)) {
+                var matter = this.values.get(iMatterType);
+                matter.add(-value.getValues().get(iMatterType).getAmount());
+                if (matter.getAmount() <= 0) {
+                    this.values.remove(iMatterType);
+                }
+            }
+        }
+        this.cachedWeight = getWeight();
+        return this;
+    }
+
+    public MatterCompound duplicate() {
+        MatterCompound copy = new MatterCompound();
+        for (IMatterType iMatterType : values.keySet()) {
+            var matter = this.values.get(iMatterType);
+            copy.add(new MatterValue(matter.getMatter(), matter.getAmount()));
+        }
+        return copy;
+    }
+
     public MatterCompound compare(MatterCompound other) { //RETURNS WHICH ONE HAS LESS
         return other == null || getCachedWeight() < other.getCachedWeight() ? this : other;
     }

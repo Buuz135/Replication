@@ -73,6 +73,9 @@ public class ReplicationConfig {
         @ConfigVal.InRangeInt(min = 1)
         public static int MAX_VISITED_RECIPES = 50;
 
+        @ConfigVal(comment = "If enabled, values of items that have a crafting remaining item like milk buckets in the cake recipe, will subtract their remaining item matter value from the calculation")
+        public static boolean SUBTRACT_CRAFTING_REMAINING_ITEM = true;
+
     }
 
     @ConfigFile.Child(ReplicationConfig.class)
