@@ -2,6 +2,8 @@
 
 * Added matter subtraction to the matter calculation for items that have a crafting remaining item, closes #42 (Includes
   a tag and config to disable)
+* Added config value to hide the press shift text and a config value to hide the matter value tooltip outside the
+  replicator, closes #44
 
 # 1.1.18
 

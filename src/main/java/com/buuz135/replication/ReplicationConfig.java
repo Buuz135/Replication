@@ -86,4 +86,14 @@ public class ReplicationConfig {
         public static int CAPACITY = 256000;
 
     }
+
+    @ConfigFile.Child(ReplicationConfig.class)
+    public class Client {
+
+        @ConfigVal
+        public static boolean SHOW_PRESS_SHIFT_TEXT = true;
+
+        @ConfigVal
+        public static boolean SHOW_MATTER_TOOLTIP_VALUES_OUTSIDE_TERMINAL = true;
+    }
 }

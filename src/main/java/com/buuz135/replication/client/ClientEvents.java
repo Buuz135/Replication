@@ -54,9 +54,9 @@ public class ClientEvents {
             if (Minecraft.getInstance().level != null && !pre.getItemStack().isEmpty()) {
                 var instance = ClientReplicationCalculation.getMatterCompound(pre.getItemStack());
                 if (instance != null && !instance.getValues().isEmpty()) {
-                    if (Screen.hasShiftDown() || Minecraft.getInstance().screen instanceof ReplicationTerminalScreen) {
+                    if ((ReplicationConfig.Client.SHOW_MATTER_TOOLTIP_VALUES_OUTSIDE_TERMINAL && Screen.hasShiftDown()) || Minecraft.getInstance().screen instanceof ReplicationTerminalScreen) {
                         pre.getTooltipElements().add(Either.right(new MatterTooltipComponent(instance)));
-                    } else {
+                    } else if (ReplicationConfig.Client.SHOW_PRESS_SHIFT_TEXT) {
                         pre.getTooltipElements().add(Either.left(Component.translatable("tooltip.replication.matter_value", Component.literal("Shift").withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GRAY)));
                     }
                 }
