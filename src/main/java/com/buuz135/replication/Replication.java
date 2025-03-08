@@ -10,6 +10,7 @@ import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.data.*;
+import com.buuz135.replication.item.CreativeMemoryChipItem;
 import com.buuz135.replication.item.MatterBluePrintItem;
 import com.buuz135.replication.item.MemoryChipItem;
 import com.buuz135.replication.network.DefaultMatterNetworkElement;
@@ -123,6 +124,7 @@ public class Replication extends ModuleController {
         ReplicationRegistry.Blocks.CHIP_STORAGE = this.getRegistries().registerBlockWithTile("chip_storage", ChipStorageBlock::new, TAB);
 
         ReplicationRegistry.Items.MEMORY_CHIP = this.getRegistries().registerGeneric(Registries.ITEM, "memory_chip", MemoryChipItem::new);
+        ReplicationRegistry.Items.CREATIVE_MEMORY_CHIP = this.getRegistries().registerGeneric(Registries.ITEM, "creative_memory_chip", CreativeMemoryChipItem::new);
         ReplicationRegistry.Items.MATTER_BLUEPRINT = this.getRegistries().registerGeneric(Registries.ITEM, "matter_blueprint", MatterBluePrintItem::new);
 
         ReplicationRegistry.Sounds.TERMINAL_BUTTON = this.getRegistries().registerGeneric(Registries.SOUND_EVENT, "terminal_button", () -> SoundEvent.createFixedRangeEvent(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "terminal_button"), 8));

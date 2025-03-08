@@ -25,6 +25,7 @@ public class RepLangItemProvider extends LanguageProvider {
         this.blocks.forEach(block -> this.add(block, WordUtils.capitalize(BuiltInRegistries.BLOCK.getKey(block).getPath().replace("_", " "))));
         this.formatItem(ReplicationRegistry.Items.MEMORY_CHIP.get());
         this.formatItem(ReplicationRegistry.Items.MATTER_BLUEPRINT.get());
+        this.formatItem(ReplicationRegistry.Items.CREATIVE_MEMORY_CHIP.get());
         this.formatItem(ReplicationRegistry.Items.RAW_REPLICA.get());
         this.formatItem(ReplicationRegistry.Items.REPLICA_INGOT.get());
         this.add("tooltip.replication.identification_chamber.slow_mode", "Slow Mode");

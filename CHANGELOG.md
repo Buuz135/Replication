@@ -6,6 +6,8 @@
   replicator, closes #44
 * Duplicate Scanned Items will be removed from the chip if there is a chip with the same value in the chip storage,
   closes #45
+* Fixed mouse scrolling in the Replication terminal
+* Added Creative Memory Chip
 
 # 1.1.18
 

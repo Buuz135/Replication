@@ -10,6 +10,7 @@
   "block.replication.replication_terminal": "Replication Terminal",
   "block.replication.replicator": "Replicator",
   "config.jade.plugin_replication.matter_tank": "Matter Tank",
+  "item.replication.creative_memory_chip": "Creative Memory Chip",
   "item.replication.matter_blueprint": "Matter Blueprint",
   "item.replication.memory_chip": "Memory Chip",
   "item.replication.raw_replica": "Raw Replica",

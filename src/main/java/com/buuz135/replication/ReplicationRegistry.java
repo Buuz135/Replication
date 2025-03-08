@@ -6,8 +6,6 @@ import com.buuz135.replication.api.matter_fluid.IMatterHandler;
 import com.buuz135.replication.recipe.MatterValueRecipe;
 import com.hrznstudio.titanium.module.BlockWithTile;
 import com.hrznstudio.titanium.recipe.serializer.CodecRecipeSerializer;
-import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -19,15 +17,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Supplier;
 
 
 public class ReplicationRegistry {
@@ -63,7 +57,7 @@ public class ReplicationRegistry {
         public static DeferredHolder<Item, Item> MATTER_BLUEPRINT;
         public static DeferredHolder<Item, Item> RAW_REPLICA;
         public static DeferredHolder<Item, Item> REPLICA_INGOT;
-
+        public static DeferredHolder<Item, Item> CREATIVE_MEMORY_CHIP;
 
     }
 

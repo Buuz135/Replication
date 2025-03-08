@@ -1,9 +1,9 @@
 package com.buuz135.replication.block.tile;
 
-import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
 import com.buuz135.replication.api.pattern.MatterPattern;
+import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.ReplicationAddonProvider;
 import com.buuz135.replication.client.gui.addons.ChipStorageAddon;
 import com.hrznstudio.titanium.annotation.Save;
@@ -44,7 +44,7 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
                 .setSlotLimit(1)
                 .setOutputFilter((stack, integer) -> false)
                 .setComponentHarness(this)
-                .setInputFilter(((stack, integer) -> stack.is(ReplicationRegistry.Items.MEMORY_CHIP.get())))
+                .setInputFilter(((stack, integer) -> stack.getItem() instanceof IMatterPatternHolder))
                 .setOnSlotChanged((stack, integer) -> notifyNetworkOfSlotChange())
                 .setColorGuiEnabled(false);
         addInventory(this.chips);
@@ -117,7 +117,7 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
             if (!slot.isEmpty() && slot.getItem() instanceof IMatterPatternHolder stackHolder){
                 List<MatterPattern> patterns = (stackHolder).getPatterns(this.level, slot);
                 patterns.forEach(pattern -> {
-                    if (!pattern.getStack().isEmpty() && pattern.getCompletion() == 1){
+                    if (!pattern.getStack().isEmpty() && pattern.getCompletion() == 1 && ReplicationCalculation.getMatterCompound(pattern.getStack()) != null) {
                         this.cachedPatters.add(pattern);
                     }
                 });
