@@ -3,7 +3,6 @@ package com.buuz135.replication.block;
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
-import com.buuz135.replication.network.MatterNetwork;
 import com.google.common.collect.ImmutableMap;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
@@ -12,6 +11,7 @@ import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
@@ -35,10 +35,9 @@ import net.neoforged.neoforge.common.Tags;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> implements INetworkDirectionalConnection {
 
@@ -54,11 +53,14 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
             .put(Direction.EAST, Block.box(10, 5, 5, 16, 11, 11))
             .put(Direction.WEST, Block.box(0, 5, 5, 6, 11, 11))
             .build();
+    public static final List<Predicate<Block>> ALLOWED_CONNECTION_BLOCKS = new ArrayList<>();
+
 
     static {
         for (Direction value : Direction.values()) {
             DIRECTIONS.put(value, BooleanProperty.create(value.getName().toLowerCase(Locale.ROOT)));
         }
+        ALLOWED_CONNECTION_BLOCKS.add(block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(Replication.MOD_ID));
     }
 
     public MatterPipeBlock() {
@@ -97,13 +99,9 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
         if (relativeState.getBlock() instanceof MatterPipeBlock){
             return true;
         }
-        var networkManager = NetworkManager.get(world);
-        if (networkManager != null){
-            var network = networkManager.getElement(pos.relative(direction));
-            if (network != null && network.getNetwork() instanceof MatterNetwork) {
-                INetworkDirectionalConnection networkDirectionalConnection = (INetworkDirectionalConnection) relativeState.getBlock();
-                return networkDirectionalConnection.canConnect(world, pos, relativeState, direction.getOpposite());
-            }
+        if (ALLOWED_CONNECTION_BLOCKS.stream().anyMatch(blockPredicate -> blockPredicate.test(relativeState.getBlock()))) {
+            INetworkDirectionalConnection networkDirectionalConnection = (INetworkDirectionalConnection) relativeState.getBlock();
+            return networkDirectionalConnection.canConnect(world, pos, relativeState, direction.getOpposite());
         }
         var cap = world.getCapability(Capabilities.EnergyStorage.BLOCK, pos.relative(direction), direction.getOpposite());
         if (cap != null) {

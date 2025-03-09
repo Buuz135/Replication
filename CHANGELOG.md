@@ -1,3 +1,7 @@
+# 1.1.20
+
+* Fixed pipes not visually connecting to blocks
+
 # 1.1.19
 
 * Added matter subtraction to the matter calculation for items that have a crafting remaining item, closes #42 (Includes
