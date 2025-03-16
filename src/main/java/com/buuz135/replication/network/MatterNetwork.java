@@ -85,6 +85,7 @@ public class MatterNetwork extends Network {
     public void update(Level level) {
         super.update(level);
         for (NetworkElement element : this.queueNetworkElements) {
+            if (!element.getLevel().isLoaded(element.getPos())) continue;
             var tile = element.getLevel().getBlockEntity(element.getPos());
             if (tile instanceof IMatterTanksSupplier && tile instanceof IMatterTanksConsumer){
                 this.matterStacksHolders.add(element);
@@ -98,15 +99,14 @@ public class MatterNetwork extends Network {
                 this.terminals.add(element);
             }
             if (tile instanceof ReplicatorBlockEntity) {
-                {
-                    this.replicators.add(element);
-                }
+                this.replicators.add(element);
             }
         }
         this.queueNetworkElements.clear();
         if (level.getGameTime() % 5 == 0){
             for (NetworkElement matterStacksSupplier : this.matterStacksSuppliers) {
                 if (matterStacksSupplier.getLevel() != level) continue;
+                if (!matterStacksSupplier.getLevel().isLoaded(matterStacksSupplier.getPos())) continue;
                 var origin = matterStacksSupplier.getLevel().getBlockEntity(matterStacksSupplier.getPos());
                 if (origin instanceof IMatterTanksSupplier supplier){
                     for (IMatterTank inputTank : supplier.getTanks()) {
@@ -114,6 +114,7 @@ public class MatterNetwork extends Network {
                         boolean didWork = false;
                         // WE SEARCH FOR HOLDER TANKS THAT HAVE SOMETHING FIRST
                         for (NetworkElement destinationElement : this.matterStacksHolders) {
+                            if (!destinationElement.getLevel().isLoaded(destinationElement.getPos())) continue;
                             var destination = destinationElement.getLevel().getBlockEntity(destinationElement.getPos());
                             if (destination instanceof IMatterTanksConsumer consumerDestination){
                                 for (IMatterTank outputTank : consumerDestination.getTanks()) {
@@ -128,6 +129,7 @@ public class MatterNetwork extends Network {
                         }
                         if (!didWork && !inputTank.getMatter().isEmpty()){
                             for (NetworkElement destinationElement : this.matterStacksHolders) {
+                                if (!destinationElement.getLevel().isLoaded(destinationElement.getPos())) continue;
                                 var destination = destinationElement.getLevel().getBlockEntity(destinationElement.getPos());
                                 if (destination instanceof IMatterTanksConsumer consumerDestination){
                                     for (IMatterTank outputTank : consumerDestination.getTanks()) {
@@ -148,6 +150,7 @@ public class MatterNetwork extends Network {
         this.getTaskManager().getPendingTasks().values().forEach(task -> {
             if (task.isDirty()){
                 for (NetworkElement terminal : this.terminals) {
+                    if (!terminal.getLevel().isLoaded(terminal.getPos())) continue;
                     var tile = terminal.getLevel().getBlockEntity(terminal.getPos());
                     if (tile instanceof ReplicationTerminalBlockEntity terminalBlockEntity){
                         terminalBlockEntity.getTerminalPlayerTracker().getPlayers().forEach(serverPlayer -> this.sendTaskSyncPacket(serverPlayer, task));

@@ -1,3 +1,7 @@
+# 1.1.21
+
+* Check if a network element is in a loaded chunk before ticking, closes #46
+
 # 1.1.20
 
 * Fixed pipes not visually connecting to blocks
