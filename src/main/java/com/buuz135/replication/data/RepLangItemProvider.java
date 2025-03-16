@@ -68,7 +68,8 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("tooltip.replication.memory_chip_slot", "%s slots left");
         this.add("tooltip.replication.tank.unit", " matter");
         this.add("config.jade.plugin_replication.matter_tank", "Matter Tank");
-
+        this.add("tooltip.titanium.facing_handler.output", "Output");
+        this.add("tooltip.titanium.tank.empty", "Empty");
         for (MatterType value : MatterType.values()) {
             this.add("replication.matter_type." + value.getName(), WordUtils.capitalize(value.getName()));
         }

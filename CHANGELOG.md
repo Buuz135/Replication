@@ -2,6 +2,7 @@
 
 * Check if a network element is in a loaded chunk before ticking, closes #46
 * Added Patreon Aura reward
+* Readded titanium tooltip lines because they seem to be missing somehow #36
 
 # 1.1.20
 

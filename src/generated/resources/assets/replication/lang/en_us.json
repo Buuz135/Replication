@@ -63,5 +63,7 @@
   "tooltip.replication.terminal.sorting_direction.state_1": "Sorting Direction: Descending",
   "tooltip.replication.terminal.sorting_type.state_0": "Sorting Type: Amount",
   "tooltip.replication.terminal.sorting_type.state_1": "Sorting Type: Name",
-  "tooltip.replication.terminal.workers": "Workers: "
+  "tooltip.replication.terminal.workers": "Workers: ",
+  "tooltip.titanium.facing_handler.output": "Output",
+  "tooltip.titanium.tank.empty": "Empty"
 }
