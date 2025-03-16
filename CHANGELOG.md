@@ -1,6 +1,7 @@
 # 1.1.21
 
 * Check if a network element is in a loaded chunk before ticking, closes #46
+* Added Patreon Aura reward
 
 # 1.1.20
 
@@ -40,7 +41,6 @@
 
 * Added MatterOpedia, a system to search what items have a specific matter value
 * Added a tag to skip calculation checks `replication:skip_calculation`
-*
 
 # 1.1.14
 

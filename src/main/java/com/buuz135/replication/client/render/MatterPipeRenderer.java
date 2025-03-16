@@ -1,13 +1,11 @@
 package com.buuz135.replication.client.render;
 
-import com.buuz135.replication.Replication;
 import com.buuz135.replication.block.MatterPipeBlock;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.client.render.shader.ReplicationRenderTypes;
 import com.buuz135.replication.client.render.shader.ShaderTexture;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -20,8 +18,6 @@ import org.joml.Matrix4f;
 import java.util.List;
 
 public class MatterPipeRenderer<T extends MatterPipeBlockEntity> implements BlockEntityRenderer<T> {
-    public static final ResourceLocation END_SKY_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft","textures/environment/end_sky.png");
-    public static final ResourceLocation END_PORTAL_LOCATION = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/block/pipe_render.png");
 
     public MatterPipeRenderer(BlockEntityRendererProvider.Context p_173689_) {
     }

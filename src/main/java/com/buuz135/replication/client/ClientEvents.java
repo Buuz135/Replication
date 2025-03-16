@@ -22,6 +22,8 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -88,6 +90,15 @@ public class ClientEvents {
         EventManager.forge(RenderHighlightEvent.Block.class).process(ClientEvents::blockOverlayEvent).subscribe();
 
         EventManager.mod(RegisterShadersEvent.class).process(ClientEvents::registerShaders).subscribe();
+
+        EventManager.mod(EntityRenderersEvent.AddLayers.class).process(event -> {
+            for (PlayerSkin.Model skin : event.getSkins()) {
+                var renderer = event.getSkin(skin);
+                if (renderer instanceof PlayerRenderer playerRenderer) {
+                    playerRenderer.addLayer(new ContributorsAuraRender(playerRenderer));
+                }
+            }
+        }).subscribe();
     }
     private static void registerShaders(RegisterShadersEvent event) {
 

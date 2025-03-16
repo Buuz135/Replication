@@ -1,11 +1,10 @@
 package com.buuz135.replication.client.render.shader;
 
 import com.buuz135.replication.Replication;
-import com.buuz135.replication.client.render.shader.FixedMultiTextureStateShard;
-import com.buuz135.replication.client.render.shader.ShaderTexture;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.Util;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +30,14 @@ public class ReplicationRenderTypes extends RenderType {
                     .createCompositeState(false);
             return create(renderType.formattedName(), renderType.format, VertexFormat.Mode.QUADS, 256, false, false, compState);
         }));
-
+        map.put("matter_pipe_transparent", new ShaderRenderType("matter_pipe", DefaultVertexFormat.POSITION_TEX, (textures, renderType) -> {
+            CompositeState compState = CompositeState.builder()
+                    .setShaderState(renderType.shaderState)
+                    .setTextureState(new FixedMultiTextureStateShard(textures))
+                    .setTransparencyState(RenderStateShard.GLINT_TRANSPARENCY)
+                    .createCompositeState(false);
+            return create(renderType.formattedName(), renderType.format, VertexFormat.Mode.QUADS, 256, false, false, compState);
+        }));
         //noinspection Java9CollectionFactory TODO remove when you have more shaders
         return Collections.unmodifiableMap(map);
     });
@@ -105,6 +111,9 @@ public class ReplicationRenderTypes extends RenderType {
             this.shader = shader;
         }
 
+        public ShaderStateShard getShaderState() {
+            return shaderState;
+        }
     }
 
 }

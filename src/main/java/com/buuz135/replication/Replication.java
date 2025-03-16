@@ -24,6 +24,9 @@ import com.hrznstudio.titanium.event.handler.EventManager;
 import com.hrznstudio.titanium.module.ModuleController;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.network.NetworkHandler;
+import com.hrznstudio.titanium.reward.Reward;
+import com.hrznstudio.titanium.reward.RewardGiver;
+import com.hrznstudio.titanium.reward.RewardManager;
 import com.hrznstudio.titanium.tab.TitaniumTab;
 import guideme.Guide;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -59,7 +62,12 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod("replication")
@@ -190,6 +198,14 @@ public class Replication extends ModuleController {
         if (ModList.get().isLoaded("guideme")) {
             Guide.builder(ResourceLocation.parse("replication:main")).build();
         }
+
+        RewardGiver giver = RewardManager.get().getGiver(UUID.fromString("d28b7061-fb92-4064-90fb-7e02b95a72a6"), "Buuz135");
+        try {
+            giver.addReward(new Reward(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "aura"), new URL("https://raw.githubusercontent.com/Buuz135/Industrial-Foregoing/master/contributors.json"), () -> dist -> {
+            }, Arrays.stream(AuraType.values()).map(Enum::toString).collect(Collectors.toList()).toArray(new String[]{})));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -205,5 +221,41 @@ public class Replication extends ModuleController {
         event.getGenerator().addProvider(true, blockTags);
         event.getGenerator().addProvider(true, new ReplicationItemTagsProvider(event.getGenerator(), event.getLookupProvider(), blockTags.contentsGetter(), MOD_ID, event.getExistingFileHelper()));
         event.getGenerator().addProvider(true, new ReplicationRecipesProvider(event.getGenerator(), () -> blocks, event.getLookupProvider()));
+    }
+
+    public enum AuraType {
+        REPLICATION(ResourceLocation.fromNamespaceAndPath(MOD_ID, "textures/block/shader_only_green.png"), true),
+        ORE(ResourceLocation.fromNamespaceAndPath(MOD_ID, "textures/block/replica_ore.png"), true),
+        BLUE_BOSS(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/sprites/boss_bar/blue_background.png"), true),
+        PINK_BOSS(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/sprites/boss_bar/pink_background.png"), true),
+        EVIL(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/sprites/container/beacon/cancel.png"), true),
+        POWDER(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/powder_snow_outline.png"), true),
+        FORCE_FIELD(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/forcefield.png"), false),
+        UNDERWATER(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/underwater.png"), false),
+        SPOOK(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/pumpkinblur.png"), false),
+        END(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/environment/end_sky.png"), false),
+        CLOUDS(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/environment/clouds.png"), false),
+        RAIN(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/environment/rain.png"), true),
+        SGA(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/font/ascii_sga.png"), false),
+        ENCHANTED(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/enchanted_glint_item.png"), true),
+        RECIPE_BOOK(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/recipe_book.png"), true),
+        END_PORTAL(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/entity/end_portal.png"), true),
+        MOON(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/environment/moon_phases.png"), true);
+
+        private final ResourceLocation resourceLocation;
+        private final boolean usePipeShader;
+
+        AuraType(ResourceLocation resourceLocation, boolean enableBlend) {
+            this.resourceLocation = resourceLocation;
+            this.usePipeShader = enableBlend;
+        }
+
+        public ResourceLocation getResourceLocation() {
+            return resourceLocation;
+        }
+
+        public boolean isUsePipeShader() {
+            return usePipeShader;
+        }
     }
 }
