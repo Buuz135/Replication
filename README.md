@@ -20,6 +20,13 @@ The **Identification Chamber** will scan items to know their matter values and s
 # How it works
 To transform items you will need to break them down to their primal values using a **Disintegrator**. Using that machine you will transform any item with matter values into matter. Once you have scanned some items and stored their values into chips you can use the **Replication Terminal** to request items. With a request created **Replicators** will use the Matter stored in tanks to replicate the item from scratch and send it back to the terminal.
 
+# Community Values
+
+To increase compatibility between mods extra Matter Values recipes can be PR'd to
+this [directory](https://github.com/Buuz135/Replication/tree/1.21/src/main/resources/data/replication/recipe/matter_values/compat)
+to add them as default values. It would be the same format as the recipes explained in the Datapack section. To make
+them more organized add a subfolder with the modid.
+
 # For Pack Makers
 ## Datapack
 
