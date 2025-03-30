@@ -1,0 +1,16 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "modern_industrialization:platinum_double_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 500.0
+      },
+      {
+        "type": "replication:precious",
+        "amount": 700.0
+      }
+    ]
+  }

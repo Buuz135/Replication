@@ -1,0 +1,20 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "modern_industrialization:annealed_copper_double_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 4.0
+      },
+      {
+        "type": "replication:organic",
+        "amount": 10.0
+      },
+      {
+        "type": "replication:precious",
+        "amount": 4.0
+      }
+    ]
+  }
