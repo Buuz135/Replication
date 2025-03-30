@@ -1,0 +1,12 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "modern_industrialization:bronze_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 12.0
+      }
+    ]
+  }

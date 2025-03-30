@@ -1,0 +1,20 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "cataclysm:ignitium_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 50.0
+      },
+      {
+        "type": "replication:nether",
+        "amount": 70.0
+      },
+      {
+        "type": "replication:precious",
+        "amount": 130.0
+      }
+    ]
+  }

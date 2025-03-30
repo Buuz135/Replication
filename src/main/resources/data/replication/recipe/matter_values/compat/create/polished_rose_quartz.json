@@ -1,0 +1,20 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "create:polished_rose_quartz"
+    },
+    "matter": [
+      {
+        "type": "replication:earth",
+        "amount": 16.0
+      },
+      {
+        "type": "replication:nether",
+        "amount": 2.0
+      },
+      {
+        "type": "replication:precious",
+        "amount": 20.0
+      }
+    ]
+  }
