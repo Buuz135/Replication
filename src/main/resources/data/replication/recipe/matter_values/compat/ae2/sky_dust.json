@@ -1,0 +1,12 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "ae2:sky_dust"
+    },
+    "matter": [
+      {
+        "type": "replication:earth",
+        "amount": 4.0
+      }
+    ]
+  }

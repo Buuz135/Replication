@@ -1,0 +1,12 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "extendedae:entro_crystal"
+    },
+    "matter": [
+      {
+        "type": "replication:precious",
+        "amount": 5.0
+      }
+    ]
+  }

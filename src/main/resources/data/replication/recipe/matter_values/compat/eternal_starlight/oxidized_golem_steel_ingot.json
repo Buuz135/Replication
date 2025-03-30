@@ -1,16 +1,20 @@
 {
     "type": "replication:matter_value",
     "input": {
-      "item": "modern_industrialization:bronze_ingot"
+      "item": "ethernal_starlight:oxidized_golem_steel_ingot"
     },
     "matter": [
       {
         "type": "replication:metallic",
-        "amount": 3.0
+        "amount": 20.0
+      },
+      {
+        "type": "replication:earth",
+        "amount": 10.0
       },
       {
         "type": "replication:precious",
-        "amount": 1.0
+        "amount": 5.0
       }
     ]
   }

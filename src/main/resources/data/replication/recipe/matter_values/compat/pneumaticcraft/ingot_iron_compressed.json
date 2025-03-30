@@ -1,0 +1,12 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "pneumaticcraft:ingot_iron_compressed"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 11.0
+      }
+    ]
+  }
