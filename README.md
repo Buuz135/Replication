@@ -20,12 +20,27 @@ The **Identification Chamber** will scan items to know their matter values and s
 # How it works
 To transform items you will need to break them down to their primal values using a **Disintegrator**. Using that machine you will transform any item with matter values into matter. Once you have scanned some items and stored their values into chips you can use the **Replication Terminal** to request items. With a request created **Replicators** will use the Matter stored in tanks to replicate the item from scratch and send it back to the terminal.
 
+## MatterOpedia
+
+The MatterOpedia is a searcheable list that will allow you to search what items have a specific Matter Value. You can
+access using the button on the left of the Search Bar in the Replication Terminal screen, you can also access it by
+clicking on the matter displays on the right of the terminal.
+
+In the search bar of the MatterOpedia you can use:
+
+* Any matter name: will show all the items that have that matter
+* `earth>10` will show all the items that have more than 10 earth
+* `nether=20` will show all the items that have exactly 20 nether
+* `quantum<6` will show all the items that have less than 6 quantum
+* `!earth` will show all the items that don't have earth
+* `*metallic` will show all the items that only have metallic
+
 # Community Values
 
 To increase compatibility between mods extra Matter Values recipes can be PR'd to
 this [directory](https://github.com/Buuz135/Replication/tree/1.21/src/main/resources/data/replication/recipe/matter_values/compat)
 to add them as default values. It would be the same format as the recipes explained in the Datapack section. To make
-them more organized add a subfolder with the modid.
+them more organised add a subfolder with the modid.
 
 # For Pack Makers
 ## Datapack

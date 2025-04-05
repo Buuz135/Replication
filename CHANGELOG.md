@@ -1,3 +1,7 @@
+# 1.1.22
+
+* Added a bunch of more of is loaded checks
+
 # 1.1.21
 
 * Check if a network element is in a loaded chunk before ticking, closes #46

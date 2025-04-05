@@ -181,6 +181,7 @@ public class MatterNetwork extends Network {
 
     public void onChipValuesChanged(IMatterPatternHolder blockEntity, BlockPos pos){
         for (NetworkElement terminal : this.terminals) {
+            if (!terminal.getLevel().isLoaded(terminal.getPos())) continue;
             var tile = terminal.getLevel().getBlockEntity(terminal.getPos());
             if (tile instanceof ReplicationTerminalBlockEntity terminalBlockEntity){
                 terminalBlockEntity.getTerminalPlayerTracker().getPlayers().forEach(serverPlayer -> this.sendPatternSyncPacket(serverPlayer, blockEntity, pos));
@@ -190,6 +191,7 @@ public class MatterNetwork extends Network {
 
     public void onTankValueChanged(IMatterType matterType){
         for (NetworkElement terminal : this.terminals) {
+            if (!terminal.getLevel().isLoaded(terminal.getPos())) continue;
             var tile = terminal.getLevel().getBlockEntity(terminal.getPos());
             if (tile instanceof ReplicationTerminalBlockEntity terminalBlockEntity){
                 terminalBlockEntity.getTerminalPlayerTracker().getPlayers().forEach(serverPlayer -> this.sendMatterSyncPacket(serverPlayer, calculateMatterAmount(matterType), matterType));
@@ -201,6 +203,7 @@ public class MatterNetwork extends Network {
         task.markDirty(true);
         if (task.getTotalAmount() == task.getCurrentAmount()){
             for (NetworkElement terminal : this.terminals) {
+                if (!terminal.getLevel().isLoaded(terminal.getPos())) continue;
                 var tile = terminal.getLevel().getBlockEntity(terminal.getPos());
                 if (tile instanceof ReplicationTerminalBlockEntity terminalBlockEntity){
                     terminalBlockEntity.getTerminalPlayerTracker().getPlayers().forEach(serverPlayer -> this.sendTaskSyncPacket(serverPlayer, task));
@@ -217,6 +220,7 @@ public class MatterNetwork extends Network {
     public long calculateMatterAmount(IMatterType matterType){
         var amount = 0L;
         for (NetworkElement matterStacksSupplier : this.getMatterStacksHolders()) {
+            if (!matterStacksSupplier.getLevel().isLoaded(matterStacksSupplier.getPos())) continue;
             var tile = matterStacksSupplier.getLevel().getBlockEntity(matterStacksSupplier.getPos());
             if (tile instanceof IMatterTanksSupplier tanksSupplier){
                 for (IMatterTank tank : tanksSupplier.getTanks()) {
@@ -302,7 +306,7 @@ public class MatterNetwork extends Network {
             //WE CANCEL REPLICATOR TASKS
             for (Long l : replicationTask.getReplicatorsOnTask()) {
                 var pos = BlockPos.of(l);
-                if (level.getBlockEntity(pos) instanceof ReplicatorBlockEntity replicatorBlockEntity){
+                if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof ReplicatorBlockEntity replicatorBlockEntity) {
                     replicatorBlockEntity.cancelTask();
                 }
             }
@@ -312,6 +316,7 @@ public class MatterNetwork extends Network {
                     for (NetworkElement matterStacksHolder : this.getMatterStacksHolders()) {
                         if (matterStack.isEmpty()) continue;
                         if (matterStacksHolder.getLevel() != level) continue;
+                        if (!matterStacksHolder.getLevel().isLoaded(matterStacksHolder.getPos())) continue;
                         var destination = matterStacksHolder.getLevel().getBlockEntity(matterStacksHolder.getPos());
                         if (destination instanceof IMatterTanksConsumer consumer){
                             for (IMatterTank outputTank : consumer.getTanks()) {
@@ -326,6 +331,7 @@ public class MatterNetwork extends Network {
                         for (NetworkElement matterStacksHolder : this.getMatterStacksHolders()) {
                             if (matterStack.isEmpty()) continue;
                             if (matterStacksHolder.getLevel() != level) continue;
+                            if (!matterStacksHolder.getLevel().isLoaded(matterStacksHolder.getPos())) continue;
                             var destination = matterStacksHolder.getLevel().getBlockEntity(matterStacksHolder.getPos());
                             if (destination instanceof IMatterTanksConsumer consumer){
                                 for (IMatterTank outputTank : consumer.getTanks()) {
@@ -341,6 +347,7 @@ public class MatterNetwork extends Network {
             }
         }
         for (NetworkElement terminal : this.terminals) {
+            if (!terminal.getLevel().isLoaded(terminal.getPos())) continue;
             var tile = terminal.getLevel().getBlockEntity(terminal.getPos());
             if (tile instanceof ReplicationTerminalBlockEntity terminalBlockEntity){
                 terminalBlockEntity.getTerminalPlayerTracker().getPlayers().forEach(serverPlayer -> {
