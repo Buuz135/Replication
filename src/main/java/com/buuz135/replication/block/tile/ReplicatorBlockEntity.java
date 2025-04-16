@@ -1,8 +1,10 @@
 package com.buuz135.replication.block.tile;
 
 import com.buuz135.replication.ReplicationConfig;
+import com.buuz135.replication.api.MatterCalculationStatus;
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.api.task.ReplicationTask;
+import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.ReplicatorCraftingAddon;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
@@ -131,6 +133,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     @Override
     public void serverTick(Level level, BlockPos pos, BlockState state, ReplicatorBlockEntity blockEntity) {
         super.serverTick(level, pos, state, blockEntity);
+        if (ReplicationCalculation.STATUS != MatterCalculationStatus.CALCULATED) return;
         if (this.redstoneManager.getAction().canRun(this.getEnvironmentValue(false, null)) && this.redstoneManager.shouldWork()){
             tickProgress();
             this.progressBarComponent.setProgress(this.action == 1 ? ReplicationConfig.Replicator.MAX_PROGRESS - progress : ReplicationConfig.Replicator.MAX_PROGRESS + progress);

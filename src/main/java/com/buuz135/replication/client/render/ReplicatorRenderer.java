@@ -21,8 +21,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import org.joml.Matrix4f;
@@ -65,18 +63,20 @@ public class ReplicatorRenderer implements BlockEntityRenderer<ReplicatorBlockEn
         var color = new float[]{1f, 1f, 1f, 0f};
         if (!entity.getCraftingStack().isEmpty() && entity.getAction() == 0){
             var matterCompound = ClientReplicationCalculation.getMatterCompound(entity.getCraftingStack());
-            var total = 0D;
-            for (MatterValue matterValue : matterCompound.getValues().values()) {
-                total += matterValue.getAmount();
-            }
-            var currentProgress = entity.getProgress() / (float) ReplicationConfig.Replicator.MAX_PROGRESS * 1.4;
-            var progressTotal = 0;
-            for (MatterValue matterValue : matterCompound.getValues().values()) {
-                if ((progressTotal + matterValue.getAmount())/ (double) total >= currentProgress){
-                    color = matterValue.getMatter().getColor().get();
-                    break;
+            if (matterCompound != null) {
+                var total = 0D;
+                for (MatterValue matterValue : matterCompound.getValues().values()) {
+                    total += matterValue.getAmount();
                 }
-                progressTotal += matterValue.getAmount();
+                var currentProgress = entity.getProgress() / (float) ReplicationConfig.Replicator.MAX_PROGRESS * 1.4;
+                var progressTotal = 0;
+                for (MatterValue matterValue : matterCompound.getValues().values()) {
+                    if ((progressTotal + matterValue.getAmount()) / (double) total >= currentProgress) {
+                        color = matterValue.getMatter().getColor().get();
+                        break;
+                    }
+                    progressTotal += matterValue.getAmount();
+                }
             }
         }
         renderPlane(poseStack, multiBufferSource, Block.box( 2,0,2,14,1,12).bounds(), 0,0.15,0, color[0], color[1], color[2], color[3] == 0 ? 0 : 0.75f);

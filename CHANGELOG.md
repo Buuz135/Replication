@@ -1,3 +1,8 @@
+# 1.1.23
+
+* Added safety check on the Replicator Renderer for when matter values aren't calculated yet and added recipe
+  calculation status to stop machines from working if the matter values haven't been calculated yet, closes #54
+
 # 1.1.22
 
 * Added a bunch of more of is loaded checks

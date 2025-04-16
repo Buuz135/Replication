@@ -1,6 +1,7 @@
 package com.buuz135.replication.block.tile;
 
 import com.buuz135.replication.ReplicationConfig;
+import com.buuz135.replication.api.MatterCalculationStatus;
 import com.buuz135.replication.api.matter_fluid.IMatterTank;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
@@ -78,6 +79,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                     syncObject(this.progressBarComponent);
                 })
                 .setCanIncrease(iComponentHarness -> {
+                    if (ReplicationCalculation.STATUS != MatterCalculationStatus.CALCULATED) return false;
                     if (!queuedMatterStacks.isEmpty()) return false;
                     if (this.getEnergyStorage().getEnergyStored() < ReplicationConfig.Disintegrator.POWER_USAGE) return false;
                     for (int i = 0; i < this.input.getSlots(); i++) {

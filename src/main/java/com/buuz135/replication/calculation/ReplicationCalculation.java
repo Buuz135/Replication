@@ -3,6 +3,7 @@ package com.buuz135.replication.calculation;
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
+import com.buuz135.replication.api.MatterCalculationStatus;
 import com.buuz135.replication.packet.ReplicationCalculationPacket;
 import com.buuz135.replication.recipe.MatterValueRecipe;
 import com.buuz135.replication.util.ReplicationTags;
@@ -38,6 +39,7 @@ public class ReplicationCalculation {
     public static List<RecipeHolder<MatterValueRecipe>> DEFAULT_MATTER_RECIPE = new ArrayList<>();
     public static HashMap<String, MatterCompound> DEFAULT_MATTER_COMPOUND = new HashMap<String, MatterCompound>();
     private static CompoundTag cachedSyncTag = new CompoundTag();
+    public static MatterCalculationStatus STATUS = MatterCalculationStatus.NOT_CALCULATED;
 
     public static void init() {
         EventManager.forge(AddReloadListenerEvent.class).process(addReloadListenerEvent -> {
@@ -61,6 +63,7 @@ public class ReplicationCalculation {
     }
 
     public static void organizeRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
+        STATUS = MatterCalculationStatus.NOT_CALCULATED;
         CALCULATOR_LOG.info("Sorting recipes");
         INGREDIENT_CACHE = new HashMap<>();
         cachedSyncTag = new CompoundTag();
@@ -153,6 +156,7 @@ public class ReplicationCalculation {
                     Replication.NETWORK.sendTo(new ReplicationCalculationPacket(cachedSyncTag), player);
                 }
             }
+            STATUS = MatterCalculationStatus.CALCULATED;
         }, "Replication").start();
 
     }
