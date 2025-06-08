@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
+import java.lang.NumberFormatException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +70,12 @@ public class ReplicationRequestWidget extends AbstractWidget implements Renderab
     }
 
     public void addNumber(int number){
-        var current = Long.parseLong(this.amountBox.getValue());
+        long current = 0;
+        try  {
+            current = Long.parseLong(this.amountBox.getValue());
+        } catch (NumberFormatException e) {
+            // Should only happen when the text box is empty. Can't parse an empty string as a number, so we'll just use the default 0
+        }
         if (current == 1 && number != 1){
             current = number;
         } else {
