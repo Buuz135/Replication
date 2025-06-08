@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.buuz135'
-version = '1.21.1-1.1.23'
+version = '1.21.1-1.1.24'
 
 java {
     archivesBaseName = 'Replication'
@@ -78,8 +78,8 @@ dependencies {
     runtimeOnly "curse.maven:industrial-foregoing-266515:6030556"
     runtimeOnly "curse.maven:dark-mode-everywhere-574123:5922655"
     implementation "curse.maven:guideme-1173950:6165912"
-    runtimeOnly "curse.maven:applied-energistics-2-223794:6087880"
-    implementation "appeng:appliedenergistics2:19.0.27"
+    //runtimeOnly "curse.maven:applied-energistics-2-223794:6087880"
+    //implementation "appeng:appliedenergistics2:19.0.27"
     //runtimeOnly "curse.maven:allthecompressed-514045:6121584"
     runtimeOnly "curse.maven:cucumber-272335:6228644"
     runtimeOnly "curse.maven:mystical-agriculture-246640:6228700"

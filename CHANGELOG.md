@@ -1,3 +1,7 @@
+# 1.1.24
+
+* Fixed crash when clicking number button in replication request widget when text box is empty by zperk13
+
 # 1.1.23
 
 * Added safety check on the Replicator Renderer for when matter values aren't calculated yet and added recipe
