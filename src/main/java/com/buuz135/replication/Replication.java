@@ -99,7 +99,8 @@ public class Replication extends ModuleController {
         NBTManager.getInstance().scanTileClassForAnnotations(MatterPipeBlockEntity.class);
         EventManager.mod(RegisterCapabilitiesEvent.class).process(event -> {
             event.registerBlock(Capabilities.EnergyStorage.BLOCK, (level, blockPos, blockState, blockEntity, direction) -> {
-                if (level instanceof ServerLevel && blockEntity instanceof MatterPipeBlockEntity pipe && NetworkManager.get(level) != null && NetworkManager.get(level).getElement(blockPos) != null) {
+                if (level instanceof ServerLevel && blockEntity instanceof MatterPipeBlockEntity pipe && NetworkManager.get(level) != null
+                        && NetworkManager.get(level).getElement(blockPos) != null && pipe.getNetwork() != null && pipe.getNetwork().getEnergyStorage() != null) {
                     return pipe.getNetwork().getEnergyStorage();
                 }
                 return null;

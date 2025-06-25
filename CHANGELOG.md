@@ -1,3 +1,7 @@
+# 1.1.25
+
+* Fixed crash with enderio closes #61 closes #56
+
 # 1.1.24
 
 * Fixed crash when clicking number button in replication request widget when text box is empty by zperk13
