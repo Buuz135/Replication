@@ -133,6 +133,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     @Override
     public void serverTick(Level level, BlockPos pos, BlockState state, ReplicatorBlockEntity blockEntity) {
         super.serverTick(level, pos, state, blockEntity);
+        if (getNetwork() == null) return;
         if (ReplicationCalculation.STATUS != MatterCalculationStatus.CALCULATED) return;
         if (this.redstoneManager.getAction().canRun(this.getEnvironmentValue(false, null)) && this.redstoneManager.shouldWork()){
             tickProgress();

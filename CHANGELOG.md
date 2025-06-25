@@ -1,6 +1,7 @@
 # 1.1.25
 
-* Fixed crash with enderio closes #61 closes #56
+* Fixed crash with enderio closes #62 closes #56
+* Fixed crash when rotating replicator closes #61
 
 # 1.1.24
 
