@@ -1,3 +1,7 @@
+# 1.1.26
+
+* Big improvements to recipe calculation
+
 # 1.1.25
 
 * Fixed crash with enderio closes #62 closes #56

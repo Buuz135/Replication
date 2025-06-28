@@ -17,6 +17,7 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -25,9 +26,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class ReplicationCalculation {
@@ -35,21 +36,21 @@ public class ReplicationCalculation {
     public static final Logger CALCULATOR_LOG = LogManager.getLogger("Replication Calculator");
 
 
-    public static HashMap<String, CalculationReference> SORTED_CALCULATION_REFERENCE = new HashMap<String, CalculationReference>();
-    public static List<RecipeHolder<MatterValueRecipe>> DEFAULT_MATTER_RECIPE = new ArrayList<>();
-    public static HashMap<String, MatterCompound> DEFAULT_MATTER_COMPOUND = new HashMap<String, MatterCompound>();
+    public static HashMap<Item, CalculationReference> SORTED_CALCULATION_REFERENCE = new HashMap<Item, CalculationReference>();
+    public static Set<RecipeHolder<MatterValueRecipe>> DEFAULT_MATTER_RECIPE = new HashSet<>();
+    public static HashMap<Item, MatterCompound> DEFAULT_MATTER_COMPOUND = new HashMap<Item, MatterCompound>();
     private static CompoundTag cachedSyncTag = new CompoundTag();
     public static MatterCalculationStatus STATUS = MatterCalculationStatus.NOT_CALCULATED;
 
     public static void init() {
-        EventManager.forge(AddReloadListenerEvent.class).process(addReloadListenerEvent -> {
+        EventManager.forge(AddReloadListenerEvent.class, EventPriority.LOWEST).process(addReloadListenerEvent -> {
             addReloadListenerEvent.addListener((ResourceManagerReloadListener) resourceManager -> organizeRecipes(addReloadListenerEvent.getServerResources().getRecipeManager(), addReloadListenerEvent.getRegistryAccess()));
         }).subscribe();
-        EventManager.forge(TagsUpdatedEvent.class).process(tagsUpdatedEvent -> {
+        EventManager.forge(TagsUpdatedEvent.class, EventPriority.LOWEST).process(tagsUpdatedEvent -> {
             if (tagsUpdatedEvent.getUpdateCause() == TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD)
                 calculateRecipes(tagsUpdatedEvent.getRegistryAccess());
         }).subscribe();
-        EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class).process(playerLoggedInEvent -> {
+        EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class, EventPriority.LOWEST).process(playerLoggedInEvent -> {
             if (!cachedSyncTag.isEmpty() && playerLoggedInEvent.getEntity() instanceof ServerPlayer serverPlayer) {
                 Replication.NETWORK.sendTo(new ReplicationCalculationPacket(cachedSyncTag), serverPlayer);
             }
@@ -70,23 +71,21 @@ public class ReplicationCalculation {
         //LOADING DEFAULT VALUES
         long time = System.currentTimeMillis();
         DEFAULT_MATTER_COMPOUND = new HashMap<>();
-        DEFAULT_MATTER_RECIPE = recipeManager.getAllRecipesFor((RecipeType<MatterValueRecipe>) ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get());
+        DEFAULT_MATTER_RECIPE = new HashSet<>(recipeManager.getAllRecipesFor((RecipeType<MatterValueRecipe>) ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get()));
 
 
         //SORTING RECIPES
-        SORTED_CALCULATION_REFERENCE = new HashMap<String, CalculationReference>();
+        SORTED_CALCULATION_REFERENCE = new HashMap<Item, CalculationReference>();
         time = System.currentTimeMillis();
         for (RecipeHolder<CraftingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
             var result = craftingRecipe.value().getResultItem(registryAccess);
-            var rl = getNameFromStack(result);
-            SORTED_CALCULATION_REFERENCE.computeIfAbsent(rl, string -> new CalculationReference(result, new ArrayList<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, craftingRecipe.value().getIngredients()));
+            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new HashSet<>(craftingRecipe.value().getIngredients())));
         }
         for (RecipeHolder<SmeltingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
             var result = craftingRecipe.value().getResultItem(registryAccess);
-            var rl = getNameFromStack(result);
-            SORTED_CALCULATION_REFERENCE.computeIfAbsent(rl, string -> new CalculationReference(result, new ArrayList<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, craftingRecipe.value().getIngredients()));
+            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new HashSet<>(craftingRecipe.value().getIngredients())));
         }
-        CALCULATOR_LOG.info("Sorted Recipes in " + (System.currentTimeMillis() - time) + "ms");
+        CALCULATOR_LOG.info("Sorted " + SORTED_CALCULATION_REFERENCE.size() + " Recipes in " + (System.currentTimeMillis() - time) + "ms");
     }
 
     public static void calculateRecipes(RegistryAccess registryAccess) {
@@ -95,12 +94,11 @@ public class ReplicationCalculation {
             long time = System.currentTimeMillis();
             for (RecipeHolder<MatterValueRecipe> matterValueRecipe : DEFAULT_MATTER_RECIPE) {
                 for (ItemStack item : matterValueRecipe.value().input.getItems()) {
-                    var name = getNameFromStack(item);
                     var compound = new MatterCompound();
                     for (MatterValue matterValue : matterValueRecipe.value().matter) {
                         compound.add(matterValue);
                     }
-                    DEFAULT_MATTER_COMPOUND.put(name, compound);
+                    DEFAULT_MATTER_COMPOUND.put(item.getItem(), compound);
                 }
             }
             CALCULATOR_LOG.info("Loaded default values in " + (System.currentTimeMillis() - time) + "ms");
@@ -110,7 +108,7 @@ public class ReplicationCalculation {
             /*
             time = System.currentTimeMillis();
             CALCULATOR_LOG.info("minecraft:red_dye");
-            var resolved = SORTED_CALCULATION_REFERENCE.get("minecraft:red_dye").resolve(0, new ArrayList<>(), true);
+            var resolved = SORTED_CALCULATION_REFERENCE.get("minecraft:red_dye").resolve(0, new HashSet<>(), true);
             CALCULATOR_LOG.info(resolved);
             CALCULATOR_LOG.info("Checked oak in " + (System.currentTimeMillis() - time) + "ms");
             */
@@ -134,13 +132,13 @@ public class ReplicationCalculation {
                         if (stack.isEmpty()) continue;
                         //if (InvUtil.hasExtraComponents(stack)) continue;
                         var rl = getNameFromStack(stack);
-                        if (!DEFAULT_MATTER_COMPOUND.containsKey(rl) && !SORTED_CALCULATION_REFERENCE.containsKey(rl)) {
+                        if (!DEFAULT_MATTER_COMPOUND.containsKey(stack.getItem()) && !SORTED_CALCULATION_REFERENCE.containsKey(stack.getItem())) {
                             continue;
                         }
-                        var compound = getMatterCompound(stack, 0, new ArrayList<>(), new ArrayList<>(), false);
+                        var compound = getMatterCompound(stack, 0, new HashSet<>(), new HashSet<>(), false);
                         // CALCULATOR_LOG.info("---------------------------------------------");
                         if (compound != null && !compound.getValues().isEmpty()) {
-                            if (false) CALCULATOR_LOG.info(rl + " -> " + compound.toString());
+                            if (false) CALCULATOR_LOG.info(item + " -> " + compound.toString());
                             tempTag.put(rl, compound.serializeNBT(registryAccess));
                             ++amount;
                         }
@@ -161,53 +159,19 @@ public class ReplicationCalculation {
 
     }
 
-    private static class RecipeReference {
-
-        private final ResourceLocation name;
-        private final ItemStack output;
-        private final List<Ingredient> inputs;
-        private MatterCompound cachedCompound;
-
-        public RecipeReference(ResourceLocation name, ItemStack output, List<Ingredient> inputs) {
-            this.name = name;
-            this.output = output;
-            this.inputs = inputs;
-        }
-
-        public ResourceLocation getName() {
-            return name;
-        }
-
-        public ItemStack getOutput() {
-            return output;
-        }
-
-        public List<Ingredient> getInputs() {
-            return inputs;
-        }
-
-        public void setCachedCompound(MatterCompound cachedCompound) {
-            this.cachedCompound = cachedCompound;
-        }
-
-        public MatterCompound getCachedCompound() {
-            return cachedCompound;
-        }
-    }
-
     @Nullable
     public static MatterCompound getMatterCompound(ItemStack stack) {
-        return getMatterCompound(stack, 0, new ArrayList<>(), new ArrayList<>(), false);
+        return getMatterCompound(stack, 0, new HashSet<>(), new HashSet<>(), false);
     }
 
-    private static MatterCompound getMatterCompound(ItemStack item, int depth, List<String> visitedRecipes, List<String> visitedCalculations, boolean printDebug) {
+    private static MatterCompound getMatterCompound(ItemStack item, int depth, Set<String> visitedRecipes, Set<Item> visitedCalculations, boolean printDebug) {
         MatterCompound result = null;
         //GET FROM DEFAULT VALUES
         result = getMatterCompound(item, depth, visitedRecipes, visitedCalculations, printDebug, result);
         return result;
     }
 
-    private static MatterCompound getMatterCompound(ItemStack item, int depth, List<String> visitedRecipes, List<String> visitedCalculations, boolean printDebug, MatterCompound result) {
+    private static MatterCompound getMatterCompound(ItemStack item, int depth, Set<String> visitedRecipes, Set<Item> visitedCalculations, boolean printDebug, MatterCompound result) {
         var defaultValue = getDefaultValue(item);
         if (defaultValue != null) {
             if (printDebug)
@@ -221,11 +185,10 @@ public class ReplicationCalculation {
             //CALCULATE
             if(ReplicationConfig.RecipeCalculation.MAX_RECIPE_DEPTH == 0) return null;
             if (item.is(ReplicationTags.SKIP_CALCULATION)) return null;
-            var name = getNameFromStack(item);
-            if (SORTED_CALCULATION_REFERENCE.containsKey(name)) {
+            if (SORTED_CALCULATION_REFERENCE.containsKey(item.getItem())) {
                 if (printDebug)
                     CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "Calculating value for " + item);
-                var temp = SORTED_CALCULATION_REFERENCE.get(name).resolve(depth, visitedRecipes, visitedCalculations, printDebug);
+                var temp = SORTED_CALCULATION_REFERENCE.get(item.getItem()).resolve(depth, visitedRecipes, visitedCalculations, printDebug);
                 if (temp != null) {
                     if (result == null) {
                         result = temp;
@@ -238,7 +201,7 @@ public class ReplicationCalculation {
         return result;
     }
 
-    private static MatterCompound getMatterCompound(Ingredient input, int depth, List<String> visitedRecipes, List<String> visitedCalculations, boolean printDebug) {
+    private static MatterCompound getMatterCompound(Ingredient input, int depth, Set<String> visitedRecipes, Set<Item> visitedCalculations, boolean printDebug) {
         if (INGREDIENT_CACHE.containsKey(input)) {
             return INGREDIENT_CACHE.get(input);
         }
@@ -266,21 +229,62 @@ public class ReplicationCalculation {
         return result;
     }
 
+    private static MatterCompound getDefaultValue(ItemStack stack) {
+        if (DEFAULT_MATTER_COMPOUND.containsKey(stack.getItem())) {
+            return DEFAULT_MATTER_COMPOUND.get(stack.getItem());
+        }
+        return null;
+    }
+
+    private static class RecipeReference {
+
+        private final ResourceLocation name;
+        private final ItemStack output;
+        private final Set<Ingredient> inputs;
+        private MatterCompound cachedCompound;
+
+        public RecipeReference(ResourceLocation name, ItemStack output, Set<Ingredient> inputs) {
+            this.name = name;
+            this.output = output;
+            this.inputs = inputs;
+        }
+
+        public ResourceLocation getName() {
+            return name;
+        }
+
+        public ItemStack getOutput() {
+            return output;
+        }
+
+        public Set<Ingredient> getInputs() {
+            return inputs;
+        }
+
+        public MatterCompound getCachedCompound() {
+            return cachedCompound;
+        }
+
+        public void setCachedCompound(MatterCompound cachedCompound) {
+            this.cachedCompound = cachedCompound;
+        }
+    }
+
     private static class CalculationReference {
 
-        private final List<RecipeReference> references;
+        private final Set<RecipeReference> references;
         private final ItemStack stack;
-        private final String name;
+        private final Item name;
         private boolean resolved = false;
         private MatterCompound cached;
 
-        public CalculationReference(ItemStack stack, List<RecipeReference> references) {
+        public CalculationReference(ItemStack stack, Set<RecipeReference> references) {
             this.references = references;
             this.stack = stack;
-            this.name = getNameFromStack(stack);
+            this.name = stack.getItem();
         }
 
-        public MatterCompound resolve(int depth, List<String> visitedRecipes, List<String> visitedCalculations, boolean printDebug) {
+        public MatterCompound resolve(int depth, Set<String> visitedRecipes, Set<Item> visitedCalculations, boolean printDebug) {
             if (visitedCalculations.contains(name)) {
                 return null;
             }
@@ -324,8 +328,8 @@ public class ReplicationCalculation {
                         visitedRecipes.add(reference.getName().toString());
                         for (Ingredient input : reference.inputs) {
                             if (input.getItems().length == 0) continue;
-                            var tempVisitedRecipes = new ArrayList<>(visitedRecipes);
-                            var tempVisitedCalculations = new ArrayList<>(visitedCalculations);
+                            var tempVisitedRecipes = new HashSet<>(visitedRecipes);
+                            var tempVisitedCalculations = new HashSet<>(visitedCalculations);
                             var inputMatter = getMatterCompound(input, depth + 1, tempVisitedRecipes, tempVisitedCalculations, printDebug);
                             tempVisitedRecipes = null;
                             tempVisitedCalculations = null;
@@ -376,16 +380,9 @@ public class ReplicationCalculation {
             return result;
         }
 
-        public List<RecipeReference> getReferences() {
+        public Set<RecipeReference> getReferences() {
             return references;
         }
-    }
-
-    private static MatterCompound getDefaultValue(ItemStack stack) {
-        if (DEFAULT_MATTER_COMPOUND.containsKey(getNameFromStack(stack))) {
-            return DEFAULT_MATTER_COMPOUND.get(getNameFromStack(stack));
-        }
-        return null;
     }
 
     private static String repeatChar(char character, int count) {
