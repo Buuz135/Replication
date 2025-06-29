@@ -1,3 +1,7 @@
+# 1.1.27
+
+* Fixed recipe calculation ignoring duplicate ingredient inputs
+
 # 1.1.26
 
 * Big improvements to recipe calculation

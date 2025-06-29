@@ -26,9 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 public class ReplicationCalculation {
@@ -79,11 +77,11 @@ public class ReplicationCalculation {
         time = System.currentTimeMillis();
         for (RecipeHolder<CraftingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
             var result = craftingRecipe.value().getResultItem(registryAccess);
-            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new HashSet<>(craftingRecipe.value().getIngredients())));
+            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new ArrayList<>(craftingRecipe.value().getIngredients())));
         }
         for (RecipeHolder<SmeltingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
             var result = craftingRecipe.value().getResultItem(registryAccess);
-            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new HashSet<>(craftingRecipe.value().getIngredients())));
+            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new ArrayList<>(craftingRecipe.value().getIngredients())));
         }
         CALCULATOR_LOG.info("Sorted " + SORTED_CALCULATION_REFERENCE.size() + " Recipes in " + (System.currentTimeMillis() - time) + "ms");
     }
@@ -107,8 +105,8 @@ public class ReplicationCalculation {
 
             /*
             time = System.currentTimeMillis();
-            CALCULATOR_LOG.info("minecraft:red_dye");
-            var resolved = SORTED_CALCULATION_REFERENCE.get("minecraft:red_dye").resolve(0, new HashSet<>(), true);
+            CALCULATOR_LOG.info("minecraft:iron_block");
+            var resolved = SORTED_CALCULATION_REFERENCE.get(Items.IRON_BLOCK).resolve(0, new HashSet<>(), new HashSet<>(),true);
             CALCULATOR_LOG.info(resolved);
             CALCULATOR_LOG.info("Checked oak in " + (System.currentTimeMillis() - time) + "ms");
             */
@@ -202,9 +200,8 @@ public class ReplicationCalculation {
     }
 
     private static MatterCompound getMatterCompound(Ingredient input, int depth, Set<String> visitedRecipes, Set<Item> visitedCalculations, boolean printDebug) {
-        if (INGREDIENT_CACHE.containsKey(input)) {
-            return INGREDIENT_CACHE.get(input);
-        }
+        var cached = INGREDIENT_CACHE.get(input);
+        if (cached != null) return cached;
         MatterCompound result = null;
         for (ItemStack item : input.getItems()) {
             var temp = getMatterCompound(item, depth, visitedRecipes, visitedCalculations, printDebug, result);
@@ -230,20 +227,17 @@ public class ReplicationCalculation {
     }
 
     private static MatterCompound getDefaultValue(ItemStack stack) {
-        if (DEFAULT_MATTER_COMPOUND.containsKey(stack.getItem())) {
-            return DEFAULT_MATTER_COMPOUND.get(stack.getItem());
-        }
-        return null;
+        return DEFAULT_MATTER_COMPOUND.get(stack.getItem());
     }
 
     private static class RecipeReference {
 
         private final ResourceLocation name;
         private final ItemStack output;
-        private final Set<Ingredient> inputs;
+        private final List<Ingredient> inputs;
         private MatterCompound cachedCompound;
 
-        public RecipeReference(ResourceLocation name, ItemStack output, Set<Ingredient> inputs) {
+        public RecipeReference(ResourceLocation name, ItemStack output, List<Ingredient> inputs) {
             this.name = name;
             this.output = output;
             this.inputs = inputs;
@@ -257,7 +251,7 @@ public class ReplicationCalculation {
             return output;
         }
 
-        public Set<Ingredient> getInputs() {
+        public List<Ingredient> getInputs() {
             return inputs;
         }
 
