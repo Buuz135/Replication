@@ -2,22 +2,16 @@ package com.buuz135.replication.data;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
-import com.buuz135.replication.block.MatterPipeBlock;
-import com.hrznstudio.titanium.block.RotatableBlock;
+import com.buuz135.replication.block.ReplicatorBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RepBlockstateProvider extends BlockStateProvider {
@@ -31,7 +25,7 @@ public class RepBlockstateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        var pipe = getMultipartBuilder(ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getBlock());
+        /*var pipe = getMultipartBuilder(ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.getBlock());
         pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_middle"))).addModel();
         pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_side"))).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.NORTH), true);
         pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationY(180).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.SOUTH), true);
@@ -40,8 +34,9 @@ public class RepBlockstateProvider extends BlockStateProvider {
         pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationX(90).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.DOWN), true);
         pipe.part().modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter_network_pipe_side"))).rotationX(270).addModel().condition(MatterPipeBlock.DIRECTIONS.get(Direction.UP), true);
 
-        this.blocks.stream().filter(blockBase -> blockBase instanceof RotatableBlock<?>)
+        this.blocks.stream().motor(blockBase -> blockBase instanceof RotatableBlock<?>)
                 .map(blockBase -> (RotatableBlock) blockBase)
+                .motor(rotatableBlock -> !(rotatableBlock instanceof ReplicatorBlock))
                 .forEach(rotatableBlock -> {
                     VariantBlockStateBuilder builder = getVariantBuilder(rotatableBlock);
                     if (rotatableBlock.getRotationType().getProperties().length > 0) {
@@ -54,7 +49,29 @@ public class RepBlockstateProvider extends BlockStateProvider {
                     } else {
                         builder.partialState().addModels(new ConfiguredModel(new ModelFile.UncheckedModelFile(getModel(rotatableBlock))));
                     }
-                });
+                });*/
+        var replicator = getMultipartBuilder(ReplicationRegistry.Blocks.REPLICATOR.getBlock());
+        var repNorthPart = replicator.part();
+        repNorthPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator"))).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.NORTH);
+        repNorthPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator_enclosure"))).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.NORTH).condition(ReplicatorBlock.HAS_ENCLOSURE, true);
+        repNorthPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator_motor"))).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.NORTH).condition(ReplicatorBlock.HAS_MOTOR, true);
+
+        var repSouthPart = replicator.part();
+        repSouthPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator"))).rotationY(180).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.SOUTH);
+        repSouthPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator_enclosure"))).rotationY(180).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.SOUTH).condition(ReplicatorBlock.HAS_ENCLOSURE, true);
+        repSouthPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator_motor"))).rotationY(180).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.SOUTH).condition(ReplicatorBlock.HAS_MOTOR, true);
+
+        var repEastPart = replicator.part();
+        repEastPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator"))).rotationY(90).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.EAST);
+        repEastPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator_enclosure"))).rotationY(90).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.EAST).condition(ReplicatorBlock.HAS_ENCLOSURE, true);
+        repEastPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator_motor"))).rotationY(90).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.EAST).condition(ReplicatorBlock.HAS_MOTOR, true);
+
+        var repWestPart = replicator.part();
+        repWestPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator"))).rotationY(270).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.WEST);
+        repWestPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator_enclosure"))).rotationY(270).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.WEST).condition(ReplicatorBlock.HAS_ENCLOSURE, true);
+        repWestPart.modelFile(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/replicator_motor"))).rotationY(270).addModel().condition(ReplicatorBlock.FACING_HORIZONTAL, Direction.WEST).condition(ReplicatorBlock.HAS_MOTOR, true);
+
+
     }
 
     public static ResourceLocation getModel(Block block) {

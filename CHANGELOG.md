@@ -1,3 +1,7 @@
+# 1.2.0
+
+* Added Replicator Enclosure and Replicator Motor to accelerate the machines
+
 # 1.1.27
 
 * Fixed recipe calculation ignoring duplicate ingredient inputs

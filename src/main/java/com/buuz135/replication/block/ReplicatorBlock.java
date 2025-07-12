@@ -11,13 +11,18 @@ import com.hrznstudio.titanium.util.FacingUtil;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.Tags;
@@ -25,14 +30,24 @@ import org.jetbrains.annotations.NotNull;
 
 public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> implements INetworkDirectionalConnection {
 
+    public static BooleanProperty HAS_ENCLOSURE = BooleanProperty.create("has_enclosure");
+    public static BooleanProperty HAS_MOTOR = BooleanProperty.create("has_motor");
+
     public ReplicatorBlock() {
         super("replicator", Properties.ofFullCopy(Blocks.IRON_BLOCK), ReplicatorBlockEntity.class);
         setItemGroup(Replication.TAB);
+        registerDefaultState(defaultBlockState().setValue(HAS_ENCLOSURE, false).setValue(HAS_MOTOR, false));
     }
 
     @Override
     public BlockEntityType.BlockEntitySupplier<?> getTileEntityFactory() {
         return (pos, blockState) -> new ReplicatorBlockEntity(this, ReplicationRegistry.Blocks.REPLICATOR.type().get(), pos, blockState);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_206840_1_) {
+        super.createBlockStateDefinition(p_206840_1_);
+        p_206840_1_.add(HAS_ENCLOSURE, HAS_MOTOR);
     }
 
     @NotNull
@@ -113,5 +128,17 @@ public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> imple
                 .define('R', Items.REDSTONE)
                 .define('M', Tags.Items.INGOTS_IRON)
                 .save(consumer);
+    }
+
+    @Override
+    public NonNullList<ItemStack> getDynamicDrops(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        var list = super.getDynamicDrops(state, worldIn, pos, newState, isMoving);
+        if (state.getValue(HAS_MOTOR)) {
+            list.add(new ItemStack(ReplicationRegistry.Items.REPLICATOR_MOTOR));
+        }
+        if (state.getValue(HAS_ENCLOSURE)) {
+            list.add(new ItemStack(ReplicationRegistry.Items.REPLICATOR_ENCLOSURE));
+        }
+        return list;
     }
 }

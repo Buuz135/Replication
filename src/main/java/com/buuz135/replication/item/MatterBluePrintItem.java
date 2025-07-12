@@ -16,6 +16,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class MatterBluePrintItem extends ReplicationItem {
+
     public MatterBluePrintItem() {
         super(new Properties().stacksTo(1));
     }

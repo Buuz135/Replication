@@ -4,8 +4,10 @@ import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.api.MatterCalculationStatus;
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.api.task.ReplicationTask;
+import com.buuz135.replication.block.ReplicatorBlock;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.ReplicatorCraftingAddon;
+import com.buuz135.replication.client.gui.addons.ReplicatorMotorAddon;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
@@ -31,7 +33,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -70,12 +74,22 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     private RedstoneControlButtonComponent<RedstoneAction> redstoneButton;
     @Save
     private ItemStackFilter infiniteCrafting;
+    private boolean hasEnclosure;
+    private boolean hasMotor;
+    @Save
+    private int motorSpeedMultiplier;
+    @Save
+    private boolean isCurrentTaskAFailure;
 
 
     public ReplicatorBlockEntity(BasicTileBlock<ReplicatorBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
         this.progress = ReplicationConfig.Replicator.MAX_PROGRESS;
         this.action = 1;
+        this.hasEnclosure = false;
+        this.hasMotor = false;
+        this.motorSpeedMultiplier = 100;
+        this.isCurrentTaskAFailure = false;
         this.craftingStack = ItemStack.EMPTY;
         this.progressBarComponent = new ProgressBarComponent<ReplicatorBlockEntity>(26, 25, 0, ReplicationConfig.Replicator.MAX_PROGRESS * 2)
                 .setBarDirection(ProgressBarComponent.BarDirection.VERTICAL_UP);
@@ -128,39 +142,61 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     public void initClient() {
         super.initClient();
         addGuiAddonFactory(() -> new ReplicatorCraftingAddon(50, 30, this));
+        addGuiAddonFactory(() -> new ReplicatorMotorAddon(this, 7, 184));
     }
 
     @Override
     public void serverTick(Level level, BlockPos pos, BlockState state, ReplicatorBlockEntity blockEntity) {
         super.serverTick(level, pos, state, blockEntity);
+        if (this.level.getGameTime() % 20 == 0) {
+            var maxProgress = ReplicationConfig.Replicator.MAX_PROGRESS * 2;
+            this.hasEnclosure = state.getValue(ReplicatorBlock.HAS_ENCLOSURE);
+            this.hasMotor = state.getValue(ReplicatorBlock.HAS_MOTOR);
+            if (this.hasEnclosure) {
+                maxProgress *= 0.80;
+            }
+            if (this.hasMotor) {
+                maxProgress *= (this.motorSpeedMultiplier / 100D);
+            }
+            this.progressBarComponent.setMaxProgress(maxProgress);
+            if (this.progress > this.getMaxProgress()) {
+                this.progress = this.getMaxProgress();
+            }
+            syncObject(this.progressBarComponent);
+            syncObject(this.progress);
+        }
         if (getNetwork() == null) return;
         if (ReplicationCalculation.STATUS != MatterCalculationStatus.CALCULATED) return;
         if (this.redstoneManager.getAction().canRun(this.getEnvironmentValue(false, null)) && this.redstoneManager.shouldWork()){
             tickProgress();
-            this.progressBarComponent.setProgress(this.action == 1 ? ReplicationConfig.Replicator.MAX_PROGRESS - progress : ReplicationConfig.Replicator.MAX_PROGRESS + progress);
+            this.progressBarComponent.setProgress(this.action == 1 ? this.getMaxProgress() - progress : this.getMaxProgress() + progress);
             syncObject(this.progressBarComponent);
-            if (this.level.getGameTime() % 20 == 0 && this.craftingTask == null && this.cachedReplicationTask == null && !this.infiniteCrafting.getFilterSlots()[0].getFilter().isEmpty()){
+            if (this.level.getGameTime() % 4 == 0 && this.craftingTask == null && this.cachedReplicationTask == null && !this.infiniteCrafting.getFilterSlots()[0].getFilter().isEmpty()) {
                 var task = new ReplicationTask(this.infiniteCrafting.getFilterSlots()[0].getFilter().copy(), 1, IReplicationTask.Mode.SINGLE, this.getBlockPos());
                 task.acceptReplicator(this.getBlockPos());
+                this.isCurrentTaskAFailure = this.level.getRandom().nextInt(100) < getFailureChance();
                 this.craftingTask = task.getUuid().toString();
                 this.cachedReplicationTask = task;
                 this.craftingStack = task.getReplicatingStack();
                 syncObject(this.craftingStack);
+                syncObject(this.isCurrentTaskAFailure);
                 this.getNetwork().getTaskManager().getPendingTasks().put(task.getUuid().toString(), task);
                 this.getNetwork().onTaskValueChanged(task, (ServerLevel) this.level);
             }
-            if (this.level.getGameTime() % 20 == 0 && this.craftingTask == null){
+            if (this.level.getGameTime() % 4 == 0 && this.craftingTask == null) {
                 var task = this.getNetwork().getTaskManager().findTaskForReplicator(this.getBlockPos(), this.getNetwork());
                 if (task != null){
                     task.acceptReplicator(this.getBlockPos());
+                    this.isCurrentTaskAFailure = this.level.getRandom().nextInt(100) < getFailureChance();
                     this.craftingTask = task.getUuid().toString();
                     this.cachedReplicationTask = task;
                     this.craftingStack = task.getReplicatingStack();
                     syncObject(this.craftingStack);
+                    syncObject(this.isCurrentTaskAFailure);
                     this.getNetwork().onTaskValueChanged(task, (ServerLevel) this.level);
                 }
             }
-            if (this.level.getGameTime() % 20 == 0 && this.craftingTask != null && this.cachedReplicationTask == null) {
+            if (this.level.getGameTime() % 4 == 0 && this.craftingTask != null && this.cachedReplicationTask == null) {
                 if (this.getNetwork().getTaskManager().getPendingTasks().containsKey(this.craftingTask)) {
                     this.cachedReplicationTask = this.getNetwork().getTaskManager().getPendingTasks().get(this.craftingTask);
                     this.craftingStack = this.cachedReplicationTask.getReplicatingStack();
@@ -169,7 +205,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
                     cancelTask();
                 }
             }
-            if (this.level.getGameTime() % 20 == 0 && this.craftingTask != null && this.cachedReplicationTask != null
+            if (this.level.getGameTime() % 4 == 0 && this.craftingTask != null && this.cachedReplicationTask != null
                     && !this.cachedReplicationTask.getStoredMatterStack().containsKey(this.getBlockPos().asLong())){
                 this.cachedReplicationTask.storeMatterStacksFor(this.level, this.getBlockPos(), this.getNetwork());
             }
@@ -188,23 +224,30 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     }
 
     private void tickProgress(){
-        if (craftingTask != null && getEnergyStorage().getEnergyStored() > ReplicationConfig.Replicator.POWER_TICK && cachedReplicationTask != null
+        if (craftingTask != null && getEnergyStorage().getEnergyStored() > this.getPowerConsumption() && cachedReplicationTask != null
                 && cachedReplicationTask.getStoredMatterStack().containsKey(this.getBlockPos().asLong())){
             if (this.action == 0){
-                if (this.progress >= ReplicationConfig.Replicator.MAX_PROGRESS) {
-                    if (ItemHandlerHelper.insertItem(this.output, this.craftingStack.copy(), true).isEmpty()) {
+                if (this.progress >= this.getMaxProgress()) {
+                    if (!this.isCurrentTaskAFailure) {
+                        if (ItemHandlerHelper.insertItem(this.output, this.craftingStack.copy(), true).isEmpty()) {
+                            this.action = 1;
+                            syncObject(this.action);
+                            replicateItem();
+                        }
+                    } else {
+                        this.isCurrentTaskAFailure = this.level.getRandom().nextInt(100) < getFailureChance();
                         this.action = 1;
                         syncObject(this.action);
-                        replicateItem();
+                        syncObject(this.isCurrentTaskAFailure);
                     }
                 } else {
-                    getEnergyStorage().extractEnergy(ReplicationConfig.Replicator.POWER_TICK, false);
+                    getEnergyStorage().extractEnergy(this.getPowerConsumption(), false);
                     ++this.progress;
                 }
                 syncObject(this.progress);
             }else{
                 --this.progress;
-                getEnergyStorage().extractEnergy(ReplicationConfig.Replicator.POWER_TICK, false);
+                getEnergyStorage().extractEnergy(this.getPowerConsumption(), false);
                 syncObject(this.progress);
                 if (this.progress <= 0){
                     this.action = 0;
@@ -213,7 +256,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
             }
             markComponentDirty();
         }
-        if (craftingTask == null && this.progress < ReplicationConfig.Replicator.MAX_PROGRESS){
+        if (craftingTask == null && this.progress < this.getMaxProgress()) {
             this.action = 1;
             ++this.progress;
             syncObject(this.action);
@@ -270,6 +313,63 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
 
     public int getProgress() {
         return progress;
+    }
+
+    public int getMaxProgress() {
+        return progressBarComponent.getMaxProgress() / 2;
+    }
+
+    public int getPowerConsumption() {
+        var power = ReplicationConfig.Replicator.POWER_TICK;
+        if (this.hasEnclosure) power = (int) Math.ceil(power * ReplicationConfig.Replicator.ENCLOSURE_POWER_MULTIPLIER);
+        return power;
+    }
+
+    public boolean hasMotor() {
+        return hasMotor;
+    }
+
+    public boolean hasEnclosure() {
+        return hasEnclosure;
+    }
+
+    public int getMotorSpeedMultiplier() {
+        return motorSpeedMultiplier;
+    }
+
+    @Override
+    public void handleButtonMessage(int id, Player playerEntity, CompoundTag compound) {
+        super.handleButtonMessage(id, playerEntity, compound);
+        if (id == 124578) {
+            motorSpeedMultiplier = compound.getInt("Multiplier");
+            if (motorSpeedMultiplier > 100) {
+                motorSpeedMultiplier = 100;
+            }
+            if (motorSpeedMultiplier < 20) {
+                motorSpeedMultiplier = 20;
+            }
+            syncObject(motorSpeedMultiplier);
+        }
+    }
+
+    public int getFailureChance() {
+        int value = getMotorSpeedMultiplier();
+        int oldMin = 20;
+        int oldMax = 100;
+        int newMin = 0;
+        int newMax = 50;
+
+        // Clamp value within [20, 100] to avoid unexpected output
+        if (value < oldMin) value = oldMin;
+        if (value > oldMax) value = oldMax;
+
+        // Inverted scale: 100 → 0, 20 → 50
+        int scaled = (int) Math.floor((oldMax - value) * (newMax - newMin) / (double) (oldMax - oldMin) + newMin);
+        return scaled;
+    }
+
+    public boolean isCurrentTaskAFailure() {
+        return isCurrentTaskAFailure;
     }
 
     public int getAction() {

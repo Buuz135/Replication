@@ -10,9 +10,7 @@ import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.data.*;
-import com.buuz135.replication.item.CreativeMemoryChipItem;
-import com.buuz135.replication.item.MatterBluePrintItem;
-import com.buuz135.replication.item.MemoryChipItem;
+import com.buuz135.replication.item.*;
 import com.buuz135.replication.network.DefaultMatterNetworkElement;
 import com.buuz135.replication.network.MatterNetwork;
 import com.buuz135.replication.packet.*;
@@ -112,7 +110,6 @@ public class Replication extends ModuleController {
                 return null;
             }, ReplicationRegistry.Blocks.DISINTEGRATOR.getBlock(), ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.getBlock(), ReplicationRegistry.Blocks.REPLICATOR.getBlock());
         }).subscribe();
-
         if (ModList.get().isLoaded("darkmodeeverywhere")) {
             EventManager.mod(InterModEnqueueEvent.class).process(interModEnqueueEvent -> {
                 InterModComms.sendTo("darkmodeeverywhere", "dme-shaderblacklist", () -> "com.buuz135.replication");
@@ -179,6 +176,8 @@ public class Replication extends ModuleController {
             TAB.getTabList().add(item);
             return item;
         });
+        ReplicationRegistry.Items.REPLICATOR_MOTOR = getRegistries().registerGeneric(Registries.ITEM, "replicator_motor", ReplicatorMotorItem::new);
+        ReplicationRegistry.Items.REPLICATOR_ENCLOSURE = getRegistries().registerGeneric(Registries.ITEM, "replicator_enclosure", ReplicatorEnclosureItem::new);
         EventManager.mod(BuildCreativeModeTabContentsEvent.class, EventPriority.LOW).process(buildCreativeModeTabContentsEvent -> {
             if (buildCreativeModeTabContentsEvent.getTabKey().location().equals(TAB.getResourceLocation())){
                 for (IMatterType value : ReplicationRegistry.MATTER_TYPES_REGISTRY.stream().toList()) {
@@ -191,6 +190,12 @@ public class Replication extends ModuleController {
                     item.set(ReplicationAttachments.TILE, tile);
                     buildCreativeModeTabContentsEvent.accept(item);
                 }
+                var motorTemplate = new ItemStack(ReplicationRegistry.Items.MATTER_BLUEPRINT);
+                var tagC = new CompoundTag();
+                tagC.put("Item", new ItemStack(ReplicationRegistry.Items.REPLICATOR_MOTOR).saveOptional(ReplicationRegistry.registryAccess()));
+                tagC.putDouble("Progress", 1);
+                motorTemplate.set(ReplicationAttachments.BLUEPRINT, tagC);
+                buildCreativeModeTabContentsEvent.accept(motorTemplate);
             }
         }).subscribe();
 
@@ -215,7 +220,7 @@ public class Replication extends ModuleController {
         List<Block> blocks = BuiltInRegistries.BLOCK.stream().filter(block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(Replication.MOD_ID)).toList();
 
         //event.getGenerator().addProvider(true, new AequivaleoDataProvider(MOD_ID, event.getGenerator()));
-        //event.getGenerator().addProvider(true, new RepBlockstateProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper(), blocks));
+        event.getGenerator().addProvider(true, new RepBlockstateProvider(event.getGenerator(), MOD_ID, event.getExistingFileHelper(), blocks));
         event.getGenerator().addProvider(true, new ReplicationLootTableDataProvider(event.getGenerator(), () -> blocks, event.getLookupProvider()));
         event.getGenerator().addProvider(true, new RepLangItemProvider(event.getGenerator(), MOD_ID, "en_us", blocks));
         var blockTags = new ReplicationBlockTagsProvider(event.getGenerator().getPackOutput(), event.getLookupProvider(), MOD_ID, event.getExistingFileHelper(), blocks);

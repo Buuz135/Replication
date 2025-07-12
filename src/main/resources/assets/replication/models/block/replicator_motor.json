@@ -1,0 +1,166 @@
+{
+  "format_version": "1.21.6",
+  "credit": "Made with Blockbench",
+  "texture_size": [
+    64,
+    64
+  ],
+  "textures": {
+    "1": "replication:block/replicator",
+    "particle": "replication:block/replicator"
+  },
+  "elements": [
+    {
+      "from": [
+        13,
+        4,
+        12
+      ],
+      "to": [
+        15,
+        11,
+        14
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          13,
+          0,
+          12
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0.5,
+            12.5,
+            1,
+            14.25
+          ],
+          "texture": "#1"
+        },
+        "east": {
+          "uv": [
+            0.5,
+            12.5,
+            0,
+            14.25
+          ],
+          "texture": "#1"
+        },
+        "south": {
+          "uv": [
+            1.5,
+            12.5,
+            2,
+            14.25
+          ],
+          "texture": "#1"
+        },
+        "west": {
+          "uv": [
+            1.5,
+            12.5,
+            1,
+            14.25
+          ],
+          "texture": "#1"
+        },
+        "up": {
+          "uv": [
+            1,
+            12,
+            1.5,
+            12.5
+          ],
+          "texture": "#1"
+        },
+        "down": {
+          "uv": [
+            1,
+            12,
+            1.5,
+            12.5
+          ],
+          "texture": "#1"
+        }
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [
+        -5.75,
+        0,
+        -4.25
+      ]
+    },
+    "thirdperson_lefthand": {
+      "translation": [
+        6,
+        0,
+        -4.25
+      ]
+    },
+    "firstperson_righthand": {
+      "translation": [
+        -9,
+        2.5,
+        0
+      ]
+    },
+    "firstperson_lefthand": {
+      "translation": [
+        3,
+        3,
+        0
+      ]
+    },
+    "ground": {
+      "translation": [
+        -7.25,
+        0,
+        -3.5
+      ]
+    },
+    "gui": {
+      "rotation": [
+        0,
+        -180,
+        0
+      ],
+      "translation": [
+        12,
+        0,
+        0
+      ],
+      "scale": [
+        2,
+        2,
+        2
+      ]
+    },
+    "fixed": {
+      "translation": [
+        -6,
+        1,
+        -6
+      ]
+    }
+  },
+  "groups": [
+    {
+      "name": "filtration",
+      "origin": [
+        13,
+        0,
+        12
+      ],
+      "color": 0,
+      "children": [
+        0
+      ]
+    }
+  ]
+}

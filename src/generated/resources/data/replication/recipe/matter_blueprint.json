@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:blaze_powder"
+    },
+    "M": {
+      "item": "minecraft:piston"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "R": {
+      "item": "replication:replica_ingot"
+    }
+  },
+  "pattern": [
+    "RBR",
+    "RPR",
+    "RMR"
+  ],
+  "result": {
+    "components": {
+      "replication:blueprint": {
+        "Item": {
+          "count": 1,
+          "id": "replication:replicator_motor"
+        },
+        "Progress": 1.0
+      }
+    },
+    "count": 1,
+    "id": "replication:matter_blueprint"
+  }
+}

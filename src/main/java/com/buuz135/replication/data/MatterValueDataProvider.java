@@ -168,6 +168,8 @@ public class MatterValueDataProvider {
 
         saveCommonTag("crops", earth(2), organic(2));
 
+        saveData(ReplicationRegistry.Items.REPLICATOR_MOTOR.get(), metallic(81 * 2), precious(24 * 2), quantum(1), nether(22));
+
     }
 
     private void saveData(Item item, MatterValue... instances) {

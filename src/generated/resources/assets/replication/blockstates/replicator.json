@@ -1,0 +1,117 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "replication:block/replicator"
+      },
+      "when": {
+        "subfacing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator_enclosure"
+      },
+      "when": {
+        "has_enclosure": "true",
+        "subfacing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator_motor"
+      },
+      "when": {
+        "has_motor": "true",
+        "subfacing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator",
+        "y": 180
+      },
+      "when": {
+        "subfacing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator_enclosure",
+        "y": 180
+      },
+      "when": {
+        "has_enclosure": "true",
+        "subfacing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator_motor",
+        "y": 180
+      },
+      "when": {
+        "has_motor": "true",
+        "subfacing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator",
+        "y": 90
+      },
+      "when": {
+        "subfacing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator_enclosure",
+        "y": 90
+      },
+      "when": {
+        "has_enclosure": "true",
+        "subfacing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator_motor",
+        "y": 90
+      },
+      "when": {
+        "has_motor": "true",
+        "subfacing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator",
+        "y": 270
+      },
+      "when": {
+        "subfacing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator_enclosure",
+        "y": 270
+      },
+      "when": {
+        "has_enclosure": "true",
+        "subfacing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "replication:block/replicator_motor",
+        "y": 270
+      },
+      "when": {
+        "has_motor": "true",
+        "subfacing": "west"
+      }
+    }
+  ]
+}

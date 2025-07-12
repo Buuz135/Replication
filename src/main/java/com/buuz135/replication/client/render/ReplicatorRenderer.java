@@ -1,6 +1,5 @@
 package com.buuz135.replication.client.render;
 
-import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
 import com.buuz135.replication.calculation.MatterValue;
 import com.buuz135.replication.calculation.client.ClientReplicationCalculation;
@@ -59,7 +58,7 @@ public class ReplicatorRenderer implements BlockEntityRenderer<ReplicatorBlockEn
             poseStack.translate(0,0,1);
             poseStack.mulPose(Axis.YP.rotationDegrees(90));
         }
-
+        poseStack.pushPose();
         var color = new float[]{1f, 1f, 1f, 0f};
         if (!entity.getCraftingStack().isEmpty() && entity.getAction() == 0){
             var matterCompound = ClientReplicationCalculation.getMatterCompound(entity.getCraftingStack());
@@ -68,7 +67,7 @@ public class ReplicatorRenderer implements BlockEntityRenderer<ReplicatorBlockEn
                 for (MatterValue matterValue : matterCompound.getValues().values()) {
                     total += matterValue.getAmount();
                 }
-                var currentProgress = entity.getProgress() / (float) ReplicationConfig.Replicator.MAX_PROGRESS * 1.4;
+                var currentProgress = entity.getProgress() / (float) entity.getMaxProgress() * 1.4;
                 var progressTotal = 0;
                 for (MatterValue matterValue : matterCompound.getValues().values()) {
                     if ((progressTotal + matterValue.getAmount()) / (double) total >= currentProgress) {
@@ -85,10 +84,10 @@ public class ReplicatorRenderer implements BlockEntityRenderer<ReplicatorBlockEn
 
         poseStack.translate(0 , -ReplicatorBlockEntity.LOWER_PROGRESS,0);
 
-        var progress = (entity.getProgress() + partialTicks /100f)/ (float) ReplicationConfig.Replicator.MAX_PROGRESS;
+        var progress = (entity.getProgress() + partialTicks / 100f) / (float) entity.getMaxProgress();
         //progress = 0;
 
-        poseStack.translate(0, ReplicatorBlockEntity.LOWER_PROGRESS * progress, 0);
+        poseStack.translate(0, ReplicatorBlockEntity.LOWER_PROGRESS * progress - 0.001f, 0);
         Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(poseStack.last(),  multiBufferSource.getBuffer(RenderType.solid()), null, PLATE, 255, 255, 255, combinedLightIn ,combinedOverlayIn);
 
         poseStack.translate(0.5f, 0.56f, 0.45f);
@@ -99,8 +98,10 @@ public class ReplicatorRenderer implements BlockEntityRenderer<ReplicatorBlockEn
             scale = 0.75f;
         }
         poseStack.scale(scale, scale,scale);
-        if (entity.getAction() == 0) Minecraft.getInstance().getItemRenderer().renderStatic(entity.getCraftingStack(), ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, multiBufferSource, entity.getLevel(),0);
 
+        if (entity.getAction() == 0 && !entity.isCurrentTaskAFailure())
+            Minecraft.getInstance().getItemRenderer().renderStatic(entity.getCraftingStack(), ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, multiBufferSource, entity.getLevel(), 0);
+        poseStack.popPose();
 
     }
 

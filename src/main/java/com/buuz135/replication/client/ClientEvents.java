@@ -140,7 +140,7 @@ public class ClientEvents {
                     drawShape(stack, builder, body, blockpos.getX() - d0, blockpos.getY() - d1, blockpos.getZ() - d2, 0, 0, 0, 0.4F);
                     stack.translate(0 , -ReplicatorBlockEntity.LOWER_PROGRESS,0);
 
-                    var progress = (replicatorBlockEntity.getProgress() /* + event.getPartialTick() /100f*/)/ (float) ReplicationConfig.Replicator.MAX_PROGRESS;
+                var progress = (replicatorBlockEntity.getProgress() /* + event.getPartialTick() /100f*/) / (float) replicatorBlockEntity.getMaxProgress();
                     //progress = 0;
 
                     stack.translate(0, ReplicatorBlockEntity.LOWER_PROGRESS * progress, 0);

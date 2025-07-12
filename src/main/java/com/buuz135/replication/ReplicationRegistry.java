@@ -8,6 +8,7 @@ import com.hrznstudio.titanium.module.BlockWithTile;
 import com.hrznstudio.titanium.recipe.serializer.CodecRecipeSerializer;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -18,9 +19,12 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -51,14 +55,11 @@ public class ReplicationRegistry {
 
     }
 
-    public static class Items{
-
-        public static DeferredHolder<Item, Item> MEMORY_CHIP;
-        public static DeferredHolder<Item, Item> MATTER_BLUEPRINT;
-        public static DeferredHolder<Item, Item> RAW_REPLICA;
-        public static DeferredHolder<Item, Item> REPLICA_INGOT;
-        public static DeferredHolder<Item, Item> CREATIVE_MEMORY_CHIP;
-
+    public static RegistryAccess registryAccess() {
+        if (ServerLifecycleHooks.getCurrentServer() != null) {
+            return ServerLifecycleHooks.getCurrentServer().registryAccess();
+        }
+        return LogicalSidedProvider.CLIENTWORLD.get(LogicalSide.CLIENT).orElseThrow().registryAccess();
     }
 
     public static class Sounds{
@@ -113,5 +114,16 @@ public class ReplicationRegistry {
 
     }
 
+    public static class Items{
+
+        public static DeferredHolder<Item, Item> MEMORY_CHIP;
+        public static DeferredHolder<Item, Item> MATTER_BLUEPRINT;
+        public static DeferredHolder<Item, Item> RAW_REPLICA;
+        public static DeferredHolder<Item, Item> REPLICA_INGOT;
+        public static DeferredHolder<Item, Item> CREATIVE_MEMORY_CHIP;
+        public static DeferredHolder<Item, Item> REPLICATOR_ENCLOSURE;
+        public static DeferredHolder<Item, Item> REPLICATOR_MOTOR;
+
+    }
 
 }

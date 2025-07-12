@@ -60,6 +60,14 @@ public class ReplicationConfig {
         @ConfigVal.InRangeInt(min = 1)
         public static int POWER_TICK = 80;
 
+        @ConfigVal
+        @ConfigVal.InRangeDouble(min = 0, max = 1)
+        public static double ENCLOSURE_SPEED_MULTIPLIER = 0.8;
+
+        @ConfigVal
+        @ConfigVal.InRangeDouble(min = 0)
+        public static double ENCLOSURE_POWER_MULTIPLIER = 1.1;
+
     }
 
     @ConfigFile.Child(ReplicationConfig.class)

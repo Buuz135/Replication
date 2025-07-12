@@ -28,6 +28,8 @@ public class RepLangItemProvider extends LanguageProvider {
         this.formatItem(ReplicationRegistry.Items.CREATIVE_MEMORY_CHIP.get());
         this.formatItem(ReplicationRegistry.Items.RAW_REPLICA.get());
         this.formatItem(ReplicationRegistry.Items.REPLICA_INGOT.get());
+        this.formatItem(ReplicationRegistry.Items.REPLICATOR_MOTOR.get());
+        this.formatItem(ReplicationRegistry.Items.REPLICATOR_ENCLOSURE.get());
         this.add("tooltip.replication.identification_chamber.slow_mode", "Slow Mode");
         this.add("tooltip.replication.identification_chamber.slow_mode.desc", "Scanning is slower but the item will");
         this.add("tooltip.replication.identification_chamber.slow_mode.desc_1", "only be consumed when reaching 100%");
@@ -70,6 +72,11 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("config.jade.plugin_replication.matter_tank", "Matter Tank");
         this.add("tooltip.titanium.facing_handler.output", "Output");
         this.add("tooltip.titanium.tank.empty", "Empty");
+        this.add("tooltip.replication_enclosure.speed", "Increases Replicator Speed by %s");
+        this.add("tooltip.replication_enclosure.energy", "Increases Replicator Energy Consumption by %s");
+        this.add("tooltip.replication_motor.variable", "Variable Speed Controller");
+        this.add("tooltip.replication_motor.acceleration", "Current Acc. Mult:");
+        this.add("tooltip.replication_motor.failure_chance", "Current Failure Chance: ");
         for (MatterType value : MatterType.values()) {
             this.add("replication.matter_type." + value.getName(), WordUtils.capitalize(value.getName()));
         }
