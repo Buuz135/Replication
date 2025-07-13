@@ -23,11 +23,12 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockEntity> implements IMatterPatternHolder<ChipStorageBlockEntity> {
+public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockEntity> implements IMatterPatternHolder<ChipStorageBlockEntity>, IMatterPatternModifier<ChipStorageBlockEntity> {
 
     @Save
     private SidedInventoryComponent<ChipStorageBlockEntity> chips;
@@ -71,6 +72,7 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
         super.serverTick(level, pos, state, blockEntity);
         if (hasInvChanged){
             notifyNetworkOfSlotChange();
+            hasInvChanged = false;
         }
     }
 
@@ -173,5 +175,29 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
     @Override
     public float getTitleYPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {
         return super.getTitleYPos(titleWidth, screenWidth, screenHeight, guiWidth, guiHeight) - 16;
+    }
+
+    @Override
+    public @Nullable ModifierAction addPattern(Level level, ChipStorageBlockEntity element, ItemStack stack, float progress) {
+        for (int i = 0; i < this.chips.getSlots(); i++) {
+            var chipStack = this.chips.getStackInSlot(i);
+            if (!chipStack.isEmpty() && chipStack.getItem() instanceof IMatterPatternModifier<?>) {
+                var patternModifier = (IMatterPatternModifier<ItemStack>) chipStack.getItem();
+                var returnedValue = patternModifier.addPattern(level, chipStack, stack, progress);
+                if (returnedValue == null) continue;
+                if (returnedValue.getType() == ModifierType.FULL && returnedValue.getPattern() != null)
+                    return ModifierAction.isFull(null);
+                ;
+                if (returnedValue.getType() == ModifierType.FULL && returnedValue.getPattern() == null) continue;
+                hasInvChanged = true;
+                return returnedValue;
+            }
+        }
+        return ModifierAction.isFull(null);
+    }
+
+    @Override
+    public void removePattern(Level level, ChipStorageBlockEntity element, ItemStack stack) {
+
     }
 }

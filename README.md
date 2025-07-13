@@ -13,7 +13,10 @@ and [Titanium](https://www.curseforge.com/minecraft/mc-mods/titanium)
 * Transfer **Power**: they work like any power pipe
 * Transfer **Matter**: they will transfer matter from the **Disintegrator** to **Matter Tanks** and from **Matter Tanks** to **other machines** that need it
 
-The **Identification Chamber** will scan items to know their matter values and store them into chips. Those **Chips** can be stored in the **Chip Storage** and will be available to the network.
+The **Identification Chamber** will scan items to know their matter values and store them into chips. Those **Chips**
+can be stored in the **Chip Storage** and will be available to the network. If you place a Chip Storage on top of the
+Identification Chamber, the patterns will be pushed to the Chip Storage directly without the need of having a chip
+inside the Identification Chamber.
 
 **Replicators** can be used in "Infinite Mode", where they will keep replicating a resource until it is full or has run out of matter, you can configure that mode in the GUI.
 

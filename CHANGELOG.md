@@ -1,6 +1,8 @@
 # 1.2.0
 
 * Added Replicator Enclosure and Replicator Motor to accelerate the machines
+* When a Chip Storage is now placed on top of an Identification Chamber, patters will be pushed to the Chip Storage
+  directly without needing to have the chip in the Identification Chamber
 
 # 1.1.27
 

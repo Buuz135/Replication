@@ -20,6 +20,7 @@ import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
@@ -99,24 +100,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
             for (int i = 0; i < this.memoryChipInput.getSlots(); i++) {
                 var stack = this.memoryChipInput.getStackInSlot(i);
                 if (!stack.isEmpty() && stack.getItem() instanceof IMatterPatternModifier<?> patternModifier){
-                    IMatterPatternModifier.ModifierAction returnedValue = null;
-                    if (input.has(ReplicationAttachments.BLUEPRINT)){
-                        input = this.getInput().getStackInSlot(0);
-                        var item = ItemStack.parseOptional(this.level.registryAccess(), input.get(ReplicationAttachments.BLUEPRINT).getCompound("Item"));
-                        var progress = input.get(ReplicationAttachments.BLUEPRINT).getDouble("Progress");
-                        returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(this.level, stack, item, (float) progress);
-                        this.getInput().getStackInSlot(0).shrink(1);
-                        syncObject(this.input);
-                    } else {
-                        returnedValue = ((IMatterPatternModifier<ItemStack>) patternModifier).addPattern(this.level, stack, input, (float) ReplicationConfig.IdentificationChamber.IDENTIFICATION_PROGRESS);
-                    }
-                    if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1){
-                        this.getInput().getStackInSlot(0).shrink(1);
-                        syncObject(this.input);
-                    }
-                    if (returnedValue.getPattern() != null){
-                        this.getEnergyStorage().extractEnergy(ReplicationConfig.IdentificationChamber.POWER_USAGE, false);
-                    }
+                    var returnedValue = executeProgress((IMatterPatternModifier<ItemStack>) patternModifier, input, stack);
                     if (returnedValue.getType() == IMatterPatternModifier.ModifierType.FULL && returnedValue.getPattern() != null){
                         var exportingItem = stack.copy();
                         for (int z = 0; z < this.memoryChipOutput.getSlots(); z++) {
@@ -130,7 +114,34 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                     if (returnedValue.getPattern() != null) break;
                 }
             }
+            var blockEntity = this.level.getBlockEntity(this.getBlockPos().above());
+            if (blockEntity instanceof IMatterPatternModifier<?> patternModifier) {
+                var returnedValue = executeProgress((IMatterPatternModifier<BlockEntity>) patternModifier, input, blockEntity);
+
+            }
         }
+    }
+
+    private <T> IMatterPatternModifier.ModifierAction executeProgress(IMatterPatternModifier<T> patternModifier, ItemStack input, T stack) {
+        IMatterPatternModifier.ModifierAction returnedValue = null;
+        if (input.has(ReplicationAttachments.BLUEPRINT)) {
+            input = this.getInput().getStackInSlot(0);
+            var item = ItemStack.parseOptional(this.level.registryAccess(), input.get(ReplicationAttachments.BLUEPRINT).getCompound("Item"));
+            var progress = input.get(ReplicationAttachments.BLUEPRINT).getDouble("Progress");
+            returnedValue = patternModifier.addPattern(this.level, stack, item, (float) progress);
+            this.getInput().getStackInSlot(0).shrink(1);
+            syncObject(this.input);
+        } else {
+            returnedValue = patternModifier.addPattern(this.level, stack, input, (float) ReplicationConfig.IdentificationChamber.IDENTIFICATION_PROGRESS);
+        }
+        if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1) {
+            this.getInput().getStackInSlot(0).shrink(1);
+            syncObject(this.input);
+        }
+        if (returnedValue.getPattern() != null) {
+            this.getEnergyStorage().extractEnergy(ReplicationConfig.IdentificationChamber.POWER_USAGE, false);
+        }
+        return returnedValue;
     }
 
     private boolean canIncrease(){
@@ -150,7 +161,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
                 return true;
             }
         }
-        return false;
+        return this.level.getBlockEntity(this.getBlockPos().above()) instanceof IMatterPatternModifier<?>;
     }
 
     @NotNull
