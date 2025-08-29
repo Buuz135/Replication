@@ -1,3 +1,7 @@
+# 1.2.1
+
+* Fixed Matter Blueprints not being able to be scanned properly, closes #68
+
 # 1.2.0
 
 * Added Replicator Enclosure and Replicator Motor to accelerate the machines

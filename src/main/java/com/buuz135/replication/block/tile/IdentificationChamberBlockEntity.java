@@ -95,7 +95,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     }
 
     private void onFinish(){
-        var input = this.getInput().getStackInSlot(0).getItem().getDefaultInstance();
+        var input = this.getInput().getStackInSlot(0);
         if (!input.isEmpty()){
             for (int i = 0; i < this.memoryChipInput.getSlots(); i++) {
                 var stack = this.memoryChipInput.getStackInSlot(i);
@@ -117,7 +117,6 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
             var blockEntity = this.level.getBlockEntity(this.getBlockPos().above());
             if (blockEntity instanceof IMatterPatternModifier<?> patternModifier) {
                 var returnedValue = executeProgress((IMatterPatternModifier<BlockEntity>) patternModifier, input, blockEntity);
-
             }
         }
     }
@@ -125,14 +124,13 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
     private <T> IMatterPatternModifier.ModifierAction executeProgress(IMatterPatternModifier<T> patternModifier, ItemStack input, T stack) {
         IMatterPatternModifier.ModifierAction returnedValue = null;
         if (input.has(ReplicationAttachments.BLUEPRINT)) {
-            input = this.getInput().getStackInSlot(0);
             var item = ItemStack.parseOptional(this.level.registryAccess(), input.get(ReplicationAttachments.BLUEPRINT).getCompound("Item"));
             var progress = input.get(ReplicationAttachments.BLUEPRINT).getDouble("Progress");
             returnedValue = patternModifier.addPattern(this.level, stack, item, (float) progress);
             this.getInput().getStackInSlot(0).shrink(1);
             syncObject(this.input);
         } else {
-            returnedValue = patternModifier.addPattern(this.level, stack, input, (float) ReplicationConfig.IdentificationChamber.IDENTIFICATION_PROGRESS);
+            returnedValue = patternModifier.addPattern(this.level, stack, input.getItem().getDefaultInstance(), (float) ReplicationConfig.IdentificationChamber.IDENTIFICATION_PROGRESS);
         }
         if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1) {
             this.getInput().getStackInSlot(0).shrink(1);

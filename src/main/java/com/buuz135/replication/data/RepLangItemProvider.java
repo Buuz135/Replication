@@ -39,7 +39,7 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("tooltip.replication.tank.matter", "Matter: ");
         this.add("relocation.blueprint.contains_information", "Contains information: ");
         this.add("relocation.blueprint.not_found", "Information not found");
-        this.add("relocation.blueprint.use_on_chip_storage", "Scan it in the identification chamber to get the information or right click the Chip Storage to transfer directly");
+        this.add("relocation.blueprint.use_on_chip_storage", "Scan it in the identification chamber to get the information or Sneak + Right Click on the Chip Storage to transfer directly");
         this.add("replication.parallel_mode", "Parallel Mode");
         this.add("replication.replicate", "Replicate");
         this.add("replication.crafting_tasks", "Replication Tasks");
