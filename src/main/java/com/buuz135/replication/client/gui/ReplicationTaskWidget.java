@@ -18,7 +18,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
@@ -198,6 +197,7 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
             guiGraphics.pose().scale(scale, scale, scale);
             var textY = 3;
             var display = LangUtil.getString("tooltip.replication.terminal.amount") + NumberUtils.getFormatedBigNumber(task.getCurrentAmount()) + "/" + NumberUtils.getFormatedBigNumber(task.getTotalAmount());
+            if (task.getCurrentAmount() < task.getTotalAmount()) display = LangUtil.getString("replication.infinite");
             guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 13) / scale, (y + textY) / scale, 0x72e567, false);
             display = LangUtil.getString("tooltip.replication.terminal.workers") + NumberUtils.getFormatedBigNumber(task.getReplicatorsOnTask().size());
             guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 13) / scale, (y + textY + 6) / scale, 0x72e567, false);

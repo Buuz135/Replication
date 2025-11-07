@@ -45,6 +45,7 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("replication.crafting_tasks", "Replication Tasks");
         this.add("replication.current_crafting", "Replicating");
         this.add("replication.infinite_mode", "Infinite Mode: ");
+        this.add("replication.infinite", "Infinite");
         this.add("replication.matteropedia", "MatterOpedia");
         this.add("replication.subtitle.terminal_button", "Press Terminal Button");
         this.add("replication.toast_context", "Matter Values Synced");
