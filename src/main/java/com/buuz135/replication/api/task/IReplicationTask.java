@@ -42,6 +42,10 @@ public interface IReplicationTask extends INBTSerializable<CompoundTag> {
 
     boolean isDirty();
 
+    default boolean isInfinteMode() {
+        return false;
+    }
+
     public enum Mode{
         SINGLE,
         MULTIPLE;

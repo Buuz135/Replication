@@ -35,7 +35,7 @@ public class TaskCreatePacket extends Message {
         context.enqueueWork(() -> {
             for (Network network : NetworkManager.get(context.player().level()).getNetworks()) {
                 if (network.getId().equals(networkId) && network instanceof MatterNetwork matterNetwork){
-                    var task = new ReplicationTask(stack, amount, parallelMode ? IReplicationTask.Mode.MULTIPLE : IReplicationTask.Mode.SINGLE, source);
+                    var task = new ReplicationTask(stack, amount, parallelMode ? IReplicationTask.Mode.MULTIPLE : IReplicationTask.Mode.SINGLE, source, false);
                     matterNetwork.getTaskManager().getPendingTasks().put(task.getUuid().toString(), task);
                     ((MatterNetwork) network).onTaskValueChanged(task, (ServerLevel) context.player().level());
                     break;

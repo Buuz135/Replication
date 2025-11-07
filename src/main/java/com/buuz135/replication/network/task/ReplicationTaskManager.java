@@ -27,7 +27,11 @@ public class ReplicationTaskManager implements INBTSerializable<CompoundTag> {
     @Nullable
     public IReplicationTask findTaskForReplicator(BlockPos pos, MatterNetwork matterNetwork) {
         var replicatorsAmount = matterNetwork.getReplicators().size();
-        var pendingTasksAmount = pendingTasks.size();
+        var pendingTasksAmount = pendingTasks.values().stream().filter(iReplicationTask -> iReplicationTask.getMode() == IReplicationTask.Mode.MULTIPLE).count();
+        var singleWorkers = pendingTasks.size() - pendingTasksAmount;
+        ;
+        //Remove all the workers that have a task with one worker
+        replicatorsAmount -= (int) singleWorkers;
         if (pendingTasksAmount == 0) pendingTasksAmount = 1;
         for (IReplicationTask value : this.getPendingTasks().values()) {
             if (value.canAcceptReplicator(pos, (int) Math.max(1, Math.ceil(replicatorsAmount / (double) pendingTasksAmount)))) {
@@ -50,7 +54,7 @@ public class ReplicationTaskManager implements INBTSerializable<CompoundTag> {
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
         this.pendingTasks = new LinkedHashMap<>();
         compoundTag.getAllKeys().forEach(s -> {
-            var task = new ReplicationTask(ItemStack.EMPTY, Integer.MAX_VALUE, IReplicationTask.Mode.SINGLE, null);
+            var task = new ReplicationTask(ItemStack.EMPTY, Integer.MAX_VALUE, IReplicationTask.Mode.SINGLE, null, true);
             task.deserializeNBT(provider, compoundTag.getCompound(s));
             pendingTasks.put(s, task);
         });

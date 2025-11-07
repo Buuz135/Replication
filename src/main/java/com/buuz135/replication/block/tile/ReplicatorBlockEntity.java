@@ -172,7 +172,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
             this.progressBarComponent.setProgress(this.action == 1 ? this.getMaxProgress() - progress : this.getMaxProgress() + progress);
             syncObject(this.progressBarComponent);
             if (this.level.getGameTime() % 4 == 0 && this.craftingTask == null && this.cachedReplicationTask == null && !this.infiniteCrafting.getFilterSlots()[0].getFilter().isEmpty()) {
-                var task = new ReplicationTask(this.infiniteCrafting.getFilterSlots()[0].getFilter().copy(), 1, IReplicationTask.Mode.SINGLE, this.getBlockPos());
+                var task = new ReplicationTask(this.infiniteCrafting.getFilterSlots()[0].getFilter().copy(), 1, IReplicationTask.Mode.SINGLE, this.getBlockPos(), true);
                 task.acceptReplicator(this.getBlockPos());
                 this.isCurrentTaskAFailure = this.level.getRandom().nextInt(100) < getFailureChance();
                 this.craftingTask = task.getUuid().toString();

@@ -32,7 +32,7 @@ public class TaskSyncPacket extends Message {
     @Override
     protected void handleMessage(IPayloadContext context) {
         context.enqueueWork(() -> {
-            var task = new ReplicationTask(ItemStack.EMPTY, Integer.MAX_VALUE, IReplicationTask.Mode.SINGLE, null);
+            var task = new ReplicationTask(ItemStack.EMPTY, Integer.MAX_VALUE, IReplicationTask.Mode.SINGLE, null, false);
             task.deserializeNBT(context.player().level().registryAccess(), tag);
             var tasks = CLIENT_TASK_STORAGE.computeIfAbsent(this.network, s -> new LinkedHashMap<>());
             if (task.getTotalAmount() == task.getCurrentAmount()){

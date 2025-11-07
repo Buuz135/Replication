@@ -1,3 +1,8 @@
+# 1.2.2
+
+* Fixed task distribution counting infinite tasks and single mode tasks when calculating how many replicators can be on
+  task
+
 # 1.2.1
 
 * Fixed Matter Blueprints not being able to be scanned properly, closes #68

@@ -32,8 +32,9 @@ public class ReplicationTask implements IReplicationTask {
     private List<Long> replicatorsOnTask;
     private BlockPos source;
     private boolean dirty;
+    private boolean isInfinteMode;
 
-    public ReplicationTask(ItemStack crafting, int totalAmount, Mode mode, BlockPos source) {
+    public ReplicationTask(ItemStack crafting, int totalAmount, Mode mode, BlockPos source, boolean isInfinteMode) {
         this.crafting = crafting;
         this.totalAmount = totalAmount;
         this.mode = mode;
@@ -43,6 +44,7 @@ public class ReplicationTask implements IReplicationTask {
         this.replicatorsOnTask = new ArrayList<>();
         this.source = source;
         this.dirty = false;
+        this.isInfinteMode = isInfinteMode;
     }
 
     @Override
@@ -176,6 +178,11 @@ public class ReplicationTask implements IReplicationTask {
     }
 
     @Override
+    public boolean isInfinteMode() {
+        return isInfinteMode;
+    }
+
+    @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compoundTag = new CompoundTag();
         compoundTag.put("Crafting", this.crafting.saveOptional(provider));
@@ -194,6 +201,7 @@ public class ReplicationTask implements IReplicationTask {
         compoundTag.putUUID("UUID", this.uuid);
         compoundTag.putLongArray("OnTask", this.replicatorsOnTask);
         compoundTag.putLong("Source", this.source.asLong());
+        compoundTag.putBoolean("Infinte", isInfinteMode);
         return compoundTag;
     }
 
@@ -219,5 +227,6 @@ public class ReplicationTask implements IReplicationTask {
             this.replicatorsOnTask.add(onTask);
         }
         this.source = BlockPos.of(compoundTag.getLong("Source"));
+        this.isInfinteMode = compoundTag.getBoolean("Infinte");
     }
 }
