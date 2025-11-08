@@ -83,6 +83,7 @@ dependencies {
     //runtimeOnly "curse.maven:allthecompressed-514045:6121584"
     runtimeOnly "curse.maven:cucumber-272335:6228644"
     runtimeOnly "curse.maven:mystical-agriculture-246640:6228700"
+    runtimeOnly "curse.maven:ender-io-64578:7175918"
 }
 
 jar {

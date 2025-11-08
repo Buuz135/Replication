@@ -32,6 +32,7 @@ public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEnt
             if (needsToRecreateEnergyStorage) {
                 level.invalidateCapabilities(this.worldPosition);
                 this.needsToRecreateEnergyStorage = false;
+                this.level.updateNeighborsAt(this.worldPosition, this.getBlockState().getBlock());
             }
             for (Direction value : Direction.values()) {
                 var capability = this.level.getCapability(Capabilities.EnergyStorage.BLOCK, this.worldPosition.relative(value), value.getOpposite());
