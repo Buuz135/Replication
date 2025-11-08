@@ -4,6 +4,7 @@
   task
 * Infinite tasks are now shown as infinite in the task screen
 * Added support for more than the default matter types shown in the terminal
+* Fixed Identification Chamber not consuming the item when the chip storage place on top filled a chip
 
 # 1.2.1
 

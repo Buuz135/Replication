@@ -186,8 +186,7 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
                 var returnedValue = patternModifier.addPattern(level, chipStack, stack, progress);
                 if (returnedValue == null) continue;
                 if (returnedValue.getType() == ModifierType.FULL && returnedValue.getPattern() != null)
-                    return ModifierAction.isFull(null);
-                ;
+                    return ModifierAction.isFull(returnedValue.getPattern());
                 if (returnedValue.getType() == ModifierType.FULL && returnedValue.getPattern() == null) continue;
                 hasInvChanged = true;
                 return returnedValue;
