@@ -94,6 +94,9 @@ public class ReplicationCalculation {
                 for (ItemStack item : matterValueRecipe.value().input.getItems()) {
                     var compound = new MatterCompound();
                     for (MatterValue matterValue : matterValueRecipe.value().matter) {
+                        if (matterValue.getMatter() == null) {
+                            System.out.println("NULL");
+                        }
                         compound.add(matterValue);
                     }
                     DEFAULT_MATTER_COMPOUND.put(item.getItem(), compound);

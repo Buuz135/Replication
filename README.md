@@ -74,3 +74,65 @@ You can disable an item from being disintegrated using the tag `replication:cant
 You can disable a calculation of an item by adding it the tag `replication:skip_calculation`, it will always return
 empty in all calculation checks.
 You can disable the subtraction of crafting remaining items using the tag `replication:ignore_crafting_result`
+
+## KubeJS Integration (1.21.1)
+
+Replication now supports KubeJS 2101.x on NeoForge 1.21.1 for:
+
+- Creating custom matter types at startup via `StartupEvents.registry('replication:matter_types', ...)`.
+- Adding matter values for items/tags via `ServerEvents.recipes` using a small JSON helper.
+
+Notes
+
+- KubeJS is an optional dependency (soft). The mod runs fine without it.
+- New matter types must be created during startup registry events. Creating them later isn’t supported.
+
+Creating custom matter types
+
+```js
+// kubejs/startup_scripts/replication_matter_types.js
+
+StartupEvents.registry('replication:matter_types', event => {
+  // Basic type
+  event.create('plasma')
+    .color(0.2, 0.7, 1.0, 1.0); // RGBA 0..1
+
+
+  // Another example
+  event.create('crystal')
+    .color(0.6, 0.9, 0.9, 1.0);
+});
+```
+
+Adding matter values for items/tags
+
+Use `ServerEvents.recipes` and the global `Replication` helper to build the JSON for our custom recipe type
+`replication:matter_value`.
+
+```js
+// kubejs/server_scripts/replication_matter_values.js
+
+ServerEvents.recipes(event => {
+  // Single item
+  event.custom(Replication.matterValueForItem('minecraft:stone', {
+    earth: 3.0,
+  }));
+
+  // Tag (with or without leading #)
+  event.custom(Replication.matterValueForTag('#c:iron_ingots', {
+    metallic: 4,
+  }));
+
+  // Arbitrary ingredient object
+  event.custom(Replication.matterValue({ tag: 'minecraft:planks' }, {
+    "kubejs:plasma": 2,
+  }));
+});
+```
+
+Troubleshooting
+
+- Make sure you are on NeoForge 1.21.1 with KubeJS 2101.7.2+.
+- If scripts run but no matter values appear, validate the JSON your script emits with `event.custom(...)` matches the
+  `replication:matter_value` format:
+  `{ type: 'replication:matter_value', input: {item|tag: '...'}, matter: [{ type: 'replication:<type_id>', amount: <number> }, ...] }`.

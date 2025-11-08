@@ -1,3 +1,7 @@
+# 1.2.3
+
+* Added KubeJS support for adding matter types and matter values, closes #33 and closes #59
+
 # 1.2.2
 
 * Fixed task distribution counting infinite tasks and single mode tasks when calculating how many replicators can be on

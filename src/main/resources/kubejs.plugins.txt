@@ -1,0 +1,1 @@
+com.buuz135.replication.integration.kubejs.ReplicationKubeJSPlugin

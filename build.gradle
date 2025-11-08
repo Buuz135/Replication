@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.buuz135'
-version = '1.21.1-1.2.2'
+version = '1.21.1-1.2.3'
 
 java {
     archivesBaseName = 'Replication'
@@ -66,6 +66,20 @@ repositories {
             includeGroup 'appeng'
         }
     }
+    maven {
+        url "https://maven.latvian.dev/releases"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.latvian.apps"
+        }
+    }
+
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup "com.github.rtyley"
+        }
+    }
 }
 
 dependencies {
@@ -84,6 +98,8 @@ dependencies {
     runtimeOnly "curse.maven:cucumber-272335:6228644"
     runtimeOnly "curse.maven:mystical-agriculture-246640:6228700"
     runtimeOnly "curse.maven:ender-io-64578:7175918"
+    compileOnly("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
+    runtimeOnly("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
 }
 
 jar {
