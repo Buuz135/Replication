@@ -10,6 +10,7 @@ import com.buuz135.replication.api.network.IMatterTanksSupplier;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.MatterPattern;
 import com.buuz135.replication.api.task.IReplicationTask;
+import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.block.tile.ReplicationTerminalBlockEntity;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
 import com.buuz135.replication.network.task.ReplicationTaskManager;
@@ -50,6 +51,7 @@ public class MatterNetwork extends Network {
     private List<NetworkElement> chipSuppliers;
     private List<NetworkElement> terminals;
     private List<NetworkElement> replicators;
+    private List<NetworkElement> pipes;
 
     private ReplicationTaskManager taskManager;
 
@@ -65,6 +67,7 @@ public class MatterNetwork extends Network {
         this.chipSuppliers = new ArrayList<>();
         this.terminals = new ArrayList<>();
         this.replicators = new ArrayList<>();
+        this.pipes = new ArrayList<>();
         this.taskManager = taskManager;
     }
 
@@ -100,6 +103,10 @@ public class MatterNetwork extends Network {
             }
             if (tile instanceof ReplicatorBlockEntity) {
                 this.replicators.add(element);
+            }
+            if (tile instanceof MatterPipeBlockEntity matterPipeBlockEntity) {
+                this.pipes.add(element);
+                matterPipeBlockEntity.setNeedsToRecreateEnergyStorage(true);
             }
         }
         this.queueNetworkElements.clear();
@@ -276,6 +283,11 @@ public class MatterNetwork extends Network {
         if (mainNetwork instanceof MatterNetwork matterNetwork){
             matterNetwork.energyStorage.receiveEnergy(this.energyStorage.getEnergyStored(), false);
             matterNetwork.taskManager.getPendingTasks().putAll(this.getTaskManager().getPendingTasks());
+            for (NetworkElement pipe : this.pipes) {
+                if (pipe.getLevel().isLoaded(pipe.getPos()) && pipe.getLevel().getBlockEntity(pipe.getPos()) instanceof MatterPipeBlockEntity matterPipeBlockEntity) {
+                    matterPipeBlockEntity.setNeedsToRecreateEnergyStorage(true);
+                }
+            }
         }
     }
 

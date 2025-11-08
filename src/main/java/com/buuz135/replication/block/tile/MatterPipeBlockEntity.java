@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEntity> {
 
@@ -30,6 +29,10 @@ public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEnt
         super.serverTick(level, pos, state, blockEntity);
 
         if (level.getGameTime() % 2 == 0){
+            if (needsToRecreateEnergyStorage) {
+                level.invalidateCapabilities(this.worldPosition);
+                this.needsToRecreateEnergyStorage = false;
+            }
             for (Direction value : Direction.values()) {
                 var capability = this.level.getCapability(Capabilities.EnergyStorage.BLOCK, this.worldPosition.relative(value), value.getOpposite());
                 var tile = this.level.getBlockEntity(this.worldPosition.relative(value));
@@ -50,7 +53,10 @@ public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEnt
 
     @Override
     protected NetworkElement createElement(Level level, BlockPos pos) {
-        this.needsToRecreateEnergyStorage = true;
         return super.createElement(level, pos);
+    }
+
+    public void setNeedsToRecreateEnergyStorage(boolean needsToRecreateEnergyStorage) {
+        this.needsToRecreateEnergyStorage = needsToRecreateEnergyStorage;
     }
 }
