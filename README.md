@@ -18,7 +18,8 @@ can be stored in the **Chip Storage** and will be available to the network. If y
 Identification Chamber, the patterns will be pushed to the Chip Storage directly without the need of having a chip
 inside the Identification Chamber.
 
-**Replicators** can be used in "Infinite Mode", where they will keep replicating a resource until it is full or has run out of matter, you can configure that mode in the GUI.
+**Replicators** can be used in "Infinite Mode", where they will keep replicating a resource until it is full or has run
+out of matter, you can configure that mode in the GUI by placing the resource into the slot.
 
 # How it works
 To transform items you will need to break them down to their primal values using a **Disintegrator**. Using that machine you will transform any item with matter values into matter. Once you have scanned some items and stored their values into chips you can use the **Replication Terminal** to request items. With a request created **Replicators** will use the Matter stored in tanks to replicate the item from scratch and send it back to the terminal.

@@ -6,6 +6,8 @@
 * Added support for more than the default matter types shown in the terminal
 * Fixed Identification Chamber not consuming the item when the chip storage place on top filled a chip
 * Fixed pipes not invalidating their power capabilities when the network changes
+* Simplified Chinese Localization Support - Don-Trueno & ChuijkYahus
+* Fixed Replicator Enclosure config not being used, closes #77
 
 # 1.2.1
 

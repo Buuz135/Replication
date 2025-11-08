@@ -153,7 +153,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
             this.hasEnclosure = state.getValue(ReplicatorBlock.HAS_ENCLOSURE);
             this.hasMotor = state.getValue(ReplicatorBlock.HAS_MOTOR);
             if (this.hasEnclosure) {
-                maxProgress *= 0.80;
+                maxProgress *= ReplicationConfig.Replicator.ENCLOSURE_SPEED_MULTIPLIER;
             }
             if (this.hasMotor) {
                 maxProgress *= (this.motorSpeedMultiplier / 100D);
