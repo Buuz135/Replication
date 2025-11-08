@@ -3,6 +3,7 @@
 * Fixed task distribution counting infinite tasks and single mode tasks when calculating how many replicators can be on
   task
 * Infinite tasks are now shown as infinite in the task screen
+* Added support for more than the default matter types shown in the terminal
 
 # 1.2.1
 

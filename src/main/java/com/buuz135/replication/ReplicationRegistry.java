@@ -73,14 +73,14 @@ public class ReplicationRegistry {
         public static final DeferredRegister<IMatterType> IMATTER_TYPES = DeferredRegister.create(MATTER_TYPES_KEY, Replication.MOD_ID);
 
         public static final DeferredHolder<IMatterType, IMatterType> EMPTY = IMATTER_TYPES.register("empty", () -> MatterType.EMPTY);
-        public static final DeferredHolder<IMatterType, IMatterType> METALLIC = IMATTER_TYPES.register("metallic", () -> MatterType.METALLIC);
         public static final DeferredHolder<IMatterType, IMatterType> EARTH = IMATTER_TYPES.register("earth", () -> MatterType.EARTH);
         public static final DeferredHolder<IMatterType, IMatterType> NETHER = IMATTER_TYPES.register("nether", () -> MatterType.NETHER);
         public static final DeferredHolder<IMatterType, IMatterType> ORGANIC = IMATTER_TYPES.register("organic", () -> MatterType.ORGANIC);
         public static final DeferredHolder<IMatterType, IMatterType> ENDER = IMATTER_TYPES.register("ender", () -> MatterType.ENDER);
+        public static final DeferredHolder<IMatterType, IMatterType> METALLIC = IMATTER_TYPES.register("metallic", () -> MatterType.METALLIC);
         public static final DeferredHolder<IMatterType, IMatterType> PRECIOUS = IMATTER_TYPES.register("precious", () -> MatterType.PRECIOUS);
-        public static final DeferredHolder<IMatterType, IMatterType> QUANTUM = IMATTER_TYPES.register("quantum", () -> MatterType.QUANTUM);
         public static final DeferredHolder<IMatterType, IMatterType> LIVING = IMATTER_TYPES.register("living", () -> MatterType.LIVING);
+        public static final DeferredHolder<IMatterType, IMatterType> QUANTUM = IMATTER_TYPES.register("quantum", () -> MatterType.QUANTUM);
 
     }
 

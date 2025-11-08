@@ -120,7 +120,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             }
             for (int displayIndex = 0; displayIndex < this.terminalMatterValueDisplays.size(); displayIndex++) {
                 var matterTankDisplay = this.terminalMatterValueDisplays.get(displayIndex);
-                matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize(), this.topPos + (displayIndex) * 20 + 26, mouseX, mouseY);
+                matterTankDisplay.render(guiGraphics, this.leftPos + this.getXSize() + 20 * (displayIndex / 8), this.topPos + (displayIndex % 8) * 20 + 26, mouseX, mouseY);
             }
         }
         this.renderTooltip(guiGraphics, mouseX, mouseY);
@@ -142,8 +142,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
             this.matterOpediaTaskWidget.renderWidget(guiGraphics, mouseX, mouseY, v);
         } else {
             guiGraphics.blit(TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
-            // TODO: Work on the Extras
-            guiGraphics.blit(BUTTONS, x + this.imageWidth, y + 19, 0, 0, 27, 174);
+            for (int i = 0; i < (this.terminalMatterValueDisplays.size() / (double) 8); i++) {
+                guiGraphics.blit(BUTTONS, x + this.imageWidth + i * 20, y + 19, 0, 0, 27, 174);
+            }
             this.searchBox.render(guiGraphics, mouseX, mouseY, v);
             this.craftingButton.render(guiGraphics, mouseX, mouseY, v);
             this.matterOpediaButton.render(guiGraphics, mouseX, mouseY, v);
@@ -376,7 +377,7 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     public void refreshTanks() {
         this.terminalMatterValueDisplays = new ArrayList<>();
         var entries = MatterFluidSyncPacket.CLIENT_MATTER_STORAGE.get(this.menu.getNetwork());
-        for (IMatterType value : MatterType.values()) {
+        for (IMatterType value : ReplicationRegistry.MATTER_TYPES_REGISTRY.stream().toList()) {
             if (value.equals(MatterType.EMPTY)) continue;
             this.terminalMatterValueDisplays.add(new TerminalMatterValueDisplay(value, entries.getOrDefault(value, 0L)));
         }
