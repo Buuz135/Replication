@@ -1,3 +1,7 @@
+# 1.2.4
+
+* Made the Replication Matter Type registry syncable for addons
+
 # 1.2.3
 
 * Added KubeJS support for adding matter types and matter values, closes #33 and closes #59
