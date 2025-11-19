@@ -52,6 +52,7 @@ public class ReplicationRegistry {
         public static DeferredHolder<Block, Block> DEEPSLATE_REPLICA_ORE = null;
         public static DeferredHolder<Block, Block> REPLICA_BLOCK = null;
         public static DeferredHolder<Block, Block> RAW_REPLICA_BLOCK = null;
+        public static BlockWithTile CREATIVE_MATTER_TANK = null;
 
     }
 

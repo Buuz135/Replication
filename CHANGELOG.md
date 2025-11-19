@@ -1,3 +1,13 @@
+# 1.2.5
+
+* Fixed Matter Tank tooltip value not using the config values
+* Fixed Matter Tank renderer going over the tank when changing tank size
+* Added Creative Matter Tank
+* Matter Tanks now have a void mode
+* Matter Tanks now have a priority system, for insertion the higher priority will be inserted first, for extraction the
+  lower priority will be extracted first
+* Updated lock texture
+
 # 1.2.4
 
 * Made the Replication Matter Type registry syncable for addons

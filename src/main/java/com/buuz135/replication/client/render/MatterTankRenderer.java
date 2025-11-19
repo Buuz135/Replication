@@ -2,7 +2,7 @@ package com.buuz135.replication.client.render;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.api.IMatterType;
-import com.buuz135.replication.block.tile.MatterTankBlockEntity;
+import com.buuz135.replication.block.tile.BaseMatterTankBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -18,7 +18,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.AABB;
 import org.joml.Matrix4f;
 
-public class MatterTankRenderer<T extends MatterTankBlockEntity> implements BlockEntityRenderer<T> {
+public class MatterTankRenderer<T extends BaseMatterTankBlockEntity<T>> implements BlockEntityRenderer<T> {
 
 
     public MatterTankRenderer(BlockEntityRendererProvider.Context p_173689_) {
@@ -29,7 +29,7 @@ public class MatterTankRenderer<T extends MatterTankBlockEntity> implements Bloc
         var padding = 0.2;
         var matterStack = tile.getTanks().get(0).getMatter();
         if (!matterStack.isEmpty())
-            renderFaces(poseStack, multiBufferSource, new AABB(padding, 0.255, padding, 1 - padding, 0.255 + (matterStack.getAmount() / (double) tile.getTanks().get(0).getCapacity()) * 0.5, 1 - padding), LightTexture.FULL_BRIGHT, combinedOverlayIn, matterStack.getMatterType());
+            renderFaces(poseStack, multiBufferSource, new AABB(padding, 0.255, padding, 1 - padding, 0.255 + (Math.min(matterStack.getAmount(), tile.getTanks().get(0).getCapacity()) / (double) tile.getTanks().get(0).getCapacity()) * 0.5, 1 - padding), LightTexture.FULL_BRIGHT, combinedOverlayIn, matterStack.getMatterType());
     }
 
     private void renderFaces(PoseStack matrixStack, MultiBufferSource bufferIn, AABB bounds, int combinedLight, int combinedOverlay, IMatterType matterType) {

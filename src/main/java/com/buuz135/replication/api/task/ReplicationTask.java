@@ -16,10 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ReplicationTask implements IReplicationTask {
 
@@ -106,16 +103,19 @@ public class ReplicationTask implements IReplicationTask {
             for (MatterValue matterValue : data.getValues().values()) {
                 var type = matterValue.getMatter();
                 var amount = Mth.ceil(matterValue.getAmount());
-                for (NetworkElement matterStacksSupplier : matterNetwork.getMatterStacksHolders()) {
-                    var tile = matterStacksSupplier.getLevel().getBlockEntity(matterStacksSupplier.getPos());
-                    if (tile instanceof IMatterTanksSupplier tanksSupplier) {
-                        for (IMatterTank tank : tanksSupplier.getTanks()) {
-                            if (!tank.getMatter().isEmpty() && tank.getMatter().getMatterType().equals(type)) {
-                                var drained = tank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-                                amount -= drained.getAmount();
-                                if (amount <= 0) {
-                                    break;
-                                }
+                var listOfHolders = matterNetwork.getMatterStacksHolders().stream()
+                        .filter(element -> element.getLevel().isLoaded(element.getPos()))
+                        .filter(element -> element.getLevel().getBlockEntity(element.getPos()) instanceof IMatterTanksSupplier consumer)
+                        .map(element -> (IMatterTanksSupplier) element.getLevel().getBlockEntity(element.getPos()))
+                        .sorted(Comparator.comparingInt(IMatterTanksSupplier::getPriority))
+                        .toList();
+                for (IMatterTanksSupplier tanksSupplier : listOfHolders) {
+                    for (IMatterTank tank : tanksSupplier.getTanks()) {
+                        if (!tank.getMatter().isEmpty() && tank.getMatter().getMatterType().equals(type)) {
+                            var drained = tank.drain(amount, IFluidHandler.FluidAction.EXECUTE);
+                            amount -= drained.getAmount();
+                            if (amount <= 0) {
+                                break;
                             }
                         }
                     }

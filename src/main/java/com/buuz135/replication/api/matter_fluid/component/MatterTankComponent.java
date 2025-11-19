@@ -21,6 +21,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 public class MatterTankComponent<T extends IComponentHarness> extends MatterTank implements IScreenAddonProvider,
@@ -36,7 +37,11 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
     private Predicate<MatterStack> insertPredicate;
 
     public MatterTankComponent(String name, int amount, int posX, int posY) {
-        super(amount);
+        this(name, amount, posX, posY, () -> false, () -> false);
+    }
+
+    public MatterTankComponent(String name, int amount, int posX, int posY, BooleanSupplier voidExcessSupplier, BooleanSupplier creativeSupplier) {
+        super(amount, matterStack1 -> true, voidExcessSupplier, creativeSupplier);
         this.posX = posX;
         this.posY = posY;
         this.name = name;
@@ -45,7 +50,6 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
         this.onContentChange = () -> {
         };
         this.insertPredicate = (stack) -> true;
-
     }
 
     /**
@@ -142,6 +146,9 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
 
     @Nonnull
     private MatterStack drainInternal(double maxDrain, IFluidHandler.FluidAction action) {
+        if (creativeSupplier.getAsBoolean()) {
+            return new MatterStack(matterStack, maxDrain);
+        }
         double drained = maxDrain;
         if (matterStack.getAmount() < drained) {
             drained = matterStack.getAmount();

@@ -8,4 +8,6 @@ public interface IMatterTanksConsumer {
 
     List<? extends IMatterTank> getTanks();
 
+    public int getPriority();
+
 }

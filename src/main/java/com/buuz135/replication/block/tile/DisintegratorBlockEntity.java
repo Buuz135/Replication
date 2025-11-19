@@ -183,6 +183,11 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
         return this.getMatterTankComponents();
     }
 
+    @Override
+    public int getPriority() {
+        return 0;
+    }
+
     public SidedInventoryComponent<?> getInput() {
         return input;
     }

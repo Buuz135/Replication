@@ -68,7 +68,13 @@ public class ClientEvents {
             if (ItemStack.isSameItem(pre.getItemStack(), new ItemStack(ReplicationRegistry.Blocks.MATTER_TANK.getBlock())) && pre.getItemStack().has(ReplicationAttachments.TILE)){
                 var tag = pre.getItemStack().get(ReplicationAttachments.TILE);
                 var matterStack = MatterStack.loadMatterStackFromNBT(tag.contains("tank") ? tag.getCompound("tank") : tag.getCompound("lockableMatterTankBundle").getCompound("Tank"));
-                pre.getToolTip().add(1, Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(matterStack.getAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(256000))).append(Component.translatable("tooltip.replication.tank.unit").withStyle(ChatFormatting.DARK_AQUA)));
+                pre.getToolTip().add(1, Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(matterStack.getAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(ReplicationConfig.MatterTank.CAPACITY))).append(Component.translatable("tooltip.replication.tank.unit").withStyle(ChatFormatting.DARK_AQUA)));
+                pre.getToolTip().add(1, Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.replication.tank.matter").getString()).append(matterStack.isEmpty() ? Component.translatable("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE) : Component.translatable(matterStack.getTranslationKey())).withStyle(ChatFormatting.WHITE));
+            }
+            if (ItemStack.isSameItem(pre.getItemStack(), new ItemStack(ReplicationRegistry.Blocks.CREATIVE_MATTER_TANK.getBlock())) && pre.getItemStack().has(ReplicationAttachments.TILE)) {
+                var tag = pre.getItemStack().get(ReplicationAttachments.TILE);
+                var matterStack = MatterStack.loadMatterStackFromNBT(tag.contains("tank") ? tag.getCompound("tank") : tag.getCompound("lockableMatterTankBundle").getCompound("Tank"));
+                pre.getToolTip().add(1, Component.translatable("tooltip.titanium.tank.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(matterStack.getAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(ReplicationConfig.MatterTank.CAPACITY))).append(Component.translatable("tooltip.replication.tank.unit").withStyle(ChatFormatting.DARK_AQUA)));
                 pre.getToolTip().add(1, Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.replication.tank.matter").getString()).append(matterStack.isEmpty() ? Component.translatable("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE) : Component.translatable(matterStack.getTranslationKey())).withStyle(ChatFormatting.WHITE));
             }
         }).subscribe();
@@ -76,6 +82,7 @@ public class ClientEvents {
             event.registerBlockEntityRenderer((BlockEntityType<? extends ReplicatorBlockEntity>)ReplicationRegistry.Blocks.REPLICATOR.type().get(), p_173571_ -> new ReplicatorRenderer());
             event.registerBlockEntityRenderer((BlockEntityType<? extends MatterPipeBlockEntity>)ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.type().get(), MatterPipeRenderer::new);
             event.registerBlockEntityRenderer((BlockEntityType<? extends MatterTankBlockEntity>)ReplicationRegistry.Blocks.MATTER_TANK.type().get(), MatterTankRenderer::new);
+            event.registerBlockEntityRenderer((BlockEntityType<? extends CreativeMatterTankBlockEntity>) ReplicationRegistry.Blocks.CREATIVE_MATTER_TANK.type().get(), MatterTankRenderer::new);
             event.registerBlockEntityRenderer((BlockEntityType<? extends DisintegratorBlockEntity>)ReplicationRegistry.Blocks.DISINTEGRATOR.type().get(), DisintegratorRenderer::new);
             event.registerBlockEntityRenderer((BlockEntityType<? extends ChipStorageBlockEntity>)ReplicationRegistry.Blocks.CHIP_STORAGE.type().get(), ChipStorageRenderer::new);
             event.registerBlockEntityRenderer((BlockEntityType<? extends IdentificationChamberBlockEntity>)ReplicationRegistry.Blocks.IDENTIFICATION_CHAMBER.type().get(), p_173571_ -> new IdentificationChamberRenderer());

@@ -3,12 +3,11 @@ package com.buuz135.replication.block;
 import com.buuz135.replication.ReplicationAttachments;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.shapes.MatterTankShapes;
-import com.buuz135.replication.block.tile.MatterTankBlockEntity;
+import com.buuz135.replication.block.tile.CreativeMatterTankBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
 import com.hrznstudio.titanium.nbthandler.NBTManager;
-import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -27,22 +26,21 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> implements INetworkDirectionalConnection {
+public class CreativeMatterTankBlock extends RotatableBlock<CreativeMatterTankBlockEntity> implements INetworkDirectionalConnection {
 
-    public MatterTankBlock() {
-        super("matter_tank", Properties.ofFullCopy(Blocks.IRON_BLOCK), MatterTankBlockEntity.class);
+    public CreativeMatterTankBlock() {
+        super("creative_matter_tank", Properties.ofFullCopy(Blocks.IRON_BLOCK), CreativeMatterTankBlockEntity.class);
     }
 
     @Override
     public BlockEntityType.BlockEntitySupplier<?> getTileEntityFactory() {
-        return (pos, blockState) -> new MatterTankBlockEntity(this, ReplicationRegistry.Blocks.MATTER_TANK.type().get(), pos, blockState, () -> false);
+        return (pos, blockState) -> new CreativeMatterTankBlockEntity(this, ReplicationRegistry.Blocks.CREATIVE_MATTER_TANK.type().get(), pos, blockState, () -> true);
     }
 
     @NotNull
@@ -61,6 +59,7 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
     public VoxelShape getShape(BlockState state, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
         return MatterTankShapes.SHAPE;
     }
+
     @Override
     public boolean canConnect(Level level, BlockPos pos, BlockState state, Direction direction) {
         return direction == Direction.UP || direction == Direction.DOWN;
@@ -76,7 +75,7 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
         NonNullList<ItemStack> stacks = NonNullList.create();
         ItemStack stack = new ItemStack(this);
         BlockEntity tankTile = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (tankTile instanceof MatterTankBlockEntity tile) {
+        if (tankTile instanceof CreativeMatterTankBlockEntity tile) {
             if (!tile.getTanks().get(0).getMatter().isEmpty()) {
                 stack.set(ReplicationAttachments.TILE, NBTManager.getInstance().writeTileEntity(tile, new CompoundTag()));
             }
@@ -95,7 +94,7 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
         super.setPlacedBy(level, pos, p_49849_, p_49850_, stack);
         BlockEntity entity = level.getBlockEntity(pos);
         if (stack.has(ReplicationAttachments.TILE)) {
-            if (entity instanceof MatterTankBlockEntity tile) {
+            if (entity instanceof CreativeMatterTankBlockEntity tile) {
                 entity.loadCustomOnly(stack.get(ReplicationAttachments.TILE), entity.getLevel().registryAccess());
                 tile.markForUpdate();
             }
@@ -104,13 +103,6 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
 
     @Override
     public void registerRecipe(RecipeOutput consumer) {
-        TitaniumShapedRecipeBuilder.shapedRecipe(this)
-                .pattern("IGI")
-                .pattern("G G")
-                .pattern("IGI")
-                .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
-                .define('G', Tags.Items.GLASS_BLOCKS)
-                .save(consumer);
-    }
 
+    }
 }

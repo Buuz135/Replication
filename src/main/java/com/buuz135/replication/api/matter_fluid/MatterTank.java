@@ -6,6 +6,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable<CompoundTag> {
@@ -14,14 +15,22 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
     @NotNull
     protected MatterStack matterStack = MatterStack.EMPTY;
     protected int capacity;
+    protected BooleanSupplier voidExcessSupplier;
+    protected BooleanSupplier creativeSupplier;
 
     public MatterTank(int capacity) {
         this(capacity, e -> true);
     }
 
     public MatterTank(int capacity, Predicate<MatterStack> validator) {
-        this.capacity = capacity;
+        this(capacity, validator, () -> false, () -> false);
+    }
+
+    public MatterTank(int capacity, Predicate<MatterStack> validator, BooleanSupplier voidExcessSupplier, BooleanSupplier creativeSupplier) {
         this.validator = validator;
+        this.capacity = capacity;
+        this.voidExcessSupplier = voidExcessSupplier;
+        this.creativeSupplier = creativeSupplier;
     }
 
     public MatterTank setValidator(Predicate<MatterStack> validator) {
@@ -50,6 +59,7 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
     }
 
     public double getMatterAmount() {
+        if (creativeSupplier.getAsBoolean()) return Double.MAX_VALUE;
         return matterStack.getAmount();
     }
 
@@ -97,6 +107,9 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
             if (!matterStack.isMatterEqual(resource)) {
                 return 0;
             }
+            if (voidExcessSupplier.getAsBoolean()) {
+                return resource.getAmount();
+            }
             return Math.min(capacity - matterStack.getAmount(), resource.getAmount());
         }
         if (matterStack.isEmpty()) {
@@ -114,6 +127,9 @@ public class MatterTank implements IMatterHandler, IMatterTank, INBTSerializable
             filled = resource.getAmount();
         } else {
             matterStack.setAmount(capacity);
+        }
+        if (voidExcessSupplier.getAsBoolean()) {
+            filled = resource.getAmount();
         }
         if (filled > 0)
             onContentsChanged();

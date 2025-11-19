@@ -11,7 +11,10 @@ and [Titanium](https://www.curseforge.com/minecraft/mc-mods/titanium)
 # Important Concepts
 **Matter pipes** will allow you to connect Replication machines and they will automate some processes:
 * Transfer **Power**: they work like any power pipe
-* Transfer **Matter**: they will transfer matter from the **Disintegrator** to **Matter Tanks** and from **Matter Tanks** to **other machines** that need it
+* Transfer **Matter**: they will transfer matter from the **Disintegrator** to **Matter Tanks** and from **Matter Tanks
+  ** to **other machines** that need it. Matter Tanks can be configured to only accept certain matter types and they
+  have a priority system, on insertion higher priority tanks will be prioritized and on extraction lower priority tanks
+  will be prioritized.
 
 The **Identification Chamber** will scan items to know their matter values and store them into chips. Those **Chips**
 can be stored in the **Chip Storage** and will be available to the network. If you place a Chip Storage on top of the

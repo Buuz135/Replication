@@ -1,5 +1,6 @@
 {
   "block.replication.chip_storage": "Chip Storage",
+  "block.replication.creative_matter_tank": "Creative Matter Tank",
   "block.replication.deepslate_replica_ore": "Deepslate Replica Ore",
   "block.replication.disintegrator": "Disintegrator",
   "block.replication.identification_chamber": "Identification Chamber",
@@ -52,7 +53,9 @@
   "tooltip.replication.matter_value": "ℹ Hold %s to see matter values",
   "tooltip.replication.memory_chip_slot": "%s slots left",
   "tooltip.replication.tank.matter": "Matter: ",
+  "tooltip.replication.tank.priority": "Priority: ",
   "tooltip.replication.tank.unit": " matter",
+  "tooltip.replication.tank.void_excess": "Void Excess",
   "tooltip.replication.terminal.amount": "Amount: ",
   "tooltip.replication.terminal.cancel_task": "Sneak + Click to Cancel Task",
   "tooltip.replication.terminal.matteropedia_direction.state_0": "Sorting Direction: Ascending",

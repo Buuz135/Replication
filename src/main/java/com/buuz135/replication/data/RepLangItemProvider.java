@@ -78,6 +78,8 @@ public class RepLangItemProvider extends LanguageProvider {
         this.add("tooltip.replication_motor.variable", "Variable Speed Controller");
         this.add("tooltip.replication_motor.acceleration", "Current Acc. Mult:");
         this.add("tooltip.replication_motor.failure_chance", "Current Failure Chance: ");
+        this.add("tooltip.replication.tank.priority", "Priority: ");
+        this.add("tooltip.replication.tank.void_excess", "Void Excess");
         for (MatterType value : MatterType.values()) {
             this.add("replication.matter_type." + value.getName(), WordUtils.capitalize(value.getName()));
         }

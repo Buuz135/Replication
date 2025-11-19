@@ -35,6 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BiPredicate;
@@ -119,36 +120,24 @@ public class MatterNetwork extends Network {
                     for (IMatterTank inputTank : supplier.getTanks()) {
                         if (inputTank.getMatter().isEmpty()) continue;
                         boolean didWork = false;
+                        var listOfHolders = this.matterStacksHolders.stream()
+                                .filter(element -> element.getLevel().isLoaded(element.getPos()))
+                                .filter(element -> element.getLevel().getBlockEntity(element.getPos()) instanceof IMatterTanksConsumer consumer)
+                                .map(element -> (IMatterTanksConsumer) element.getLevel().getBlockEntity(element.getPos()))
+                                .sorted(Comparator.comparingInt(IMatterTanksConsumer::getPriority).reversed())
+                                .toList();
                         // WE SEARCH FOR HOLDER TANKS THAT HAVE SOMETHING FIRST
-                        for (NetworkElement destinationElement : this.matterStacksHolders) {
-                            if (!destinationElement.getLevel().isLoaded(destinationElement.getPos())) continue;
-                            var destination = destinationElement.getLevel().getBlockEntity(destinationElement.getPos());
-                            if (destination instanceof IMatterTanksConsumer consumerDestination){
-                                for (IMatterTank outputTank : consumerDestination.getTanks()) {
-                                    if (outputTank.getMatter().isMatterEqual(inputTank.getMatter()) && outputTank.getMatterAmount() < outputTank.getCapacity()) {
-                                        inputTank.drain(outputTank.fill(inputTank.drain(outputTank.getCapacity(), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                        for (IMatterTanksConsumer consumerDestination : listOfHolders) {
+                            for (IMatterTank outputTank : consumerDestination.getTanks()) {
+                                if (outputTank.getMatter().isMatterEqual(inputTank.getMatter()) || outputTank.getMatter().isEmpty()) {
+                                    var stack = inputTank.drain(outputTank.fill(inputTank.drain(outputTank.getCapacity(), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                                    if (!stack.isEmpty()) {
                                         didWork = true;
                                         break;
                                     }
                                 }
-                                if (didWork) break;
                             }
-                        }
-                        if (!didWork && !inputTank.getMatter().isEmpty()){
-                            for (NetworkElement destinationElement : this.matterStacksHolders) {
-                                if (!destinationElement.getLevel().isLoaded(destinationElement.getPos())) continue;
-                                var destination = destinationElement.getLevel().getBlockEntity(destinationElement.getPos());
-                                if (destination instanceof IMatterTanksConsumer consumerDestination){
-                                    for (IMatterTank outputTank : consumerDestination.getTanks()) {
-                                        if (outputTank.getMatter().isEmpty()) {
-                                            inputTank.drain(outputTank.fill(inputTank.drain(outputTank.getCapacity(), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
-                                            didWork = true;
-                                            break;
-                                        }
-                                    }
-                                    if (didWork) break;
-                                }
-                            }
+                            if (didWork) break;
                         }
                     }
                 }

@@ -3,7 +3,7 @@ package com.buuz135.replication.compat.jade;
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.api.matter_fluid.MatterStack;
-import com.buuz135.replication.block.tile.MatterTankBlockEntity;
+import com.buuz135.replication.block.tile.BaseMatterTankBlockEntity;
 import com.buuz135.replication.util.NumberUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -43,7 +43,7 @@ public class MatterTankComponentProvider implements IBlockComponentProvider, ISe
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        MatterTankBlockEntity blockEntity = (MatterTankBlockEntity) blockAccessor.getBlockEntity();
+        BaseMatterTankBlockEntity<?> blockEntity = (BaseMatterTankBlockEntity<?>) blockAccessor.getBlockEntity();
         compoundTag.put("MatterStack", blockEntity.getTanks().get(0).getMatter().writeToNBT(new CompoundTag()));
     }
 }

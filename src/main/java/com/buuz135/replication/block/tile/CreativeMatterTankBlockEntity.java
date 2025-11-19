@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BooleanSupplier;
 
-public class MatterTankBlockEntity extends BaseMatterTankBlockEntity<MatterTankBlockEntity> {
+public class CreativeMatterTankBlockEntity extends BaseMatterTankBlockEntity<CreativeMatterTankBlockEntity> {
 
-    public MatterTankBlockEntity(BasicTileBlock<MatterTankBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, BooleanSupplier isCreative) {
+    public CreativeMatterTankBlockEntity(BasicTileBlock<CreativeMatterTankBlockEntity> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, BooleanSupplier isCreative) {
         super(base, blockEntityType, pos, state, isCreative);
     }
 
     @Override
-    public @NotNull MatterTankBlockEntity getSelf() {
+    public @NotNull CreativeMatterTankBlockEntity getSelf() {
         return this;
     }
 }

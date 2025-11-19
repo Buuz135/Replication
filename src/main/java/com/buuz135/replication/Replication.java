@@ -128,6 +128,7 @@ public class Replication extends ModuleController {
         ReplicationRegistry.Blocks.MATTER_TANK = this.getRegistries().registerBlockWithTile("matter_tank", MatterTankBlock::new, TAB);
         ReplicationRegistry.Blocks.REPLICATION_TERMINAL = this.getRegistries().registerBlockWithTile("replication_terminal", ReplicationTerminalBlock::new, TAB);
         ReplicationRegistry.Blocks.CHIP_STORAGE = this.getRegistries().registerBlockWithTile("chip_storage", ChipStorageBlock::new, TAB);
+        ReplicationRegistry.Blocks.CREATIVE_MATTER_TANK = this.getRegistries().registerBlockWithTile("creative_matter_tank", CreativeMatterTankBlock::new, TAB);
 
         ReplicationRegistry.Items.MEMORY_CHIP = this.getRegistries().registerGeneric(Registries.ITEM, "memory_chip", MemoryChipItem::new);
         ReplicationRegistry.Items.CREATIVE_MEMORY_CHIP = this.getRegistries().registerGeneric(Registries.ITEM, "creative_memory_chip", CreativeMemoryChipItem::new);
@@ -196,6 +197,16 @@ public class Replication extends ModuleController {
                 tagC.putDouble("Progress", 1);
                 motorTemplate.set(ReplicationAttachments.BLUEPRINT, tagC);
                 buildCreativeModeTabContentsEvent.accept(motorTemplate);
+                for (IMatterType value : ReplicationRegistry.MATTER_TYPES_REGISTRY.stream().toList()) {
+                    if (value.equals(MatterType.EMPTY)) continue;
+                    var matterStack = new MatterStack(value, ReplicationConfig.MatterTank.CAPACITY);
+                    var tile = new CompoundTag();
+                    var tank = matterStack.writeToNBT(new CompoundTag());
+                    tile.put("tank", tank);
+                    var item = new ItemStack(ReplicationRegistry.Blocks.CREATIVE_MATTER_TANK);
+                    item.set(ReplicationAttachments.TILE, tile);
+                    buildCreativeModeTabContentsEvent.accept(item);
+                }
             }
         }).subscribe();
 

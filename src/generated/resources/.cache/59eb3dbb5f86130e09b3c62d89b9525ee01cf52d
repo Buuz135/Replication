@@ -1,5 +1,6 @@
-// 1.21.1	2024-12-29T23:44:52.406812	Loot Tables
+// 1.21.1	2025-11-19T15:46:55.207488	Loot Tables
 88db502b3d4eeb4d254e8d92641a19193b5ffc12 data/replication/loot_table/blocks/chip_storage.json
+f2a07d3c66e46cd79f97cc938bcd600812fe480e data/replication/loot_table/blocks/creative_matter_tank.json
 30ee8154857fd4258267acadcc70f75ed98e01b8 data/replication/loot_table/blocks/deepslate_replica_ore.json
 bcc24710db02037a7e30a93f6105c75212bffb1c data/replication/loot_table/blocks/disintegrator.json
 5ab9725da7a347490db936ab44c1fba2a7461907 data/replication/loot_table/blocks/identification_chamber.json
