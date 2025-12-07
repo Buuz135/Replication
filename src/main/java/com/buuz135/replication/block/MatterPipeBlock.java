@@ -55,12 +55,12 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
             .build();
     public static final List<Predicate<Block>> ALLOWED_CONNECTION_BLOCKS = new ArrayList<>();
 
-
     static {
         for (Direction value : Direction.values()) {
             DIRECTIONS.put(value, BooleanProperty.create(value.getName().toLowerCase(Locale.ROOT)));
         }
-        ALLOWED_CONNECTION_BLOCKS.add(block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(Replication.MOD_ID));
+        ALLOWED_CONNECTION_BLOCKS
+                .add(block -> BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(Replication.MOD_ID));
     }
 
     public MatterPipeBlock() {
@@ -70,7 +70,8 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
 
     @Override
     public BlockEntityType.BlockEntitySupplier<?> getTileEntityFactory() {
-        return (pos, state) -> new MatterPipeBlockEntity(this, ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.type().get(), pos, state);
+        return (pos, state) -> new MatterPipeBlockEntity(this,
+                ReplicationRegistry.Blocks.MATTER_NETWORK_PIPE.type().get(), pos, state);
     }
 
     @Override
@@ -94,16 +95,21 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
     }
 
     protected boolean getConnectionType(Level world, BlockPos pos, Direction direction, BlockState state) {
-        if (world.isClientSide()) return false;
+        if (world.isClientSide())
+            return false;
         var relativeState = world.getBlockState(pos.relative(direction));
-        if (relativeState.getBlock() instanceof MatterPipeBlock){
+        if (relativeState.getBlock() instanceof MatterPipeBlock) {
             return true;
         }
-        if (ALLOWED_CONNECTION_BLOCKS.stream().anyMatch(blockPredicate -> blockPredicate.test(relativeState.getBlock()))) {
-            INetworkDirectionalConnection networkDirectionalConnection = (INetworkDirectionalConnection) relativeState.getBlock();
-            return networkDirectionalConnection.canConnect(world, pos, relativeState, direction.getOpposite());
+        if (ALLOWED_CONNECTION_BLOCKS.stream()
+                .anyMatch(blockPredicate -> blockPredicate.test(relativeState.getBlock()))) {
+            if (relativeState.getBlock() instanceof INetworkDirectionalConnection networkDirectionalConnection) {
+                return networkDirectionalConnection.canConnect(world, pos, relativeState, direction.getOpposite());
+            }
+            return false;
         }
-        var cap = world.getCapability(Capabilities.EnergyStorage.BLOCK, pos.relative(direction), direction.getOpposite());
+        var cap = world.getCapability(Capabilities.EnergyStorage.BLOCK, pos.relative(direction),
+                direction.getOpposite());
         if (cap != null) {
             return true;
         }
@@ -117,7 +123,8 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos,
+            boolean isMoving) {
         var newState = this.createState(worldIn, pos, state);
         if (newState != state) {
             worldIn.setBlockAndUpdate(pos, newState);
@@ -138,15 +145,19 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return this.cacheAndGetShape(state, worldIn, pos, s -> s.getCollisionShape(worldIn, pos, context), COLL_SHAPE_CACHE, s -> {
-            // make the shape a bit higher so we can jump up onto a higher block
-            var newShape = new MutableObject<VoxelShape>(Shapes.empty());
-            s.forAllBoxes((x1, y1, z1, x2, y2, z2) -> newShape.setValue(Shapes.join(Shapes.create(x1, y1, z1, x2, y2 + 3 / 16F, z2), newShape.getValue(), BooleanOp.OR)));
-            return newShape.getValue().optimize();
-        });
+        return this.cacheAndGetShape(state, worldIn, pos, s -> s.getCollisionShape(worldIn, pos, context),
+                COLL_SHAPE_CACHE, s -> {
+                    // make the shape a bit higher so we can jump up onto a higher block
+                    var newShape = new MutableObject<VoxelShape>(Shapes.empty());
+                    s.forAllBoxes((x1, y1, z1, x2, y2, z2) -> newShape.setValue(Shapes
+                            .join(Shapes.create(x1, y1, z1, x2, y2 + 3 / 16F, z2), newShape.getValue(), BooleanOp.OR)));
+                    return newShape.getValue().optimize();
+                });
     }
 
-    private VoxelShape cacheAndGetShape(BlockState state, BlockGetter worldIn, BlockPos pos, Function<BlockState, VoxelShape> coverShapeSelector, Map<BlockState, VoxelShape> cache, Function<VoxelShape, VoxelShape> shapeModifier) {
+    private VoxelShape cacheAndGetShape(BlockState state, BlockGetter worldIn, BlockPos pos,
+            Function<BlockState, VoxelShape> coverShapeSelector, Map<BlockState, VoxelShape> cache,
+            Function<VoxelShape, VoxelShape> shapeModifier) {
 
         var shape = cache.get(state);
         if (shape == null) {
