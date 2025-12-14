@@ -1,3 +1,8 @@
+# 1.2.6
+
+* Fix issue with matter pipe connections - realdody 
+* Feat: PT_BR localization - PrincessStelllar 
+
 # 1.2.5
 
 * Fixed Matter Tank tooltip value not using the config values
