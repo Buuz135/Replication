@@ -100,8 +100,10 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
             return true;
         }
         if (ALLOWED_CONNECTION_BLOCKS.stream().anyMatch(blockPredicate -> blockPredicate.test(relativeState.getBlock()))) {
-            INetworkDirectionalConnection networkDirectionalConnection = (INetworkDirectionalConnection) relativeState.getBlock();
-            return networkDirectionalConnection.canConnect(world, pos, relativeState, direction.getOpposite());
+            if (relativeState.getBlock() instanceof INetworkDirectionalConnection networkDirectionalConnection) {
+                return networkDirectionalConnection.canConnect(world, pos, relativeState, direction.getOpposite());
+            }
+            return false;
         }
         var cap = world.getCapability(Capabilities.EnergyStorage.BLOCK, pos.relative(direction), direction.getOpposite());
         if (cap != null) {
