@@ -79,7 +79,7 @@ public class MatterStack {
     }*/
 
     public final IMatterType getMatterType() {
-        return isEmpty ? MatterType.EMPTY : matter;
+        return matter;
     }
 
     public boolean isEmpty() {
