@@ -8,6 +8,7 @@ import com.buuz135.replication.block.ReplicatorBlock;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.ReplicatorCraftingAddon;
 import com.buuz135.replication.client.gui.addons.ReplicatorMotorAddon;
+import com.buuz135.replication.network.MatterNetwork;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
@@ -165,7 +166,8 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
             syncObject(this.progressBarComponent);
             syncObject(this.progress);
         }
-        if (getNetwork() == null) return;
+        MatterNetwork network = getNetwork();
+        if (network == null) return;
         if (ReplicationCalculation.STATUS != MatterCalculationStatus.CALCULATED) return;
         if (this.redstoneManager.getAction().canRun(this.getEnvironmentValue(false, null)) && this.redstoneManager.shouldWork()){
             tickProgress();
@@ -180,11 +182,11 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
                 this.craftingStack = task.getReplicatingStack();
                 syncObject(this.craftingStack);
                 syncObject(this.isCurrentTaskAFailure);
-                this.getNetwork().getTaskManager().getPendingTasks().put(task.getUuid().toString(), task);
-                this.getNetwork().onTaskValueChanged(task, (ServerLevel) this.level);
+                network.getTaskManager().getPendingTasks().put(task.getUuid().toString(), task);
+                network.onTaskValueChanged(task, (ServerLevel) this.level);
             }
             if (this.level.getGameTime() % 4 == 0 && this.craftingTask == null) {
-                var task = this.getNetwork().getTaskManager().findTaskForReplicator(this.getBlockPos(), this.getNetwork());
+                var task = network.getTaskManager().findTaskForReplicator(this.getBlockPos(), network);
                 if (task != null){
                     task.acceptReplicator(this.getBlockPos());
                     this.isCurrentTaskAFailure = this.level.getRandom().nextInt(100) < getFailureChance();
@@ -193,12 +195,12 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
                     this.craftingStack = task.getReplicatingStack();
                     syncObject(this.craftingStack);
                     syncObject(this.isCurrentTaskAFailure);
-                    this.getNetwork().onTaskValueChanged(task, (ServerLevel) this.level);
+                    network.onTaskValueChanged(task, (ServerLevel) this.level);
                 }
             }
             if (this.level.getGameTime() % 4 == 0 && this.craftingTask != null && this.cachedReplicationTask == null) {
-                if (this.getNetwork().getTaskManager().getPendingTasks().containsKey(this.craftingTask)) {
-                    this.cachedReplicationTask = this.getNetwork().getTaskManager().getPendingTasks().get(this.craftingTask);
+                if (network.getTaskManager().getPendingTasks().containsKey(this.craftingTask)) {
+                    this.cachedReplicationTask = network.getTaskManager().getPendingTasks().get(this.craftingTask);
                     this.craftingStack = this.cachedReplicationTask.getReplicatingStack();
                     syncObject(this.craftingStack);
                 } else {
@@ -207,7 +209,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
             }
             if (this.level.getGameTime() % 4 == 0 && this.craftingTask != null && this.cachedReplicationTask != null
                     && !this.cachedReplicationTask.getStoredMatterStack().containsKey(this.getBlockPos().asLong())){
-                this.cachedReplicationTask.storeMatterStacksFor(this.level, this.getBlockPos(), this.getNetwork());
+                this.cachedReplicationTask.storeMatterStacksFor(this.level, this.getBlockPos(), network);
             }
         }
     }
@@ -271,8 +273,11 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     }
 
     private void replicateItem(){
-        this.cachedReplicationTask.finalizeReplication(this.level, this.getBlockPos(), this.getNetwork());
-        this.getNetwork().onTaskValueChanged(this.cachedReplicationTask, (ServerLevel) this.level);
+        MatterNetwork network = this.getNetwork();
+        if (network == null) return;
+
+        this.cachedReplicationTask.finalizeReplication(this.level, this.getBlockPos(), network);
+        network.onTaskValueChanged(this.cachedReplicationTask, (ServerLevel) this.level);
         if (!this.getBlockPos().equals(this.cachedReplicationTask.getSource())){
             var capability = this.level.getCapability(Capabilities.ItemHandler.BLOCK, this.cachedReplicationTask.getSource(), Direction.UP);
                 if (capability != null){
@@ -297,7 +302,10 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
         if (this.cachedReplicationTask != null) {
             this.cachedReplicationTask.getReplicatorsOnTask().remove(this.getBlockPos().asLong());
             if (this.cachedReplicationTask.getReplicatorsOnTask().isEmpty()) {
-                this.getNetwork().cancelTask(this.craftingTask, this.level);
+                MatterNetwork network = this.getNetwork();
+                if (network != null) {
+                    network.cancelTask(this.craftingTask, this.level);
+                }
             }
         }
         super.setRemoved();

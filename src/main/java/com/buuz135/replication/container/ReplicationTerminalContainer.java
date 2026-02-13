@@ -1,6 +1,7 @@
 package com.buuz135.replication.container;
 
 import com.buuz135.replication.block.tile.ReplicationTerminalBlockEntity;
+import com.buuz135.replication.network.MatterNetwork;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.container.addon.UpdatableSlotItemHandler;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
@@ -76,7 +77,10 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
         if (inventory.player instanceof ServerPlayer serverPlayer)
             this.blockEntity.getTerminalPlayerTracker().addPlayer(serverPlayer);
         this.position = this.blockEntity.getBlockPos();
-        this.network = blockEntity.getNetwork().getId();
+
+        MatterNetwork network = blockEntity.getNetwork();
+        this.network = network != null ? network.getId() : "";
+
         this.addExtraSlots();
         this.initInventory();
     }

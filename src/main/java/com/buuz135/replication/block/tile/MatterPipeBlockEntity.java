@@ -1,6 +1,7 @@
 package com.buuz135.replication.block.tile;
 
 import com.buuz135.replication.ReplicationConfig;
+import com.buuz135.replication.network.MatterNetwork;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
@@ -34,13 +35,14 @@ public class MatterPipeBlockEntity extends NetworkBlockEntity<MatterPipeBlockEnt
                 this.needsToRecreateEnergyStorage = false;
                 this.level.updateNeighborsAt(this.worldPosition, this.getBlockState().getBlock());
             }
+            MatterNetwork network = this.getNetwork();
             for (Direction value : Direction.values()) {
                 var capability = this.level.getCapability(Capabilities.EnergyStorage.BLOCK, this.worldPosition.relative(value), value.getOpposite());
                 var tile = this.level.getBlockEntity(this.worldPosition.relative(value));
-                if (capability != null && !(tile instanceof MatterPipeBlockEntity) && this.getNetwork() != null){
-                    var simulatedExtract = this.getNetwork().getEnergyStorage().extractEnergy(ReplicationConfig.MatterPipe.POWER_TRANSFER, true);
+                if (capability != null && !(tile instanceof MatterPipeBlockEntity) && network != null){
+                    var simulatedExtract = network.getEnergyStorage().extractEnergy(ReplicationConfig.MatterPipe.POWER_TRANSFER, true);
                     var realExtracted = capability.receiveEnergy(simulatedExtract, false);
-                    this.getNetwork().getEnergyStorage().extractEnergy(realExtracted, false);
+                    network.getEnergyStorage().extractEnergy(realExtracted, false);
                 }
             }
         }

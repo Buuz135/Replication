@@ -10,6 +10,7 @@ import com.buuz135.replication.api.network.IMatterTanksSupplier;
 import com.buuz135.replication.client.gui.ReplicationAddonProvider;
 import com.buuz135.replication.client.gui.addons.MatterTankPriorityAddon;
 import com.buuz135.replication.container.component.LockableMatterTankBundle;
+import com.buuz135.replication.network.MatterNetwork;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.block.BasicTileBlock;
@@ -62,10 +63,13 @@ public abstract class BaseMatterTankBlockEntity<T extends BaseMatterTankBlockEnt
 
     private void onTankContentChange() {
         syncObject(this.lockableMatterTankBundle);
-        this.getNetwork().onTankValueChanged(cachedType);
+        MatterNetwork network = this.getNetwork();
+        if (network == null) return;  // Early return если сеть не готова
+
+        network.onTankValueChanged(cachedType);
         if (!cachedType.equals(this.lockableMatterTankBundle.getTank().getMatter().getMatterType())) {
             this.cachedType = this.lockableMatterTankBundle.getTank().getMatter().getMatterType();
-            this.getNetwork().onTankValueChanged(cachedType);
+            network.onTankValueChanged(cachedType);
         }
     }
 

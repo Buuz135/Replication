@@ -3,6 +3,7 @@ package com.buuz135.replication.block.tile;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
+import com.buuz135.replication.network.MatterNetwork;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
@@ -78,21 +79,27 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
             return ItemInteractionResult.SUCCESS;
         }
         if (playerIn instanceof ServerPlayer serverPlayer) {
-            for (NetworkElement chipSupplier : this.getNetwork().getChipSuppliers()) {
+            MatterNetwork network = this.getNetwork();
+            if (network == null) {
+                // Сеть не готова - не открываем GUI
+                return ItemInteractionResult.FAIL;
+            }
+
+            for (NetworkElement chipSupplier : network.getChipSuppliers()) {
                 var tile = chipSupplier.getLevel().getBlockEntity(chipSupplier.getPos());
                 if (tile instanceof IMatterPatternHolder holder){
-                    this.getNetwork().sendPatternSyncPacket(serverPlayer, holder, tile.getBlockPos());
+                    network.sendPatternSyncPacket(serverPlayer, holder, tile.getBlockPos());
                 }
             }
-            ReplicationRegistry.MATTER_TYPES_REGISTRY.forEach(iMatterType -> this.getNetwork().sendMatterSyncPacket(serverPlayer, this.getNetwork().calculateMatterAmount(iMatterType), iMatterType));
+            ReplicationRegistry.MATTER_TYPES_REGISTRY.forEach(iMatterType -> network.sendMatterSyncPacket(serverPlayer, network.calculateMatterAmount(iMatterType), iMatterType));
             this.getLevel().getServer().submitAsync(() -> {
-                this.getNetwork().getTaskManager().getPendingTasks().values().forEach(task -> {
-                    this.getNetwork().sendTaskSyncPacket(serverPlayer, task);
+                network.getTaskManager().getPendingTasks().values().forEach(task -> {
+                    network.sendTaskSyncPacket(serverPlayer, task);
                 });
             });
             serverPlayer.openMenu(this, buffer -> {
                 LocatorFactory.writePacketBuffer(buffer, new TileEntityLocatorInstance(this.worldPosition));
-                buffer.writeUtf(this.getNetwork().getId());
+                buffer.writeUtf(network.getId());
                 buffer.writeInt(this.sortingTypeValue);
                 buffer.writeInt(this.sortingDirection);
                 buffer.writeInt(this.matterOpediaSortingTypeValue);

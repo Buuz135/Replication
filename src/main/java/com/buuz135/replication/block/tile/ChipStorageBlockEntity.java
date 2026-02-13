@@ -108,7 +108,10 @@ public class ChipStorageBlockEntity extends NetworkBlockEntity<ChipStorageBlockE
             }
             syncObject(this.chips);
             cachePatterns();
-            this.getNetwork().onChipValuesChanged(this, this.worldPosition);
+            var network = this.getNetwork();
+            if (network != null) {
+                network.onChipValuesChanged(this, this.worldPosition);
+            }
         }
     }
 

@@ -21,6 +21,7 @@ import java.util.List;
 public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends ActiveTile<T> implements ITickableBlockEntity<T> {
 
     private List<MatterTankComponent<T>> matterTankComponents;
+    private boolean needsNetworkRegistration = false;
 
     public NetworkBlockEntity(BasicTileBlock<T> base, BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(base, blockEntityType, pos, state);
@@ -41,7 +42,39 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
             NetworkManager networkManager = NetworkManager.get(level);
 
             if (networkManager.getElement(worldPosition) == null) {
-                networkManager.addElement(createElement(level, worldPosition));
+                try {
+                    networkManager.addElement(createElement(level, worldPosition));
+                } catch (RuntimeException e) {
+                    // Titanium может выбросить "Element network is null!" при попытке объединить сети
+                    // Это происходит, когда соседние элементы еще не инициализированы
+                    // Отложим регистрацию на следующий тик
+                    if (e.getMessage() != null && e.getMessage().contains("Element network is null")) {
+                        needsNetworkRegistration = true;
+                    } else {
+                        throw e; // Пробросить исключение, если это другая проблема
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void serverTick(Level level, BlockPos pos, BlockState state, T blockEntity) {
+        // Попытка повторной регистрации, если не удалось при onLoad
+        if (needsNetworkRegistration) {
+            NetworkManager networkManager = NetworkManager.get(level);
+            if (networkManager.getElement(worldPosition) == null) {
+                try {
+                    networkManager.addElement(createElement(level, worldPosition));
+                    needsNetworkRegistration = false;
+                } catch (RuntimeException e) {
+                    // Если все еще не удается, попробуем в следующий тик
+                    if (e.getMessage() == null || !e.getMessage().contains("Element network is null")) {
+                        throw e;
+                    }
+                }
+            } else {
+                needsNetworkRegistration = false;
             }
         }
     }
@@ -75,12 +108,14 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
             NetworkElement pipe = networkManager.getElement(worldPosition);
             if (pipe != null) {
                 //spawnDrops(pipe);
+
+                // Переместить внутрь блока null-проверки
+                if (pipe.getNetwork() instanceof MatterNetwork matterNetwork){
+                    matterNetwork.removeElement(pipe);
+                }
             }
 
             networkManager.removeElement(worldPosition);
-            if (pipe.getNetwork() instanceof MatterNetwork matterNetwork){
-                matterNetwork.removeElement(pipe);
-            }
         }
     }
 
@@ -89,7 +124,10 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
     }
 
     public MatterNetwork getNetwork(){
-        return (MatterNetwork) NetworkManager.get(this.level).getElement(worldPosition).getNetwork();
+        if (this.level == null) return null;
+        NetworkElement element = NetworkManager.get(this.level).getElement(worldPosition);
+        if (element == null) return null;
+        return (MatterNetwork) element.getNetwork();
     }
 
     public List<MatterTankComponent<T>> getMatterTankComponents() {
