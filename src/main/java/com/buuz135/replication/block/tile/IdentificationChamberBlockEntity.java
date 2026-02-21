@@ -5,9 +5,9 @@ import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
+import com.buuz135.replication.calculation.ItemVariants;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.IdentificationChamberAddon;
-import com.buuz135.replication.datamaps.ComponentsToCopy;
 import com.buuz135.replication.util.InvUtil;
 import com.buuz135.replication.util.ReplicationTags;
 import com.hrznstudio.titanium.annotation.Save;
@@ -19,7 +19,6 @@ import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,9 +28,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
 
 public class IdentificationChamberBlockEntity extends ReplicationMachine<IdentificationChamberBlockEntity>{
 
@@ -134,14 +130,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
             this.getInput().getStackInSlot(0).shrink(1);
             syncObject(this.input);
         } else {
-            ItemStack itemToAdd = input.getItem().getDefaultInstance();
-
-            ComponentsToCopy componentsToCopy = input.getItemHolder().getData(ComponentsToCopy.DATA_MAP);
-            if (componentsToCopy != null) {
-                componentsToCopy.copyComponents(input, itemToAdd);
-            }
-
-            returnedValue = patternModifier.addPattern(this.level, stack, itemToAdd, (float) ReplicationConfig.IdentificationChamber.IDENTIFICATION_PROGRESS);
+            returnedValue = patternModifier.addPattern(this.level, stack, ItemVariants.normalize(input).stack(), (float) ReplicationConfig.IdentificationChamber.IDENTIFICATION_PROGRESS);
         }
         if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1) {
             this.getInput().getStackInSlot(0).shrink(1);

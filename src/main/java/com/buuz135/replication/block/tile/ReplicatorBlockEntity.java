@@ -5,10 +5,10 @@ import com.buuz135.replication.api.MatterCalculationStatus;
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.api.task.ReplicationTask;
 import com.buuz135.replication.block.ReplicatorBlock;
+import com.buuz135.replication.calculation.ItemVariants;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.ReplicatorCraftingAddon;
 import com.buuz135.replication.client.gui.addons.ReplicatorMotorAddon;
-import com.buuz135.replication.datamaps.ComponentsToCopy;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
@@ -107,14 +107,7 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
 
             @Override
             public void setFilter(int slot, ItemStack stack) {
-                ItemStack filterStack = stack.getItem().getDefaultInstance();
-
-                ComponentsToCopy componentsToCopy = stack.getItemHolder().getData(ComponentsToCopy.DATA_MAP);
-                if (componentsToCopy != null) {
-                    componentsToCopy.copyComponents(stack, filterStack);
-                }
-
-                super.setFilter(slot, filterStack);
+                super.setFilter(slot, ItemVariants.normalize(stack).stack());
             }
 
             @OnlyIn(Dist.CLIENT)

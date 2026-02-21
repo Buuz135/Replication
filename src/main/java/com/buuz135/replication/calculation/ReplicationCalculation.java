@@ -34,9 +34,9 @@ public class ReplicationCalculation {
     public static final Logger CALCULATOR_LOG = LogManager.getLogger("Replication Calculator");
 
 
-    public static HashMap<Item, CalculationReference> SORTED_CALCULATION_REFERENCE = new HashMap<Item, CalculationReference>();
+    public static HashMap<ItemVariant, CalculationReference> SORTED_CALCULATION_REFERENCE = new HashMap<ItemVariant, CalculationReference>();
     public static Set<RecipeHolder<MatterValueRecipe>> DEFAULT_MATTER_RECIPE = new HashSet<>();
-    public static HashMap<Item, MatterCompound> DEFAULT_MATTER_COMPOUND = new HashMap<Item, MatterCompound>();
+    public static HashMap<ItemVariant, MatterCompound> DEFAULT_MATTER_COMPOUND = new HashMap<ItemVariant, MatterCompound>();
     private static CompoundTag cachedSyncTag = new CompoundTag();
     public static MatterCalculationStatus STATUS = MatterCalculationStatus.NOT_CALCULATED;
 
@@ -57,10 +57,6 @@ public class ReplicationCalculation {
 
     private static HashMap<Ingredient, MatterCompound> INGREDIENT_CACHE = new HashMap<>();
 
-    public static String getNameFromStack(ItemStack stack) {
-        return BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
-    }
-
     public static void organizeRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
         STATUS = MatterCalculationStatus.NOT_CALCULATED;
         CALCULATOR_LOG.info("Sorting recipes");
@@ -73,15 +69,17 @@ public class ReplicationCalculation {
 
 
         //SORTING RECIPES
-        SORTED_CALCULATION_REFERENCE = new HashMap<Item, CalculationReference>();
+        SORTED_CALCULATION_REFERENCE = new HashMap<ItemVariant, CalculationReference>();
         time = System.currentTimeMillis();
         for (RecipeHolder<CraftingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
             var result = craftingRecipe.value().getResultItem(registryAccess);
-            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new ArrayList<>(craftingRecipe.value().getIngredients())));
+            var resultVariant = ItemVariants.normalize(result);
+            SORTED_CALCULATION_REFERENCE.computeIfAbsent(resultVariant, string -> new CalculationReference(resultVariant, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new ArrayList<>(craftingRecipe.value().getIngredients())));
         }
         for (RecipeHolder<SmeltingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
             var result = craftingRecipe.value().getResultItem(registryAccess);
-            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new ArrayList<>(craftingRecipe.value().getIngredients())));
+            var resultVariant = ItemVariants.normalize(result);
+            SORTED_CALCULATION_REFERENCE.computeIfAbsent(resultVariant, string -> new CalculationReference(resultVariant, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new ArrayList<>(craftingRecipe.value().getIngredients())));
         }
         CALCULATOR_LOG.info("Sorted " + SORTED_CALCULATION_REFERENCE.size() + " Recipes in " + (System.currentTimeMillis() - time) + "ms");
     }
@@ -99,7 +97,7 @@ public class ReplicationCalculation {
                         }
                         compound.add(matterValue);
                     }
-                    DEFAULT_MATTER_COMPOUND.put(item.getItem(), compound);
+                    DEFAULT_MATTER_COMPOUND.put(ItemVariants.normalize(item), compound);
                 }
             }
             CALCULATOR_LOG.info("Loaded default values in " + (System.currentTimeMillis() - time) + "ms");
@@ -128,23 +126,27 @@ public class ReplicationCalculation {
                         CALCULATOR_LOG.info("Progress " + checkedAmount + " of " + totalAmount + " items");
                         timeTracker = System.currentTimeMillis();
                     }
-                    try {
-                        var stack = item.getDefaultInstance();
-                        if (stack.isEmpty()) continue;
-                        //if (InvUtil.hasExtraComponents(stack)) continue;
-                        var rl = getNameFromStack(stack);
-                        if (!DEFAULT_MATTER_COMPOUND.containsKey(stack.getItem()) && !SORTED_CALCULATION_REFERENCE.containsKey(stack.getItem())) {
-                            continue;
+
+                    Set<ItemVariant> variants = ItemVariants.getVariants(item, registryAccess);
+                    for (ItemVariant variant : variants) {
+                        try {
+                            var stack = variant.stack();
+                            if (stack.isEmpty()) continue;
+                            //if (InvUtil.hasExtraComponents(stack)) continue;
+                            if (!DEFAULT_MATTER_COMPOUND.containsKey(variant) && !SORTED_CALCULATION_REFERENCE.containsKey(variant)) {
+                                continue;
+                            }
+                            var compound = getMatterCompound(variant, 0, new HashSet<>(), new HashSet<>(), false);
+                            // CALCULATOR_LOG.info("---------------------------------------------");
+                            if (compound != null && !compound.getValues().isEmpty()) {
+                                if (false) CALCULATOR_LOG.info(item + " -> " + compound.toString());
+                                tempTag.put(ItemVariants.getName(variant), compound.serializeNBT(registryAccess));
+                                ++amount;
+                            }
+                        } catch (Exception e) {
+                            // TODO: Could we add more handy information?
+                            CALCULATOR_LOG.info("Failed to calculate a variant of " + item, e);
                         }
-                        var compound = getMatterCompound(stack, 0, new HashSet<>(), new HashSet<>(), false);
-                        // CALCULATOR_LOG.info("---------------------------------------------");
-                        if (compound != null && !compound.getValues().isEmpty()) {
-                            if (false) CALCULATOR_LOG.info(item + " -> " + compound.toString());
-                            tempTag.put(rl, compound.serializeNBT(registryAccess));
-                            ++amount;
-                        }
-                    } catch (Exception e) {
-                        CALCULATOR_LOG.info("Failed to calculate " + item, e);
                     }
                 }
                 CALCULATOR_LOG.info("Resolved " + amount + " values in " + (System.currentTimeMillis() - time) + "ms");
@@ -162,21 +164,21 @@ public class ReplicationCalculation {
 
     @Nullable
     public static MatterCompound getMatterCompound(ItemStack stack) {
-        return getMatterCompound(stack, 0, new HashSet<>(), new HashSet<>(), false);
+        return getMatterCompound(ItemVariants.normalize(stack), 0, new HashSet<>(), new HashSet<>(), false);
     }
 
-    private static MatterCompound getMatterCompound(ItemStack item, int depth, Set<String> visitedRecipes, Set<Item> visitedCalculations, boolean printDebug) {
+    private static MatterCompound getMatterCompound(ItemVariant variant, int depth, Set<String> visitedRecipes, Set<Item> visitedCalculations, boolean printDebug) {
         MatterCompound result = null;
         //GET FROM DEFAULT VALUES
-        result = getMatterCompound(item, depth, visitedRecipes, visitedCalculations, printDebug, result);
+        result = getMatterCompound(variant, depth, visitedRecipes, visitedCalculations, printDebug, result);
         return result;
     }
 
-    private static MatterCompound getMatterCompound(ItemStack item, int depth, Set<String> visitedRecipes, Set<Item> visitedCalculations, boolean printDebug, MatterCompound result) {
-        var defaultValue = getDefaultValue(item);
+    private static MatterCompound getMatterCompound(ItemVariant variant, int depth, Set<String> visitedRecipes, Set<Item> visitedCalculations, boolean printDebug, MatterCompound result) {
+        var defaultValue = getDefaultValue(variant);
         if (defaultValue != null) {
             if (printDebug)
-                CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "Found default value for " + item.toString());
+                CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "Found default value for " + variant.stack().toString());
             if (result == null) {
                 result = defaultValue;
             } else {
@@ -185,11 +187,11 @@ public class ReplicationCalculation {
         } else {
             //CALCULATE
             if(ReplicationConfig.RecipeCalculation.MAX_RECIPE_DEPTH == 0) return null;
-            if (item.is(ReplicationTags.SKIP_CALCULATION)) return null;
-            if (SORTED_CALCULATION_REFERENCE.containsKey(item.getItem())) {
+            if (variant.stack().is(ReplicationTags.SKIP_CALCULATION)) return null;
+            if (SORTED_CALCULATION_REFERENCE.containsKey(variant)) {
                 if (printDebug)
-                    CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "Calculating value for " + item);
-                var temp = SORTED_CALCULATION_REFERENCE.get(item.getItem()).resolve(depth, visitedRecipes, visitedCalculations, printDebug);
+                    CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "Calculating value for " + variant.stack());
+                var temp = SORTED_CALCULATION_REFERENCE.get(variant).resolve(depth, visitedRecipes, visitedCalculations, printDebug);
                 if (temp != null) {
                     if (result == null) {
                         result = temp;
@@ -207,13 +209,13 @@ public class ReplicationCalculation {
         if (cached != null) return cached;
         MatterCompound result = null;
         for (ItemStack item : input.getItems()) {
-            var temp = getMatterCompound(item, depth, visitedRecipes, visitedCalculations, printDebug, result);
+            var temp = getMatterCompound(ItemVariants.normalize(item), depth, visitedRecipes, visitedCalculations, printDebug, result);
             if (ReplicationConfig.RecipeCalculation.SUBTRACT_CRAFTING_REMAINING_ITEM && temp != null && item.hasCraftingRemainingItem() && !item.is(ReplicationTags.DONT_CHECK_FOR_CRAFTING_RESULT)) {
                 var craftingRemainingItem = item.getCraftingRemainingItem();
                 if (ItemStack.isSameItem(craftingRemainingItem, item)) {
                     temp = new MatterCompound();
                 } else {
-                    var remaining = getMatterCompound(craftingRemainingItem, depth, visitedRecipes, visitedCalculations, printDebug, result);
+                    var remaining = getMatterCompound(ItemVariants.normalize(craftingRemainingItem), depth, visitedRecipes, visitedCalculations, printDebug, result);
                     if (remaining != null) {
                         temp = temp.duplicate().substract(remaining);
                     }
@@ -229,8 +231,8 @@ public class ReplicationCalculation {
         return result;
     }
 
-    private static MatterCompound getDefaultValue(ItemStack stack) {
-        return DEFAULT_MATTER_COMPOUND.get(stack.getItem());
+    private static MatterCompound getDefaultValue(ItemVariant variant) {
+        return DEFAULT_MATTER_COMPOUND.get(variant);
     }
 
     private static class RecipeReference {
@@ -270,15 +272,15 @@ public class ReplicationCalculation {
     private static class CalculationReference {
 
         private final Set<RecipeReference> references;
-        private final ItemStack stack;
+        private final ItemVariant variant;
         private final Item name;
         private boolean resolved = false;
         private MatterCompound cached;
 
-        public CalculationReference(ItemStack stack, Set<RecipeReference> references) {
+        public CalculationReference(ItemVariant variant, Set<RecipeReference> references) {
             this.references = references;
-            this.stack = stack;
-            this.name = stack.getItem();
+            this.variant = variant;
+            this.name = variant.stack().getItem();
         }
 
         public MatterCompound resolve(int depth, Set<String> visitedRecipes, Set<Item> visitedCalculations, boolean printDebug) {
@@ -287,14 +289,14 @@ public class ReplicationCalculation {
             }
             visitedCalculations.add(name);
             if (references.size() == 0) {
-                CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "FOUND NO RECIPES FOR " + stack.toString());
+                CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "FOUND NO RECIPES FOR " + variant.stack().toString());
             }
             if (resolved) {
                 if (printDebug)
                     CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "RESOLVED_" + (cached == null ? null : cached.toString()));
                 return cached;
             }
-            MatterCompound result = getDefaultValue(stack);
+            MatterCompound result = getDefaultValue(variant);
             if (result != null) {
                 resolved = true;
                 this.cached = result;

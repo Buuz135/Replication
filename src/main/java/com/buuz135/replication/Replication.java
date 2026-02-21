@@ -6,11 +6,11 @@ import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.block.*;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.block.tile.ReplicationMachine;
+import com.buuz135.replication.calculation.ItemVariants;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
 import com.buuz135.replication.data.*;
-import com.buuz135.replication.datamaps.ComponentsToCopy;
 import com.buuz135.replication.item.*;
 import com.buuz135.replication.network.DefaultMatterNetworkElement;
 import com.buuz135.replication.network.MatterNetwork;
@@ -58,7 +58,6 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -90,7 +89,6 @@ public class Replication extends ModuleController {
         NETWORK.registerMessage("task_cancel_response", TaskCancelPacket.Response.class);
         NETWORK.registerMessage("replication_calculation", ReplicationCalculationPacket.class);
         ReplicationRegistry.init(modBus);
-        modBus.addListener(this::registerDataMapTypes);
         CommonEvents.init();
         if (dist == Dist.CLIENT) {
             ClientEvents.init();
@@ -118,10 +116,6 @@ public class Replication extends ModuleController {
                 InterModComms.sendTo("darkmodeeverywhere", "dme-shaderblacklist", () -> "com.buuz135.replication");
             }).subscribe();
         }
-    }
-
-    private void registerDataMapTypes(RegisterDataMapTypesEvent event) {
-        event.register(ComponentsToCopy.DATA_MAP);
     }
 
     @Override
@@ -217,6 +211,7 @@ public class Replication extends ModuleController {
             }
         }).subscribe();
 
+        ItemVariants.init();
         ReplicationCalculation.init();
 
         if (ModList.get().isLoaded("guideme")) {
