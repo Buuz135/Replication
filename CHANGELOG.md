@@ -1,3 +1,7 @@
+# 1.2.7
+
+* Fixed Locking does not work, closes #90 #96
+
 # 1.2.6
 
 * Fix issue with matter pipe connections - realdody 
