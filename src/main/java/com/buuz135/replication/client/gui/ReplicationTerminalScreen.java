@@ -393,6 +393,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     }
 
     public void disableRequest() {
+        if (this.replicationRequestWidget == null) {
+            return;
+        }
         this.replicationRequestWidget.getWidgets().forEach(abstractWidget -> this.children().remove(abstractWidget));
         this.replicationRequestWidget = null;
         this.menu.setEnabled(ReplicationTerminalContainer.SlotVisualType.ALL);

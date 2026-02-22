@@ -2,6 +2,7 @@
 
 * Fixed Locking does not work, closes #90 #96
 * Added a config option to ignore mods recipes when calculating matter values, closes #95
+* Fixed terminal crash, closes #92
 
 # 1.2.6
 
