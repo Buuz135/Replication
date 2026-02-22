@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class ReplicationCalculation {
@@ -75,11 +76,14 @@ public class ReplicationCalculation {
         //SORTING RECIPES
         SORTED_CALCULATION_REFERENCE = new HashMap<Item, CalculationReference>();
         time = System.currentTimeMillis();
+        var ignoredRecipes = ReplicationConfig.RecipeCalculation.IGNORED_RECIPE_MODS.stream().map(String::toLowerCase).collect(Collectors.toSet());
         for (RecipeHolder<CraftingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
+            if (ignoredRecipes.contains(craftingRecipe.id().getNamespace().toLowerCase())) continue;
             var result = craftingRecipe.value().getResultItem(registryAccess);
             SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new ArrayList<>(craftingRecipe.value().getIngredients())));
         }
         for (RecipeHolder<SmeltingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
+            if (ignoredRecipes.contains(craftingRecipe.id().getNamespace().toLowerCase())) continue;
             var result = craftingRecipe.value().getResultItem(registryAccess);
             SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new ArrayList<>(craftingRecipe.value().getIngredients())));
         }

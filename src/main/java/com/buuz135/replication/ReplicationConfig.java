@@ -3,6 +3,9 @@ package com.buuz135.replication;
 import com.hrznstudio.titanium.annotation.config.ConfigFile;
 import com.hrznstudio.titanium.annotation.config.ConfigVal;
 
+import java.util.Arrays;
+import java.util.List;
+
 @ConfigFile
 public class ReplicationConfig {
 
@@ -83,6 +86,9 @@ public class ReplicationConfig {
 
         @ConfigVal(comment = "If enabled, values of items that have a crafting remaining item like milk buckets in the cake recipe, will subtract their remaining item matter value from the calculation")
         public static boolean SUBTRACT_CRAFTING_REMAINING_ITEM = true;
+
+        @ConfigVal(comment = "Recipes from the mods on this list will get ignored when calculating matter values")
+        public static List<String> IGNORED_RECIPE_MODS = Arrays.asList("ae2qolrecipes");
 
     }
 

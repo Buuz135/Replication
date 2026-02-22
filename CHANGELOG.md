@@ -1,6 +1,7 @@
 # 1.2.7
 
 * Fixed Locking does not work, closes #90 #96
+* Added a config option to ignore mods recipes when calculating matter values, closes #95
 
 # 1.2.6
 
