@@ -1,0 +1,20 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "ethernal_starlight:aethersent_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 10.0
+      },
+      {
+        "type": "replication:precious",
+        "amount": 10.0
+      },
+      {
+        "type": "replication:living",
+        "amount": 2.0
+      }
+    ]
+  }

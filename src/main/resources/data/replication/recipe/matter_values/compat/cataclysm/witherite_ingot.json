@@ -1,0 +1,20 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "cataclysm:witherite_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 50.0
+      },
+      {
+        "type": "replication:nether",
+        "amount": 46.0
+      },
+      {
+        "type": "replication:precious",
+        "amount": 160.0
+      }
+    ]
+  }

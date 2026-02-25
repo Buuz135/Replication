@@ -1,0 +1,12 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "modern_industrialization:nickel_double_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 18.0
+      }
+    ]
+  }
