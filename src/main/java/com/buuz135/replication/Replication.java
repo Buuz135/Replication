@@ -6,6 +6,7 @@ import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.block.*;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
 import com.buuz135.replication.block.tile.ReplicationMachine;
+import com.buuz135.replication.calculation.ItemVariants;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.ClientEvents;
 import com.buuz135.replication.container.ReplicationTerminalContainer;
@@ -210,6 +211,7 @@ public class Replication extends ModuleController {
             }
         }).subscribe();
 
+        ItemVariants.init();
         ReplicationCalculation.init();
 
         if (ModList.get().isLoaded("guideme")) {
