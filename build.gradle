@@ -83,6 +83,8 @@ repositories {
 }
 
 dependencies {
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
     compileOnly "mezz.jei:jei-1.21.1-common-api:$jei_version"
     compileOnly "mezz.jei:jei-1.21.1-neoforge-api:$jei_version"
     runtimeOnly "mezz.jei:jei-1.21.1-neoforge:$jei_version"
@@ -120,6 +122,10 @@ jar {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
     options.compilerArgs << '-Xmaxerrs' << '2000'
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
 }
 
 publishing {
