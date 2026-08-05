@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 public class ClientReplicationCalculation {
 
@@ -43,8 +45,7 @@ public class ClientReplicationCalculation {
 
         List<MatterOpediaCatalog.Seed> seeds = new ArrayList<>(DEFAULT_MATTER_COMPOUND.size());
         DEFAULT_MATTER_COMPOUND.forEach((itemName, compound) -> {
-            ResourceLocation itemId = ResourceLocation.parse(itemName);
-            BuiltInRegistries.ITEM.getOptional(itemId).ifPresent(item -> {
+            ifRegisteredItem(itemName, (itemId, item) -> {
                 ItemStack stack = item.getDefaultInstance();
                 if (stack.isEmpty()) {
                     return;
@@ -88,8 +89,7 @@ public class ClientReplicationCalculation {
 
         Map<ResourceLocation, String> displayNames = new LinkedHashMap<>();
         for (String itemName : DEFAULT_MATTER_COMPOUND.keySet()) {
-            ResourceLocation itemId = ResourceLocation.parse(itemName);
-            BuiltInRegistries.ITEM.getOptional(itemId).ifPresent(item -> {
+            ifRegisteredItem(itemName, (itemId, item) -> {
                 ItemStack stack = item.getDefaultInstance();
                 if (!stack.isEmpty()) {
                     displayNames.put(
@@ -118,6 +118,14 @@ public class ClientReplicationCalculation {
                 current.generation() + 1,
                 current.languageGeneration()
         );
+    }
+
+    static void ifRegisteredItem(String itemName, BiConsumer<ResourceLocation, Item> action) {
+        ResourceLocation itemId = ResourceLocation.tryParse(itemName);
+        if (itemId == null) {
+            return;
+        }
+        BuiltInRegistries.ITEM.getOptional(itemId).ifPresent(item -> action.accept(itemId, item));
     }
 
     private static Set<ResourceLocation> getMatterTypeKeys() {
