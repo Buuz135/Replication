@@ -20,9 +20,11 @@ import static com.buuz135.replication.calculation.client.matteropedia.MatterOped
 import static com.buuz135.replication.calculation.client.matteropedia.MatterOpediaQuery.SortType.AMOUNT;
 import static com.buuz135.replication.calculation.client.matteropedia.MatterOpediaQuery.SortType.DISPLAY_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MatterOpediaCatalogTest {
     private static final ResourceLocation EARTH = ResourceLocation.parse("test:earth");
@@ -86,6 +88,12 @@ class MatterOpediaCatalogTest {
     @Test
     void returnsCanonicalEmptyResultForUnknownMatterTypes() {
         assertSame(MatterOpediaResult.empty(), query(UNKNOWN, NONE, 0, AMOUNT, false));
+    }
+
+    @Test
+    void reportsWhetherTheCatalogSnapshotHasEntries() {
+        assertFalse(catalog.isEmpty());
+        assertTrue(MatterOpediaCatalog.empty(8, 12).isEmpty());
     }
 
     @Test

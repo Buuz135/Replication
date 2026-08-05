@@ -104,6 +104,10 @@ public final class MatterOpediaCatalog {
         return languageGeneration;
     }
 
+    public boolean isEmpty() {
+        return entries.isEmpty();
+    }
+
     public MatterOpediaCatalog withDisplayNames(
             Map<ResourceLocation, String> displayNames,
             long nextLanguageGeneration

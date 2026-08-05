@@ -5,6 +5,7 @@ import com.buuz135.replication.calculation.MatterCompound;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.calculation.client.matteropedia.MatterOpediaCatalog;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -83,7 +84,8 @@ public class ClientReplicationCalculation {
     }
 
     public static void rebuildMatterOpediaNameIndexes() {
-        if (DEFAULT_MATTER_COMPOUND.isEmpty()) {
+        MatterOpediaCatalog current = matterOpediaCatalog;
+        if (current.isEmpty()) {
             return;
         }
 
@@ -103,7 +105,6 @@ public class ClientReplicationCalculation {
             return;
         }
 
-        MatterOpediaCatalog current = matterOpediaCatalog;
         MatterOpediaCatalog replacement = current.withDisplayNames(
                 displayNames,
                 current.languageGeneration() + 1
@@ -129,13 +130,15 @@ public class ClientReplicationCalculation {
     }
 
     private static Set<ResourceLocation> getMatterTypeKeys() {
+        return getMatterTypeKeys(ReplicationRegistry.MATTER_TYPES_REGISTRY);
+    }
+
+    static <T> Set<ResourceLocation> getMatterTypeKeys(Registry<T> matterTypes) {
         Set<ResourceLocation> matterTypeKeys = new LinkedHashSet<>();
-        ReplicationRegistry.MATTER_TYPES_REGISTRY.forEach(matterType -> {
-            if (matterType != ReplicationRegistry.Matter.EMPTY.get()) {
-                ResourceLocation matterKey = ReplicationRegistry.MATTER_TYPES_REGISTRY.getKey(matterType);
-                if (matterKey != null) {
-                    matterTypeKeys.add(matterKey);
-                }
+        matterTypes.forEach(matterType -> {
+            ResourceLocation matterKey = matterTypes.getKey(matterType);
+            if (matterKey != null) {
+                matterTypeKeys.add(matterKey);
             }
         });
         return matterTypeKeys;
