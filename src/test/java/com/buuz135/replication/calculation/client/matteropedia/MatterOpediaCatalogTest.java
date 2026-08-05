@@ -164,6 +164,26 @@ class MatterOpediaCatalogTest {
         assertNotSame(oldResult, replacementResult);
     }
 
+    @Test
+    void replacingTheCatalogDoesNotMutateThePreviousSnapshot() {
+        MatterOpediaCatalog original = catalog;
+        MatterOpediaQuery nameQuery = queryOf(EARTH, NONE, 0, DISPLAY_NAME, false);
+        MatterOpediaResult originalResult = original.query(nameQuery);
+        MatterOpediaCatalog replacement = MatterOpediaCatalog.fromSeeds(List.of(
+                seed("test:epsilon", "Able", Map.of(EARTH, 3D), 1),
+                seed("test:zeta", "Baker", Map.of(EARTH, 6D), 1)
+        ), Set.of(EARTH), 8, 11);
+
+        MatterOpediaResult replacementResult = replacement.query(nameQuery);
+
+        assertIds(originalResult, BETA, GAMMA, ALPHA);
+        assertIds(original.query(nameQuery), BETA, GAMMA, ALPHA);
+        assertIds(replacementResult, 0, 1);
+        assertEquals(7, original.generation());
+        assertEquals(8, replacement.generation());
+        assertNotSame(originalResult, replacementResult);
+    }
+
     private MatterOpediaResult query(
             ResourceLocation matterType,
             MatterOpediaQuery.FilterMode filterMode,
