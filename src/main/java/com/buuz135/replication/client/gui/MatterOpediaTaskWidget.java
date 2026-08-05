@@ -3,8 +3,10 @@ package com.buuz135.replication.client.gui;
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.IMatterType;
-import com.buuz135.replication.calculation.MatterCompound;
 import com.buuz135.replication.calculation.client.ClientReplicationCalculation;
+import com.buuz135.replication.calculation.client.matteropedia.MatterOpediaCatalog;
+import com.buuz135.replication.calculation.client.matteropedia.MatterOpediaQuery;
+import com.buuz135.replication.calculation.client.matteropedia.MatterOpediaResult;
 import com.buuz135.replication.client.gui.button.ReplicationTerminalConfigButton;
 import com.buuz135.replication.client.gui.button.ReplicationTerminalTexturedButton;
 import com.buuz135.replication.util.NumberUtils;
@@ -20,13 +22,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.buuz135.replication.client.gui.ReplicationTerminalScreen.BUTTONS;
 
@@ -45,17 +48,20 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
     private boolean scrolling;
     private ReplicationTerminalConfigButton sortingType;
     private ReplicationTerminalConfigButton sortingDirection;
-    private MatterValuesMenu matterValuesMenu;
     private EditBox searchBox;
     private IMatterType searchMatterType;
     private int searchMatterAmount;
-    private FilteringMode filteringMode;
+    private MatterOpediaQuery.FilterMode filteringMode;
+    private MatterOpediaCatalog catalog = ClientReplicationCalculation.getMatterOpediaCatalog();
+    private MatterOpediaResult result = MatterOpediaResult.empty();
+    private final Map<Integer, ItemStack> visibleStacks = new HashMap<>();
+    private int firstVisibleEntry;
 
     public MatterOpediaTaskWidget(int pX, int pY, int pWidth, int pHeight, Component pMessage, ReplicationTerminalScreen replicationTerminalContainer, String defaultSearch) {
         super(pX, pY, pWidth, pHeight, pMessage);
         this.widgets = new ArrayList<>();
         this.searchMatterAmount = 0;
-        this.filteringMode = FilteringMode.NONE;
+        this.filteringMode = MatterOpediaQuery.FilterMode.NONE;
         this.replicationTerminalScreen = replicationTerminalContainer;
         this.closeButton = new ReplicationTerminalTexturedButton(this.getX() + 176, this.getY() + 10, 9, 9, Component.empty(), EXTRAS,
                 Component.translatable("tooltip.replication.close").getString(), 247, 50, 238, 50, button -> this.replicationTerminalScreen.disableMatteropedia());
@@ -84,8 +90,7 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
             @Override
             public void onPress() {
                 super.onPress();
-                scrollOffs = 0;
-                matterValuesMenu.scrollTo(0);
+                refreshQuery();
             }
 
             @Override
@@ -99,8 +104,7 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
             @Override
             public void onPress() {
                 super.onPress();
-                scrollOffs = 0;
-                matterValuesMenu.scrollTo(0);
+                refreshQuery();
             }
 
             @Override
@@ -109,7 +113,7 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
             }
         });
 
-        this.matterValuesMenu = new MatterValuesMenu();
+        refreshQuery();
     }
 
     @Override
@@ -121,14 +125,52 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
         int k = this.getY() + 28;
         int i = k + 88;
         guiGraphics.blit(BUTTONS, j, k + (int) ((float) (i - k - 5) * this.scrollOffs), 245, 0, 11, 5);
-        this.searchBox.render(guiGraphics, mouseX, mouseY, v);
 
         for (AbstractWidget widget : this.widgets) {
             widget.render(guiGraphics, mouseX, mouseY, v);
         }
-        for (int index = 0; index < this.matterValuesMenu.visibleButtons.size(); index++) {
-            var widget = this.matterValuesMenu.visibleButtons.get(index);
-            widget.render(guiGraphics, this.getX() + (index % 9) * 18 + 9, this.getY() + (index / 9) * 18 + 26, mouseX, mouseY, v);
+
+        int visibleCount = Math.min(63, result.size() - firstVisibleEntry);
+        for (int index = 0; index < visibleCount; index++) {
+            int entryId = result.entryIdAt(firstVisibleEntry + index);
+            MatterOpediaCatalog.Entry entry = catalog.entry(entryId);
+            ItemStack stack = visibleStacks.computeIfAbsent(entryId, ignored ->
+                    BuiltInRegistries.ITEM.getOptional(entry.itemId())
+                            .map(Item::getDefaultInstance)
+                            .orElse(ItemStack.EMPTY));
+            renderEntry(guiGraphics, entry, stack,
+                    getX() + (index % 9) * 18 + 9,
+                    getY() + (index / 9) * 18 + 26,
+                    mouseX, mouseY, v);
+        }
+    }
+
+    private void renderEntry(
+            GuiGraphics guiGraphics,
+            MatterOpediaCatalog.Entry entry,
+            ItemStack stack,
+            int x,
+            int y,
+            int mouseX,
+            int mouseY,
+            float partialTick
+    ) {
+        guiGraphics.renderItem(stack, x + 2, y + 2);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 200);
+        var scale = 0.5f;
+        ResourceLocation matterKey = ReplicationRegistry.MATTER_TYPES_REGISTRY.getKey(searchMatterType);
+        var amount = entry.amount(matterKey);
+        if (amount > 0) {
+            var display = NumberUtils.getFormatedBigNumber(amount);
+            guiGraphics.pose().scale(scale, scale, scale);
+            guiGraphics.drawString(Minecraft.getInstance().font, display,
+                    (x + 18) / scale - Minecraft.getInstance().font.width(display),
+                    (y + 14) / scale, 0xFFFFFF, true);
+        }
+        guiGraphics.pose().popPose();
+        if (mouseX > x + 2 && mouseX < x + 19 && mouseY > y + 2 && mouseY < y + 19) {
+            guiGraphics.renderTooltip(Minecraft.getInstance().font, stack, mouseX, mouseY);
         }
     }
 
@@ -155,7 +197,7 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
             int j = i + this.scrollBarHeight - 2;
             this.scrollOffs = ((float) pMouseY - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
             this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
-            this.matterValuesMenu.scrollTo(this.scrollOffs);
+            this.scrollTo(this.scrollOffs);
             return true;
         }
         return false;
@@ -166,8 +208,10 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
         if (!this.canScroll()) {
             return false;
         } else {
-            this.scrollOffs = this.matterValuesMenu.subtractInputFromScroll(this.scrollOffs, scrollY);
-            this.matterValuesMenu.scrollTo(this.scrollOffs);
+            this.scrollOffs = Mth.clamp(
+                    this.scrollOffs - (float) (scrollY / (double) this.scrollableRows()),
+                    0.0F, 1.0F);
+            this.scrollTo(this.scrollOffs);
             return true;
         }
     }
@@ -181,7 +225,7 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
     }
 
     private boolean canScroll() {
-        return this.matterValuesMenu.canScroll();
+        return this.result.size() > 63;
     }
 
     @Override
@@ -193,7 +237,7 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
                 int j = i + this.scrollBarHeight - 2;
                 this.scrollOffs = ((float) pMouseY - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
                 this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
-                this.matterValuesMenu.scrollTo(this.scrollOffs);
+                this.scrollTo(this.scrollOffs);
                 return true;
             }
             if (this.searchBox.isHovered()) {
@@ -211,10 +255,6 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
             if (this.sortingType.isHovered()) {
                 return this.sortingType.mouseClicked(pMouseX, pMouseY, pButton);
             }
-            if (this.matterValuesMenu.mouseClicked(pMouseX, pMouseY, pButton)) {
-                return true;
-            }
-
         }
         return false;
     }
@@ -224,8 +264,9 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
         String s = this.searchBox.getValue();
         if (this.searchBox.charTyped(pCodePoint, pModifiers)) {
             if (!Objects.equals(s, this.searchBox.getValue())) {
-                cacheMatterType();
-                this.matterValuesMenu.scrollTo(0f);
+                if (cacheMatterType()) {
+                    refreshQuery();
+                }
             }
             return true;
         } else {
@@ -243,8 +284,9 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
         String s = this.searchBox.getValue();
         if (this.searchBox.keyPressed(p_98547_, p_98548_, p_98549_)) {
             if (!Objects.equals(s, this.searchBox.getValue())) {
-                cacheMatterType();
-                this.matterValuesMenu.scrollTo(0f);
+                if (cacheMatterType()) {
+                    refreshQuery();
+                }
                 return true;
             }
         } else {
@@ -253,27 +295,30 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
         return false;
     }
 
-    private void cacheMatterType() {
+    private boolean cacheMatterType() {
+        IMatterType previousMatterType = this.searchMatterType;
+        int previousMatterAmount = this.searchMatterAmount;
+        MatterOpediaQuery.FilterMode previousFilteringMode = this.filteringMode;
         var s = this.searchBox.getValue();
         var matterType = s;
         this.searchMatterAmount = 0;
         if (s.contains("=")) {
-            this.filteringMode = FilteringMode.AMOUNT_EQUAL;
+            this.filteringMode = MatterOpediaQuery.FilterMode.AMOUNT_EQUAL;
             matterType = cleanString(s, "=");
         } else if (s.contains("<")) {
-            this.filteringMode = FilteringMode.AMOUNT_LESS;
+            this.filteringMode = MatterOpediaQuery.FilterMode.AMOUNT_LESS;
             matterType = cleanString(s, "<");
         } else if (s.contains(">")) {
-            this.filteringMode = FilteringMode.AMOUNT_GREATER;
+            this.filteringMode = MatterOpediaQuery.FilterMode.AMOUNT_GREATER;
             matterType = cleanString(s, ">");
         } else if (s.startsWith("!")) {
-            this.filteringMode = FilteringMode.DOESNT_HAVE;
+            this.filteringMode = MatterOpediaQuery.FilterMode.DOESNT_HAVE;
             matterType = s.replaceFirst("!", "");
         } else if (s.startsWith("*")) {
-            this.filteringMode = FilteringMode.ONLY_HAS;
+            this.filteringMode = MatterOpediaQuery.FilterMode.ONLY_HAS;
             matterType = s.replaceFirst("\\*", "");
         } else {
-            this.filteringMode = FilteringMode.NONE;
+            this.filteringMode = MatterOpediaQuery.FilterMode.NONE;
         }
         var found = false;
         for (IMatterType iMatterType : ReplicationRegistry.MATTER_TYPES_REGISTRY) {
@@ -286,6 +331,9 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
         if (!found) {
             this.searchMatterType = ReplicationRegistry.Matter.EARTH.get();
         }
+        return previousMatterType != this.searchMatterType
+                || previousMatterAmount != this.searchMatterAmount
+                || previousFilteringMode != this.filteringMode;
     }
 
     private String cleanString(String input, String splitChar) {
@@ -301,156 +349,47 @@ public class MatterOpediaTaskWidget extends AbstractWidget implements Renderable
         return input;
     }
 
+    private MatterOpediaQuery currentQuery(MatterOpediaCatalog catalog) {
+        ResourceLocation matterKey = ReplicationRegistry.MATTER_TYPES_REGISTRY.getKey(searchMatterType);
+        MatterOpediaQuery.SortType sortType = sortingType.getState() == 0
+                ? MatterOpediaQuery.SortType.AMOUNT
+                : MatterOpediaQuery.SortType.DISPLAY_NAME;
+
+        // Preserve the existing comparator's direction behavior exactly.
+        boolean descending = sortType == MatterOpediaQuery.SortType.AMOUNT
+                ? sortingDirection.getState() == 1
+                : sortingDirection.getState() == 0;
+
+        return new MatterOpediaQuery(
+                matterKey, filteringMode, searchMatterAmount, sortType, descending);
+    }
+
+    private void refreshQuery() {
+        result = catalog.query(currentQuery(catalog));
+        firstVisibleEntry = 0;
+        scrollOffs = 0.0F;
+    }
+
+    private int scrollableRows() {
+        return Math.max(Mth.positiveCeilDiv(result.size(), 9) - 7, 0);
+    }
+
+    public void scrollTo(float offset) {
+        int firstRow = Math.max((int) (offset * scrollableRows() + 0.5F), 0);
+        firstVisibleEntry = firstRow * 9;
+    }
+
+    public void tickCatalog() {
+        MatterOpediaCatalog current = ClientReplicationCalculation.getMatterOpediaCatalog();
+        if (current.generation() != catalog.generation()
+                || current.languageGeneration() != catalog.languageGeneration()) {
+            catalog = current;
+            visibleStacks.clear();
+            refreshQuery();
+        }
+    }
+
     public List<AbstractWidget> getWidgets() {
         return widgets;
-    }
-
-    public enum FilteringMode {
-        NONE,
-        AMOUNT_EQUAL,
-        AMOUNT_LESS,
-        AMOUNT_GREATER,
-        DOESNT_HAVE,
-        ONLY_HAS;
-
-    }
-
-    public class MatterDisplay {
-
-        private ItemStack stack;
-        private MatterCompound matterCompound;
-
-        public MatterDisplay(ItemStack stack, MatterCompound values) {
-            this.stack = stack;
-            this.matterCompound = values;
-        }
-
-        public ItemStack getStack() {
-            return stack;
-        }
-
-        public MatterCompound getMatterCompound() {
-            return matterCompound;
-        }
-
-        public double getAmountFor(IMatterType type) {
-            if (matterCompound.getValues().containsKey(type)) {
-                return matterCompound.getValues().get(type).getAmount();
-            }
-            return 0;
-        }
-
-        public void render(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float v) {
-            guiGraphics.renderItem(stack, x + 2, y + 2);
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, 0, 200);
-            var scale = 0.5f;
-            var amount = getAmountFor(MatterOpediaTaskWidget.this.searchMatterType);
-            if (amount > 0) {
-                var display = NumberUtils.getFormatedBigNumber(amount);
-                guiGraphics.pose().scale(scale, scale, scale);
-                guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 18) / scale - Minecraft.getInstance().font.width(display), (y + 14) / scale, 0xFFFFFF, true);
-            }
-            guiGraphics.pose().popPose();
-            if (mouseX > x + 2 && mouseX < x + 19 && mouseY > y + 2 && mouseY < y + 19) {
-                guiGraphics.renderTooltip(Minecraft.getInstance().font, stack, mouseX, mouseY);
-            }
-        }
-    }
-
-    public class MatterValuesMenu {
-        public List<MatterDisplay> matterPatternButtonList = new ArrayList<>();
-        public List<MatterDisplay> visibleButtons = new ArrayList<>();
-
-        public MatterValuesMenu() {
-            ClientReplicationCalculation.DEFAULT_MATTER_COMPOUND.forEach((s, matterCompound) -> {
-                var item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(s));
-                var stack = item.getDefaultInstance();
-                if (!stack.isEmpty()) {
-                    matterPatternButtonList.add(new MatterDisplay(stack, matterCompound));
-                }
-            });
-            this.scrollTo(0.0F);
-        }
-
-
-        protected int calculateRowCount() {
-            return Mth.positiveCeilDiv(getFilteredPatterns().size(), 9) - 7;
-        }
-
-        protected int getRowIndexForScroll(float p_259664_) {
-            return Math.max((int) ((double) (p_259664_ * (float) this.calculateRowCount()) + 0.5), 0);
-        }
-
-        protected float getScrollForRowIndex(int p_259315_) {
-            return Mth.clamp((float) p_259315_ / (float) this.calculateRowCount(), 0.0F, 1.0F);
-        }
-
-        protected float subtractInputFromScroll(float p_259841_, double p_260358_) {
-            return Mth.clamp(p_259841_ - (float) (p_260358_ / (double) this.calculateRowCount()), 0.0F, 1.0F);
-        }
-
-        public void scrollTo(float p_98643_) {
-            int i = this.getRowIndexForScroll(p_98643_);
-            this.visibleButtons = new ArrayList<>();
-            var filtered = getFilteredPatterns();
-            Comparator<MatterDisplay> comparator = Comparator.comparingDouble(matterDisplay -> matterDisplay.getAmountFor(MatterOpediaTaskWidget.this.searchMatterType));
-            if (MatterOpediaTaskWidget.this.sortingType.getState() == 1) {
-                comparator = Comparator.comparing(matterPatternButton -> matterPatternButton.getStack().getDisplayName().getString().toLowerCase());
-                comparator = comparator.reversed();
-            }
-            if (MatterOpediaTaskWidget.this.sortingDirection.getState() == 1) {
-                comparator = comparator.reversed();
-            }
-            filtered.sort(comparator);
-            for (int j = 0; j < 7; ++j) {
-                for (int k = 0; k < 9; ++k) {
-                    int l = k + (j + i) * 9;
-                    if (l >= 0 && l < filtered.size()) {
-                        this.visibleButtons.add(filtered.get(l));
-                    } else {
-                        //CreativeModeInventoryScreen.CONTAINER.setItem(k + j * 9, ItemStack.EMPTY);
-                    }
-                }
-            }
-
-        }
-
-        public boolean canScroll() {
-            return getFilteredPatterns().size() > 9 * 7;
-        }
-
-        private List<MatterDisplay> getFilteredPatterns() {
-            var list = this.matterPatternButtonList.stream();
-            if (MatterOpediaTaskWidget.this.filteringMode == FilteringMode.NONE) {
-                list = list.filter(matterPatternButton -> matterPatternButton.getAmountFor(MatterOpediaTaskWidget.this.searchMatterType) > 0);
-            } else if (MatterOpediaTaskWidget.this.filteringMode == FilteringMode.AMOUNT_EQUAL) {
-                list = list.filter(matterPatternButton -> matterPatternButton.getAmountFor(MatterOpediaTaskWidget.this.searchMatterType) == MatterOpediaTaskWidget.this.searchMatterAmount);
-            } else if (MatterOpediaTaskWidget.this.filteringMode == FilteringMode.AMOUNT_LESS) {
-                list = list.filter(matterPatternButton -> matterPatternButton.getAmountFor(MatterOpediaTaskWidget.this.searchMatterType) < MatterOpediaTaskWidget.this.searchMatterAmount);
-            } else if (MatterOpediaTaskWidget.this.filteringMode == FilteringMode.AMOUNT_GREATER) {
-                list = list.filter(matterPatternButton -> matterPatternButton.getAmountFor(MatterOpediaTaskWidget.this.searchMatterType) > MatterOpediaTaskWidget.this.searchMatterAmount);
-            } else if (MatterOpediaTaskWidget.this.filteringMode == FilteringMode.ONLY_HAS) {
-                list = list.filter(matterPatternButton -> matterPatternButton.getAmountFor(MatterOpediaTaskWidget.this.searchMatterType) > 0 && matterPatternButton.getMatterCompound().getValues().size() == 1);
-            } else if (MatterOpediaTaskWidget.this.filteringMode == FilteringMode.DOESNT_HAVE) {
-                list = list.filter(matterPatternButton -> matterPatternButton.getAmountFor(MatterOpediaTaskWidget.this.searchMatterType) == 0);
-            }
-            return list.collect(Collectors.toList());
-        }
-
-        public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-            /**for (int matterButtonIndex = 0; matterButtonIndex < this.visibleButtons.size(); matterButtonIndex++) {
-             if (pMouseX > MatterOpediaTaskWidget.this.getX() + (matterButtonIndex % 9) * 18 + 11 && pMouseX < MatterOpediaTaskWidget.this.getX()  + (matterButtonIndex % 9) * 18 + 11 + 18
-             && pMouseY > MatterOpediaTaskWidget.this.topPos + (matterButtonIndex / 9) * 18 + 28 && pMouseY < MatterOpediaTaskWidget.this.topPos + (matterButtonIndex / 9) * 18 + 28 + 18) {
-             var patternButton = this.visibleButtons.get(matterButtonIndex);
-             if (patternButton.cachedAmount() == 0) return false;
-             MatterOpediaTaskWidget.this.enableRequest(new ReplicationRequestWidget((MatterOpediaTaskWidget.this.width - 177) / 2,
-             (MatterOpediaTaskWidget.this.height - 102) / 2, 177, 102, Component.translatable("replication.request_amount"), patternButton, MatterOpediaTaskWidget.this));
-             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(ReplicationRegistry.Sounds.TERMINAL_BUTTON.get(), 1.0F));
-             return true;
-             }
-             }**/
-            return false;
-        }
     }
 }

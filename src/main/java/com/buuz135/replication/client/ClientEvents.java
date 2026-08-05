@@ -28,6 +28,7 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -97,6 +98,15 @@ public class ClientEvents {
         EventManager.forge(RenderHighlightEvent.Block.class).process(ClientEvents::blockOverlayEvent).subscribe();
 
         EventManager.mod(RegisterShadersEvent.class).process(ClientEvents::registerShaders).subscribe();
+
+        EventManager.mod(RegisterClientReloadListenersEvent.class).process(event ->
+                event.registerReloadListener((ResourceManagerReloadListener) resourceManager ->
+                        Minecraft.getInstance().execute(
+                                ClientReplicationCalculation::rebuildMatterOpediaNameIndexes)))
+                .subscribe();
+
+        EventManager.forge(ClientPlayerNetworkEvent.LoggingOut.class).process(event ->
+                ClientReplicationCalculation.clearClientData()).subscribe();
 
         EventManager.mod(EntityRenderersEvent.AddLayers.class).process(event -> {
             for (PlayerSkin.Model skin : event.getSkins()) {

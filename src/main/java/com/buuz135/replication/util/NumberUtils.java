@@ -4,24 +4,9 @@ import java.text.DecimalFormat;
 
 public class NumberUtils {
 
-    private static DecimalFormat formatterWithUnits = new DecimalFormat("####0.#");
+    private static final ThreadLocal<DecimalFormat> BIG_NUMBER_FORMATTER =
+            ThreadLocal.withInitial(() -> new DecimalFormat("#.#"));
     private static final String[] suffixes = {"", "K", "M", "B", "T", "Q", "Qi", "Sx", "Sp", "O"};
-
-    /*public static String getFormatedBigNumber(double number) {
-        if (number >= 1000000000) { //BILLION
-            float numb = (float) (number / 1000_000_000F);
-            return formatterWithUnits.format(numb) + "B";
-        } else if (number >= 1000000) { //MILLION
-            float numb = (float) (number / 1000000F);
-            if (number > 100000000) numb = Math.round(numb);
-            return formatterWithUnits.format(numb) + "M";
-        } else if (number >= 1000) { //THOUSANDS
-            float numb = (float) (number / 1000F);
-            if (number > 100000) numb = Math.round(numb);
-            return formatterWithUnits.format(numb) + "K";
-        }
-        return String.valueOf(number);
-    }*/
 
     public static String getFormatedBigNumber(double value) {
         if (value < 1000) {
@@ -33,8 +18,7 @@ public class NumberUtils {
             return "Err";
         }
 
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        return decimalFormat.format(value / Math.pow(1000, exp)) + suffixes[exp];
+        return BIG_NUMBER_FORMATTER.get().format(value / Math.pow(1000, exp)) + suffixes[exp];
     }
 
     public static double customCeil(double value) {
@@ -44,4 +28,3 @@ public class NumberUtils {
         return (value > 0) ? (long) value + 1 : (long) value;
     }
 }
-
