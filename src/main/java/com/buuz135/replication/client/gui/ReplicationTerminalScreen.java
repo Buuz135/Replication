@@ -189,6 +189,9 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
     @Override
     protected void containerTick() {
         super.containerTick();
+        if (this.matterOpediaTaskWidget != null) {
+            this.matterOpediaTaskWidget.tickCatalog();
+        }
         //this.searchBox.tick(); TODO
         var shouldSort = false;
         for (MatterPatternButton matterPatternButton : this.patternMenu.matterPatternButtonList) {
