@@ -55,7 +55,7 @@
   "tooltip.replication.tank.matter": "Материя: ",
   "tooltip.replication.tank.priority": "Приоритет: ",
   "tooltip.replication.tank.unit": " материи",
-  "tooltip.replication.tank.void_excess": "Уничтожать излишки",
+  "tooltip.replication.tank.void_excess": "Удалять излишки",
   "tooltip.replication.terminal.amount": "Количество: ",
   "tooltip.replication.terminal.cancel_task": "Shift + ЛКМ для отмены задачи",
   "tooltip.replication.terminal.matteropedia_direction.state_0": "Направление сортировки: По возрастанию",
