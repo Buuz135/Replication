@@ -33,6 +33,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -72,7 +73,6 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
     @Save
     private RedstoneManager<RedstoneAction> redstoneManager;
     private RedstoneControlButtonComponent<RedstoneAction> redstoneButton;
-    @Save
     private ItemStackFilter infiniteCrafting;
     private boolean hasEnclosure;
     private boolean hasMotor;
@@ -350,6 +350,22 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
             }
             syncObject(motorSpeedMultiplier);
         }
+        markComponentDirty();
+    }
+
+    @Override
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.loadAdditional(compound, provider);
+        if (compound.contains("infiniteCrafting")) {
+            this.infiniteCrafting.deserializeNBT(provider, compound.getCompound("infiniteCrafting"));
+        }
+        invalidateCapabilities();
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+        super.saveAdditional(compound, provider);
+        compound.put("infiniteCrafting", infiniteCrafting.serializeNBT(provider));
     }
 
     public int getFailureChance() {
