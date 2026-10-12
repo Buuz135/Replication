@@ -58,7 +58,10 @@ public class MatterBluePrintItem extends ReplicationItem {
                     if (!stack.isEmpty() && stack.getItem() instanceof IMatterPatternModifier<?> patternModifier){
                         var returnedValue = ((IMatterPatternModifier<ItemStack>) patternModifier).addPattern(pContext.getLevel(), stack, item, (float) pContext.getItemInHand().get(ReplicationAttachments.BLUEPRINT).getDoubleOr("Progress", 0));
                         if (returnedValue.getPattern() != null){
-                            pContext.getItemInHand().shrink(1);
+                            var handItem = pContext.getItemInHand();
+                            handItem.shrink(1);
+                            pContext.getPlayer().setItemInHand(pContext.getHand(), handItem);
+                            chipStorageBlockEntity.getChips().setStackInSlot(i, stack);
                             chipStorageBlockEntity.cachePatterns();
                             return InteractionResult.CONSUME;
                         }

@@ -1,6 +1,14 @@
 #version 330
 #define PI 3.1415926538
-#moj_import < minecraft: globals.glsl >
+layout (std140) uniform Globals {
+    ivec3 CameraBlockPos;
+    vec3 CameraOffset;
+    vec2 ScreenSize;
+    float GlintAlpha;
+    float GameTime;
+    int MenuBlurRadius;
+    int UseRgss;
+};
 
 uniform sampler2D Sampler0;
 
