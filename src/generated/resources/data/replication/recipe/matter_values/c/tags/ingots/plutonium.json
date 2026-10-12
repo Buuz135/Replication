@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:ingots/plutonium"
-  },
+  "input": "#c:ingots/plutonium",
   "matter": [
     {
       "type": "replication:metallic",

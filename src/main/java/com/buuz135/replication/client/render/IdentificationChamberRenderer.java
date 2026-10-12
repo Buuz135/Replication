@@ -4,117 +4,82 @@ import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
-import org.joml.Matrix4f;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
-import java.util.OptionalDouble;
+public class IdentificationChamberRenderer implements BlockEntityRenderer<IdentificationChamberBlockEntity, IdentificationChamberRenderer.State> {
 
-public class IdentificationChamberRenderer implements BlockEntityRenderer<IdentificationChamberBlockEntity> {
+    private final ItemModelResolver itemModelResolver;
 
-    private static RenderType LINES = createRenderType();
-
-    public static RenderType createRenderType() {
-        var comp = RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeLinesShader))
-                .setDepthTestState(new RenderStateShard.DepthTestStateShard("always", 515))
-                .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(5)))
-                .setTransparencyState(new RenderStateShard.TransparencyStateShard("translucent_transparency", () -> {
-                    RenderSystem.enableBlend();
-                    RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                }, () -> {
-                    RenderSystem.disableBlend();
-                    RenderSystem.defaultBlendFunc();
-                }))
-                .setOutputState(new RenderStateShard.OutputStateShard("item_entity_target", () -> {
-                    if (Minecraft.useShaderTransparency()) {
-                        Minecraft.getInstance().levelRenderer.getItemEntityTarget().bindWrite(false);
-                    }
-
-                }, () -> {
-                    if (Minecraft.useShaderTransparency()) {
-                        Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
-                    }
-
-                }))
-                .setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, true))
-                .setCullState(new RenderStateShard.CullStateShard(false));
-        return RenderType.create("lines", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 256, false, true, comp.createCompositeState(true));
+    public IdentificationChamberRenderer(BlockEntityRendererProvider.Context context) {
+        this.itemModelResolver = context.itemModelResolver();
     }
+
+    private static void drawGrid(PoseStack.Pose pose, VertexConsumer buffer) {
+        int red = Math.max(0, Math.min(255, Math.round(ReplicationRegistry.Colors.GREEN_SPLIT[0] * 255)));
+        int green = Math.max(0, Math.min(255, Math.round(ReplicationRegistry.Colors.GREEN_SPLIT[1] * 255)));
+        int blue = Math.max(0, Math.min(255, Math.round(ReplicationRegistry.Colors.GREEN_SPLIT[2] * 255)));
+        int color = 0xDD000000 | red << 16 | green << 8 | blue;
+        for (int index = 0; index <= 10; index++) {
+            float offset = 0.155F + index * 0.069F;
+            line(pose, buffer, offset, 0.155F, offset, 0.845F, color);
+            line(pose, buffer, 0.155F, offset, 0.845F, offset, color);
+        }
+    }
+
+    private static void line(PoseStack.Pose pose, VertexConsumer buffer, float x1, float z1, float x2, float z2, int color) {
+        buffer.addVertex(pose.pose(), x1, 0, z1).setColor(color).setNormal(pose, 0, 1, 0).setLineWidth(5f);
+        buffer.addVertex(pose.pose(), x2, 0, z2).setColor(color).setNormal(pose, 0, 1, 0).setLineWidth(5f);
+    }
+
     @Override
-    public void render(IdentificationChamberBlockEntity entity, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource,  int combinedLightIn, int combinedOverlayIn) {
-        var facing = entity.getBlockState().getValue(RotatableBlock.FACING_HORIZONTAL);
-        if (facing == Direction.EAST) {
-            poseStack.translate(1,0,0);
-            poseStack.mulPose(Axis.YP.rotationDegrees(-90));
-        }
-        else if (facing == Direction.SOUTH) {
-            poseStack.translate(1,0,1);
-            poseStack.mulPose(Axis.YP.rotationDegrees(-180));
-        }
-        else if (facing == Direction.WEST) {
-            poseStack.translate(0,0,1);
-            poseStack.mulPose(Axis.YP.rotationDegrees(90));
-        }
-
-        poseStack.translate(0.5f, 0.375f, 0.5f);
-        var scale = 0.4f;
-        var stack = entity.getInput().getStackInSlot(0);
-        if (!stack.isEmpty()){
-            var model = Minecraft.getInstance().getItemRenderer().getModel(stack, Minecraft.getInstance().level, null, 0);
-
-            if (model.isGui3d()){
-                scale = 0.75f;
-            }
-
-            poseStack.pushPose();
-            poseStack.scale(scale, scale,scale);
-
-            Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, multiBufferSource, entity.getLevel(),0);
-
-            poseStack.popPose();
-        }
-        poseStack.translate(-0.5f, -0.375f, -0.5f);
-        var progress = (entity.getProgress() + partialTicks /100f)/ (float) ReplicationConfig.IdentificationChamber.MAX_PROGRESS;
-        //progress = 1;
-
-        poseStack.translate(0,-0.2f,0);
-        poseStack.translate(0,-IdentificationChamberBlockEntity.LOWER_PROGRESS, 0);
-        poseStack.translate(0, IdentificationChamberBlockEntity.LOWER_PROGRESS * progress, 0);
-
-
-        VertexConsumer builder = multiBufferSource.getBuffer(LINES);
-
-        if (entity.getProgress() > 0){
-            poseStack.pushPose();
-            var reduction = 0.31f;
-            poseStack.translate(reduction/2d, 0, reduction/2d);
-            poseStack.scale(1-reduction,1,1-reduction);
-            var alpha = (float) (0.8f+entity.getLevel().random.nextDouble()/30d);
-            for (float i = 0; i <= 1.01f; i += 0.1f) {
-                drawLine(poseStack, builder, 0 +i,0,1,0 +i, ReplicationRegistry.Colors.GREEN_SPLIT[0],ReplicationRegistry.Colors.GREEN_SPLIT[1],ReplicationRegistry.Colors.GREEN_SPLIT[2], alpha);
-                drawLine(poseStack, builder, 0 ,0+i,0+i,1, ReplicationRegistry.Colors.GREEN_SPLIT[0],ReplicationRegistry.Colors.GREEN_SPLIT[1],ReplicationRegistry.Colors.GREEN_SPLIT[2], alpha);
-            }
-            poseStack.popPose();
-        }
-
+    public State createRenderState() {
+        return new State();
     }
 
-    private static void drawLine(PoseStack matrixStackIn, VertexConsumer bufferIn, float xIn, float zIn, float xTo, float zTo,float red, float green, float blue, float alpha) {
-        Matrix4f matrix4f = matrixStackIn.last().pose();
-        bufferIn.addVertex(matrix4f, xIn, 1, zIn).setColor(red, green, blue, alpha);
-        bufferIn.addVertex(matrix4f, zTo, 1, xTo).setColor(red, green, blue, alpha);
-
+    @Override
+    public void extractRenderState(IdentificationChamberBlockEntity blockEntity, State state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+        state.facing = blockEntity.getBlockState().getValue(RotatableBlock.FACING_HORIZONTAL);
+        state.progress = Math.min(1, (blockEntity.getProgress() + partialTicks) / ReplicationConfig.IdentificationChamber.MAX_PROGRESS);
+        state.active = blockEntity.getProgress() > 0;
+        this.itemModelResolver.updateForTopItem(state.item, blockEntity.getInput().getStackInSlot(0), ItemDisplayContext.FIXED, blockEntity.getLevel(), null, 0);
     }
 
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        poseStack.pushPose();
+        ReplicationRenderHelper.rotate(poseStack, state.facing);
+        poseStack.translate(0.5, 0.375, 0.5);
+        poseStack.pushPose();
+        poseStack.scale(0.55F, 0.55F, 0.55F);
+        state.item.submit(poseStack, submitNodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        poseStack.popPose();
+        if (state.active) {
+            poseStack.translate(-0.5, 0.37 - IdentificationChamberBlockEntity.LOWER_PROGRESS + IdentificationChamberBlockEntity.LOWER_PROGRESS * state.progress, -0.5);
+            submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.linesTranslucent(), (pose, buffer) -> drawGrid(pose, buffer));
+        }
+        poseStack.popPose();
+    }
+
+    public static class State extends BlockEntityRenderState {
+        private final ItemStackRenderState item = new ItemStackRenderState();
+        private Direction facing = Direction.NORTH;
+        private float progress;
+        private boolean active;
+    }
 }

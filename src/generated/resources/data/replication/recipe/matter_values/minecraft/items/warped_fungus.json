@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:warped_fungus"
-  },
+  "input": "minecraft:warped_fungus",
   "matter": [
     {
       "type": "replication:organic",

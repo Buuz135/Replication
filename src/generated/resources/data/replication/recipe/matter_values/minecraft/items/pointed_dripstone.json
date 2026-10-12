@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:pointed_dripstone"
-  },
+  "input": "minecraft:pointed_dripstone",
   "matter": [
     {
       "type": "replication:earth",

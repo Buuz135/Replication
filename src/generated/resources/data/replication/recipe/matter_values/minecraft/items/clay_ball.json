@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:clay_ball"
-  },
+  "input": "minecraft:clay_ball",
   "matter": [
     {
       "type": "replication:earth",

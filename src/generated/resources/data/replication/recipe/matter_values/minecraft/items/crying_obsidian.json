@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:crying_obsidian"
-  },
+  "input": "minecraft:crying_obsidian",
   "matter": [
     {
       "type": "replication:earth",

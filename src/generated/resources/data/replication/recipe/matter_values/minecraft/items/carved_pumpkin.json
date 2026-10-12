@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:carved_pumpkin"
-  },
+  "input": "minecraft:carved_pumpkin",
   "matter": [
     {
       "type": "replication:organic",

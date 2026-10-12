@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:ingots/tin"
-  },
+  "input": "#c:ingots/tin",
   "matter": [
     {
       "type": "replication:metallic",

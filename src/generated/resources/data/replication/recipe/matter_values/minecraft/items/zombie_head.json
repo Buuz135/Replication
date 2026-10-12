@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:zombie_head"
-  },
+  "input": "minecraft:zombie_head",
   "matter": [
     {
       "type": "replication:organic",

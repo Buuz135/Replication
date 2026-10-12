@@ -18,17 +18,17 @@ import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.packet.PatternSyncStoragePacket;
 import com.buuz135.replication.packet.TaskCancelPacket;
 import com.buuz135.replication.packet.TaskSyncPacket;
+import com.buuz135.replication.util.ReplicationEnergyStorage;
 import com.hrznstudio.titanium.block_network.Network;
 import com.hrznstudio.titanium.block_network.NetworkFactory;
 import com.hrznstudio.titanium.block_network.NetworkManager;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
@@ -42,9 +42,9 @@ import java.util.function.BiPredicate;
 
 public class MatterNetwork extends Network {
 
-    public static ResourceLocation MATTER = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter");
+    public static Identifier MATTER = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "matter");
 
-    private EnergyStorage energyStorage;
+    private ReplicationEnergyStorage energyStorage;
     private List<NetworkElement> matterStacksConsumers;
     private List<NetworkElement> matterStacksSuppliers;
     private List<NetworkElement> matterStacksHolders;
@@ -60,7 +60,7 @@ public class MatterNetwork extends Network {
 
     public MatterNetwork(BlockPos originPos, String id, int power, ReplicationTaskManager taskManager) {
         super(originPos, id);
-        this.energyStorage = new EnergyStorage(100_000, 100_000, 100_000, power);
+        this.energyStorage = new ReplicationEnergyStorage(100_000, 100_000, 100_000, power);
         this.matterStacksConsumers = new ArrayList<>();
         this.matterStacksSuppliers = new ArrayList<>();
         this.matterStacksHolders = new ArrayList<>();
@@ -289,11 +289,11 @@ public class MatterNetwork extends Network {
     }
 
     @Override
-    public ResourceLocation getType() {
+    public Identifier getType() {
         return MATTER;
     }
 
-    public EnergyStorage getEnergyStorage() {
+    public ReplicationEnergyStorage getEnergyStorage() {
         return energyStorage;
     }
 
@@ -369,8 +369,8 @@ public class MatterNetwork extends Network {
         @Override
         public Network create(CompoundTag tag) {
             var taskManager = new ReplicationTaskManager();
-            taskManager.deserializeNBT(ServerLifecycleHooks.getCurrentServer().registryAccess(), tag.getCompound("TaskManager"));
-            MatterNetwork network = new MatterNetwork(BlockPos.of(tag.getLong("origin")), tag.getString("id"), tag.getInt("Power"), taskManager);
+            taskManager.deserializeNBT(ServerLifecycleHooks.getCurrentServer().registryAccess(), tag.getCompoundOrEmpty("TaskManager"));
+            MatterNetwork network = new MatterNetwork(BlockPos.of(tag.getLongOr("origin", 0)), tag.getStringOr("id", ""), tag.getIntOr("Power", 0), taskManager);
 
             LOGGER.debug("Deserialized matter network {} of type {}", network.getId(), network.getType().toString());
 

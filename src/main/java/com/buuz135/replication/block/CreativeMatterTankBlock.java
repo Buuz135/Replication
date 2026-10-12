@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -95,7 +97,7 @@ public class CreativeMatterTankBlock extends RotatableBlock<CreativeMatterTankBl
         BlockEntity entity = level.getBlockEntity(pos);
         if (stack.has(ReplicationAttachments.TILE)) {
             if (entity instanceof CreativeMatterTankBlockEntity tile) {
-                entity.loadCustomOnly(stack.get(ReplicationAttachments.TILE), entity.getLevel().registryAccess());
+                entity.loadCustomOnly(TagValueInput.create(ProblemReporter.DISCARDING, entity.getLevel().registryAccess(), stack.get(ReplicationAttachments.TILE)));
                 tile.markForUpdate();
             }
         }

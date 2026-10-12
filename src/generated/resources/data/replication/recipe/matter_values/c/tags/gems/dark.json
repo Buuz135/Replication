@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:gems/dark"
-  },
+  "input": "#c:gems/dark",
   "matter": [
     {
       "type": "replication:precious",

@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:mud"
-  },
+  "input": "minecraft:mud",
   "matter": [
     {
       "type": "replication:earth",

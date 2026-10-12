@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:moss_block"
-  },
+  "input": "minecraft:moss_block",
   "matter": [
     {
       "type": "replication:earth",

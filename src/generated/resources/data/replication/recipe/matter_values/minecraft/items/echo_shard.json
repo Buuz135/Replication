@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:echo_shard"
-  },
+  "input": "minecraft:echo_shard",
   "matter": [
     {
       "type": "replication:quantum",

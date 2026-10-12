@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:grass_block"
-  },
+  "input": "minecraft:grass_block",
   "matter": [
     {
       "type": "replication:organic",

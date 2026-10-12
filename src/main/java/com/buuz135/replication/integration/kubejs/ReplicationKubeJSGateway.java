@@ -1,6 +1,6 @@
 package com.buuz135.replication.integration.kubejs;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +13,11 @@ import java.util.Map;
  */
 public class ReplicationKubeJSGateway {
 
-    private static ResourceLocation resolveMatterKey(String key) {
+    private static Identifier resolveMatterKey(String key) {
         if (key.indexOf(':') < 0) {
-            return ResourceLocation.fromNamespaceAndPath("replication", key);
+            return Identifier.fromNamespaceAndPath("replication", key);
         }
-        return ResourceLocation.parse(key);
+        return Identifier.parse(key);
     }
 
     /**
@@ -25,8 +25,7 @@ public class ReplicationKubeJSGateway {
      * Example: event.custom(Replication.matterValueForItem('minecraft:stone', { earth: 3.0, metallic: 1.5 }))
      */
     public Map<String, Object> matterValueForItem(String itemId, Map<String, Object> matterMap) {
-        Map<String, Object> ingredient = Map.of("item", itemId);
-        return buildMatterValueJson(ingredient, matterMap);
+        return buildMatterValueJson(itemId, matterMap);
     }
 
     /**
@@ -35,8 +34,7 @@ public class ReplicationKubeJSGateway {
      */
     public Map<String, Object> matterValueForTag(String tag, Map<String, Object> matterMap) {
         String t = tag.startsWith("#") ? tag.substring(1) : tag;
-        Map<String, Object> ingredient = Map.of("tag", t);
-        return buildMatterValueJson(ingredient, matterMap);
+        return buildMatterValueJson("#" + t, matterMap);
     }
 
     /**
@@ -44,10 +42,16 @@ public class ReplicationKubeJSGateway {
      * Example: event.custom(Replication.matterValue({ tag: 'minecraft:planks' }, { organic: 2 }))
      */
     public Map<String, Object> matterValue(Map<String, Object> ingredient, Map<String, Object> matterMap) {
-        return buildMatterValueJson(ingredient, matterMap);
+        Object normalizedIngredient = ingredient;
+        if (ingredient.containsKey("item")) {
+            normalizedIngredient = ingredient.get("item");
+        } else if (ingredient.containsKey("tag")) {
+            normalizedIngredient = "#" + ingredient.get("tag").toString().replaceFirst("^#", "");
+        }
+        return buildMatterValueJson(normalizedIngredient, matterMap);
     }
 
-    private Map<String, Object> buildMatterValueJson(Map<String, Object> ingredient, Map<String, Object> matterMap) {
+    private Map<String, Object> buildMatterValueJson(Object ingredient, Map<String, Object> matterMap) {
         List<Map<String, Object>> matterList = new ArrayList<>();
         for (Map.Entry<String, Object> e : matterMap.entrySet()) {
             double amount;

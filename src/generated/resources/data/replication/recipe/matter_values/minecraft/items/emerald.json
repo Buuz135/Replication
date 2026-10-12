@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:emerald"
-  },
+  "input": "minecraft:emerald",
   "matter": [
     {
       "type": "replication:precious",

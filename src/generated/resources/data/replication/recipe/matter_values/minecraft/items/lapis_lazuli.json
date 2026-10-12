@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:lapis_lazuli"
-  },
+  "input": "minecraft:lapis_lazuli",
   "matter": [
     {
       "type": "replication:precious",

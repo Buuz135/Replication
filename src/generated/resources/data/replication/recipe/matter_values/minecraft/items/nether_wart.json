@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:nether_wart"
-  },
+  "input": "minecraft:nether_wart",
   "matter": [
     {
       "type": "replication:living",

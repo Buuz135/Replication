@@ -3,6 +3,7 @@ package com.buuz135.replication.block;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.shapes.DisintegratorShapes;
 import com.buuz135.replication.block.tile.DisintegratorBlockEntity;
+import com.buuz135.replication.data.DataIngredients;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
@@ -88,7 +89,7 @@ public class DisintegratorBlock extends RotatableBlock<DisintegratorBlockEntity>
                 .pattern("III")
                 .define('T', ReplicationRegistry.Blocks.MATTER_TANK.getBlock())
                 .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
-                .define('G', Tags.Items.GLASS_BLOCKS)
+                .define('G', DataIngredients.tag(Tags.Items.GLASS_BLOCKS))
                 .save(consumer);
     }
 }

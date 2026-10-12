@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:soul_sand"
-  },
+  "input": "minecraft:soul_sand",
   "matter": [
     {
       "type": "replication:nether",

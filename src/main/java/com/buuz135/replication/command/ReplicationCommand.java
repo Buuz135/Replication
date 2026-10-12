@@ -6,6 +6,7 @@ import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.calculation.client.ClientReplicationCalculation;
 import com.buuz135.replication.recipe.MatterValueRecipe;
+import com.hrznstudio.titanium.util.ItemStackSerialization;
 import com.hrznstudio.titanium.util.RecipeUtil;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
@@ -16,11 +17,11 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,13 +43,13 @@ public class ReplicationCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands
                 .literal("replication")
-                .then(Commands.literal("dump-inventory").executes(context -> dumpInventoryItems(context)).requires(commandSourceStack -> commandSourceStack.hasPermission(4)))
-                .then(Commands.literal("dump-missing").executes(context -> dumpMissing(context)).requires(commandSourceStack -> commandSourceStack.hasPermission(4)))
-                .then(Commands.literal("dump-missing-common-tags").executes(context -> dumpMissingCommonTags(context)).requires(commandSourceStack -> commandSourceStack.hasPermission(4)))
+                .then(Commands.literal("dump-inventory").executes(context -> dumpInventoryItems(context)).requires(commandSourceStack -> commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_OWNER)))
+                .then(Commands.literal("dump-missing").executes(context -> dumpMissing(context)).requires(commandSourceStack -> commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_OWNER)))
+                .then(Commands.literal("dump-missing-common-tags").executes(context -> dumpMissingCommonTags(context)).requires(commandSourceStack -> commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_OWNER)))
                 .then(Commands.literal("export-to-csv").executes(context -> exportToCSV(context)))
                 .then(
                         Commands.literal("create-blueprint-using-hand")
-                                .requires(commandSourceStack -> commandSourceStack.hasPermission(4))
+                                .requires(commandSourceStack -> commandSourceStack.permissions().hasPermission(Permissions.COMMANDS_OWNER))
                                 .then(Commands.argument("progress", DoubleArgumentType.doubleArg(0D, 1D))
                                         .executes(context -> createBlueprint(context))))
         );
@@ -56,8 +57,8 @@ public class ReplicationCommand {
 
     public static int dumpMissing(CommandContext<CommandSourceStack> context) {
         var tabs = CreativeModeTabs.tabs();
-        var hotbar = BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.HOTBAR);
-        var search = BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.SEARCH);
+        var hotbar = BuiltInRegistries.CREATIVE_MODE_TAB.getValue(CreativeModeTabs.HOTBAR);
+        var search = BuiltInRegistries.CREATIVE_MODE_TAB.getValue(CreativeModeTabs.SEARCH);
         var missingItems = new ArrayList<>();
         for (CreativeModeTab tab : tabs) {
             if (tab == hotbar || tab == search) continue;
@@ -92,7 +93,7 @@ public class ReplicationCommand {
 
     public static int dumpInventoryItems(CommandContext<CommandSourceStack> context) {
         try {
-            LOGGER.info(context.getSource().getPlayerOrException().getInventory().items.stream()
+            LOGGER.info(context.getSource().getPlayerOrException().getInventory().getNonEquipmentItems().stream()
                     .filter(itemStack -> !itemStack.isEmpty())
                     .map(itemStack -> BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getPath().toUpperCase(Locale.ROOT)).collect(Collectors.joining(", ")));
         } catch (Exception e) {
@@ -108,7 +109,7 @@ public class ReplicationCommand {
             if (!mainStack.isEmpty()) {
                 var blueprint = new ItemStack(ReplicationRegistry.Items.MATTER_BLUEPRINT.get());
                 var tag = new CompoundTag();
-                tag.put("Item", mainStack.saveOptional(context.getSource().registryAccess()));
+                tag.put("Item", ItemStackSerialization.save(context.getSource().registryAccess(), mainStack));
                 tag.putDouble("Progress", context.getArgument("progress", Double.class));
                 blueprint.set(ReplicationAttachments.BLUEPRINT, tag);
                 ItemHandlerHelper.giveItemToPlayer(context.getSource().getPlayerOrException(), blueprint, 0);
@@ -123,15 +124,16 @@ public class ReplicationCommand {
         List<MatterValueRecipe> recipes = (List<MatterValueRecipe>) RecipeUtil.getRecipes(context.getSource().getLevel(), ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get());
         List<String> availableTags = new ArrayList<>();
         for (var recipe : recipes) {
-            if (recipe.input.getValues().length > 0 && recipe.input.getValues()[0] instanceof Ingredient.TagValue) {
-                var tag = ((Ingredient.TagValue) recipe.input.getValues()[0]).tag();
+            var tagKey = recipe.input.getValues().unwrapKey();
+            if (tagKey.isPresent()) {
+                var tag = tagKey.get();
                 if (tag.location().getNamespace().equals("c")) {
                     availableTags.add(tag.toString());
                 }
             }
         }
         LOGGER.info("MISSING COMMON TAGS");
-        BuiltInRegistries.ITEM.getTagNames().forEach(itemTagKey -> {
+        BuiltInRegistries.ITEM.getTags().map(net.minecraft.core.HolderSet.Named::key).forEach(itemTagKey -> {
             var name = itemTagKey.location();
             if (name.getNamespace().equals("c") && !availableTags.contains(name.toString())) {
                 LOGGER.info(name.toString());

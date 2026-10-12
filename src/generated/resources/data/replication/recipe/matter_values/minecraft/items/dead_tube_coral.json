@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:dead_tube_coral"
-  },
+  "input": "minecraft:dead_tube_coral",
   "matter": [
     {
       "type": "replication:organic",

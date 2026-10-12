@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:horn_coral_block"
-  },
+  "input": "minecraft:horn_coral_block",
   "matter": [
     {
       "type": "replication:organic",

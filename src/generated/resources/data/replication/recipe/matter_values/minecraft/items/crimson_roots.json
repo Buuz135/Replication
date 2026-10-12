@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:crimson_roots"
-  },
+  "input": "minecraft:crimson_roots",
   "matter": [
     {
       "type": "replication:organic",

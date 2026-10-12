@@ -4,9 +4,8 @@ import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.api.MatterType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,16 +45,16 @@ public class MatterStack {
         if (nbt == null) {
             return EMPTY;
         }
-        if (!nbt.contains("MatterName", Tag.TAG_STRING)) {
+        if (!nbt.contains("MatterName")) {
             return EMPTY;
         }
 
-        ResourceLocation matterName = ResourceLocation.parse(nbt.getString("MatterName"));
-        IMatterType matterType = ReplicationRegistry.MATTER_TYPES_REGISTRY.get(matterName);
+        Identifier matterName = Identifier.parse(nbt.getStringOr("MatterName", ""));
+        IMatterType matterType = ReplicationRegistry.MATTER_TYPES_REGISTRY.getValue(matterName);
         if (matterType == null) {
             return EMPTY;
         }
-        MatterStack stack = new MatterStack(matterType, nbt.getDouble("Amount"));
+        MatterStack stack = new MatterStack(matterType, nbt.getDoubleOr("Amount", 0));
 
         return stack;
     }

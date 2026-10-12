@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:rabbit_foot"
-  },
+  "input": "minecraft:rabbit_foot",
   "matter": [
     {
       "type": "replication:organic",

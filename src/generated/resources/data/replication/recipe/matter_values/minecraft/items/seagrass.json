@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:seagrass"
-  },
+  "input": "minecraft:seagrass",
   "matter": [
     {
       "type": "replication:earth",

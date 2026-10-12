@@ -1,8 +1,8 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:chip_storage"
+      "type": "neoforge:registered",
+      "value": "replication:chip_storage"
     }
   ],
   "parent": "minecraft:recipes/root",
@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#c:chests/wooden"
+            "items": "replication:replica_ingot"
           }
         ]
       },

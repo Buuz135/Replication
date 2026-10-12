@@ -1,25 +1,17 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:replicator"
+      "type": "neoforge:registered",
+      "value": "replication:replicator"
     }
   ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "replication:replica_ingot"
-    },
-    "M": {
-      "tag": "c:ingots/iron"
-    },
-    "P": {
-      "item": "minecraft:piston"
-    },
-    "R": {
-      "item": "minecraft:redstone"
-    }
+    "I": "replication:replica_ingot",
+    "M": "#c:ingots/iron",
+    "P": "minecraft:piston",
+    "R": "minecraft:redstone"
   },
   "pattern": [
     "IP ",
@@ -27,7 +19,6 @@
     "III"
   ],
   "result": {
-    "count": 1,
     "id": "replication:replicator"
   }
 }

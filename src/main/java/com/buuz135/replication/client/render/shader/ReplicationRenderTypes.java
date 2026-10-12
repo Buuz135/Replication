@@ -1,119 +1,58 @@
 package com.buuz135.replication.client.render.shader;
 
 import com.buuz135.replication.Replication;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceProvider;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
-public class ReplicationRenderTypes extends RenderType {
+public final class ReplicationRenderTypes {
 
-    private static final Map<String, ShaderRenderType> RENDER_TYPES = Util.make(() -> {
-        Map<String, ShaderRenderType> map = new HashMap<>();
-        map.put("matter_pipe", new ShaderRenderType("matter_pipe", DefaultVertexFormat.POSITION_TEX, (textures, renderType) -> {
-            CompositeState compState = CompositeState.builder()
-                    .setShaderState(renderType.shaderState)
-                    .setTextureState(new FixedMultiTextureStateShard(textures))
-                    .createCompositeState(false);
-            return create(renderType.formattedName(), renderType.format, VertexFormat.Mode.QUADS, 256, false, false, compState);
-        }));
-        map.put("matter_pipe_transparent", new ShaderRenderType("matter_pipe", DefaultVertexFormat.POSITION_TEX, (textures, renderType) -> {
-            CompositeState compState = CompositeState.builder()
-                    .setShaderState(renderType.shaderState)
-                    .setTextureState(new FixedMultiTextureStateShard(textures))
-                    .setTransparencyState(RenderStateShard.GLINT_TRANSPARENCY)
-                    .createCompositeState(false);
-            return create(renderType.formattedName(), renderType.format, VertexFormat.Mode.QUADS, 256, false, false, compState);
-        }));
-        //noinspection Java9CollectionFactory TODO remove when you have more shaders
-        return Collections.unmodifiableMap(map);
-    });
+    private static final Identifier SHADER = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "core/matter_pipe");
+    private static final RenderPipeline MATTER_PIPE = createPipeline("matter_pipe", BlendFunction.TRANSLUCENT);
+    private static final RenderPipeline MATTER_PIPE_ADDITIVE = createPipeline("matter_pipe_additive", BlendFunction.ADDITIVE);
+    private static final Map<Identifier, RenderType> TRANSLUCENT_TYPES = new HashMap<>();
+    private static final Map<Identifier, RenderType> ADDITIVE_TYPES = new HashMap<>();
 
-    public static Map<String, ShaderRenderType> getRenderTypes() {
-
-        return RENDER_TYPES;
+    private ReplicationRenderTypes() {
     }
 
-    public static ShaderRenderType getRenderType(String name) {
-
-        return getRenderTypes().get(name);
+    private static RenderPipeline createPipeline(String name, BlendFunction blendFunction) {
+        return RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+                .withLocation(Identifier.fromNamespaceAndPath(Replication.MOD_ID, "pipeline/" + name))
+                .withVertexShader(SHADER)
+                .withFragmentShader(SHADER)
+                .withSampler("Sampler0")
+                .withColorTargetState(new ColorTargetState(blendFunction))
+                .withCull(false)
+                .withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS)
+                .withDepthStencilState(DepthStencilState.DEFAULT)
+                .build();
     }
 
-    private ReplicationRenderTypes(String s, VertexFormat v, VertexFormat.Mode m, int i, boolean b, boolean b2, Runnable r, Runnable r2) {
-
-        super(s, v, m, i, b, b2, r, r2);
-        throw new IllegalStateException("This class is not meant to be constructed!");
+    public static void register(RegisterRenderPipelinesEvent event) {
+        event.registerPipeline(MATTER_PIPE);
+        event.registerPipeline(MATTER_PIPE_ADDITIVE);
     }
 
-
-    public static class ShaderRenderType {
-
-        private final String name;
-        public ShaderInstance shader;
-        private final ShaderStateShard shaderState = new ShaderStateShard(() -> shader);
-        private final VertexFormat format;
-        private final BiFunction<List<ShaderTexture>, ShaderRenderType, RenderType> builder;
-        private final ResourceLocation shaderLocation;
-
-        public ShaderRenderType(String name, VertexFormat format, BiFunction<List<ShaderTexture>, ShaderRenderType, RenderType> builder) {
-
-            this.name = name;
-            this.format = format;
-            this.builder = Util.memoize(builder);
-            this.shaderLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, this.name);
-        }
-
-        public RenderType using(List<ShaderTexture> textures) {
-
-            return builder.apply(textures, this);
-        }
-
-        public void register(ResourceProvider resourceManager, BiConsumer<ShaderInstance, Consumer<ShaderInstance>> registerFunc) throws IOException {
-
-            registerFunc.accept(new ShaderInstance(resourceManager, shaderLocation(), format), this::shader);
-        }
-
-        public String formattedName() {
-
-            return "%s_%s".formatted(Replication.MOD_ID, name);
-        }
-
-        public ResourceLocation shaderLocation() {
-
-            return shaderLocation;
-        }
-
-        public String name() {
-
-            return name;
-        }
-
-        public VertexFormat format() {
-
-            return format;
-        }
-
-        private void shader(ShaderInstance shader) {
-
-            this.shader = shader;
-        }
-
-        public ShaderStateShard getShaderState() {
-            return shaderState;
-        }
+    public static RenderType matter(Identifier texture, boolean additive) {
+        Map<Identifier, RenderType> types = additive ? ADDITIVE_TYPES : TRANSLUCENT_TYPES;
+        return types.computeIfAbsent(texture, identifier -> RenderType.create(
+                additive ? "replication_matter_pipe_additive" : "replication_matter_pipe",
+                RenderSetup.builder(additive ? MATTER_PIPE_ADDITIVE : MATTER_PIPE)
+                        .withTexture("Sampler0", identifier)
+                        .sortOnUpload()
+                        .createRenderSetup()
+        ));
     }
-
 }

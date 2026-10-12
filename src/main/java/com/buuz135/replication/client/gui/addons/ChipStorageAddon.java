@@ -2,15 +2,16 @@ package com.buuz135.replication.client.gui.addons;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.block.tile.ChipStorageBlockEntity;
-import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 
 public class ChipStorageAddon extends BasicScreenAddon {
 
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
     private final ChipStorageBlockEntity blockEntity;
 
     public ChipStorageAddon(int posX, int posY, ChipStorageBlockEntity blockEntity) {
@@ -29,22 +30,14 @@ public class ChipStorageAddon extends BasicScreenAddon {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider iAssetProvider,  int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0,0,200);
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 70, guiY + 19, 244,164,12,14);
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 91, guiY + 19, 244,164,12,14);
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 49, guiY + 40, 244,164,12,14);
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 112, guiY + 40, 244,164,12,14);
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 49, guiY + 61, 244,164,12,14);
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 112, guiY + 61, 244,164,12,14);
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 70, guiY + 82, 244,164,12,14);
-        guiGraphics.blit(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png"), guiX + 91, guiY + 82, 244,164,12,14);
-        guiGraphics.pose().popPose();
+    public void drawBackgroundLayer(GuiGraphicsExtractor graphics, Screen screen, IAssetProvider assets, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        int[][] positions = {{70, 19}, {91, 19}, {49, 40}, {112, 40}, {49, 61}, {112, 61}, {70, 82}, {91, 82}};
+        for (int[] position : positions) {
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, guiX + position[0], guiY + position[1], 244, 164, 12, 14, 256, 256);
+        }
     }
 
     @Override
-    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider iAssetProvider,int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-
+    public void drawForegroundLayer(GuiGraphicsExtractor graphics, Screen screen, IAssetProvider assets, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
     }
 }

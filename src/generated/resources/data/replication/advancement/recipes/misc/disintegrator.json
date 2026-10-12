@@ -1,8 +1,8 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:disintegrator"
+      "type": "neoforge:registered",
+      "value": "replication:disintegrator"
     }
   ],
   "parent": "minecraft:recipes/root",

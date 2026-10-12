@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:cobblestones"
-  },
+  "input": "#c:cobblestones",
   "matter": [
     {
       "type": "replication:earth",

@@ -2,9 +2,8 @@ package com.buuz135.replication.packet;
 
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.api.task.ReplicationTask;
-import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
+import com.buuz135.replication.client.ClientAccess;
 import com.hrznstudio.titanium.network.Message;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -30,7 +29,11 @@ public class TaskSyncPacket extends Message {
     }
 
     @Override
-    protected void handleMessage(IPayloadContext context) {
+    protected void handleServerMessage(IPayloadContext context) {
+    }
+
+    @Override
+    public void handleClientMessage(IPayloadContext context) {
         context.enqueueWork(() -> {
             var task = new ReplicationTask(ItemStack.EMPTY, Integer.MAX_VALUE, IReplicationTask.Mode.SINGLE, null, false);
             task.deserializeNBT(context.player().level().registryAccess(), tag);
@@ -42,9 +45,7 @@ public class TaskSyncPacket extends Message {
             } else {
                 tasks.put(task.getUuid().toString(), task);
             }
-            if (Minecraft.getInstance().screen instanceof ReplicationTerminalScreen terminalScreen){
-                terminalScreen.refreshTasks();
-            }
+            ClientAccess.refreshTasks();
         });
     }
 }

@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:wet_sponge"
-  },
+  "input": "minecraft:wet_sponge",
   "matter": [
     {
       "type": "replication:organic",

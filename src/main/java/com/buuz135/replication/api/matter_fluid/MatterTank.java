@@ -1,8 +1,8 @@
 package com.buuz135.replication.api.matter_fluid;
 
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 

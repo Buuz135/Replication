@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:vine"
-  },
+  "input": "minecraft:vine",
   "matter": [
     {
       "type": "replication:earth",

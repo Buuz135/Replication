@@ -6,9 +6,8 @@ import com.hrznstudio.titanium.client.screen.addon.WidgetScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.network.locator.ILocatable;
 import com.hrznstudio.titanium.network.messages.ButtonClickNetworkMessage;
-import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -19,80 +18,58 @@ public class MatterTankPriorityAddon extends WidgetScreenAddon {
 
     private final BaseMatterTankBlockEntity blockEntity;
     private final EditBox editBox;
+    private ILocatable locatable;
     private String lastValue;
 
     public MatterTankPriorityAddon(BaseMatterTankBlockEntity blockEntity, int posX, int posY) {
-        super(posX, posY, new EditBox(Minecraft.getInstance().font, 85, 20, 160, 26, Component.translatable("tooltip.replication.tank.insert_priority")));
+        super(posX, posY, new EditBox(Minecraft.getInstance().font, 36, 12, Component.translatable("tooltip.replication.tank.insert_priority")));
         this.blockEntity = blockEntity;
-        this.lastValue = "";
-        this.editBox = (EditBox) getWidget();
-        this.editBox.setValue(blockEntity.getPriority() + "");
-        this.editBox.setFilter(s -> {
-            if (s.isEmpty()) return true;
-            if (s.charAt(0) == '-') return true;
-            try {
-                var value = Integer.parseInt(s);
-                return true;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        });
+        this.editBox = (EditBox) this.getWidget();
+        this.lastValue = Integer.toString(blockEntity.getPriority());
+        this.editBox.setValue(this.lastValue);
+        this.editBox.setFilter(value -> value.isEmpty() || value.equals("-") || isInteger(value));
         this.editBox.setMaxLength(6);
         this.editBox.setBordered(false);
-        this.editBox.setVisible(true);
-        this.editBox.setTextColor(0x72e567);
-
+        this.editBox.setTextColor(0xFF72E567);
+        this.editBox.setResponder(this::sendPriority);
     }
 
-    @Override
-    public int getXSize() {
-        return 0;
-    }
-
-    @Override
-    public int getYSize() {
-        return 0;
-    }
-
-    @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider iAssetProvider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        this.editBox.setResponder(s -> {
-            if (s.isEmpty()) return;
-            if (!this.lastValue.equals(s) && screen instanceof AbstractContainerScreen<?> containerScreen && containerScreen.getMenu() instanceof ILocatable locatable) {
-                var compound = new CompoundTag();
-                if (s.charAt(0) == '-' && s.length() == 1) {
-                    compound.putInt("Priority", -0);
-                } else {
-                    compound.putInt("Priority", Integer.parseInt(s));
-                }
-                Titanium.NETWORK.sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(), 124578, compound));
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(5000);
-                        this.editBox.setValue(blockEntity.getPriority() + "");
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).start();
-            }
-            this.lastValue = s;
-        });
-        super.drawBackgroundLayer(guiGraphics, screen, iAssetProvider, guiX, guiY, mouseX, mouseY, partialTicks);
-        var textWidth = Minecraft.getInstance().font.width(Component.translatable("tooltip.replication.tank.priority").getString());
-        guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("tooltip.replication.tank.priority"), guiX + this.getPosX(), guiY + this.getPosY(), 0x72e567, false);
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(textWidth, 0, 0);
-        this.editBox.render(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.pose().popPose();
-        for (int i = 0; i < 18; i++) {
-            AssetUtil.drawHorizontalLine(guiGraphics, guiX + this.getPosX() + textWidth + i * 2, guiX + this.getPosX() + textWidth + i * 2, guiY + this.getPosY() + 8, 0xff72e567);
+    private static boolean isInteger(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException exception) {
+            return false;
         }
+    }
 
-
+    private void sendPriority(String value) {
+        if (value.isEmpty() || value.equals("-") || value.equals(this.lastValue) || this.locatable == null) {
+            return;
+        }
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("Priority", Integer.parseInt(value));
+        Titanium.NETWORK.sendToServer(new ButtonClickNetworkMessage(this.locatable.getLocatorInstance(), 124578, tag));
+        this.lastValue = value;
     }
 
     @Override
-    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider iAssetProvider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor graphics, Screen screen, IAssetProvider assets, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        if (screen instanceof AbstractContainerScreen<?> containerScreen && containerScreen.getMenu() instanceof ILocatable menu) {
+            this.locatable = menu;
+        }
+        Component label = Component.translatable("tooltip.replication.tank.priority");
+        int x = guiX + this.getPosX();
+        int y = guiY + this.getPosY();
+        int textWidth = screen.getFont().width(label);
+        graphics.text(screen.getFont(), label, x, y, 0xFF72E567, false);
+        this.editBox.setX(x + textWidth);
+        this.editBox.setY(y - 2);
+        this.editBox.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+        graphics.horizontalLine(x + textWidth, x + textWidth + 35, y + 9, 0xFF72E567);
+    }
 
+    @Override
+    public void drawForegroundLayer(GuiGraphicsExtractor graphics, Screen screen, IAssetProvider assets, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
     }
 }

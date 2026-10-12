@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:poisonous_potato"
-  },
+  "input": "minecraft:poisonous_potato",
   "matter": [
     {
       "type": "replication:organic",

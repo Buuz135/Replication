@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "replication:replica_block"
-    }
+    "replication:replica_block"
   ],
   "result": {
     "count": 9,

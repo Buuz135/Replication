@@ -11,7 +11,6 @@ import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.api.matter_fluid.component.MatterTankComponent;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.AssetTypes;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.tile.BasicTile;
 import com.hrznstudio.titanium.client.screen.addon.StateButtonAddon;
 import com.hrznstudio.titanium.client.screen.addon.StateButtonInfo;
@@ -20,14 +19,12 @@ import com.hrznstudio.titanium.component.IComponentHandler;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.button.ButtonComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import com.hrznstudio.titanium.util.LangUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -55,8 +52,7 @@ public class LockableMatterTankBundle<T extends BasicTile & IComponentHarness> i
         this.isLocked = isLocked;
         this.buttonAddon = new ButtonComponent(lockPosX, lockPosY, 14, 14) {
             @Override
-            @OnlyIn(Dist.CLIENT)
-            public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+            public List<IFactory<?>> getScreenAddons() {
                 return Collections.singletonList(() -> new StateButtonAddon(buttonAddon,
                         new StateButtonInfo(0, AssetTypes.BUTTON_UNLOCKED, ChatFormatting.GOLD + LangUtil.getString("tooltip.titanium.locks") + ChatFormatting.WHITE + " " + LangUtil.getString("tooltip.titanium.facing_handler." + inventory.getName().toLowerCase())),
                         new StateButtonInfo(1, AssetTypes.BUTTON_LOCKED, ChatFormatting.GOLD + LangUtil.getString("tooltip.titanium.unlocks") + ChatFormatting.WHITE + " " + LangUtil.getString("tooltip.titanium.facing_handler." + inventory.getName().toLowerCase()),
@@ -78,8 +74,7 @@ public class LockableMatterTankBundle<T extends BasicTile & IComponentHarness> i
 
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
+    public List<IFactory<?>> getScreenAddons() {
         return Collections.emptyList();
     }
 
@@ -107,9 +102,9 @@ public class LockableMatterTankBundle<T extends BasicTile & IComponentHarness> i
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.inventory.deserializeNBT(provider, nbt.getCompound("Tank"));
-        this.isLocked = nbt.getBoolean("Locked");
-        this.filter = MatterStack.loadMatterStackFromNBT(nbt.getCompound("Filter"));
+        this.inventory.deserializeNBT(provider, nbt.getCompoundOrEmpty("Tank"));
+        this.isLocked = nbt.getBooleanOr("Locked", false);
+        this.filter = MatterStack.loadMatterStackFromNBT(nbt.getCompoundOrEmpty("Filter"));
 
         updateFilter();
     }

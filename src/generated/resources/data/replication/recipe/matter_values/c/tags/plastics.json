@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:plastics"
-  },
+  "input": "#c:plastics",
   "matter": [
     {
       "type": "replication:organic",

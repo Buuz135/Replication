@@ -8,14 +8,14 @@ import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
 import java.awt.*;
 
 public class ReplicationAddonProvider implements IAssetProvider {
 
-    public static ResourceLocation DEFAULT_LOCATION = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/background.png");
+    public static Identifier DEFAULT_LOCATION = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/background.png");
     public static ReplicationAddonProvider INSTANCE = new ReplicationAddonProvider();
 
     private final IAsset SLOT = new IAsset() {
@@ -24,7 +24,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -34,7 +34,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -48,7 +48,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -62,7 +62,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -76,7 +76,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -96,7 +96,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -110,7 +110,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -124,7 +124,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -134,7 +134,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -144,7 +144,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -154,7 +154,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -164,7 +164,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -174,7 +174,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -184,7 +184,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -194,7 +194,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -204,7 +204,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -214,7 +214,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -224,7 +224,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -234,7 +234,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -244,7 +244,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -254,7 +254,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -264,7 +264,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -274,7 +274,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -284,7 +284,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -294,7 +294,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -304,7 +304,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -314,7 +314,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -324,7 +324,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -334,7 +334,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -344,7 +344,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -354,7 +354,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -364,7 +364,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -374,7 +374,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };
@@ -384,7 +384,7 @@ public class ReplicationAddonProvider implements IAssetProvider {
         }
 
         @Override
-        public ResourceLocation getResourceLocation() {
+        public Identifier getIdentifier() {
             return DEFAULT_LOCATION;
         }
     };

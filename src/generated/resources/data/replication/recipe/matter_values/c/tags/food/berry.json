@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:food/berry"
-  },
+  "input": "#c:food/berry",
   "matter": [
     {
       "type": "replication:earth",

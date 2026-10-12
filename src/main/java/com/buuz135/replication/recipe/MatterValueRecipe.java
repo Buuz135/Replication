@@ -4,7 +4,6 @@ import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.calculation.MatterValue;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -44,27 +43,37 @@ public class MatterValueRecipe implements Recipe<CraftingInput>  {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput craftingInput, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput craftingInput) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canCraftInDimensions(int i, int i1) {
-        return false;
+    public boolean showNotification() {
+        return true;
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
-        return ItemStack.EMPTY;
+    public String group() {
+        return "";
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return ReplicationRegistry.Serializers.MATTER_VALUE_RECIPE_SERIALIZER.get();
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.create(this.input);
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get();
+    public RecipeBookCategory recipeBookCategory() {
+        return new RecipeBookCategory();
+    }
+
+    @Override
+    public RecipeSerializer<? extends Recipe<CraftingInput>> getSerializer() {
+        return (RecipeSerializer<? extends Recipe<CraftingInput>>) (RecipeSerializer<?>) ReplicationRegistry.Serializers.MATTER_VALUE_RECIPE_SERIALIZER.get();
+    }
+
+    @Override
+    public RecipeType<? extends Recipe<CraftingInput>> getType() {
+        return (RecipeType<? extends Recipe<CraftingInput>>) (RecipeType<?>) ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get();
     }
 }

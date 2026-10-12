@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:sculk"
-  },
+  "input": "minecraft:sculk",
   "matter": [
     {
       "type": "replication:organic",

@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:chorus_fruit"
-  },
+  "input": "minecraft:chorus_fruit",
   "matter": [
     {
       "type": "replication:living",

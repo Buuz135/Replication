@@ -1,19 +1,15 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:matter_tank"
+      "type": "neoforge:registered",
+      "value": "replication:matter_tank"
     }
   ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:glass_blocks"
-    },
-    "I": {
-      "item": "replication:replica_ingot"
-    }
+    "G": "#c:glass_blocks",
+    "I": "replication:replica_ingot"
   },
   "pattern": [
     "IGI",
@@ -21,7 +17,6 @@
     "IGI"
   ],
   "result": {
-    "count": 1,
     "id": "replication:matter_tank"
   }
 }

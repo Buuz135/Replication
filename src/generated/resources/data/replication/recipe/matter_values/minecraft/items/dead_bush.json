@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:dead_bush"
-  },
+  "input": "minecraft:dead_bush",
   "matter": [
     {
       "type": "replication:earth",

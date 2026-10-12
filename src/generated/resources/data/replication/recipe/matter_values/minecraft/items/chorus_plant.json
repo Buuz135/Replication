@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:chorus_plant"
-  },
+  "input": "minecraft:chorus_plant",
   "matter": [
     {
       "type": "replication:organic",

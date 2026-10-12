@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:heart_of_the_sea"
-  },
+  "input": "minecraft:heart_of_the_sea",
   "matter": [
     {
       "type": "replication:living",

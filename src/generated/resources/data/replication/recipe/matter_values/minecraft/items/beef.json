@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:beef"
-  },
+  "input": "minecraft:beef",
   "matter": [
     {
       "type": "replication:organic",

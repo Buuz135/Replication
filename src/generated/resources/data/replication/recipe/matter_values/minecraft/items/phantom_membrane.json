@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:phantom_membrane"
-  },
+  "input": "minecraft:phantom_membrane",
   "matter": [
     {
       "type": "replication:living",

@@ -12,7 +12,7 @@ import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,36 +28,26 @@ public class JEICompat implements IModPlugin {
             public @Nullable Object getSubtypeData(ItemStack ingredient, UidContext context) {
                 return List.of(ingredient.getOrDefault(ReplicationAttachments.TILE, new CompoundTag()));
             }
-
-            @Override
-            public String getLegacyStringSubtypeInfo(ItemStack ingredient, UidContext context) {
-                return ingredient.getOrDefault(ReplicationAttachments.TILE, new CompoundTag()).toString();
-            }
         });
         registration.registerSubtypeInterpreter(ReplicationRegistry.Items.MATTER_BLUEPRINT.get(), new ISubtypeInterpreter<ItemStack>() {
             @Override
             public @Nullable Object getSubtypeData(ItemStack ingredient, UidContext context) {
                 List<Object> list = new java.util.ArrayList<>();
                 if (ingredient.has(ReplicationAttachments.BLUEPRINT)) {
-                    list.add(ingredient.get(ReplicationAttachments.BLUEPRINT).getCompound("Item").getString("id"));
-                    list.add(ingredient.get(ReplicationAttachments.BLUEPRINT).getDouble("Progress"));
+                    list.add(ingredient.get(ReplicationAttachments.BLUEPRINT).getCompoundOrEmpty("Item").getStringOr("id", ""));
+                    list.add(ingredient.get(ReplicationAttachments.BLUEPRINT).getDoubleOr("Progress", 0));
                 } else {
                     list.add(ItemStack.EMPTY);
                     list.add(0);
                 }
                 return list;
             }
-
-            @Override
-            public String getLegacyStringSubtypeInfo(ItemStack ingredient, UidContext context) {
-                return "";
-            }
         });
     }
 
     @Override
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "replication");
+    public Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath(Replication.MOD_ID, "replication");
     }
 
     @Override

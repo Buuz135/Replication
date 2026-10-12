@@ -4,6 +4,7 @@ import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.shapes.ReplicatorShapes;
 import com.buuz135.replication.block.tile.ReplicatorBlockEntity;
+import com.buuz135.replication.data.DataIngredients;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
@@ -13,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
@@ -24,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
@@ -76,21 +79,15 @@ public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> imple
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
-        var rotation = state.getValue(FACING_HORIZONTAL);
-        if (rotation == Direction.NORTH){
-            return ReplicatorShapes.NORTH_FULL;
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext selectionContext) {
+        var shapes = getShapePlate(state);
+        if (world.getBlockEntity(pos) instanceof ReplicatorBlockEntity blockEntity) {
+            var maxProgress = blockEntity.getMaxProgress();
+            var progress = maxProgress <= 0 ? 0 : Mth.clamp(blockEntity.getProgress() / (float) maxProgress, 0, 1);
+            var offset = ReplicatorBlockEntity.LOWER_PROGRESS * (progress - 1);
+            return Shapes.or(shapes.getFirst(), shapes.getSecond().move(0, offset, 0));
         }
-        if (rotation == Direction.SOUTH){
-            return ReplicatorShapes.SOUTH_FULL;
-        }
-        if (rotation == Direction.EAST){
-            return ReplicatorShapes.EAST_FULL;
-        }
-        if (rotation == Direction.WEST){
-            return ReplicatorShapes.WEST_FULL;
-        }
-        return super.getShape(state, p_60556_, p_60557_, p_60558_);
+        return Shapes.or(shapes.getFirst(), shapes.getSecond());
     }
 
     public Pair<VoxelShape, VoxelShape> getShapePlate(BlockState state) {
@@ -126,7 +123,7 @@ public class ReplicatorBlock extends RotatableBlock<ReplicatorBlockEntity> imple
                 .define('P', Items.PISTON)
                 .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
                 .define('R', Items.REDSTONE)
-                .define('M', Tags.Items.INGOTS_IRON)
+                .define('M', DataIngredients.tag(Tags.Items.INGOTS_IRON))
                 .save(consumer);
     }
 

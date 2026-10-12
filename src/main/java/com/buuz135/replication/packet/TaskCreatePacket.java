@@ -31,7 +31,7 @@ public class TaskCreatePacket extends Message {
     }
 
     @Override
-    protected void handleMessage(IPayloadContext context) {
+    protected void handleServerMessage(IPayloadContext context) {
         context.enqueueWork(() -> {
             for (Network network : NetworkManager.get(context.player().level()).getNetworks()) {
                 if (network.getId().equals(networkId) && network instanceof MatterNetwork matterNetwork){

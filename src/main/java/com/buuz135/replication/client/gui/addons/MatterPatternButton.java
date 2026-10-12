@@ -6,13 +6,12 @@ import com.buuz135.replication.calculation.client.ClientReplicationCalculation;
 import com.buuz135.replication.packet.MatterFluidSyncPacket;
 import com.buuz135.replication.util.NumberUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public final class MatterPatternButton {
     private final MatterPattern pattern;
     private int cachedAmount;
-    private long createdWhen;
+    private final long createdWhen;
     private boolean shouldDisplayAnimation;
 
     public MatterPatternButton(MatterPattern pattern, int cachedAmount, long createdWhen, String network) {
@@ -23,25 +22,24 @@ public final class MatterPatternButton {
         recalculateAmount(network);
     }
 
-    public void render(GuiGraphics guiGraphics, int x, int y, double mouseX, double mouseY) {
-        guiGraphics.renderItem(this.pattern.getStack(), x, y);
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 200);
+    public void render(GuiGraphicsExtractor graphics, int x, int y, double mouseX, double mouseY) {
+        graphics.item(this.pattern.getStack(), x, y);
+        String display;
         if (shouldDisplayAnimation) {
-            var speed = 3;
-            guiGraphics.drawString(Minecraft.getInstance().font, ((Minecraft.getInstance().level.getGameTime() / speed) % 3 == 0 ? "·" : ".")
-                    + ((Minecraft.getInstance().level.getGameTime() / speed) % 3 == 1 ? "·" : ".")
-                    + ((Minecraft.getInstance().level.getGameTime() / speed) % 3 == 2 ? "·" : "."), x + 10, y + 8, 0xFFFFFF, true);
+            long tick = Minecraft.getInstance().level == null ? 0 : Minecraft.getInstance().level.getGameTime() / 3;
+            display = (tick % 3 == 0 ? "·" : ".") + (tick % 3 == 1 ? "·" : ".") + (tick % 3 == 2 ? "·" : ".");
+            graphics.text(Minecraft.getInstance().font, display, x + 10, y + 8, 0xFFFFFFFF, true);
         } else {
-            var scale = 0.5f;
-            var display = NumberUtils.getFormatedBigNumber(cachedAmount);
-            guiGraphics.pose().scale(scale, scale, scale);
-            guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 ) / scale - Minecraft.getInstance().font.width(display), (y + 12) / scale , 0xFFFFFF, true);
+            display = NumberUtils.getFormatedBigNumber(cachedAmount);
+            float scale = 0.5F;
+            graphics.pose().pushMatrix();
+            graphics.pose().scale(scale, scale);
+            graphics.text(Minecraft.getInstance().font, display, (int) ((x + 16) / scale) - Minecraft.getInstance().font.width(display), (int) ((y + 12) / scale), 0xFFFFFFFF, true);
+            graphics.pose().popMatrix();
         }
-        guiGraphics.pose().popPose();
         if (mouseX > x - 1 && mouseX < x + 17 && mouseY > y - 1 && mouseY < y + 17) {
-            AbstractContainerScreen.renderSlotHighlight(guiGraphics, x, y, 1);
-            guiGraphics.renderTooltip(Minecraft.getInstance().font, this.pattern.getStack(), (int) mouseX, (int) mouseY);
+            graphics.fill(x, y, x + 16, y + 16, 0x66FFFFFF);
+            graphics.setTooltipForNextFrame(Minecraft.getInstance().font, this.pattern.getStack(), (int) mouseX, (int) mouseY);
         }
     }
 
@@ -49,15 +47,18 @@ public final class MatterPatternButton {
         var matterCompound = ClientReplicationCalculation.getMatterCompound(pattern.getStack());
         if (matterCompound == null) {
             this.cachedAmount = 0;
-        } else {
-            this.cachedAmount = Integer.MAX_VALUE;
-            var networkValues = MatterFluidSyncPacket.CLIENT_MATTER_STORAGE.get(network);
-            if (networkValues != null){
-                for (MatterValue matterValue : matterCompound.getValues().values()) {
-                    var matterType = matterValue.getMatter();
-                    var amount = matterValue.getAmount();
-                    this.cachedAmount = (int) Math.min(this.cachedAmount, Math.min(Integer.MAX_VALUE, networkValues.getOrDefault(matterType, 0L) / amount));
-                }
+            return;
+        }
+        this.cachedAmount = Integer.MAX_VALUE;
+        var networkValues = MatterFluidSyncPacket.CLIENT_MATTER_STORAGE.get(network);
+        if (networkValues == null) {
+            this.cachedAmount = 0;
+            return;
+        }
+        for (MatterValue matterValue : matterCompound.getValues().values()) {
+            double amount = matterValue.getAmount();
+            if (amount > 0) {
+                this.cachedAmount = (int) Math.min(this.cachedAmount, Math.min(Integer.MAX_VALUE, networkValues.getOrDefault(matterValue.getMatter(), 0L) / amount));
             }
         }
     }
@@ -76,14 +77,6 @@ public final class MatterPatternButton {
 
     public long createdWhen() {
         return createdWhen;
-    }
-
-    public void setCachedAmount(int cachedAmount) {
-        this.cachedAmount = cachedAmount;
-    }
-
-    public void setCreatedWhen(long createdWhen) {
-        this.createdWhen = createdWhen;
     }
 
     public boolean isShouldDisplayAnimation() {

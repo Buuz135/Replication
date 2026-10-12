@@ -11,14 +11,18 @@ import com.hrznstudio.titanium.event.handler.EventManager;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.bus.api.EventPriority;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.DefaultDataComponentsBoundEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -39,15 +43,20 @@ public class ReplicationCalculation {
     public static Set<RecipeHolder<MatterValueRecipe>> DEFAULT_MATTER_RECIPE = new HashSet<>();
     public static HashMap<Item, MatterCompound> DEFAULT_MATTER_COMPOUND = new HashMap<Item, MatterCompound>();
     private static CompoundTag cachedSyncTag = new CompoundTag();
+    private static RecipeManager pendingRecipeManager;
+    private static RegistryAccess pendingRegistryAccess;
     public static MatterCalculationStatus STATUS = MatterCalculationStatus.NOT_CALCULATED;
 
     public static void init() {
-        EventManager.forge(AddReloadListenerEvent.class, EventPriority.LOWEST).process(addReloadListenerEvent -> {
-            addReloadListenerEvent.addListener((ResourceManagerReloadListener) resourceManager -> organizeRecipes(addReloadListenerEvent.getServerResources().getRecipeManager(), addReloadListenerEvent.getRegistryAccess()));
+        EventManager.forge(TagsUpdatedEvent.ServerDataLoad.class, EventPriority.LOWEST).process(tagsUpdatedEvent -> {
+            pendingRecipeManager = tagsUpdatedEvent.getServerResources().getRecipeManager();
+            pendingRegistryAccess = tagsUpdatedEvent.getRegistries();
         }).subscribe();
-        EventManager.forge(TagsUpdatedEvent.class, EventPriority.LOWEST).process(tagsUpdatedEvent -> {
-            if (tagsUpdatedEvent.getUpdateCause() == TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD)
-                calculateRecipes(tagsUpdatedEvent.getRegistryAccess());
+        EventManager.forge(DefaultDataComponentsBoundEvent.class, EventPriority.LOWEST).process(event -> {
+            if (event.getUpdateCause() == DefaultDataComponentsBoundEvent.UpdateCause.SERVER_DATA_LOAD && pendingRecipeManager != null) {
+                organizeRecipes(pendingRecipeManager, pendingRegistryAccess);
+                calculateRecipes(pendingRegistryAccess);
+            }
         }).subscribe();
         EventManager.forge(PlayerEvent.PlayerLoggedInEvent.class, EventPriority.LOWEST).process(playerLoggedInEvent -> {
             if (!cachedSyncTag.isEmpty() && playerLoggedInEvent.getEntity() instanceof ServerPlayer serverPlayer) {
@@ -70,22 +79,28 @@ public class ReplicationCalculation {
         //LOADING DEFAULT VALUES
         long time = System.currentTimeMillis();
         DEFAULT_MATTER_COMPOUND = new HashMap<>();
-        DEFAULT_MATTER_RECIPE = new HashSet<>(recipeManager.getAllRecipesFor((RecipeType<MatterValueRecipe>) ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get()));
+        DEFAULT_MATTER_RECIPE = recipeManager.getRecipes().stream()
+                .filter(recipe -> recipe.value().getType() == ReplicationRegistry.CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE.get())
+                .map(recipe -> (RecipeHolder<MatterValueRecipe>) recipe)
+                .collect(Collectors.toCollection(HashSet::new));
 
 
         //SORTING RECIPES
         SORTED_CALCULATION_REFERENCE = new HashMap<Item, CalculationReference>();
         time = System.currentTimeMillis();
         var ignoredRecipes = ReplicationConfig.RecipeCalculation.IGNORED_RECIPE_MODS.stream().map(String::toLowerCase).collect(Collectors.toSet());
-        for (RecipeHolder<CraftingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING)) {
-            if (ignoredRecipes.contains(craftingRecipe.id().getNamespace().toLowerCase())) continue;
-            var result = craftingRecipe.value().getResultItem(registryAccess);
-            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new ArrayList<>(craftingRecipe.value().getIngredients())));
-        }
-        for (RecipeHolder<SmeltingRecipe> craftingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
-            if (ignoredRecipes.contains(craftingRecipe.id().getNamespace().toLowerCase())) continue;
-            var result = craftingRecipe.value().getResultItem(registryAccess);
-            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(craftingRecipe.id(), result, new ArrayList<>(craftingRecipe.value().getIngredients())));
+        var displayContext = new ContextMap.Builder().withParameter(SlotDisplayContext.REGISTRIES, registryAccess).create(SlotDisplayContext.CONTEXT);
+        for (RecipeHolder<?> recipe : recipeManager.getRecipes()) {
+            if (recipe.value().getType() != RecipeType.CRAFTING && recipe.value().getType() != RecipeType.SMELTING)
+                continue;
+            if (ignoredRecipes.contains(recipe.id().identifier().getNamespace().toLowerCase())) continue;
+            var result = recipe.value().display().stream()
+                    .map(display -> display.result().resolveForFirstStack(displayContext))
+                    .filter(stack -> !stack.isEmpty())
+                    .findFirst()
+                    .orElse(ItemStack.EMPTY);
+            if (result.isEmpty()) continue;
+            SORTED_CALCULATION_REFERENCE.computeIfAbsent(result.getItem(), string -> new CalculationReference(result, new HashSet<>())).getReferences().add(new RecipeReference(recipe.id().identifier(), result, new ArrayList<>(recipe.value().placementInfo().ingredients())));
         }
         CALCULATOR_LOG.info("Sorted " + SORTED_CALCULATION_REFERENCE.size() + " Recipes in " + (System.currentTimeMillis() - time) + "ms");
     }
@@ -95,7 +110,7 @@ public class ReplicationCalculation {
         new Thread(() -> {
             long time = System.currentTimeMillis();
             for (RecipeHolder<MatterValueRecipe> matterValueRecipe : DEFAULT_MATTER_RECIPE) {
-                for (ItemStack item : matterValueRecipe.value().input.getItems()) {
+                for (ItemStack item : matterValueRecipe.value().input.items().map(ItemStack::new).toList()) {
                     var compound = new MatterCompound();
                     for (MatterValue matterValue : matterValueRecipe.value().matter) {
                         if (matterValue.getMatter() == null) {
@@ -210,10 +225,11 @@ public class ReplicationCalculation {
         var cached = INGREDIENT_CACHE.get(input);
         if (cached != null) return cached;
         MatterCompound result = null;
-        for (ItemStack item : input.getItems()) {
+        for (ItemStack item : input.items().map(ItemStack::new).toList()) {
             var temp = getMatterCompound(item, depth, visitedRecipes, visitedCalculations, printDebug, result);
-            if (ReplicationConfig.RecipeCalculation.SUBTRACT_CRAFTING_REMAINING_ITEM && temp != null && item.hasCraftingRemainingItem() && !item.is(ReplicationTags.DONT_CHECK_FOR_CRAFTING_RESULT)) {
-                var craftingRemainingItem = item.getCraftingRemainingItem();
+            var craftingRemainder = item.getItem().getCraftingRemainder(item);
+            if (ReplicationConfig.RecipeCalculation.SUBTRACT_CRAFTING_REMAINING_ITEM && temp != null && craftingRemainder != null && !item.is(ReplicationTags.DONT_CHECK_FOR_CRAFTING_RESULT)) {
+                var craftingRemainingItem = craftingRemainder.create();
                 if (ItemStack.isSameItem(craftingRemainingItem, item)) {
                     temp = new MatterCompound();
                 } else {
@@ -239,18 +255,18 @@ public class ReplicationCalculation {
 
     private static class RecipeReference {
 
-        private final ResourceLocation name;
+        private final Identifier name;
         private final ItemStack output;
         private final List<Ingredient> inputs;
         private MatterCompound cachedCompound;
 
-        public RecipeReference(ResourceLocation name, ItemStack output, List<Ingredient> inputs) {
+        public RecipeReference(Identifier name, ItemStack output, List<Ingredient> inputs) {
             this.name = name;
             this.output = output;
             this.inputs = inputs;
         }
 
-        public ResourceLocation getName() {
+        public Identifier getName() {
             return name;
         }
 
@@ -328,7 +344,7 @@ public class ReplicationCalculation {
                     } else {
                         visitedRecipes.add(reference.getName().toString());
                         for (Ingredient input : reference.inputs) {
-                            if (input.getItems().length == 0) continue;
+                            if (input.isEmpty()) continue;
                             var tempVisitedRecipes = new HashSet<>(visitedRecipes);
                             var tempVisitedCalculations = new HashSet<>(visitedCalculations);
                             var inputMatter = getMatterCompound(input, depth + 1, tempVisitedRecipes, tempVisitedCalculations, printDebug);
@@ -337,8 +353,8 @@ public class ReplicationCalculation {
                             // ONE INGREDIENT IS NULL SO ITS NOT VALID
                             if (inputMatter == null) {
                                 if (printDebug) {
-                                    CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "ONE INGREDIENT DOESNT HAVE VALUE " + input.getItems().length);
-                                    for (ItemStack item : input.getItems()) {
+                                    CALCULATOR_LOG.info(repeatChar(' ', depth + 1) + "\\" + repeatChar('_', depth + 1) + "ONE INGREDIENT DOESNT HAVE VALUE " + input.getValues().size());
+                                    for (ItemStack item : input.items().map(ItemStack::new).toList()) {
                                         CALCULATOR_LOG.info(repeatChar(' ', depth + 2) + "\\" + repeatChar('_', depth + 2) + item.toString());
                                     }
                                 }

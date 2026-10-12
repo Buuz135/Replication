@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:budding_amethyst"
-  },
+  "input": "minecraft:budding_amethyst",
   "matter": [
     {
       "type": "replication:precious",

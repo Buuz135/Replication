@@ -3,9 +3,10 @@ package com.buuz135.replication.item;
 import com.buuz135.replication.ReplicationAttachments;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
 import com.buuz135.replication.block.tile.ChipStorageBlockEntity;
+import com.buuz135.replication.client.ClientAccess;
 import com.hrznstudio.titanium.item.BasicItem;
+import com.hrznstudio.titanium.util.ItemStackSerialization;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -31,8 +32,8 @@ public class MatterBluePrintItem extends ReplicationItem {
         super.addTooltipDetails(key, stack, tooltip, advanced);
         if (key == null){
             if (stack.has(ReplicationAttachments.BLUEPRINT)){
-                var item = ItemStack.parseOptional(Minecraft.getInstance().level.registryAccess(), stack.get(ReplicationAttachments.BLUEPRINT).getCompound("Item"));
-                var progress = stack.get(ReplicationAttachments.BLUEPRINT).getDouble("Progress");
+                var item = ItemStackSerialization.load(ClientAccess.level().registryAccess(), stack.get(ReplicationAttachments.BLUEPRINT).getCompoundOrEmpty("Item"));
+                var progress = stack.get(ReplicationAttachments.BLUEPRINT).getDoubleOr("Progress", 0);
                 tooltip.add(Component.literal("").append(Component.translatable("relocation.blueprint.contains_information").withStyle(ChatFormatting.GOLD))
                         .append(Component.literal(new DecimalFormat("##.##").format(progress*100)).withStyle(ChatFormatting.WHITE))
                         .append(Component.literal("% ").withStyle(ChatFormatting.DARK_AQUA))
@@ -49,13 +50,13 @@ public class MatterBluePrintItem extends ReplicationItem {
     @Override
     public InteractionResult useOn(UseOnContext pContext) {
         if (pContext.getItemInHand().has(ReplicationAttachments.BLUEPRINT)){
-            var item = ItemStack.parseOptional(pContext.getPlayer().level().registryAccess(), pContext.getItemInHand().get(ReplicationAttachments.BLUEPRINT).getCompound("Item"));
+            var item = ItemStackSerialization.load(pContext.getPlayer().level().registryAccess(), pContext.getItemInHand().get(ReplicationAttachments.BLUEPRINT).getCompoundOrEmpty("Item"));
             var tile = pContext.getLevel().getBlockEntity(pContext.getClickedPos());
             if (tile instanceof ChipStorageBlockEntity chipStorageBlockEntity){
                 for (int i = 0; i < chipStorageBlockEntity.getChips().getSlots(); i++) {
                     var stack = chipStorageBlockEntity.getChips().getStackInSlot(i);
                     if (!stack.isEmpty() && stack.getItem() instanceof IMatterPatternModifier<?> patternModifier){
-                        var returnedValue = ((IMatterPatternModifier<ItemStack>)patternModifier).addPattern(pContext.getLevel(), stack, item, (float) pContext.getItemInHand().get(ReplicationAttachments.BLUEPRINT).getDouble("Progress"));
+                        var returnedValue = ((IMatterPatternModifier<ItemStack>) patternModifier).addPattern(pContext.getLevel(), stack, item, (float) pContext.getItemInHand().get(ReplicationAttachments.BLUEPRINT).getDoubleOr("Progress", 0));
                         if (returnedValue.getPattern() != null){
                             pContext.getItemInHand().shrink(1);
                             chipStorageBlockEntity.cachePatterns();

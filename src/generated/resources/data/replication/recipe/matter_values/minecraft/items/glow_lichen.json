@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:glow_lichen"
-  },
+  "input": "minecraft:glow_lichen",
   "matter": [
     {
       "type": "replication:earth",

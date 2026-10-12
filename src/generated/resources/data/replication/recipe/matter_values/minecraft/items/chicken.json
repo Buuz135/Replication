@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:chicken"
-  },
+  "input": "minecraft:chicken",
   "matter": [
     {
       "type": "replication:organic",

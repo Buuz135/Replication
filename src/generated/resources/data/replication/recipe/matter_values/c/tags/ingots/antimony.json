@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:ingots/antimony"
-  },
+  "input": "#c:ingots/antimony",
   "matter": [
     {
       "type": "replication:metallic",

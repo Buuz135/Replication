@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:pearlescent_froglight"
-  },
+  "input": "minecraft:pearlescent_froglight",
   "matter": [
     {
       "type": "replication:living",

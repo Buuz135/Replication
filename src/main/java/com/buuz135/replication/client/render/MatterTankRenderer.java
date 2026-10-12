@@ -1,117 +1,69 @@
 package com.buuz135.replication.client.render;
 
 import com.buuz135.replication.Replication;
-import com.buuz135.replication.api.IMatterType;
 import com.buuz135.replication.block.tile.BaseMatterTankBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
-import org.joml.Matrix4f;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
-public class MatterTankRenderer<T extends BaseMatterTankBlockEntity<T>> implements BlockEntityRenderer<T> {
+public class MatterTankRenderer<T extends BaseMatterTankBlockEntity<T>> implements BlockEntityRenderer<T, MatterTankRenderer.State> {
 
+    private final TextureAtlasSprite sprite;
 
-    public MatterTankRenderer(BlockEntityRendererProvider.Context p_173689_) {
+    public MatterTankRenderer(BlockEntityRendererProvider.Context context) {
+        this.sprite = context.sprites().get(new SpriteId(TextureAtlas.LOCATION_BLOCKS, Identifier.fromNamespaceAndPath(Replication.MOD_ID, "block/matter")));
+    }
+
+    private static int toColor(float[] color) {
+        int alpha = Math.max(0, Math.min(255, Math.round(color[3] * 255)));
+        int red = Math.max(0, Math.min(255, Math.round(color[0] * 255)));
+        int green = Math.max(0, Math.min(255, Math.round(color[1] * 255)));
+        int blue = Math.max(0, Math.min(255, Math.round(color[2] * 255)));
+        return alpha << 24 | red << 16 | green << 8 | blue;
     }
 
     @Override
-    public void render(T tile, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn) {
-        var padding = 0.2;
-        var matterStack = tile.getTanks().get(0).getMatter();
-        if (!matterStack.isEmpty())
-            renderFaces(poseStack, multiBufferSource, new AABB(padding, 0.255, padding, 1 - padding, 0.255 + (Math.min(matterStack.getAmount(), tile.getTanks().get(0).getCapacity()) / (double) tile.getTanks().get(0).getCapacity()) * 0.5, 1 - padding), LightTexture.FULL_BRIGHT, combinedOverlayIn, matterStack.getMatterType());
+    public State createRenderState() {
+        return new State();
     }
 
-    private void renderFaces(PoseStack matrixStack, MultiBufferSource bufferIn, AABB bounds, int combinedLight, int combinedOverlay, IMatterType matterType) {
-
-        matrixStack.pushPose();
-        //matrixStack.translate(0,1,0);
-        ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter");
-        TextureAtlasSprite still = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
-        VertexConsumer builder = bufferIn.getBuffer(RenderType.translucent());
-
-        float[] color = matterType.getColor().get();
-        float red = color[0];
-        float green = color[1];
-        float blue = color[2];
-        float alpha =  color[3];
-
-        float x1 = (float) bounds.minX;
-        float x2 = (float) bounds.maxX;
-        float y1 = (float) bounds.minY;
-        float y2 = (float) bounds.maxY;
-        float z1 = (float) bounds.minZ;
-        float z2 = (float) bounds.maxZ;
-        float bx1 = (float) (bounds.minX);
-        float bx2 = (float) (bounds.maxX);
-        float by1 = (float) (bounds.minY);
-        float by2 = (float) (bounds.maxY);
-        float bz1 = (float) (bounds.minZ);
-        float bz2 = (float) (bounds.maxZ);
-
-        Matrix4f posMat = matrixStack.last().pose();
-
-        //TOP
-        if (true) {
-            float u1 = still.getU(bx1);
-            float u2 = still.getU(bx2);
-            float v1 = still.getV(bz1);
-            float v2 = still.getV(bz2);
-            builder.addVertex(posMat, x1, y2, z2).setColor(red, green, blue, alpha).setUv(u1, v2).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 1f, 0f);
-            builder.addVertex(posMat, x2, y2, z2).setColor(red, green, blue, alpha).setUv(u2, v2).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 1f, 0f);
-            builder.addVertex(posMat, x2, y2, z1).setColor(red, green, blue, alpha).setUv(u2, v1).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 1f, 0f);
-            builder.addVertex(posMat, x1, y2, z1).setColor(red, green, blue, alpha).setUv(u1, v1).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 1f, 0f);
+    @Override
+    public void extractRenderState(T blockEntity, State state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+        var tank = blockEntity.getTanks().get(0);
+        var matter = tank.getMatter();
+        state.fill = matter.isEmpty() || tank.getCapacity() <= 0 ? 0 : Math.min(1, matter.getAmount() / (double) tank.getCapacity());
+        if (!matter.isEmpty()) {
+            float[] color = matter.getMatterType().getColor().get();
+            state.color = toColor(color);
         }
-        float u1 = still.getU(bx1);
-        float u2 = still.getU(bx2);
-        float v1 = still.getV(by1);
-        float v2 = still.getV(by2);
-        //FRONT
-        if (true) {
+    }
 
-            builder.addVertex(posMat, x2, y1, z2).setColor(red, green, blue, alpha).setUv(u2, v1).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x2, y2, z2).setColor(red, green, blue, alpha).setUv(u2, v2).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x1, y2, z2).setColor(red, green, blue, alpha).setUv(u1, v2).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x1, y1, z2).setColor(red, green, blue, alpha).setUv(u1, v1).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        if (state.fill <= 0) {
+            return;
         }
+        AABB bounds = new AABB(0.2, 0.255, 0.2, 0.8, 0.255 + state.fill * 0.5, 0.8);
+        submitNodeCollector.submitCustomGeometry(poseStack, RenderTypes.translucentMovingBlock(), (pose, buffer) ->
+                ReplicationRenderHelper.texturedBox(pose, buffer, bounds, state.color, state.lightCoords,
+                        this.sprite.getU0(), this.sprite.getV0(), this.sprite.getU1(), this.sprite.getV1()));
+    }
 
-        if (true) {
-            matrixStack.translate(0,0,1);
-            matrixStack.mulPose(Axis.YP.rotationDegrees(90));
-            builder.addVertex(posMat, x2, y1, z2).setColor(red, green, blue, alpha).setUv(u2, v1).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x2, y2, z2).setColor(red, green, blue, alpha).setUv(u2, v2).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x1, y2, z2).setColor(red, green, blue, alpha).setUv(u1, v2).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x1, y1, z2).setColor(red, green, blue, alpha).setUv(u1, v1).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-        }
-
-        if (true) {
-            matrixStack.translate(0,0,1);
-            matrixStack.mulPose(Axis.YP.rotationDegrees(90));
-            builder.addVertex(posMat, x2, y1, z2).setColor(red, green, blue, alpha).setUv(u2, v1).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x2, y2, z2).setColor(red, green, blue, alpha).setUv(u2, v2).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x1, y2, z2).setColor(red, green, blue, alpha).setUv(u1, v2).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x1, y1, z2).setColor(red, green, blue, alpha).setUv(u1, v1).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-        }
-
-        if (true) {
-            matrixStack.translate(0,0,1);
-            matrixStack.mulPose(Axis.YP.rotationDegrees(90));
-            builder.addVertex(posMat, x2, y1, z2).setColor(red, green, blue, alpha).setUv(u2, v1).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x2, y2, z2).setColor(red, green, blue, alpha).setUv(u2, v2).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x1, y2, z2).setColor(red, green, blue, alpha).setUv(u1, v2).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-            builder.addVertex(posMat, x1, y1, z2).setColor(red, green, blue, alpha).setUv(u1, v1).setOverlay(combinedOverlay).setLight(combinedLight).setNormal(0f, 0f, 1f);
-        }
-
-        matrixStack.popPose();
+    public static class State extends BlockEntityRenderState {
+        private double fill;
+        private int color = 0xFFFFFFFF;
     }
 }

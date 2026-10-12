@@ -8,29 +8,25 @@ import com.hrznstudio.titanium.module.BlockWithTile;
 import com.hrznstudio.titanium.recipe.serializer.CodecRecipeSerializer;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.Mth;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
 
 public class ReplicationRegistry {
 
-    public static final ResourceKey<Registry<IMatterType>> MATTER_TYPES_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter_types"));
+    public static final ResourceKey<Registry<IMatterType>> MATTER_TYPES_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(Replication.MOD_ID, "matter_types"));
     public static Registry<IMatterType> MATTER_TYPES_REGISTRY = null;
 
     public static void init(IEventBus modEvent){
@@ -54,13 +50,6 @@ public class ReplicationRegistry {
         public static DeferredHolder<Block, Block> RAW_REPLICA_BLOCK = null;
         public static BlockWithTile CREATIVE_MATTER_TANK = null;
 
-    }
-
-    public static RegistryAccess registryAccess() {
-        if (ServerLifecycleHooks.getCurrentServer() != null) {
-            return ServerLifecycleHooks.getCurrentServer().registryAccess();
-        }
-        return LogicalSidedProvider.CLIENTWORLD.get(LogicalSide.CLIENT).orElseThrow().registryAccess();
     }
 
     public static class Sounds{
@@ -88,14 +77,14 @@ public class ReplicationRegistry {
     public static class Colors{
 
         public static float[] GREEN_SPLIT = new float[]{23/255f,229/255f,23/255f};
-        public static int GREEN = Mth.color(GREEN_SPLIT[0], GREEN_SPLIT[1], GREEN_SPLIT[2]);
+        public static int GREEN = ARGB.colorFromFloat(1, GREEN_SPLIT[0], GREEN_SPLIT[1], GREEN_SPLIT[2]);
 
     }
 
     public static class Capabilities{
 
         public static final BlockCapability<IMatterHandler, @Nullable Direction> MATTER_HANDLER =
-                BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter_handler"), IMatterHandler.class);
+                BlockCapability.createSided(Identifier.fromNamespaceAndPath(Replication.MOD_ID, "matter_handler"), IMatterHandler.class);
 ;
 
     }
@@ -104,14 +93,14 @@ public class ReplicationRegistry {
 
         public static final DeferredRegister<RecipeType<?>> REC = DeferredRegister.create(Registries.RECIPE_TYPE, Replication.MOD_ID);
 
-        public static final DeferredHolder<RecipeType<?>, RecipeType<?>> MATTER_VALUE_RECIPE_TYPE = REC.register("matter_value", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter_value")));
+        public static final DeferredHolder<RecipeType<?>, RecipeType<?>> MATTER_VALUE_RECIPE_TYPE = REC.register("matter_value", () -> RecipeType.simple(Identifier.fromNamespaceAndPath(Replication.MOD_ID, "matter_value")));
     }
 
     public static class Serializers{
 
         public static final DeferredRegister<RecipeSerializer<?>> SER = DeferredRegister.create(Registries.RECIPE_SERIALIZER, Replication.MOD_ID);
 
-        public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> MATTER_VALUE_RECIPE_SERIALIZER = SER.register("matter_value", () -> new CodecRecipeSerializer(MatterValueRecipe.class, CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE, MatterValueRecipe.CODEC ));
+        public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> MATTER_VALUE_RECIPE_SERIALIZER = SER.register("matter_value", () -> CodecRecipeSerializer.create(MatterValueRecipe.class, CustomRecipeTypes.MATTER_VALUE_RECIPE_TYPE, MatterValueRecipe.CODEC));
 
     }
 

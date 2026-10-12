@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:mangrove_roots"
-  },
+  "input": "minecraft:mangrove_roots",
   "matter": [
     {
       "type": "replication:earth",

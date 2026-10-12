@@ -1,8 +1,8 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:matter_tank"
+      "type": "neoforge:registered",
+      "value": "replication:matter_tank"
     }
   ],
   "parent": "minecraft:recipes/root",

@@ -2,15 +2,12 @@ package com.buuz135.replication.packet;
 
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.IMatterType;
-import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
+import com.buuz135.replication.client.ClientAccess;
 import com.hrznstudio.titanium.network.Message;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class MatterFluidSyncPacket extends Message {
 
@@ -18,9 +15,9 @@ public class MatterFluidSyncPacket extends Message {
 
     public String network;
     public long amount;
-    public ResourceLocation matterType;
+    public Identifier matterType;
 
-    public MatterFluidSyncPacket(String network, long amount, ResourceLocation matterType) {
+    public MatterFluidSyncPacket(String network, long amount, Identifier matterType) {
         this.network = network;
         this.amount = amount;
         this.matterType = matterType;
@@ -30,12 +27,14 @@ public class MatterFluidSyncPacket extends Message {
     }
 
     @Override
-    protected void handleMessage(IPayloadContext context) {
+    protected void handleServerMessage(IPayloadContext context) {
+    }
+
+    @Override
+    public void handleClientMessage(IPayloadContext context) {
         context.enqueueWork(() -> {
-            CLIENT_MATTER_STORAGE.computeIfAbsent(this.network, s -> new HashMap<>()).put(ReplicationRegistry.MATTER_TYPES_REGISTRY.get(this.matterType), this.amount);
-            if (Minecraft.getInstance().screen instanceof ReplicationTerminalScreen terminalScreen){
-                terminalScreen.refreshTanks();
-            }
+            CLIENT_MATTER_STORAGE.computeIfAbsent(this.network, s -> new HashMap<>()).put(ReplicationRegistry.MATTER_TYPES_REGISTRY.getValue(this.matterType), this.amount);
+            ClientAccess.refreshTanks();
         });
     }
 }

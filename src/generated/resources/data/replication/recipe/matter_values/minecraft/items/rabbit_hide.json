@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:rabbit_hide"
-  },
+  "input": "minecraft:rabbit_hide",
   "matter": [
     {
       "type": "replication:living",

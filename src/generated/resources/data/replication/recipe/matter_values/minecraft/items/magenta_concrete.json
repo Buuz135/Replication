@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:magenta_concrete"
-  },
+  "input": "minecraft:magenta_concrete",
   "matter": [
     {
       "type": "replication:earth",

@@ -3,11 +3,11 @@ package com.buuz135.replication.network.task;
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.api.task.ReplicationTask;
 import com.buuz135.replication.network.MatterNetwork;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -53,9 +53,9 @@ public class ReplicationTaskManager implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
         this.pendingTasks = new LinkedHashMap<>();
-        compoundTag.getAllKeys().forEach(s -> {
+        compoundTag.keySet().forEach(s -> {
             var task = new ReplicationTask(ItemStack.EMPTY, Integer.MAX_VALUE, IReplicationTask.Mode.SINGLE, null, true);
-            task.deserializeNBT(provider, compoundTag.getCompound(s));
+            task.deserializeNBT(provider, compoundTag.getCompoundOrEmpty(s));
             pendingTasks.put(s, task);
         });
     }

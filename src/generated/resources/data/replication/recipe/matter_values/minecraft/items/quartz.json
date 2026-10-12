@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:quartz"
-  },
+  "input": "minecraft:quartz",
   "matter": [
     {
       "type": "replication:precious",

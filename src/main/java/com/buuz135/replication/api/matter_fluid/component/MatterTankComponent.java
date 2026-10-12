@@ -5,17 +5,14 @@ import com.buuz135.replication.api.matter_fluid.MatterTank;
 import com.buuz135.replication.api.matter_fluid.client.MatterTankScreenAddon;
 import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.api.client.IScreenAddonProvider;
 import com.hrznstudio.titanium.component.IComponentHarness;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import com.hrznstudio.titanium.container.addon.IContainerAddonProvider;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
@@ -183,9 +180,8 @@ public class MatterTankComponent<T extends IComponentHarness> extends MatterTank
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        List<IFactory<? extends IScreenAddon>> addons = new ArrayList<>();
+    public List<IFactory<?>> getScreenAddons() {
+        List<IFactory<?>> addons = new ArrayList<>();
         addons.add(() -> new MatterTankScreenAddon(posX, posY, this, tankType));
         return addons;
     }

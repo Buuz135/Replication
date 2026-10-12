@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "replication:replicator_motor"
-  },
+  "input": "replication:replicator_motor",
   "matter": [
     {
       "type": "replication:metallic",

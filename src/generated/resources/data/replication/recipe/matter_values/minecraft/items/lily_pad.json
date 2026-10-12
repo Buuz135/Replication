@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:lily_pad"
-  },
+  "input": "minecraft:lily_pad",
   "matter": [
     {
       "type": "replication:earth",

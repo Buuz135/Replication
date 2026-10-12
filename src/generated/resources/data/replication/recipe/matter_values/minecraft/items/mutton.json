@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:mutton"
-  },
+  "input": "minecraft:mutton",
   "matter": [
     {
       "type": "replication:organic",

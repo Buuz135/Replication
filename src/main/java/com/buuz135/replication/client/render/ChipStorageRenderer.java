@@ -1,66 +1,70 @@
 package com.buuz135.replication.client.render;
 
-import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.tile.ChipStorageBlockEntity;
-import com.buuz135.replication.block.tile.DisintegratorBlockEntity;
-import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
 import com.hrznstudio.titanium.block.RotatableBlock;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemDisplayContext;
-import org.joml.Matrix4f;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
+import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.OptionalDouble;
+import java.util.stream.IntStream;
 
-public class ChipStorageRenderer<T extends ChipStorageBlockEntity> implements BlockEntityRenderer<T>  {
+public class ChipStorageRenderer implements BlockEntityRenderer<ChipStorageBlockEntity, ChipStorageRenderer.State> {
 
-    public static List<BakedModel> CHIP_MODELS = new ArrayList<>();
+    public static final List<StandaloneModelKey<BlockStateModelPart>> CHIP_KEYS = IntStream.range(0, 8)
+            .mapToObj(slot -> new StandaloneModelKey<BlockStateModelPart>(() -> "replication:block/chips/chip_storage_chips_" + slot))
+            .toList();
+    private static List<BlockStateModelPart> chipModels = Collections.emptyList();
 
     public ChipStorageRenderer(BlockEntityRendererProvider.Context context) {
+    }
 
+    public static void setChipModels(List<BlockStateModelPart> chipModels) {
+        ChipStorageRenderer.chipModels = List.copyOf(chipModels);
     }
 
     @Override
-    public void render(ChipStorageBlockEntity entity, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource,  int combinedLightIn, int combinedOverlayIn) {
-        var facing = entity.getBlockState().getValue(RotatableBlock.FACING_HORIZONTAL);
-        if (facing == Direction.EAST) {
-            poseStack.translate(1,0,0);
-            poseStack.mulPose(Axis.YP.rotationDegrees(-90));
-        }
-        else if (facing == Direction.SOUTH) {
-            poseStack.translate(1,0,1);
-            poseStack.mulPose(Axis.YP.rotationDegrees(-180));
-        }
-        else if (facing == Direction.WEST) {
-            poseStack.translate(0,0,1);
-            poseStack.mulPose(Axis.YP.rotationDegrees(90));
-        }
-        //poseStack.translate(0.5f, 0.375f, 0.5f);
-
-        for (int i = 0; i < entity.getChips().getSlots(); i++) {
-            var stack = entity.getChips().getStackInSlot(i);
-            if (!stack.isEmpty()) {
-                Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(poseStack.last(),  multiBufferSource.getBuffer(RenderType.cutout()), null, CHIP_MODELS.get(i), 255, 255, 255, combinedLightIn ,combinedOverlayIn);
-            }
-        }
-
+    public State createRenderState() {
+        return new State();
     }
 
+    @Override
+    public void extractRenderState(ChipStorageBlockEntity blockEntity, State state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+        state.facing = blockEntity.getBlockState().getValue(RotatableBlock.FACING_HORIZONTAL);
+        state.occupied = new boolean[blockEntity.getChips().getSlots()];
+        for (int slot = 0; slot < blockEntity.getChips().getSlots(); slot++) {
+            state.occupied[slot] = !blockEntity.getChips().getStackInSlot(slot).isEmpty();
+        }
+    }
 
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        poseStack.pushPose();
+        ReplicationRenderHelper.rotate(poseStack, state.facing);
+        for (int slot = 0; slot < state.occupied.length && slot < chipModels.size(); slot++) {
+            if (state.occupied[slot]) {
+                submitNodeCollector.submitBlockModel(poseStack, Sheets.cutoutBlockSheet(), List.of(chipModels.get(slot)), BlockModelRenderState.EMPTY_TINTS, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+            }
+        }
+        poseStack.popPose();
+    }
+
+    public static class State extends BlockEntityRenderState {
+        private Direction facing = Direction.NORTH;
+        private boolean[] occupied = new boolean[0];
+    }
 }

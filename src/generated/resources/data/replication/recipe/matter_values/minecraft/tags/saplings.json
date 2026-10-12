@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "minecraft:saplings"
-  },
+  "input": "#minecraft:saplings",
   "matter": [
     {
       "type": "replication:earth",

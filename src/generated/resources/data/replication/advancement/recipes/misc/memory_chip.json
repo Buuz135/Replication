@@ -1,8 +1,8 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:memory_chip"
+      "type": "neoforge:registered",
+      "value": "replication:memory_chip"
     }
   ],
   "parent": "minecraft:recipes/root",

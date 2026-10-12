@@ -1,22 +1,16 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:memory_chip"
+      "type": "neoforge:registered",
+      "value": "replication:memory_chip"
     }
   ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "item": "minecraft:gold_ingot"
-    },
-    "I": {
-      "item": "replication:replica_ingot"
-    },
-    "R": {
-      "item": "minecraft:redstone"
-    }
+    "G": "minecraft:gold_ingot",
+    "I": "replication:replica_ingot",
+    "R": "minecraft:redstone"
   },
   "pattern": [
     " RI",
@@ -24,7 +18,6 @@
     "IG "
   ],
   "result": {
-    "count": 1,
     "id": "replication:memory_chip"
   }
 }

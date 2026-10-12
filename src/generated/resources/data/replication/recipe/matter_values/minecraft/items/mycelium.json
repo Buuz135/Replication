@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:mycelium"
-  },
+  "input": "minecraft:mycelium",
   "matter": [
     {
       "type": "replication:earth",

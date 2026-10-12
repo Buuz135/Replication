@@ -2,36 +2,17 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "replication:raw_replica"
-    },
-    {
-      "item": "replication:raw_replica"
-    },
-    {
-      "item": "replication:raw_replica"
-    },
-    {
-      "item": "replication:raw_replica"
-    },
-    {
-      "item": "replication:raw_replica"
-    },
-    {
-      "item": "replication:raw_replica"
-    },
-    {
-      "item": "replication:raw_replica"
-    },
-    {
-      "item": "replication:raw_replica"
-    },
-    {
-      "item": "replication:raw_replica"
-    }
+    "replication:raw_replica",
+    "replication:raw_replica",
+    "replication:raw_replica",
+    "replication:raw_replica",
+    "replication:raw_replica",
+    "replication:raw_replica",
+    "replication:raw_replica",
+    "replication:raw_replica",
+    "replication:raw_replica"
   ],
   "result": {
-    "count": 1,
     "id": "replication:raw_replica_block"
   }
 }

@@ -4,6 +4,7 @@ import com.buuz135.replication.ReplicationAttachments;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.shapes.MatterTankShapes;
 import com.buuz135.replication.block.tile.MatterTankBlockEntity;
+import com.buuz135.replication.data.DataIngredients;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.datagenerator.loot.block.BasicBlockLootTables;
@@ -14,6 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -22,6 +24,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -96,7 +99,7 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
         BlockEntity entity = level.getBlockEntity(pos);
         if (stack.has(ReplicationAttachments.TILE)) {
             if (entity instanceof MatterTankBlockEntity tile) {
-                entity.loadCustomOnly(stack.get(ReplicationAttachments.TILE), entity.getLevel().registryAccess());
+                entity.loadCustomOnly(TagValueInput.create(ProblemReporter.DISCARDING, entity.getLevel().registryAccess(), stack.get(ReplicationAttachments.TILE)));
                 tile.markForUpdate();
             }
         }
@@ -109,7 +112,7 @@ public class MatterTankBlock extends RotatableBlock<MatterTankBlockEntity> imple
                 .pattern("G G")
                 .pattern("IGI")
                 .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
-                .define('G', Tags.Items.GLASS_BLOCKS)
+                .define('G', DataIngredients.tag(Tags.Items.GLASS_BLOCKS))
                 .save(consumer);
     }
 

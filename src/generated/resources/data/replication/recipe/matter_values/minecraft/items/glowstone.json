@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:glowstone"
-  },
+  "input": "minecraft:glowstone",
   "matter": [
     {
       "type": "replication:nether",

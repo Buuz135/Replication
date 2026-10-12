@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:ingots/uraninite"
-  },
+  "input": "#c:ingots/uraninite",
   "matter": [
     {
       "type": "replication:metallic",

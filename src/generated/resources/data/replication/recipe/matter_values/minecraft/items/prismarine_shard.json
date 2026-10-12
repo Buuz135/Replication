@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:prismarine_shard"
-  },
+  "input": "minecraft:prismarine_shard",
   "matter": [
     {
       "type": "replication:earth",

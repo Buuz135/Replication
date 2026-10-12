@@ -35,7 +35,7 @@ public class MatterTankReferenceHolder implements ContainerData {
         }
 
         if (matterAmount >= 0 && matterId >= 0) {
-            matterTankComponent.setMatterStack(new MatterStack(ReplicationRegistry.MATTER_TYPES_REGISTRY.getHolder(matterId).get().value(), matterAmount));
+            matterTankComponent.setMatterStack(new MatterStack(ReplicationRegistry.MATTER_TYPES_REGISTRY.get(matterId).orElseThrow().value(), matterAmount));
         } else {
             matterTankComponent.setMatterStack(MatterStack.EMPTY);
         }

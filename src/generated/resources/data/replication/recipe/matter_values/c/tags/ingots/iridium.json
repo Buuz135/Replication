@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:ingots/iridium"
-  },
+  "input": "#c:ingots/iridium",
   "matter": [
     {
       "type": "replication:metallic",

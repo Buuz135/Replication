@@ -2,9 +2,9 @@ package com.buuz135.replication.calculation;
 
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.IMatterType;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
 
@@ -102,9 +102,9 @@ public class MatterCompound implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
         values.clear();
-        for (String allKey : compoundTag.getAllKeys()) {
+        for (String allKey : compoundTag.keySet()) {
             var matterValue = new MatterValue(ReplicationRegistry.Matter.EMPTY.get(), 0);
-            matterValue.deserializeNBT(provider, compoundTag.getCompound(allKey));
+            matterValue.deserializeNBT(provider, compoundTag.getCompoundOrEmpty(allKey));
             values.put(matterValue.getMatter(), matterValue);
         }
     }

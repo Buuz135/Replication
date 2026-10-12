@@ -1,13 +1,13 @@
 package com.buuz135.replication.client;
 
 import com.buuz135.replication.Replication;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import com.hrznstudio.titanium.util.AssetUtil;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
-import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -17,8 +17,6 @@ public class MatterCalculationStatusToast implements Toast {
     private final Component title;
     private final Component subtitle;
     private Toast.Visibility visibility = Toast.Visibility.SHOW;
-    private long lastDelta;
-    private float displayedProgress;
     private final ItemStack display;
 
     public MatterCalculationStatusToast(ItemStack stack, Component titleComponent, @Nullable Component subtitleComponent, boolean drawProgressBar) {
@@ -28,20 +26,25 @@ public class MatterCalculationStatusToast implements Toast {
     }
 
     @Override
-    public Visibility render(GuiGraphics guiGraphics, ToastComponent p_230444_2_, long p_230444_3_) {
-        var texture = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/toasts.png");
-        //RenderSystem.setShaderTexture(0, texture);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1f);
-        //p_230444_2_.render(guiGraphics);
-        guiGraphics.blit(texture, 0, 0, 0, 0, this.width(), this.height());
-        guiGraphics.renderItem(display, 9, 8);
-        if (this.subtitle == null) {
-            guiGraphics.drawString(Minecraft.getInstance().font, this.title, 30, 12, -11534256, false);
-        } else {
-            guiGraphics.drawString(Minecraft.getInstance().font, this.title, 30, 7, -11534256);
-            guiGraphics.drawString(Minecraft.getInstance().font, this.subtitle, 30, 18, -16777216);
-        }
+    public Visibility getWantedVisibility() {
         return this.visibility;
+    }
+
+    @Override
+    public void update(ToastManager toastManager, long time) {
+    }
+
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, Font font, long time) {
+        var texture = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/toasts.png");
+        AssetUtil.blit(guiGraphics, texture, 0, 0, 0, 0, this.width(), this.height());
+        guiGraphics.item(display, 9, 8);
+        if (this.subtitle == null) {
+            guiGraphics.text(font, this.title, 30, 12, -11534256, false);
+        } else {
+            guiGraphics.text(font, this.title, 30, 7, -11534256);
+            guiGraphics.text(font, this.subtitle, 30, 18, -16777216);
+        }
     }
 
     public void hide() {

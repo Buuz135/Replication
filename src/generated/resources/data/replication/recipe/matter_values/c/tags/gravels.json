@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:gravels"
-  },
+  "input": "#c:gravels",
   "matter": [
     {
       "type": "replication:earth",

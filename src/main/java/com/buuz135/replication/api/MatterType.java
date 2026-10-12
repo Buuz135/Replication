@@ -1,8 +1,5 @@
 package com.buuz135.replication.api;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.Mth;
-
 import java.util.function.Supplier;
 
 public enum MatterType implements IMatterType{
@@ -15,12 +12,7 @@ public enum MatterType implements IMatterType{
     METALLIC("metallic", new float[]{0.75f, 0.75f,0.75f,1f}, 128),
     PRECIOUS("precious", new float[]{237/256f, 222/256f, 121/256f,1f}, 128),
     LIVING("living", new float[]{181/256f, 69/256f, 177/256f, 1f}, 32),
-    QUANTUM("quantum", () -> {
-        if (Minecraft.getInstance().level != null){
-            return new float[]{181/256f, 132/256f, 227/256f, Mth.clamp(Minecraft.getInstance().level.random.nextDouble() < 0.95 ? (float) (Math.sin((Minecraft.getInstance().level.getGameTime() % 300) / 30f) + 1.25 )*0.5f : 1f, 0, 1)};
-        }
-        return new float[]{181/256f, 132/256f, 227/256f,1f};
-    }, 64);
+    QUANTUM("quantum", new float[]{181 / 256f, 132 / 256f, 227 / 256f, 1f}, 64);
 
     ;
 

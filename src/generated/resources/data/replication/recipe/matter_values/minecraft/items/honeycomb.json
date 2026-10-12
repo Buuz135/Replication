@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:honeycomb"
-  },
+  "input": "minecraft:honeycomb",
   "matter": [
     {
       "type": "replication:living",

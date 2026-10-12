@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:ender_pearl"
-  },
+  "input": "minecraft:ender_pearl",
   "matter": [
     {
       "type": "replication:organic",

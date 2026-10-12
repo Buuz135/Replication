@@ -23,10 +23,10 @@ public class ReplicationTerminalScreenHandler implements IGuiContainerHandler<Re
     public List<Rect2i> getGuiExtraAreas(ReplicationTerminalScreen containerScreen) {
         List<Rect2i> rectangles = new ArrayList<>();
         if (containerScreen.shouldBaseGUIRender()) {
-            rectangles.add(new Rect2i(containerScreen.getGuiLeft() + containerScreen.getXSize(), containerScreen.getGuiTop() + 20, 27, 174));
+            rectangles.add(new Rect2i(containerScreen.getLeftPos() + containerScreen.getImageWidth(), containerScreen.getTopPos() + 20, 47, 174));
         } else {
-            rectangles.add(new Rect2i(containerScreen.getGuiLeft() + containerScreen.getXSize(), containerScreen.getGuiTop(), 50, containerScreen.getYSize()));
-            rectangles.add(new Rect2i(containerScreen.getGuiLeft() - 30, containerScreen.getGuiTop(), 50, containerScreen.getYSize()));
+            rectangles.add(new Rect2i(containerScreen.getLeftPos() + containerScreen.getImageWidth(), containerScreen.getTopPos(), 61, containerScreen.getImageHeight()));
+            rectangles.add(new Rect2i(containerScreen.getLeftPos() - 31, containerScreen.getTopPos(), 31, containerScreen.getImageHeight()));
         }
         return rectangles;
     }

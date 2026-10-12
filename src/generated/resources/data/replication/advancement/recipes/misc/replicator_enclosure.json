@@ -1,8 +1,8 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:replicator_enclosure"
+      "type": "neoforge:registered",
+      "value": "replication:replicator_enclosure"
     }
   ],
   "parent": "minecraft:recipes/root",

@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:piglin_head"
-  },
+  "input": "minecraft:piglin_head",
   "matter": [
     {
       "type": "replication:organic",

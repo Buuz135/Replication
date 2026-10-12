@@ -1,19 +1,15 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:replicator_enclosure"
+      "type": "neoforge:registered",
+      "value": "replication:replicator_enclosure"
     }
   ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "item": "minecraft:purple_stained_glass_pane"
-    },
-    "R": {
-      "item": "replication:replica_ingot"
-    }
+    "G": "minecraft:purple_stained_glass_pane",
+    "R": "replication:replica_ingot"
   },
   "pattern": [
     "GGG",
@@ -21,7 +17,6 @@
     "GGG"
   ],
   "result": {
-    "count": 1,
     "id": "replication:replicator_enclosure"
   }
 }

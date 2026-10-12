@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:podzol"
-  },
+  "input": "minecraft:podzol",
   "matter": [
     {
       "type": "replication:earth",

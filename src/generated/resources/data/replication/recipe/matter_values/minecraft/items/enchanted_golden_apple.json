@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:enchanted_golden_apple"
-  },
+  "input": "minecraft:enchanted_golden_apple",
   "matter": [
     {
       "type": "replication:living",

@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:ancient_debris"
-  },
+  "input": "minecraft:ancient_debris",
   "matter": [
     {
       "type": "replication:precious",

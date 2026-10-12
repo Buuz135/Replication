@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:cod"
-  },
+  "input": "minecraft:cod",
   "matter": [
     {
       "type": "replication:organic",

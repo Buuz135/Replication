@@ -1,15 +1,14 @@
-#version 150
+#version 330
 #define PI 3.1415926538
-#moj_import <matrix.glsl>
+#moj_import < minecraft: globals.glsl >
 
 uniform sampler2D Sampler0;
-
-uniform float GameTime;
-uniform int Layers;
 
 in vec2 texCoord0;
 
 out vec4 fragColor;
+
+const int Layers = 15;
 
 vec2 random2(vec2 p) {
     return fract(sin(vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3))))*43758.5453);

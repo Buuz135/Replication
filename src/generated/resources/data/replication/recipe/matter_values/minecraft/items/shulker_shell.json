@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:shulker_shell"
-  },
+  "input": "minecraft:shulker_shell",
   "matter": [
     {
       "type": "replication:living",

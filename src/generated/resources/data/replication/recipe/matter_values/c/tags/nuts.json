@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:nuts"
-  },
+  "input": "#c:nuts",
   "matter": [
     {
       "type": "replication:earth",

@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:turtle_scute"
-  },
+  "input": "minecraft:turtle_scute",
   "matter": [
     {
       "type": "replication:living",

@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:nether_sprouts"
-  },
+  "input": "minecraft:nether_sprouts",
   "matter": [
     {
       "type": "replication:organic",

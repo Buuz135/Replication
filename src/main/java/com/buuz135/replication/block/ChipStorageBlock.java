@@ -3,6 +3,7 @@ package com.buuz135.replication.block;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.shapes.ChipStorageShapes;
 import com.buuz135.replication.block.tile.ChipStorageBlockEntity;
+import com.buuz135.replication.data.DataIngredients;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
@@ -89,10 +90,10 @@ public class ChipStorageBlock extends RotatableBlock<ChipStorageBlockEntity> imp
                 .pattern("MM ")
                 .pattern("ICG")
                 .pattern("III")
-                .define('C', Tags.Items.CHESTS_WOODEN)
                 .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
                 .define('G', Items.IRON_TRAPDOOR)
-                .define('M', Tags.Items.INGOTS_IRON)
+                .define('C', DataIngredients.tag(Tags.Items.CHESTS_WOODEN))
+                .define('M', DataIngredients.tag(Tags.Items.INGOTS_IRON))
                 .save(consumer);
     }
 }

@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:leather"
-  },
+  "input": "minecraft:leather",
   "matter": [
     {
       "type": "replication:living",

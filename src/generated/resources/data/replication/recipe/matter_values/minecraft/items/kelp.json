@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:kelp"
-  },
+  "input": "minecraft:kelp",
   "matter": [
     {
       "type": "replication:earth",

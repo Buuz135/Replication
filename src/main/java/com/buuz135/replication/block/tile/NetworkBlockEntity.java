@@ -12,8 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,6 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
         this.matterTankComponents = new ArrayList<>();
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void initClient() {
         super.initClient();
@@ -37,7 +34,7 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
     @Override
     public void onLoad() {
         super.onLoad();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             NetworkManager networkManager = NetworkManager.get(level);
 
             if (networkManager.getElement(worldPosition) == null) {
@@ -69,7 +66,7 @@ public abstract class NetworkBlockEntity<T extends ActiveTile<T>> extends Active
     public void setRemoved() {
         super.setRemoved();
 
-        if (!level.isClientSide && !unloaded) {
+        if (!level.isClientSide() && !unloaded) {
             NetworkManager networkManager = NetworkManager.get(level);
 
             NetworkElement pipe = networkManager.getElement(worldPosition);

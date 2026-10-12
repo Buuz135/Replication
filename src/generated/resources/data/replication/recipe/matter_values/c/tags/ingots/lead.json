@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:ingots/lead"
-  },
+  "input": "#c:ingots/lead",
   "matter": [
     {
       "type": "replication:metallic",

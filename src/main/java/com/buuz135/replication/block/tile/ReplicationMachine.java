@@ -3,7 +3,6 @@ package com.buuz135.replication.block.tile;
 import com.buuz135.replication.client.gui.ReplicationAddonProvider;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IScreenAddon;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.energy.EnergyStorageComponent;
@@ -11,7 +10,7 @@ import com.hrznstudio.titanium.container.addon.IContainerAddon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -37,12 +36,12 @@ public abstract class ReplicationMachine<T extends NetworkBlockEntity<T>> extend
     }
 
     @Override
-    public ItemInteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ItemInteractionResult.SUCCESS) {
-            return ItemInteractionResult.SUCCESS;
+    public InteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == InteractionResult.SUCCESS) {
+            return InteractionResult.SUCCESS;
         }
         openGui(playerIn);
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Nonnull
@@ -52,8 +51,8 @@ public abstract class ReplicationMachine<T extends NetworkBlockEntity<T>> extend
 
     @Override
     @Nonnull
-    public List<IFactory<? extends IScreenAddon>> getScreenAddons() {
-        List<IFactory<? extends IScreenAddon>> screenAddons = super.getScreenAddons();
+    public List<IFactory<?>> getScreenAddons() {
+        List<IFactory<?>> screenAddons = super.getScreenAddons();
         screenAddons.addAll(this.getEnergyStorage().getScreenAddons());
         return screenAddons;
     }

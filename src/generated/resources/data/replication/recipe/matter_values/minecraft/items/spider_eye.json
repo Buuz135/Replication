@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:spider_eye"
-  },
+  "input": "minecraft:spider_eye",
   "matter": [
     {
       "type": "replication:living",

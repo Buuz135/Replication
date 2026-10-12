@@ -12,6 +12,7 @@ import com.buuz135.replication.client.gui.addons.DisintegratorAddon;
 import com.buuz135.replication.util.InvUtil;
 import com.buuz135.replication.util.NumberUtils;
 import com.buuz135.replication.util.ReplicationTags;
+import com.buuz135.replication.util.TransferUtil;
 import com.hrznstudio.titanium.annotation.Save;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
@@ -22,14 +23,13 @@ import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import com.hrznstudio.titanium.component.sideness.IFacingComponent;
 import com.hrznstudio.titanium.util.FacingUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -108,7 +108,6 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
         this.addMatterTank(this.tank6);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void initClient() {
         super.initClient();
@@ -126,7 +125,8 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
                         markComponentDirty();
                     }
                     stack.shrink(1);
-                    this.getEnergyStorage().extractEnergy(ReplicationConfig.Disintegrator.POWER_USAGE, false);
+                    this.input.setStackInSlot(i, stack);
+                    TransferUtil.extractEnergy(this.getEnergyStorage(), ReplicationConfig.Disintegrator.POWER_USAGE, false);
                 }
             }
         }
@@ -194,7 +194,7 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
 
     @Override
     public int getTitleColor() {
-        return 0x72e567;
+        return 0xff72e567;
     }
 
     @Override
@@ -226,26 +226,27 @@ public class DisintegratorBlockEntity extends ReplicationMachine<DisintegratorBl
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        super.loadAdditional(compound, provider);
-        if (compound.contains("queuedMatterStacks")) {
+    public void loadAdditional(ValueInput compound) {
+        super.loadAdditional(compound);
+        var storedMatterStacks = compound.read("queuedMatterStacks", CompoundTag.CODEC);
+        if (storedMatterStacks.isPresent()) {
             this.queuedMatterStacks.clear();
-            var queuedMatterStacks = compound.getCompound("queuedMatterStacks");
-            for (String allKey : queuedMatterStacks.getAllKeys()) {
-                this.queuedMatterStacks.add(MatterStack.loadMatterStackFromNBT(queuedMatterStacks.getCompound(allKey)));
+            var queuedMatterStacks = storedMatterStacks.get();
+            for (String allKey : queuedMatterStacks.keySet()) {
+                this.queuedMatterStacks.add(MatterStack.loadMatterStackFromNBT(queuedMatterStacks.getCompoundOrEmpty(allKey)));
             }
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        super.saveAdditional(compoundTag, provider);
+    protected void saveAdditional(ValueOutput compoundTag) {
+        super.saveAdditional(compoundTag);
         var queuedMatterStacks = new CompoundTag();
         var i = 0;
         for (MatterStack queuedMatterStack : this.queuedMatterStacks) {
             queuedMatterStacks.put(i + "", queuedMatterStack.writeToNBT(new CompoundTag()));
             ++i;
         }
-        compoundTag.put("queuedMatterStacks", queuedMatterStacks);
+        compoundTag.store("queuedMatterStacks", CompoundTag.CODEC, queuedMatterStacks);
     }
 }

@@ -14,7 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -73,9 +73,9 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
     }
 
     @Override
-    public ItemInteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
-        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == ItemInteractionResult.SUCCESS) {
-            return ItemInteractionResult.SUCCESS;
+    public InteractionResult onActivated(Player playerIn, InteractionHand hand, Direction facing, double hitX, double hitY, double hitZ) {
+        if (super.onActivated(playerIn, hand, facing, hitX, hitY, hitZ) == InteractionResult.SUCCESS) {
+            return InteractionResult.SUCCESS;
         }
         if (playerIn instanceof ServerPlayer serverPlayer) {
             for (NetworkElement chipSupplier : this.getNetwork().getChipSuppliers()) {
@@ -85,11 +85,6 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
                 }
             }
             ReplicationRegistry.MATTER_TYPES_REGISTRY.forEach(iMatterType -> this.getNetwork().sendMatterSyncPacket(serverPlayer, this.getNetwork().calculateMatterAmount(iMatterType), iMatterType));
-            this.getLevel().getServer().submitAsync(() -> {
-                this.getNetwork().getTaskManager().getPendingTasks().values().forEach(task -> {
-                    this.getNetwork().sendTaskSyncPacket(serverPlayer, task);
-                });
-            });
             serverPlayer.openMenu(this, buffer -> {
                 LocatorFactory.writePacketBuffer(buffer, new TileEntityLocatorInstance(this.worldPosition));
                 buffer.writeUtf(this.getNetwork().getId());
@@ -99,15 +94,15 @@ public class ReplicationTerminalBlockEntity extends NetworkBlockEntity<Replicati
                 buffer.writeInt(this.matterOpediaSortingDirection);
             });
         }
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public void handleButtonMessage(int id, Player playerEntity, CompoundTag compound) {
         super.handleButtonMessage(id, playerEntity, compound);
         if (id == 999){
-            var type = compound.getString("type");
-            var value = compound.getInt("state");
+            var type = compound.getStringOr("type", "");
+            var value = compound.getIntOr("state", 0);
             if (type.equals("SORTING_TYPE")){
                 sortingTypeValue = value;
                 syncObject(sortingTypeValue);

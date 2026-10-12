@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:sands"
-  },
+  "input": "#c:sands",
   "matter": [
     {
       "type": "replication:earth",

@@ -2,7 +2,7 @@ package com.buuz135.replication.integration.kubejs;
 
 import com.buuz135.replication.api.IMatterType;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * KubeJS builder for Replication matter types.
@@ -19,7 +19,7 @@ public class MatterTypeBuilder extends BuilderBase<IMatterType> {
     private float alpha = 1.0f;
     private int max = 1000;
 
-    public MatterTypeBuilder(ResourceLocation id) {
+    public MatterTypeBuilder(Identifier id) {
         super(id);
     }
 

@@ -1,6 +1,10 @@
 {
   "pack": {
     "description": "Replication resources",
-    "pack_format": 26
+    "min_format": 84,
+    "max_format": [
+      101,
+      1
+    ]
   }
 }

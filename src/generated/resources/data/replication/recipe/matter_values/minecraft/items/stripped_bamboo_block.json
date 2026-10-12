@@ -1,16 +1,14 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "minecraft:tall_flowers"
-  },
+  "input": "minecraft:stripped_bamboo_block",
   "matter": [
     {
       "type": "replication:earth",
-      "amount": 4.0
+      "amount": 0.5
     },
     {
       "type": "replication:organic",
-      "amount": 4.0
+      "amount": 0.5
     }
   ]
 }

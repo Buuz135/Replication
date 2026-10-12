@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:melon_slice"
-  },
+  "input": "minecraft:melon_slice",
   "matter": [
     {
       "type": "replication:organic",

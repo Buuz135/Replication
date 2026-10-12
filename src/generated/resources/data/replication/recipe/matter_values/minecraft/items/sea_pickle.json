@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:sea_pickle"
-  },
+  "input": "minecraft:sea_pickle",
   "matter": [
     {
       "type": "replication:earth",

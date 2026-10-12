@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:cactus"
-  },
+  "input": "minecraft:cactus",
   "matter": [
     {
       "type": "replication:earth",

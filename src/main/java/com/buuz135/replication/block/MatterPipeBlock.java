@@ -3,6 +3,7 @@ package com.buuz135.replication.block;
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.tile.MatterPipeBlockEntity;
+import com.buuz135.replication.data.DataIngredients;
 import com.google.common.collect.ImmutableMap;
 import com.hrznstudio.titanium.block.BasicTileBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -105,7 +107,7 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
             }
             return false;
         }
-        var cap = world.getCapability(Capabilities.EnergyStorage.BLOCK, pos.relative(direction), direction.getOpposite());
+        var cap = world.getCapability(Capabilities.Energy.BLOCK, pos.relative(direction), direction.getOpposite());
         if (cap != null) {
             return true;
         }
@@ -119,12 +121,12 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, @Nullable Orientation orientation, boolean isMoving) {
         var newState = this.createState(worldIn, pos, state);
         if (newState != state) {
             worldIn.setBlockAndUpdate(pos, newState);
         }
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             NetworkElement pipe = NetworkManager.get(worldIn).getElement(pos);
 
             if (pipe != null && pipe.getNetwork() != null) {
@@ -175,9 +177,9 @@ public class MatterPipeBlock extends BasicTileBlock<MatterPipeBlockEntity> imple
                 .pattern("PPP")
                 .pattern("IRI")
                 .pattern("PPP")
-                .define('P', Tags.Items.GLASS_PANES)
                 .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
                 .define('R', Items.REDSTONE)
+                .define('P', DataIngredients.tag(Tags.Items.GLASS_PANES))
                 .save(consumer);
     }
 }

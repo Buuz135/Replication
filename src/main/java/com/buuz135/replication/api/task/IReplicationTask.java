@@ -2,11 +2,11 @@ package com.buuz135.replication.api.task;
 
 import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.buuz135.replication.network.MatterNetwork;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
 import java.util.List;

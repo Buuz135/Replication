@@ -3,6 +3,7 @@ package com.buuz135.replication.block;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.shapes.ReplicationTerminalShapes;
 import com.buuz135.replication.block.tile.ReplicationTerminalBlockEntity;
+import com.buuz135.replication.data.DataIngredients;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
@@ -85,9 +86,9 @@ public class ReplicationTerminalBlock extends RotatableBlock<ReplicationTerminal
                 .pattern("III")
                 .pattern("IDP")
                 .pattern("IDI")
-                .define('P', Tags.Items.GLASS_PANES)
                 .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
                 .define('D', Items.DIAMOND)
+                .define('P', DataIngredients.tag(Tags.Items.GLASS_PANES))
                 .save(consumer);
     }
 }

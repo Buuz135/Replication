@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:fern"
-  },
+  "input": "minecraft:fern",
   "matter": [
     {
       "type": "replication:organic",

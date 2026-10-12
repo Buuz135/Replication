@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:rotten_flesh"
-  },
+  "input": "minecraft:rotten_flesh",
   "matter": [
     {
       "type": "replication:living",

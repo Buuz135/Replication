@@ -2,25 +2,21 @@ package com.buuz135.replication.api.matter_fluid.client;
 
 import com.buuz135.replication.Replication;
 import com.buuz135.replication.api.matter_fluid.IMatterTank;
-import com.buuz135.replication.api.matter_fluid.MatterStack;
 import com.hrznstudio.titanium.api.client.assets.types.ITankAsset;
 import com.hrznstudio.titanium.client.screen.addon.BasicScreenAddon;
 import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.component.fluid.FluidTankComponent;
 import com.hrznstudio.titanium.util.AssetUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.joml.Matrix4f;
+import net.minecraft.resources.Identifier;
 
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -29,10 +25,10 @@ import java.util.List;
 
 public class MatterTankScreenAddon extends BasicScreenAddon {
 
-
-    private IMatterTank tank;
+    private static final SpriteId MATTER = new SpriteId(TextureAtlas.LOCATION_BLOCKS, Identifier.fromNamespaceAndPath(Replication.MOD_ID, "block/matter"));
+    private final IMatterTank tank;
+    private final FluidTankComponent.Type type;
     private ITankAsset asset;
-    private FluidTankComponent.Type type;
 
     public MatterTankScreenAddon(int posX, int posY, IMatterTank tank, FluidTankComponent.Type type) {
         super(posX, posY);
@@ -40,139 +36,60 @@ public class MatterTankScreenAddon extends BasicScreenAddon {
         this.type = type;
     }
 
+    private static int color(float[] values) {
+        int alpha = Math.max(0, Math.min(255, Math.round(values[3] * 255)));
+        int red = Math.max(0, Math.min(255, Math.round(values[0] * 255)));
+        int green = Math.max(0, Math.min(255, Math.round(values[1] * 255)));
+        int blue = Math.max(0, Math.min(255, Math.round(values[2] * 255)));
+        return alpha << 24 | red << 16 | green << 8 | blue;
+    }
+
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
-        asset = IAssetProvider.getAsset(provider, type.getAssetType());
-        Rectangle area = asset.getArea();
-        if (!tank.getMatter().isEmpty()) {
-            MatterStack matterStack = tank.getMatter();
-            double stored = Math.min(tank.getMatterAmount(), tank.getCapacity());
-            double capacity = tank.getCapacity();
-            int topBottomPadding = asset.getFluidRenderPadding(Direction.UP) + asset.getFluidRenderPadding(Direction.DOWN);
-            int offset = (int) ((stored / capacity) * (area.height - topBottomPadding));
-            ResourceLocation flowing = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "block/matter");
-            if (flowing != null) {
-                AbstractTexture texture = screen.getMinecraft().getTextureManager().getTexture(TextureAtlas.LOCATION_BLOCKS); //getAtlasSprite
-                if (texture instanceof TextureAtlas) {
-                    TextureAtlasSprite sprite = ((TextureAtlas) texture).getSprite(flowing);
-                    if (sprite != null) {
-                        //RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-                        var color = matterStack.getMatterType().getColor().get();
-                        guiGraphics.setColor(color[0], color[1], color[2], color[3]);
-                        RenderSystem.enableBlend();
-                        drawTiledSprite(guiGraphics, this.getPosX() + guiX + asset.getFluidRenderPadding(Direction.WEST),
-                                this.getPosY() + guiY + asset.getFluidRenderPadding(Direction.UP) + area.height - topBottomPadding - offset,
-                                offset,
-                                (int) (area.getWidth() - asset.getFluidRenderPadding(Direction.EAST) - asset.getFluidRenderPadding(Direction.WEST)),
-                                offset, sprite, sprite.contents().width(), sprite.contents().height(), 0, false, true, false);
-                        RenderSystem.disableBlend();
-                        guiGraphics.setColor(1, 1, 1, 1);
-                    }
-                }
-            }
+    public void drawBackgroundLayer(GuiGraphicsExtractor graphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+        this.asset = IAssetProvider.getAsset(provider, this.type.getAssetType());
+        Rectangle area = this.asset.getArea();
+        if (!this.tank.getMatter().isEmpty() && this.tank.getCapacity() > 0) {
+            int verticalPadding = this.asset.getFluidRenderPadding(Direction.UP) + this.asset.getFluidRenderPadding(Direction.DOWN);
+            int horizontalPadding = this.asset.getFluidRenderPadding(Direction.WEST) + this.asset.getFluidRenderPadding(Direction.EAST);
+            int height = (int) (Math.min(this.tank.getMatterAmount(), this.tank.getCapacity()) / this.tank.getCapacity() * (area.height - verticalPadding));
+            int x = guiX + this.getPosX() + this.asset.getFluidRenderPadding(Direction.WEST);
+            int y = guiY + this.getPosY() + area.height - this.asset.getFluidRenderPadding(Direction.DOWN) - height;
+            int width = area.width - horizontalPadding;
+            float[] matterColor = this.tank.getMatter().getMatterType().getColor().get();
+            int color = color(matterColor);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Minecraft.getInstance().getAtlasManager().get(MATTER), x, y, width, height, color);
         }
-        guiGraphics.setColor(1, 1, 1, 1);
-        ITankAsset asset = IAssetProvider.getAsset(provider, type.getAssetType());
-        AssetUtil.drawAsset(guiGraphics, screen, asset, guiX + getPosX(), guiY + getPosY());
+        AssetUtil.drawAsset(graphics, screen, this.asset, guiX + this.getPosX(), guiY + this.getPosY());
     }
 
     @Override
-    public void drawForegroundLayer(GuiGraphics guiGraphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
+    public void drawForegroundLayer(GuiGraphicsExtractor graphics, Screen screen, IAssetProvider provider, int guiX, int guiY, int mouseX, int mouseY, float partialTicks) {
     }
 
     @Override
-    public java.util.List<net.minecraft.network.chat.Component> getTooltipLines() {
-        List<Component> strings = new ArrayList<>();
-        strings.add(Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.replication.tank.matter").getString()).append(tank.getMatter().isEmpty() ? Component.translatable("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE) : Component.translatable(tank.getMatter().getTranslationKey())).withStyle(ChatFormatting.WHITE));
-        strings.add(net.minecraft.network.chat.Component.translatable("tooltip.replication.terminal.amount").withStyle(ChatFormatting.GOLD).append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(tank.getMatter().getAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(tank.getCapacity()))).append(Component.translatable("tooltip.replication.tank.unit").withStyle(ChatFormatting.DARK_AQUA)));
-        return strings;
+    public List<Component> getTooltipLines() {
+        List<Component> lines = new ArrayList<>();
+        lines.add(Component.literal(ChatFormatting.GOLD + Component.translatable("tooltip.replication.tank.matter").getString())
+                .append(this.tank.getMatter().isEmpty() ? Component.translatable("tooltip.titanium.tank.empty").withStyle(ChatFormatting.WHITE)
+                        : Component.translatable(this.tank.getMatter().getTranslationKey()).withStyle(ChatFormatting.WHITE)));
+        lines.add(Component.translatable("tooltip.replication.terminal.amount").withStyle(ChatFormatting.GOLD)
+                .append(Component.literal(ChatFormatting.WHITE + new DecimalFormat().format(this.tank.getMatter().getAmount()) + ChatFormatting.GOLD + "/" + ChatFormatting.WHITE + new DecimalFormat().format(this.tank.getCapacity())))
+                .append(Component.translatable("tooltip.replication.tank.unit").withStyle(ChatFormatting.DARK_AQUA)));
+        return lines;
     }
 
     @Override
     public int getXSize() {
-        return asset != null ? asset.getArea().width : 0;
+        return this.asset == null ? 0 : this.asset.getArea().width;
     }
 
     @Override
     public int getYSize() {
-        return asset != null ? asset.getArea().height : 0;
+        return this.asset == null ? 0 : this.asset.getArea().height;
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         return false;
-    }
-
-    public static void drawTiledSprite(GuiGraphics guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
-                                       int textureWidth, int textureHeight, int zLevel,  boolean blend, boolean right, boolean down) {
-        if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
-            return;
-        }
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, sprite.atlasLocation());
-        int xTileCount = desiredWidth / textureWidth;
-        int xRemainder = desiredWidth - (xTileCount * textureWidth);
-        int yTileCount = desiredHeight / textureHeight;
-        int yRemainder = desiredHeight - (yTileCount * textureHeight);
-        int yStart = yPosition + yOffset;
-        float uMin = sprite.getU0();
-        float uMax = sprite.getU1();
-        float vMin = sprite.getV0();
-        float vMax = sprite.getV1();
-        float uDif = uMax - uMin;
-        float vDif = vMax - vMin;
-        if (blend) {
-            RenderSystem.enableBlend();
-        }
-        //Note: We still use the tesselator as that is what GuiGraphics#innerBlit does
-        BufferBuilder vertexBuffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        Matrix4f matrix4f = guiGraphics.pose().last().pose();
-        for (int xTile = 0; xTile <= xTileCount; xTile++) {
-            int width = (xTile == xTileCount) ? xRemainder : textureWidth;
-            if (width == 0) {
-                break;
-            }
-            int x = xPosition + (xTile * textureWidth);
-            int maskRight = textureWidth - width;
-            int shiftedX = x + textureWidth - maskRight;
-            float uLocalDif = uDif * maskRight / textureWidth;
-            float uLocalMin;
-            float uLocalMax;
-            if (right) {
-                uLocalMin = uMin;
-                uLocalMax = uMax - uLocalDif;
-            } else {
-                uLocalMin = uMin + uLocalDif;
-                uLocalMax = uMax;
-            }
-            for (int yTile = 0; yTile <= yTileCount; yTile++) {
-                int height = (yTile == yTileCount) ? yRemainder : textureHeight;
-                if (height == 0) {
-                    //Note: We don't want to fully break out because our height will be zero if we are looking to
-                    // draw the remainder, but there is no remainder as it divided evenly
-                    break;
-                }
-                int y = yStart - ((yTile + 1) * textureHeight);
-                int maskTop = textureHeight - height;
-                float vLocalDif = vDif * maskTop / textureHeight;
-                float vLocalMin;
-                float vLocalMax;
-                if (down) {
-                    vLocalMin = vMin;
-                    vLocalMax = vMax - vLocalDif;
-                } else {
-                    vLocalMin = vMin + vLocalDif;
-                    vLocalMax = vMax;
-                }
-                vertexBuffer.addVertex(matrix4f, x, y + textureHeight, zLevel).setUv(uLocalMin, vLocalMax);
-                vertexBuffer.addVertex(matrix4f, shiftedX, y + textureHeight, zLevel).setUv(uLocalMax, vLocalMax);
-                vertexBuffer.addVertex(matrix4f, shiftedX, y + maskTop, zLevel).setUv(uLocalMax, vLocalMin);
-                vertexBuffer.addVertex(matrix4f, x, y + maskTop, zLevel).setUv(uLocalMin, vLocalMin);
-            }
-        }
-        BufferUploader.drawWithShader(vertexBuffer.build());
-        if (blend) {
-            RenderSystem.disableBlend();
-        }
     }
 }

@@ -1,8 +1,8 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:replication_terminal"
+      "type": "neoforge:registered",
+      "value": "replication:replication_terminal"
     }
   ],
   "parent": "minecraft:recipes/root",
@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#c:glass_panes"
+            "items": "replication:replica_ingot"
           }
         ]
       },

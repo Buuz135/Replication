@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:sugar_cane"
-  },
+  "input": "minecraft:sugar_cane",
   "matter": [
     {
       "type": "replication:earth",

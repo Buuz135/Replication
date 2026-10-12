@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:ghast_tear"
-  },
+  "input": "minecraft:ghast_tear",
   "matter": [
     {
       "type": "replication:living",

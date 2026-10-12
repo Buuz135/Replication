@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:dragon_breath"
-  },
+  "input": "minecraft:dragon_breath",
   "matter": [
     {
       "type": "replication:living",

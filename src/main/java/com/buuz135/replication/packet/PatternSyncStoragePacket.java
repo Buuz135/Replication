@@ -1,13 +1,13 @@
 package com.buuz135.replication.packet;
 
-import com.buuz135.replication.client.gui.ReplicationTerminalScreen;
+import com.buuz135.replication.client.ClientAccess;
+import com.hrznstudio.titanium.nbthandler.INBTSerializable;
 import com.hrznstudio.titanium.network.CompoundSerializableDataHandler;
 import com.hrznstudio.titanium.network.Message;
-import net.minecraft.client.Minecraft;
+import com.hrznstudio.titanium.util.ItemStackSerialization;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
@@ -41,12 +41,14 @@ public class PatternSyncStoragePacket extends Message {
     }
 
     @Override
-    protected void handleMessage(IPayloadContext context) {
+    protected void handleServerMessage(IPayloadContext context) {
+    }
+
+    @Override
+    public void handleClientMessage(IPayloadContext context) {
         context.enqueueWork(() -> {
             CLIENT_PATTERN_STORAGE.computeIfAbsent(this.network, s -> new HashMap<>()).put(this.position, this.patterns.patterns);
-            if (Minecraft.getInstance().screen instanceof ReplicationTerminalScreen terminalScreen){
-                terminalScreen.refreshPatterns();
-            }
+            ClientAccess.refreshPatterns();
         });
     }
 
@@ -61,7 +63,7 @@ public class PatternSyncStoragePacket extends Message {
         public CompoundTag serializeNBT(HolderLookup.Provider levelRegistryAccess) {
             CompoundTag tag = new CompoundTag();
             for (int i = 0; i < this.patterns.size(); i++) {
-                tag.put(i +"", this.patterns.get(i).saveOptional(levelRegistryAccess));
+                tag.put(i + "", ItemStackSerialization.save(levelRegistryAccess, this.patterns.get(i)));
             }
             return tag;
         }
@@ -69,8 +71,8 @@ public class PatternSyncStoragePacket extends Message {
         @Override
         public void deserializeNBT(HolderLookup.Provider levelRegistryAccess, CompoundTag compoundTag) {
             this.patterns = new ArrayList<>();
-            for (String allKey : compoundTag.getAllKeys()) {
-                this.patterns.add(ItemStack.parseOptional(levelRegistryAccess, compoundTag.getCompound(allKey)));
+            for (String allKey : compoundTag.keySet()) {
+                this.patterns.add(ItemStackSerialization.load(levelRegistryAccess, compoundTag.getCompoundOrEmpty(allKey)));
             }
         }
     }

@@ -1,58 +1,38 @@
 package com.buuz135.replication.client.gui;
 
 import com.buuz135.replication.Replication;
-import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.task.IReplicationTask;
 import com.buuz135.replication.client.gui.button.ReplicationTerminalTexturedButton;
 import com.buuz135.replication.packet.TaskCancelPacket;
 import com.buuz135.replication.packet.TaskSyncPacket;
 import com.buuz135.replication.util.NumberUtils;
-import com.hrznstudio.titanium.util.LangUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Checkbox;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class ReplicationTaskWidget extends AbstractWidget implements Renderable {
+public class ReplicationTaskWidget extends AbstractWidget {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/task_window.png");
-    private static final ResourceLocation EXTRAS = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
-    private final ReplicationTerminalScreen replicationTerminalScreen;
-    private final ReplicationTerminalTexturedButton closeButton;
-    private final List<AbstractWidget> widgets;
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/task_window.png");
+    private static final Identifier EXTRAS = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "textures/gui/replication_terminal_extras.png");
+    private final ReplicationTerminalScreen screen;
+    private final List<AbstractWidget> widgets = new ArrayList<>();
+    private List<IReplicationTask> visibleTasks = new ArrayList<>();
     private float scrollOffs;
     private boolean scrolling;
-    private final int scrollBarX;
-    private final int scrollBarY;
-    private final int scrollBarWidth;
-    private final int scrollBarHeight;
-    private final CraftingMenu craftingMenu;
 
-    public ReplicationTaskWidget(int pX, int pY, int pWidth, int pHeight, Component pMessage, ReplicationTerminalScreen replicationTerminalContainer) {
-        super(pX, pY, pWidth, pHeight, pMessage);
-        this.replicationTerminalScreen = replicationTerminalContainer;
-        this.widgets = new ArrayList<>();
-        this.closeButton = new ReplicationTerminalTexturedButton(this.getX() + 239, this.getY() + 8, 9, 9, Component.empty(), EXTRAS,
-                Component.translatable("tooltip.replication.close").getString(), 247, 50, 238, 50, button -> this.replicationTerminalScreen.disableTask());
-        this.widgets.add(this.closeButton);
-        this.scrollOffs = 0;
-        this.scrolling = false;
-        this.craftingMenu = new CraftingMenu();
-        this.scrollBarX = this.getX() + this.width;
-        this.scrollBarY = this.getY() + 23;
-        this.scrollBarHeight = 88;
-        this.scrollBarWidth = 9;
+    public ReplicationTaskWidget(int x, int y, int width, int height, Component message, ReplicationTerminalScreen screen) {
+        super(x, y, width, height, message);
+        this.screen = screen;
+        widgets.add(new ReplicationTerminalTexturedButton(x + 239, y + 8, 9, 9, Component.empty(), EXTRAS, "tooltip.replication.close", 247, 50, 238, 50, button -> screen.disableTask()));
         refreshTasks();
     }
 
@@ -61,219 +41,123 @@ public class ReplicationTaskWidget extends AbstractWidget implements Renderable 
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float v) {
-        guiGraphics.blit(TEXTURE, this.getX(), this.getY(), 0, 0, 256, 256);
-        guiGraphics.drawString(Minecraft.getInstance().font, this.getMessage(), this.getX() + 10, this.getY() + 10, 0x72e567, false);
-        guiGraphics.blit(EXTRAS, this.scrollBarX, this.scrollBarY, 27, 0, 20, 108);
-        int j = this.scrollBarX;
-        int k = this.scrollBarY;
-        int y = k + this.scrollBarHeight;
-        guiGraphics.blit(EXTRAS, j + 1, k + (int) ((float) (y - k - 5) * this.scrollOffs) + 1 + 9, 245, 0, 11, 5);
-
-        for (AbstractWidget widget : this.widgets) {
-            if (widget instanceof Checkbox) {
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().scale(0.5f, 0.5f, 0.5f);
-                guiGraphics.pose().translate(this.getX() + 20, this.getY() + 86, 0);
-                widget.render(guiGraphics, mouseX, mouseY, v);
-                guiGraphics.pose().popPose();
-            } else {
-                widget.render(guiGraphics, mouseX, mouseY, v);
-            }
+    protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), 0, 0, 256, 256, 256, 256);
+        graphics.text(Minecraft.getInstance().font, getMessage(), getX() + 10, getY() + 10, 0xFF72E567, false);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, EXTRAS, getX() + width, getY() + 23, 27, 0, 20, 108, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, EXTRAS, getX() + width + 1, getY() + 33 + (int) (83 * scrollOffs), 245, 0, 11, 5, 256, 256);
+        for (int index = 0; index < visibleTasks.size(); index++) {
+            renderTask(graphics, visibleTasks.get(index), getX() + 8 + index % 3 * 81, getY() + 25 + index / 3 * 25, mouseX, mouseY);
         }
-        for (int i = 0; i < this.craftingMenu.visibleButtons.size(); i++) {
-            var widget = this.craftingMenu.visibleButtons.get(i);
-            widget.render(guiGraphics, this.getX() + 8 + (i % 3) * 81, this.getY() + 25 + (i / 3) * 25, mouseX, mouseY, v);
-        }
-        //this.widgets.forEach(abstractWidget -> abstractWidget.render(guiGraphics, mouseX, mouseY, v));
     }
 
-    protected boolean insideScrollbar(double p_98524_, double p_98525_) {
-        int k = this.scrollBarX;
-        int l = this.scrollBarY;
-        int i1 = k + this.scrollBarWidth;
-        int j1 = l + this.scrollBarHeight;
-        return p_98524_ >= (double) k && p_98525_ >= (double) l && p_98524_ < (double) i1 && p_98525_ < (double) j1;
-    }
-
-    @Override
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        if (this.scrolling) {
-            int i = this.scrollBarY + 1;
-            int j = i + this.scrollBarHeight - 2;
-            this.scrollOffs = ((float) pMouseY - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
-            this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
-            this.craftingMenu.scrollTo(this.scrollOffs);
-            return true;
+    private void renderTask(GuiGraphicsExtractor graphics, IReplicationTask task, int x, int y, int mouseX, int mouseY) {
+        graphics.fill(x, y, x + 78, y + 23, 0xB0202020);
+        graphics.item(task.getReplicatingStack(), x + 2, y + 3);
+        float scale = 0.6F;
+        int textX = (int) ((x + 29) / scale);
+        int textY = (int) ((y + 3) / scale);
+        String amount = task.isInfinteMode()
+                ? Component.translatable("replication.infinite").getString()
+                : Component.translatable("tooltip.replication.terminal.amount").getString() + NumberUtils.getFormatedBigNumber(task.getCurrentAmount()) + "/" + NumberUtils.getFormatedBigNumber(task.getTotalAmount());
+        String workers = Component.translatable("tooltip.replication.terminal.workers").getString() + NumberUtils.getFormatedBigNumber(task.getReplicatorsOnTask().size());
+        String mode = Component.translatable("tooltip.replication.terminal.mode").getString() + Component.translatable("tooltip.replication.terminal." + task.getMode().name().toLowerCase()).getString();
+        graphics.pose().pushMatrix();
+        graphics.pose().scale(scale, scale);
+        graphics.text(Minecraft.getInstance().font, amount, textX, textY, 0xFF72E567, false);
+        graphics.text(Minecraft.getInstance().font, workers, textX, textY + 10, 0xFF72E567, false);
+        graphics.text(Minecraft.getInstance().font, mode, textX, textY + 20, 0xFF72E567, false);
+        graphics.pose().popMatrix();
+        graphics.fill(x + 72, y + 1, x + 78, y + 7, 0xFF9B3030);
+        graphics.centeredText(Minecraft.getInstance().font, "×", x + 75, y, 0xFFFFFFFF);
+        if (mouseX > x + 2 && mouseX < x + 19 && mouseY > y + 2 && mouseY < y + 20) {
+            graphics.setTooltipForNextFrame(Minecraft.getInstance().font, task.getReplicatingStack(), mouseX, mouseY);
         }
-        return false;
+        if (mouseX >= x + 72 && mouseX < x + 78 && mouseY >= y + 1 && mouseY < y + 7) {
+            graphics.setTooltipForNextFrame(Minecraft.getInstance().font, Component.translatable("tooltip.replication.terminal.cancel_task"), mouseX, mouseY);
+        }
     }
 
     @Override
-    public boolean mouseScrolled(double p_98527_, double p_98528_, double p_98529_, double scrollY) {
-        if (!this.canScroll()) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (event.button() != 0) {
             return false;
-        } else {
-            this.scrollOffs = this.craftingMenu.subtractInputFromScroll(this.scrollOffs, p_98529_);
-            this.craftingMenu.scrollTo(this.scrollOffs);
+        }
+        if (insideScrollbar(event.x(), event.y())) {
+            scrolling = canScroll();
+            updateScroll(event.y());
             return true;
         }
-    }
-
-    @Override
-    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
-        if (pButton == 0) {
-            this.scrolling = false;
-        }
-        return super.mouseReleased(pMouseX, pMouseY, pButton);
-    }
-
-    private boolean canScroll() {
-        return this.craftingMenu.canScroll();
-    }
-
-    @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (pButton == 0) {
-            if (this.insideScrollbar(pMouseX, pMouseY)) {
-                this.scrolling = this.canScroll();
-                int i = this.scrollBarY + 1;
-                int j = i + this.scrollBarHeight - 2;
-                this.scrollOffs = ((float) pMouseY - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
-                this.scrollOffs = Mth.clamp(this.scrollOffs, 0.0F, 1.0F);
-                this.craftingMenu.scrollTo(this.scrollOffs);
-                return true;
-            }
-            if (this.closeButton.isHovered()) {
-                this.closeButton.mouseClicked(pMouseX, pMouseY, pButton);
-            }
-            if (this.craftingMenu.mouseClicked(pMouseX, pMouseY, pButton)) {
-                return true;
-            }
-
-        }
-        return false;
-    }
-
-    @Override
-    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-
-    }
-
-    public void refreshTasks() {
-        var originalSize = this.craftingMenu.taskDisplayList.size();
-        this.craftingMenu.taskDisplayList.clear();
-        var tasks = TaskSyncPacket.CLIENT_TASK_STORAGE.getOrDefault(this.replicationTerminalScreen.getMenu().getNetwork(), new HashMap<>());
-        IReplicationTask[] tastValues = tasks.values().toArray(new IReplicationTask[0]);
-        for (int i = 0; i < tastValues.length; i++) {
-            this.craftingMenu.taskDisplayList.add(new TaskDisplay(tastValues[i]));
-        }
-        if (this.craftingMenu.taskDisplayList.size() != originalSize){
-            this.craftingMenu.scrollTo(this.scrollOffs);
-        }
-    }
-
-    public final class TaskDisplay {
-        private final IReplicationTask task;
-        private final ReplicationTerminalTexturedButton cancelButton;
-
-
-        public TaskDisplay(IReplicationTask task) {
-            this.task = task;
-
-            this.cancelButton = new ReplicationTerminalTexturedButton(72, 1, 5, 5, Component.empty(), EXTRAS,
-                    Component.translatable("tooltip.replication.terminal.cancel_task").getString(), 251, 59, 246, 59, button -> {
-                Replication.NETWORK.sendToServer(new TaskCancelPacket(task.getUuid().toString(), ReplicationTaskWidget.this.replicationTerminalScreen.getMenu().getNetwork()));
-            });
-        }
-
-        public void render(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float v) {
-            guiGraphics.renderItem(task.getReplicatingStack(), x + 2, y + 2);
-            this.cancelButton.setX(x + 72);
-            this.cancelButton.setY(y + 1);
-            this.cancelButton.render(guiGraphics, mouseX, mouseY, v);
-            guiGraphics.pose().pushPose();
-            var scale = 0.6f;
-            guiGraphics.pose().scale(scale, scale, scale);
-            var textY = 3;
-            var display = LangUtil.getString("tooltip.replication.terminal.amount") + NumberUtils.getFormatedBigNumber(task.getCurrentAmount()) + "/" + NumberUtils.getFormatedBigNumber(task.getTotalAmount());
-            if (task.getCurrentAmount() < task.getTotalAmount()) display = LangUtil.getString("replication.infinite");
-            guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 13) / scale, (y + textY) / scale, 0x72e567, false);
-            display = LangUtil.getString("tooltip.replication.terminal.workers") + NumberUtils.getFormatedBigNumber(task.getReplicatorsOnTask().size());
-            guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 13) / scale, (y + textY + 6) / scale, 0x72e567, false);
-            display = LangUtil.getString("tooltip.replication.terminal.mode") + LangUtil.getString("tooltip.replication.terminal." + task.getMode().name().toLowerCase());
-            guiGraphics.drawString(Minecraft.getInstance().font, display, (x + 16 + 13) / scale, (y + textY + 6 * 2) / scale, 0x72e567, false);
-            guiGraphics.pose().popPose();
-            if (mouseX > x + 2 && mouseX < x + 19 && mouseY > y + 2 && mouseY < y + 19) {
-                guiGraphics.renderTooltip(Minecraft.getInstance().font, task.getReplicatingStack(), mouseX, mouseY);
-            }
-        }
-
-        public IReplicationTask task() {
-            return task;
-        }
-
-    }
-
-    public class CraftingMenu {
-        public List<TaskDisplay> taskDisplayList = new ArrayList<>();
-        public List<TaskDisplay> visibleButtons = new ArrayList<>();
-
-        public CraftingMenu() {
-            this.scrollTo(0.0F);
-        }
-
-
-        protected int calculateRowCount() {
-            return Mth.positiveCeilDiv(getFilteredPatterns().size(), 3) - 9;
-        }
-
-        protected int getRowIndexForScroll(float p_259664_) {
-            return Math.max((int) ((double) (p_259664_ * (float) this.calculateRowCount()) + 0.5), 0);
-        }
-
-        protected float getScrollForRowIndex(int p_259315_) {
-            return Mth.clamp((float) p_259315_ / (float) this.calculateRowCount(), 0.0F, 1.0F);
-        }
-
-        protected float subtractInputFromScroll(float p_259841_, double p_260358_) {
-            return Mth.clamp(p_259841_ - (float) (p_260358_ / (double) this.calculateRowCount()), 0.0F, 1.0F);
-        }
-
-        public void scrollTo(float p_98643_) {
-            int i = this.getRowIndexForScroll(p_98643_);
-            this.visibleButtons = new ArrayList<>();
-            var filtered = getFilteredPatterns();
-            for (int j = 0; j < 9; ++j) {
-                for (int k = 0; k < 3; ++k) {
-                    int l = k + (j + i) * 3;
-                    if (l >= 0 && l < filtered.size()) {
-                        this.visibleButtons.add(filtered.get(l));
-                    } else {
-                        //CreativeModeInventoryScreen.CONTAINER.setItem(k + j * 9, ItemStack.EMPTY);
-                    }
-                }
-            }
-
-        }
-
-        public boolean canScroll() {
-            return getFilteredPatterns().size() > 27;
-        }
-
-        private List<TaskDisplay> getFilteredPatterns() {
-            return this.taskDisplayList;
-        }
-
-        public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-            for (TaskDisplay patternButton : this.visibleButtons) {
-                if (patternButton.cancelButton.isHovered() && Screen.hasShiftDown()){
-                    patternButton.cancelButton.mouseClicked(pMouseX, pMouseY, pButton);
-                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(ReplicationRegistry.Sounds.TERMINAL_BUTTON.get(), 1.0F));
+        if (event.hasShiftDown()) {
+            for (int index = 0; index < visibleTasks.size(); index++) {
+                int x = getX() + 8 + index % 3 * 81;
+                int y = getY() + 25 + index / 3 * 25;
+                if (event.x() >= x + 72 && event.x() < x + 78 && event.y() >= y + 1 && event.y() < y + 7) {
+                    IReplicationTask task = visibleTasks.get(index);
+                    Replication.NETWORK.sendToServer(new TaskCancelPacket(task.getUuid().toString(), screen.getMenu().getNetwork()));
                     return true;
                 }
             }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+        if (scrolling) {
+            updateScroll(event.y());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mouseReleased(MouseButtonEvent event) {
+        scrolling = false;
+        return false;
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (!canScroll()) {
             return false;
         }
+        int rows = Math.max(1, Mth.positiveCeilDiv(getTasks().size(), 3) - 9);
+        scrollOffs = Mth.clamp(scrollOffs - (float) (scrollY / rows), 0.0F, 1.0F);
+        updateVisibleTasks();
+        return true;
+    }
+
+    private boolean insideScrollbar(double mouseX, double mouseY) {
+        return mouseX >= getX() + width && mouseX < getX() + width + 9 && mouseY >= getY() + 23 && mouseY < getY() + 111;
+    }
+
+    private void updateScroll(double mouseY) {
+        scrollOffs = Mth.clamp(((float) mouseY - (getY() + 24) - 7.5F) / 71.0F, 0.0F, 1.0F);
+        updateVisibleTasks();
+    }
+
+    private boolean canScroll() {
+        return getTasks().size() > 27;
+    }
+
+    private List<IReplicationTask> getTasks() {
+        return new ArrayList<>(TaskSyncPacket.CLIENT_TASK_STORAGE.getOrDefault(screen.getMenu().getNetwork(), new java.util.HashMap<>()).values());
+    }
+
+    private void updateVisibleTasks() {
+        List<IReplicationTask> tasks = getTasks();
+        int rows = Math.max(0, Mth.positiveCeilDiv(tasks.size(), 3) - 9);
+        int row = Math.max(0, Math.round(scrollOffs * rows));
+        visibleTasks = tasks.stream().skip((long) row * 3).limit(27).toList();
+    }
+
+    public void refreshTasks() {
+        updateVisibleTasks();
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput output) {
+        defaultButtonNarrationText(output);
     }
 }

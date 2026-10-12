@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:dust/dark"
-  },
+  "input": "#c:dust/dark",
   "matter": [
     {
       "type": "replication:precious",

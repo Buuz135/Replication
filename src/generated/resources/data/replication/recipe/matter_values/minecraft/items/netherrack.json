@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:netherrack"
-  },
+  "input": "minecraft:netherrack",
   "matter": [
     {
       "type": "replication:nether",

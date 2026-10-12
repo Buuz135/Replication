@@ -8,12 +8,12 @@ import com.hrznstudio.titanium.block_network.element.NetworkElementFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 public class DefaultMatterNetworkElement extends NetworkElement {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "default_matter");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "default_matter");
 
     public DefaultMatterNetworkElement(Level level, BlockPos pos) {
         super(level, pos);
@@ -36,12 +36,12 @@ public class DefaultMatterNetworkElement extends NetworkElement {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 
     @Override
-    public ResourceLocation getNetworkType() {
+    public Identifier getNetworkType() {
         return MatterNetwork.MATTER;
     }
 
@@ -58,7 +58,7 @@ public class DefaultMatterNetworkElement extends NetworkElement {
 
         @Override
         public NetworkElement createFromNbt(Level level, CompoundTag tag) {
-            BlockPos pos = BlockPos.of(tag.getLong("pos"));
+            BlockPos pos = BlockPos.of(tag.getLongOr("pos", 0));
             DefaultMatterNetworkElement element = new DefaultMatterNetworkElement(level, pos);
             return element;
         }

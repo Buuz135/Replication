@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:cobweb"
-  },
+  "input": "minecraft:cobweb",
   "matter": [
     {
       "type": "replication:organic",

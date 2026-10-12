@@ -1,8 +1,8 @@
 {
   "neoforge:conditions": [
     {
-      "type": "neoforge:item_exists",
-      "item": "replication:identification_chamber"
+      "type": "neoforge:registered",
+      "value": "replication:identification_chamber"
     }
   ],
   "parent": "minecraft:recipes/root",

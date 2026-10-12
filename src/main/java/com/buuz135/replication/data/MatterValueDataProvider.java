@@ -6,8 +6,10 @@ import com.buuz135.replication.calculation.MatterValue;
 import com.buuz135.replication.recipe.MatterValueRecipe;
 import com.hrznstudio.titanium.util.TagUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -22,14 +24,13 @@ public class MatterValueDataProvider {
 
     private RecipeOutput recipeOutput;
 
-
     public void buildRecipes(RecipeOutput consumer) {
         this.recipeOutput = consumer;
         saveData(IRON_INGOT, metallic(9));
-        saveData(GOLD_INGOT, metallic(9), precious(9));
+        saveData(GOLD_INGOT, metallic(9), precious(18));
         saveData(DIAMOND, precious(9*4));
         saveData(LAPIS_LAZULI, precious(1), earth(2), organic(2));
-        saveData(COPPER_INGOT, precious(2), metallic(2));
+        saveData(COPPER_INGOT, precious(9), metallic(9));
         saveData(ANCIENT_DEBRIS, precious(18), nether(18));
         saveData(AMETHYST_SHARD, precious(4), earth(1));
         saveData(BUDDING_AMETHYST, precious(32), earth(8));
@@ -42,9 +43,10 @@ public class MatterValueDataProvider {
         saveData(MANGROVE_ROOTS, earth(16), organic(16));
         saveTag(ItemTags.LEAVES, organic(4));
         saveTag(ItemTags.SMALL_FLOWERS, earth(2), organic(2));
-        saveTag(ItemTags.TALL_FLOWERS, earth(4), organic(4));
+        saveTag(Tags.Items.FLOWERS_TALL, earth(4), organic(4));
         saveTag(Tags.Items.MUSHROOMS, earth(2), living(2));
         saveData(BAMBOO, earth(0.5), organic(0.5));
+        saveData(STRIPPED_BAMBOO_BLOCK, earth(0.5), organic(0.5));
         saveData(MOSS_BLOCK, earth(2), organic(2));
 
         saveData(STRING, organic(2), living(2));
@@ -128,7 +130,7 @@ public class MatterValueDataProvider {
         saveData(ENCHANTED_GOLDEN_APPLE, living(4), precious(9*8*9));
         saveData(new Item[]{OCHRE_FROGLIGHT, PEARLESCENT_FROGLIGHT, VERDANT_FROGLIGHT}, living(2), organic(2));
 
-        saveTag(ItemTags.CREEPER_DROP_MUSIC_DISCS, precious(3.3), quantum(1));
+        saveTag(Tags.Items.MUSIC_DISCS, precious(3.3), quantum(1));
         saveData(new Item[]{SCULK, SCULK_VEIN}, organic(1), quantum(1));
         saveData(new Item[]{SCULK_CATALYST, SCULK_SHRIEKER, SCULK_SENSOR}, organic(8), quantum(8));
         saveData(new Item[]{WITHER_SKELETON_SKULL, PLAYER_HEAD, ZOMBIE_HEAD, CREEPER_HEAD, PIGLIN_HEAD, DRAGON_HEAD, SKELETON_SKULL}, organic(8));
@@ -174,9 +176,9 @@ public class MatterValueDataProvider {
 
     private void saveData(Item item, MatterValue... instances) {
         var rl = BuiltInRegistries.ITEM.getKey(item);
-        var recipeLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + rl.getNamespace() + "/items/" + rl.getPath());
+        var recipeLocation = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + rl.getNamespace() + "/items/" + rl.getPath());
         var recipe = new MatterValueRecipe( Ingredient.of(item), instances);
-        recipeOutput.accept(recipeLocation, recipe, null);
+        recipeOutput.accept(ResourceKey.create(Registries.RECIPE, recipeLocation), recipe, null);
     }
 
     private void saveData(Item[] items, MatterValue... instances) {
@@ -184,16 +186,16 @@ public class MatterValueDataProvider {
     }
 
     private void saveTag(TagKey<Item> tag, MatterValue... instances) {
-        var recipeLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + tag.location().getNamespace() + "/tags/" + tag.location().getPath());
-        var recipe = new MatterValueRecipe(Ingredient.of(tag), instances);
-        recipeOutput.accept(recipeLocation, recipe, null);
+        var recipeLocation = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + tag.location().getNamespace() + "/tags/" + tag.location().getPath());
+        var recipe = new MatterValueRecipe(DataIngredients.tag(tag), instances);
+        recipeOutput.accept(ResourceKey.create(Registries.RECIPE, recipeLocation), recipe, null);
     }
 
     private void saveCommonTag(String tagName, MatterValue... instances) {
-        var tag = TagUtil.getItemTag(ResourceLocation.fromNamespaceAndPath("c", tagName));
-        var recipeLocation = ResourceLocation.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + tag.location().getNamespace() + "/tags/" + tag.location().getPath());
-        var recipe = new MatterValueRecipe(Ingredient.of(tag), instances);
-        recipeOutput.accept(recipeLocation, recipe, null);
+        var tag = TagUtil.getItemTag(Identifier.fromNamespaceAndPath("c", tagName));
+        var recipeLocation = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + tag.location().getNamespace() + "/tags/" + tag.location().getPath());
+        var recipe = new MatterValueRecipe(DataIngredients.tag(tag), instances);
+        recipeOutput.accept(ResourceKey.create(Registries.RECIPE, recipeLocation), recipe, null);
     }
 
 

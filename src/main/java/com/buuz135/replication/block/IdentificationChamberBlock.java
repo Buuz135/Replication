@@ -4,6 +4,7 @@ import com.buuz135.replication.Replication;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.block.shapes.IdentificationChamberShapes;
 import com.buuz135.replication.block.tile.IdentificationChamberBlockEntity;
+import com.buuz135.replication.data.DataIngredients;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.block_network.INetworkDirectionalConnection;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
@@ -92,7 +93,7 @@ public class IdentificationChamberBlock extends RotatableBlock<IdentificationCha
                 .pattern("III")
                 .define('D', Items.DIAMOND)
                 .define('I', ReplicationRegistry.Items.REPLICA_INGOT.get())
-                .define('R', Tags.Items.GLASS_PANES)
+                .define('R', DataIngredients.tag(Tags.Items.GLASS_PANES))
                 .save(consumer);
     }
 }

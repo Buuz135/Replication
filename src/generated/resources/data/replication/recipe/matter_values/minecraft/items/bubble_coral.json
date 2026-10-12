@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:bubble_coral"
-  },
+  "input": "minecraft:bubble_coral",
   "matter": [
     {
       "type": "replication:organic",

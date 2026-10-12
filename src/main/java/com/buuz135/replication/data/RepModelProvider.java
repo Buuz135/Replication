@@ -1,18 +1,32 @@
 package com.buuz135.replication.data;
 
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.core.Holder;
 import net.minecraft.data.DataGenerator;
-import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
+import java.util.stream.Stream;
 
-public class RepModelProvider extends BlockModelProvider {
+public class RepModelProvider extends ModelProvider {
 
-    public RepModelProvider(DataGenerator generator, String modid, ExistingFileHelper existingFileHelper) {
-        super(generator.getPackOutput(), modid, existingFileHelper);
+    public RepModelProvider(DataGenerator generator, String modId) {
+        super(generator.getPackOutput(), modId);
     }
 
     @Override
-    protected void registerModels() {
+    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+    }
 
+    @Override
+    protected Stream<? extends Holder<Block>> getKnownBlocks() {
+        return Stream.empty();
+    }
+
+    @Override
+    protected Stream<? extends Holder<Item>> getKnownItems() {
+        return Stream.empty();
     }
 }

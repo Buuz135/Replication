@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:ink_sac"
-  },
+  "input": "minecraft:ink_sac",
   "matter": [
     {
       "type": "replication:living",

@@ -29,59 +29,59 @@
     {
       "apply": {
         "model": "replication:block/replicator",
-        "y": 180
+        "y": 90
       },
       "when": {
-        "subfacing": "south"
+        "subfacing": "east"
       }
     },
     {
       "apply": {
         "model": "replication:block/replicator_enclosure",
-        "y": 180
+        "y": 90
       },
       "when": {
         "has_enclosure": "true",
-        "subfacing": "south"
+        "subfacing": "east"
       }
     },
     {
       "apply": {
         "model": "replication:block/replicator_motor",
-        "y": 180
+        "y": 90
       },
       "when": {
         "has_motor": "true",
-        "subfacing": "south"
+        "subfacing": "east"
       }
     },
     {
       "apply": {
         "model": "replication:block/replicator",
-        "y": 90
+        "y": 180
       },
       "when": {
-        "subfacing": "east"
+        "subfacing": "south"
       }
     },
     {
       "apply": {
         "model": "replication:block/replicator_enclosure",
-        "y": 90
+        "y": 180
       },
       "when": {
         "has_enclosure": "true",
-        "subfacing": "east"
+        "subfacing": "south"
       }
     },
     {
       "apply": {
         "model": "replication:block/replicator_motor",
-        "y": 90
+        "y": 180
       },
       "when": {
         "has_motor": "true",
-        "subfacing": "east"
+        "subfacing": "south"
       }
     },
     {

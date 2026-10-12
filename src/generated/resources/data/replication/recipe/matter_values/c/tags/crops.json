@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "c:crops"
-  },
+  "input": "#c:crops",
   "matter": [
     {
       "type": "replication:earth",

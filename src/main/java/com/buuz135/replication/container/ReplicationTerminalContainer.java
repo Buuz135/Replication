@@ -5,7 +5,6 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.container.addon.UpdatableSlotItemHandler;
 import com.hrznstudio.titanium.network.locator.LocatorFactory;
 import com.hrznstudio.titanium.network.locator.LocatorInstance;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -39,7 +38,7 @@ public class ReplicationTerminalContainer extends AbstractContainerMenu {
         super(TYPE.get(), id);
         this.inventory = inventory;
         this.visualType = SlotVisualType.ALL;
-        LocatorInstance instance = LocatorFactory.readPacketBuffer(new RegistryFriendlyByteBuf(buffer, Minecraft.getInstance().level.registryAccess()));
+        LocatorInstance instance = LocatorFactory.readPacketBuffer(new RegistryFriendlyByteBuf(buffer, inventory.player.level().registryAccess()));
         if (instance != null) {
             Player playerEntity = inventory.player;
             var provider = instance.locale(playerEntity).orElse(null);

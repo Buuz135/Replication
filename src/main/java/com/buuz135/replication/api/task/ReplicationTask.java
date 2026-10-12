@@ -8,8 +8,10 @@ import com.buuz135.replication.calculation.MatterValue;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.network.MatterNetwork;
 import com.hrznstudio.titanium.block_network.element.NetworkElement;
+import com.hrznstudio.titanium.util.ItemStackSerialization;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -185,7 +187,7 @@ public class ReplicationTask implements IReplicationTask {
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.put("Crafting", this.crafting.saveOptional(provider));
+        compoundTag.put("Crafting", ItemStackSerialization.save(provider, this.crafting));
         compoundTag.putInt("Current", this.currentAmount);
         compoundTag.putInt("Total", this.totalAmount);
         CompoundTag matterStacksCompound = new CompoundTag();
@@ -198,8 +200,8 @@ public class ReplicationTask implements IReplicationTask {
         }
         compoundTag.put("MatterStacks", matterStacksCompound);
         compoundTag.putString("Mode", this.mode.name());
-        compoundTag.putUUID("UUID", this.uuid);
-        compoundTag.putLongArray("OnTask", this.replicatorsOnTask);
+        compoundTag.store("UUID", UUIDUtil.CODEC, this.uuid);
+        compoundTag.putLongArray("OnTask", this.replicatorsOnTask.stream().mapToLong(Long::longValue).toArray());
         compoundTag.putLong("Source", this.source.asLong());
         compoundTag.putBoolean("Infinte", isInfinteMode);
         return compoundTag;
@@ -207,26 +209,26 @@ public class ReplicationTask implements IReplicationTask {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
-        this.crafting = ItemStack.parseOptional(provider, compoundTag.getCompound("Crafting"));
-        this.currentAmount = compoundTag.getInt("Current");
-        this.totalAmount = compoundTag.getInt("Total");
+        this.crafting = ItemStackSerialization.load(provider, compoundTag.getCompoundOrEmpty("Crafting"));
+        this.currentAmount = compoundTag.getIntOr("Current", 0);
+        this.totalAmount = compoundTag.getIntOr("Total", 0);
         this.matterStacks = new HashMap<>();
-        CompoundTag matterStacksCompound = compoundTag.getCompound("MatterStacks");
-        for (String allKey : matterStacksCompound.getAllKeys()) {
-            CompoundTag list = matterStacksCompound.getCompound(allKey);
+        CompoundTag matterStacksCompound = compoundTag.getCompoundOrEmpty("MatterStacks");
+        for (String allKey : matterStacksCompound.keySet()) {
+            CompoundTag list = matterStacksCompound.getCompoundOrEmpty(allKey);
             List<MatterStack> matterStackList = new ArrayList<>();
-            for (String key : list.getAllKeys()) {
-                matterStackList.add(MatterStack.loadMatterStackFromNBT(list.getCompound(key)));
+            for (String key : list.keySet()) {
+                matterStackList.add(MatterStack.loadMatterStackFromNBT(list.getCompoundOrEmpty(key)));
             }
             this.matterStacks.put(Long.parseLong(allKey), matterStackList);
         }
-        this.mode = Mode.valueOf(compoundTag.getString("Mode"));
-        this.uuid = compoundTag.getUUID("UUID");
+        this.mode = Mode.valueOf(compoundTag.getStringOr("Mode", Mode.SINGLE.name()));
+        this.uuid = compoundTag.read("UUID", UUIDUtil.CODEC).orElseGet(UUID::randomUUID);
         this.replicatorsOnTask = new ArrayList<>();
-        for (long onTask : compoundTag.getLongArray("OnTask")) {
+        for (long onTask : compoundTag.getLongArray("OnTask").orElseGet(() -> new long[0])) {
             this.replicatorsOnTask.add(onTask);
         }
-        this.source = BlockPos.of(compoundTag.getLong("Source"));
-        this.isInfinteMode = compoundTag.getBoolean("Infinte");
+        this.source = BlockPos.of(compoundTag.getLongOr("Source", 0));
+        this.isInfinteMode = compoundTag.getBooleanOr("Infinte", false);
     }
 }

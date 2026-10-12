@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:wheat"
-  },
+  "input": "minecraft:wheat",
   "matter": [
     {
       "type": "replication:organic",

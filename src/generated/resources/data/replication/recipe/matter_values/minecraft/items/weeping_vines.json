@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:weeping_vines"
-  },
+  "input": "minecraft:weeping_vines",
   "matter": [
     {
       "type": "replication:organic",

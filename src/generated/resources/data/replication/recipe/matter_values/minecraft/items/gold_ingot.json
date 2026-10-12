@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "item": "minecraft:gold_ingot"
-  },
+  "input": "minecraft:gold_ingot",
   "matter": [
     {
       "type": "replication:metallic",
@@ -10,7 +8,7 @@
     },
     {
       "type": "replication:precious",
-      "amount": 9.0
+      "amount": 18.0
     }
   ]
 }

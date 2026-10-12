@@ -1,8 +1,6 @@
 {
   "type": "replication:matter_value",
-  "input": {
-    "tag": "minecraft:logs"
-  },
+  "input": "#minecraft:logs",
   "matter": [
     {
       "type": "replication:earth",
