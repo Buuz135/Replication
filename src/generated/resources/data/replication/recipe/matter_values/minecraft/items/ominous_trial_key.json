@@ -1,0 +1,18 @@
+{
+  "type": "replication:matter_value",
+  "input": "minecraft:ominous_trial_key",
+  "matter": [
+    {
+      "type": "replication:metallic",
+      "amount": 4.0
+    },
+    {
+      "type": "replication:precious",
+      "amount": 8.0
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 4.0
+    }
+  ]
+}

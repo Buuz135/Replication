@@ -1,0 +1,14 @@
+{
+  "type": "replication:matter_value",
+  "input": "minecraft:pale_hanging_moss",
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 1.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 1.0
+    }
+  ]
+}

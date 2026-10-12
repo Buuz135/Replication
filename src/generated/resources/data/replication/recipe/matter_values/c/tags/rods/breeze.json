@@ -1,0 +1,18 @@
+{
+  "type": "replication:matter_value",
+  "input": "#c:rods/breeze",
+  "matter": [
+    {
+      "type": "replication:living",
+      "amount": 2.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 2.0
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 2.0
+    }
+  ]
+}

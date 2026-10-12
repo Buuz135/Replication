@@ -1,0 +1,14 @@
+{
+  "type": "replication:matter_value",
+  "input": "minecraft:experience_bottle",
+  "matter": [
+    {
+      "type": "replication:precious",
+      "amount": 1.0
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 2.0
+    }
+  ]
+}

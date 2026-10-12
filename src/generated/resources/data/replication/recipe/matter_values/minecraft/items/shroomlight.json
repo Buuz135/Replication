@@ -1,0 +1,18 @@
+{
+  "type": "replication:matter_value",
+  "input": "minecraft:shroomlight",
+  "matter": [
+    {
+      "type": "replication:organic",
+      "amount": 4.0
+    },
+    {
+      "type": "replication:precious",
+      "amount": 4.0
+    },
+    {
+      "type": "replication:nether",
+      "amount": 4.0
+    }
+  ]
+}

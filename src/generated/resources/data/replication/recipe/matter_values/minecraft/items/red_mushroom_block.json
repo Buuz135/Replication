@@ -1,14 +1,14 @@
 {
   "type": "replication:matter_value",
-  "input": "minecraft:moss_block",
+  "input": "minecraft:red_mushroom_block",
   "matter": [
     {
       "type": "replication:earth",
-      "amount": 2.0
+      "amount": 8.0
     },
     {
-      "type": "replication:organic",
-      "amount": 2.0
+      "type": "replication:living",
+      "amount": 8.0
     }
   ]
 }

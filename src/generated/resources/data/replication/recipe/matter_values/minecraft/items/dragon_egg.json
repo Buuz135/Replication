@@ -1,0 +1,22 @@
+{
+  "type": "replication:matter_value",
+  "input": "minecraft:dragon_egg",
+  "matter": [
+    {
+      "type": "replication:living",
+      "amount": 32.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 16.0
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 32.0
+    },
+    {
+      "type": "replication:ender",
+      "amount": 64.0
+    }
+  ]
+}

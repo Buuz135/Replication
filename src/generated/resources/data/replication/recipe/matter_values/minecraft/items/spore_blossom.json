@@ -1,14 +1,18 @@
 {
   "type": "replication:matter_value",
-  "input": "minecraft:egg",
+  "input": "minecraft:spore_blossom",
   "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 4.0
+    },
     {
       "type": "replication:organic",
       "amount": 4.0
     },
     {
       "type": "replication:living",
-      "amount": 4.0
+      "amount": 2.0
     }
   ]
 }

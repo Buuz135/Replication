@@ -1,0 +1,14 @@
+{
+  "type": "replication:matter_value",
+  "input": "#minecraft:wart_blocks",
+  "matter": [
+    {
+      "type": "replication:living",
+      "amount": 18.0
+    },
+    {
+      "type": "replication:nether",
+      "amount": 18.0
+    }
+  ]
+}

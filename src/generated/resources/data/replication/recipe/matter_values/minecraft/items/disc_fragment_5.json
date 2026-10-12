@@ -1,0 +1,14 @@
+{
+  "type": "replication:matter_value",
+  "input": "minecraft:disc_fragment_5",
+  "matter": [
+    {
+      "type": "replication:precious",
+      "amount": 0.4
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 0.1
+    }
+  ]
+}

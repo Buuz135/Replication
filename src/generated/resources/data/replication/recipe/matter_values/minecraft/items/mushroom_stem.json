@@ -1,0 +1,14 @@
+{
+  "type": "replication:matter_value",
+  "input": "minecraft:mushroom_stem",
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 8.0
+    },
+    {
+      "type": "replication:living",
+      "amount": 8.0
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "replication:matter_value",
+  "input": "minecraft:wind_charge",
+  "matter": [
+    {
+      "type": "replication:living",
+      "amount": 0.5
+    },
+    {
+      "type": "replication:organic",
+      "amount": 0.5
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 0.5
+    }
+  ]
+}

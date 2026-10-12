@@ -1,0 +1,18 @@
+{
+  "type": "replication:matter_value",
+  "input": "minecraft:heavy_core",
+  "matter": [
+    {
+      "type": "replication:metallic",
+      "amount": 36.0
+    },
+    {
+      "type": "replication:precious",
+      "amount": 18.0
+    },
+    {
+      "type": "replication:quantum",
+      "amount": 9.0
+    }
+  ]
+}

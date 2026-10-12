@@ -1,0 +1,14 @@
+{
+  "type": "replication:matter_value",
+  "input": "#minecraft:moss_blocks",
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 2.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 2.0
+    }
+  ]
+}

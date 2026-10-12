@@ -45,9 +45,14 @@ public class MatterValueDataProvider {
         saveTag(ItemTags.SMALL_FLOWERS, earth(2), organic(2));
         saveTag(Tags.Items.FLOWERS_TALL, earth(4), organic(4));
         saveTag(Tags.Items.MUSHROOMS, earth(2), living(2));
+        saveTag(ItemTags.MOSS_BLOCKS, earth(2), organic(2));
+        saveTag(Tags.Items.CLUMPS_RESIN, earth(1), organic(2));
         saveData(BAMBOO, earth(0.5), organic(0.5));
         saveData(STRIPPED_BAMBOO_BLOCK, earth(0.5), organic(0.5));
-        saveData(MOSS_BLOCK, earth(2), organic(2));
+        saveData(new Item[]{DRY_SHORT_GRASS, BUSH, FIREFLY_BUSH, PALE_HANGING_MOSS}, earth(1), organic(1));
+        saveData(new Item[]{CACTUS_FLOWER, PINK_PETALS, WILDFLOWERS}, earth(2), organic(2));
+        saveData(SPORE_BLOSSOM, earth(4), organic(4), living(2));
+        saveData(new Item[]{MUSHROOM_STEM, BROWN_MUSHROOM_BLOCK, RED_MUSHROOM_BLOCK}, earth(8), living(8));
 
         saveData(STRING, organic(2), living(2));
         saveData(COBWEB, organic(18), living(18));
@@ -95,13 +100,22 @@ public class MatterValueDataProvider {
         saveData(SOUL_SOIL, nether(2), earth(2));
         saveData(BASALT, nether(2), earth(2));
         saveData(END_STONE, ender(1));
+        saveTag(ItemTags.WART_BLOCKS, living(18), nether(18));
+        saveData(SHROOMLIGHT, organic(4), precious(4), nether(4));
 
         saveData(NETHER_STAR, quantum(64), nether(16));
+        saveData(HEAVY_CORE, metallic(36), precious(18), quantum(9));
+        saveData(BELL, metallic(18), precious(36));
+        saveData(DRAGON_EGG, living(32), organic(16), quantum(32), ender(64));
+        saveData(ELYTRA, living(16), organic(16), quantum(8), ender(16));
 
         saveData(REDSTONE, precious(2), earth(2));
         saveData(SLIME_BALL, living(2), earth(2));
         saveData(HONEY_BLOCK, living(18), earth(18));
         saveData(ECHO_SHARD, quantum(1), living(4));
+        saveData(EXPERIENCE_BOTTLE, precious(1), quantum(2));
+        saveData(TRIAL_KEY, metallic(4), precious(4), quantum(2));
+        saveData(OMINOUS_TRIAL_KEY, metallic(4), precious(8), quantum(4));
         saveData(HONEYCOMB, living(2), earth(2));
         saveData(NETHER_WART, living(2), nether(2));
         //saveData(WARPED_NYLIUM, living(2*9), nether(2*9));
@@ -117,10 +131,13 @@ public class MatterValueDataProvider {
         saveData(ENDER_PEARL, organic(4), quantum(1), ender(2));
         saveData(new Item[]{CHORUS_PLANT, CHORUS_FLOWER}, organic(1), quantum(1));
         saveData(GLOWSTONE, nether(4), precious(4));
-        saveData(new Item[]{EGG, PUMPKIN, CARVED_PUMPKIN, PORKCHOP, APPLE, COD, SALMON, TROPICAL_FISH, PUFFERFISH, MELON_SLICE, BEEF, CHICKEN, POTATO, POISONOUS_POTATO, CARROT, MUTTON, RABBIT, BEETROOT, GLOW_BERRIES, SWEET_BERRIES,RABBIT_FOOT}, organic(4), living(4));
+        saveTag(ItemTags.EGGS, organic(4), living(4));
+        saveData(new Item[]{PUMPKIN, CARVED_PUMPKIN, PORKCHOP, APPLE, COD, SALMON, TROPICAL_FISH, PUFFERFISH, MELON_SLICE, BEEF, CHICKEN, POTATO, POISONOUS_POTATO, CARROT, MUTTON, RABBIT, BEETROOT, GLOW_BERRIES, SWEET_BERRIES, RABBIT_FOOT}, organic(4), living(4));
         saveData(GHAST_TEAR, living(2), organic(2), nether(2));
         saveData(BLAZE_ROD, living(2), organic(2), nether(2));
-        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE, INK_SAC, RABBIT_HIDE, GLOW_INK_SAC, TURTLE_SCUTE, NAUTILUS_SHELL, HEART_OF_THE_SEA}, living(2), organic(2));
+        saveTag(Tags.Items.RODS_BREEZE, living(2), organic(2), quantum(2));
+        saveData(WIND_CHARGE, living(0.5), organic(0.5), quantum(0.5));
+        saveData(new Item[]{ROTTEN_FLESH, SPIDER_EYE, INK_SAC, RABBIT_HIDE, GLOW_INK_SAC, TURTLE_SCUTE, ARMADILLO_SCUTE, NAUTILUS_SHELL, HEART_OF_THE_SEA}, living(2), organic(2));
         saveData(BONE, living(3), organic(3));
         saveData(DRAGON_BREATH, living(2), organic(2), quantum(2));
         saveData(PHANTOM_MEMBRANE, living(2), organic(2), nether(2));
@@ -130,7 +147,7 @@ public class MatterValueDataProvider {
         saveData(ENCHANTED_GOLDEN_APPLE, living(4), precious(9*8*9));
         saveData(new Item[]{OCHRE_FROGLIGHT, PEARLESCENT_FROGLIGHT, VERDANT_FROGLIGHT}, living(2), organic(2));
 
-        saveTag(Tags.Items.MUSIC_DISCS, precious(3.3), quantum(1));
+        saveTag(Tags.Items.MUSIC_DISCS, precious(9), quantum(1));
         saveData(new Item[]{SCULK, SCULK_VEIN}, organic(1), quantum(1));
         saveData(new Item[]{SCULK_CATALYST, SCULK_SHRIEKER, SCULK_SENSOR}, organic(8), quantum(8));
         saveData(new Item[]{WITHER_SKELETON_SKULL, PLAYER_HEAD, ZOMBIE_HEAD, CREEPER_HEAD, PIGLIN_HEAD, DRAGON_HEAD, SKELETON_SKULL}, organic(8));
