@@ -54,6 +54,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
@@ -215,7 +216,7 @@ public class Replication extends ModuleController {
 
         ReplicationCalculation.init();
 
-        if (ModList.get().isLoaded("guideme")) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT && ModList.get().isLoaded("guideme")) {
             Guide.builder(Identifier.parse("replication:main")).build();
         }
 
