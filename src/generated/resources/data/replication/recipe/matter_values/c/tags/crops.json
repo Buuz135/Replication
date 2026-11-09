@@ -10,5 +10,14 @@
       "type": "replication:organic",
       "amount": 2.0
     }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:crops"
+      }
+    }
   ]
 }

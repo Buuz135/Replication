@@ -15,6 +15,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.conditions.NotCondition;
+import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 
 import java.util.Arrays;
 
@@ -205,14 +207,16 @@ public class MatterValueDataProvider {
     private void saveTag(TagKey<Item> tag, MatterValue... instances) {
         var recipeLocation = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + tag.location().getNamespace() + "/tags/" + tag.location().getPath());
         var recipe = new MatterValueRecipe(DataIngredients.tag(tag), instances);
-        recipeOutput.accept(ResourceKey.create(Registries.RECIPE, recipeLocation), recipe, null);
+        recipeOutput.withConditions(new NotCondition(new TagEmptyCondition<>(tag)))
+                .accept(ResourceKey.create(Registries.RECIPE, recipeLocation), recipe, null);
     }
 
     private void saveCommonTag(String tagName, MatterValue... instances) {
         var tag = TagUtil.getItemTag(Identifier.fromNamespaceAndPath("c", tagName));
         var recipeLocation = Identifier.fromNamespaceAndPath(Replication.MOD_ID, "matter_values/" + tag.location().getNamespace() + "/tags/" + tag.location().getPath());
         var recipe = new MatterValueRecipe(DataIngredients.tag(tag), instances);
-        recipeOutput.accept(ResourceKey.create(Registries.RECIPE, recipeLocation), recipe, null);
+        recipeOutput.withConditions(new NotCondition(new TagEmptyCondition<>(tag)))
+                .accept(ResourceKey.create(Registries.RECIPE, recipeLocation), recipe, null);
     }
 
 

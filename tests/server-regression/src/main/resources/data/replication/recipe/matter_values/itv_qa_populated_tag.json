@@ -1,0 +1,23 @@
+{
+  "type": "replication:matter_value",
+  "input": "#c:ingots/iron",
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 4.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 4.0
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/iron"
+      }
+    }
+  ]
+}
