@@ -1,0 +1,23 @@
+{
+  "type": "replication:matter_value",
+  "input": "#itv_server_bugfix_qa:absent",
+  "matter": [
+    {
+      "type": "replication:earth",
+      "amount": 4.0
+    },
+    {
+      "type": "replication:organic",
+      "amount": 4.0
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "itv_server_bugfix_qa:absent"
+      }
+    }
+  ]
+}

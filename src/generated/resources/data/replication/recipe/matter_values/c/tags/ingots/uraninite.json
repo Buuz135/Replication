@@ -10,5 +10,14 @@
       "type": "replication:quantum",
       "amount": 9.0
     }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/uraninite"
+      }
+    }
   ]
 }
