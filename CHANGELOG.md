@@ -1,4 +1,4 @@
-# 1.2.8
+# 1.2.9
 
 * Fix terminal text fields closing the screen on the inventory key - capkz
 * fix: add validation to replication task - GaeaKat
