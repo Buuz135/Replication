@@ -203,6 +203,14 @@ public class ReplicationTerminalScreen extends AbstractContainerScreen<Replicati
                 return true;
             }
         }
+        // While a text field (search box, amount box) is focused, it owns the keyboard: letters arrive through
+        // charTyped, so EditBox#keyPressed returns false for them, and AbstractContainerScreen would otherwise treat
+        // them as the inventory key (closing the screen) or hotbar keys (swapping items). Same approach as vanilla's
+        // creative inventory search.
+        if (!event.isEscape() && getFocused() instanceof EditBox editBox && editBox.canConsumeInput()) {
+            editBox.keyPressed(event);
+            return true;
+        }
         return super.keyPressed(event);
     }
 
