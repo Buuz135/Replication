@@ -132,6 +132,11 @@ public class ReplicatorBlockEntity extends ReplicationMachine<ReplicatorBlockEnt
                 });
                 return list;
             }
+
+            @Override
+            public boolean acceptsAsFilter(ItemStack filter) {
+                return ReplicationCalculation.getMatterCompound(filter) != null;
+            }
         };
         this.infiniteCrafting.getFilterSlots()[0] = new FilterSlot<>(43, 28, 0, ItemStack.EMPTY);
         addFilter(infiniteCrafting);

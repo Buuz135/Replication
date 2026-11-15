@@ -50,4 +50,6 @@ public interface IReplicationTask extends INBTSerializable<CompoundTag> {
         SINGLE,
         MULTIPLE;
     }
+
+    default boolean isValid() {  return true; }
 }
