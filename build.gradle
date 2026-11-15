@@ -83,7 +83,7 @@ dependencies {
     compileOnly "mezz.jei:jei-26.1.2-common-api:29.6.2.31"
     compileOnly "mezz.jei:jei-26.1.2-neoforge-api:29.6.2.31"
     runtimeOnly "mezz.jei:jei-26.1.2-neoforge:29.6.2.31"
-    implementation "curse.maven:titanium-287342:9145293"
+    implementation "curse.maven:titanium-287342:9279364"
     implementation "curse.maven:jade-324717:8857417"
     compileOnly "curse.maven:kubejs-238086:8843756"
     runtimeOnly "curse.maven:kubejs-238086:8843756"

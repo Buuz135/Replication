@@ -88,8 +88,8 @@ public class ReplicationTask implements IReplicationTask {
 
     @Override
     public boolean canAcceptReplicator(BlockPos replicator, int maxReplicatorsInMultipleMode) {
-        return (this.mode == Mode.SINGLE && this.replicatorsOnTask.isEmpty()) ||
-                (this.mode == Mode.MULTIPLE && this.replicatorsOnTask.size() < maxReplicatorsInMultipleMode && (this.getTotalAmount() - this.getCurrentAmount() - this.replicatorsOnTask.size()) > 0);
+        return this.isValid() && ((this.mode == Mode.SINGLE && this.replicatorsOnTask.isEmpty()) ||
+                (this.mode == Mode.MULTIPLE && this.replicatorsOnTask.size() < maxReplicatorsInMultipleMode && (this.getTotalAmount() - this.getCurrentAmount() - this.replicatorsOnTask.size()) > 0));
     }
 
     @Override
@@ -230,5 +230,10 @@ public class ReplicationTask implements IReplicationTask {
         }
         this.source = BlockPos.of(compoundTag.getLongOr("Source", 0));
         this.isInfinteMode = compoundTag.getBooleanOr("Infinte", false);
+    }
+
+    @Override
+    public boolean isValid() {
+        return ReplicationCalculation.getMatterCompound(this.getReplicatingStack()) != null;
     }
 }
