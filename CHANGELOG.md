@@ -1,3 +1,8 @@
+# 1.2.8
+
+* Fix terminal text fields closing the screen on the inventory key - capkz
+* fix: add validation to replication task - GaeaKat
+
 # 1.2.7
 
 * Fixed Locking does not work, closes #90 #96
