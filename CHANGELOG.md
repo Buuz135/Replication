@@ -1,3 +1,10 @@
+# 1.2.8
+
+* Update ru_ru.json - Argonas24
+* fix: add validation to replication task. - GaeaKat
+* fix: replicator now remembers infinite crafting and output configuration - LonguCodes
+* Added Kubejs examples - titop54
+
 # 1.2.7
 
 * Fixed Locking does not work, closes #90 #96
