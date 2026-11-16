@@ -1,5 +1,6 @@
 package com.buuz135.replication.calculation.client;
 
+import com.buuz135.replication.calculation.ItemVariants;
 import com.buuz135.replication.calculation.MatterCompound;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import net.minecraft.core.HolderLookup;
@@ -16,8 +17,9 @@ public class ClientReplicationCalculation {
 
     @Nullable
     public static MatterCompound getMatterCompound(ItemStack stack) {
-        if (DEFAULT_MATTER_COMPOUND.containsKey(ReplicationCalculation.getNameFromStack(stack))){
-            return DEFAULT_MATTER_COMPOUND.get(ReplicationCalculation.getNameFromStack(stack));
+        String name = ItemVariants.getName(ItemVariants.normalize(stack));
+        if (DEFAULT_MATTER_COMPOUND.containsKey(name)) {
+            return DEFAULT_MATTER_COMPOUND.get(name);
         }
         return null;
     }

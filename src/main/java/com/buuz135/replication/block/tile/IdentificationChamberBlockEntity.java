@@ -5,6 +5,7 @@ import com.buuz135.replication.ReplicationConfig;
 import com.buuz135.replication.ReplicationRegistry;
 import com.buuz135.replication.api.pattern.IMatterPatternHolder;
 import com.buuz135.replication.api.pattern.IMatterPatternModifier;
+import com.buuz135.replication.calculation.ItemVariants;
 import com.buuz135.replication.calculation.ReplicationCalculation;
 import com.buuz135.replication.client.gui.addons.IdentificationChamberAddon;
 import com.buuz135.replication.util.InvUtil;
@@ -27,7 +28,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-
 
 public class IdentificationChamberBlockEntity extends ReplicationMachine<IdentificationChamberBlockEntity>{
 
@@ -130,7 +130,7 @@ public class IdentificationChamberBlockEntity extends ReplicationMachine<Identif
             this.getInput().getStackInSlot(0).shrink(1);
             syncObject(this.input);
         } else {
-            returnedValue = patternModifier.addPattern(this.level, stack, input.getItem().getDefaultInstance(), (float) ReplicationConfig.IdentificationChamber.IDENTIFICATION_PROGRESS);
+            returnedValue = patternModifier.addPattern(this.level, stack, ItemVariants.normalize(input).stack(), (float) ReplicationConfig.IdentificationChamber.IDENTIFICATION_PROGRESS);
         }
         if (returnedValue.getPattern() != null && returnedValue.getPattern().getCompletion() >= 1) {
             this.getInput().getStackInSlot(0).shrink(1);

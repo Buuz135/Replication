@@ -9,6 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -106,7 +107,7 @@ public class MemoryChipItem extends ReplicationItem implements IMatterPatternHol
                 for (MatterPattern pattern : patterns) {
                     if (pattern.getStack().isEmpty()) continue;
                     var component = Component.literal(" - ").setStyle(Style.EMPTY.withColor(Mth.color(114/255f, 229/255f, 103/255f)))
-                            .append(Component.translatable(pattern.getStack().getDescriptionId()).withStyle(pattern.getCompletion() >= 1 ? ChatFormatting.GOLD : ChatFormatting.WHITE));
+                            .append(MutableComponent.create(pattern.getStack().getDisplayName().getContents()).withStyle(pattern.getCompletion() >= 1 ? ChatFormatting.GOLD : ChatFormatting.WHITE));
                     if (pattern.getCompletion() < 1){
                         component.append(Component.literal(" " + new DecimalFormat("##.## %").format(pattern.getCompletion())).withStyle(Style.EMPTY.withColor(Mth.color(242/255f, 82/255f, 82/255f))));
                     }
