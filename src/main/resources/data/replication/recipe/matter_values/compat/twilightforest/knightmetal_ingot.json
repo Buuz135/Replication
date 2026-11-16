@@ -1,0 +1,12 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "twilightforest:knightmetal_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 15.0
+      }
+    ]
+  }

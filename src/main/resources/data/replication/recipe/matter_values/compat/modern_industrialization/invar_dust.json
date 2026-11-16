@@ -1,0 +1,12 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "modern_industrialization:invar_dust"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 9.0
+      }
+    ]
+  }

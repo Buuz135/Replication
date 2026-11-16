@@ -1,0 +1,20 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "justdirethings:raw_eclipsealloy"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 81.0
+      },
+      {
+        "type": "replication:nether",
+        "amount": 162.0
+      },
+      {
+        "type": "replication:precious",
+        "amount": 243.0
+      }
+    ]
+  }

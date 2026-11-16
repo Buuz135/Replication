@@ -1,0 +1,20 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "modern_industrialization:annealed_copper_dust"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 2.0
+      },
+      {
+        "type": "replication:organic",
+        "amount": 5.0
+      },
+      {
+        "type": "replication:precious",
+        "amount": 2.0
+      }
+    ]
+  }

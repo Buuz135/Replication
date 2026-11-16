@@ -1,0 +1,12 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "modern_industrialization:silicon_double_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:earth",
+        "amount": 2.0
+      }
+    ]
+  }

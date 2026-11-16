@@ -1,0 +1,16 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "modern_industrialization:bauxite_dust"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 4.0
+      },
+      {
+        "type": "replication:precious",
+        "amount": 2.0
+      }
+    ]
+  }

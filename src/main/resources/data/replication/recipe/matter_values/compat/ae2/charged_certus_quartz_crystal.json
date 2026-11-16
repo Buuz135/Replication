@@ -1,0 +1,12 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "ae2:charged_certus_quartz_crystal"
+    },
+    "matter": [
+      {
+        "type": "replication:precious",
+        "amount": 1.0
+      }
+    ]
+  }

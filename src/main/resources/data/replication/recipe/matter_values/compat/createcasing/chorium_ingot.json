@@ -1,0 +1,28 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "createcasing:chorium_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:earth",
+        "amount": 20.0
+      },
+      {
+        "type": "replication:nether",
+        "amount": 10.0
+      },
+      {
+        "type": "replication:ender",
+        "amount": 8.0
+      },
+      {
+        "type": "replication:precious",
+        "amount": 20.0
+      },
+      {
+        "type": "replication:living",
+        "amount": 2.0
+      }
+    ]
+  }

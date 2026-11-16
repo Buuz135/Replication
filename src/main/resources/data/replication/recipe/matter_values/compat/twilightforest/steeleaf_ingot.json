@@ -1,0 +1,16 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "twilightforest:steeleaf_ingot"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 10.0
+      },
+      {
+        "type": "replication:organic",
+        "amount": 4.0
+      }
+    ]
+  }

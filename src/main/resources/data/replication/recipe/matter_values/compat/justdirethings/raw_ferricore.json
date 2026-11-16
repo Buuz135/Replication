@@ -1,0 +1,12 @@
+{
+    "type": "replication:matter_value",
+    "input": {
+      "item": "justdirethings:raw_ferricore"
+    },
+    "matter": [
+      {
+        "type": "replication:metallic",
+        "amount": 20.0
+      }
+    ]
+  }
